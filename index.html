@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -42,12 +43,7 @@ border:1px solid #ccc
 
 .bar{display:flex;gap:3px}
 
-.box{
-width:14px;
-height:14px;
-border:1px solid #999;
-background:#eee
-}
+.box{width:14px;height:14px;border:1px solid #999;background:#eee}
 
 .done{background:#2ecc71}
 
@@ -87,9 +83,9 @@ const beltOrder=[
 "Amarela/Branca","Amarela","Amarela/Preta",
 "Laranja/Branca","Laranja","Laranja/Preta",
 "Verde/Branca","Verde","Verde/Preta"
-];
+]
 
-const trainingDays=[1,3,5,6];
+const trainingDays=[1,3,5,6]
 
 function estimateDate(aulas){
 
@@ -128,12 +124,8 @@ return(
 
 let color="#ddd"
 
-if(i<vermelhos){
-color="#e74c3c"
-}
-else if(i<brancos){
-color="#fff"
-}
+if(i<vermelhos) color="#e74c3c"
+else if(i<brancos) color="#fff"
 
 return(
 <div
@@ -238,28 +230,11 @@ if(!confirm("Excluir aluno?"))return
 setStudents(students.filter(s=>s.id!==id))
 }
 
-const alunosProntos=students.filter(s=>{
-const graus=Math.min(Math.floor(s.aulas/15),8)
-const comportamentoCompleto=Object.values(s.comportamental).every(v=>v)
-const extras=Math.max(s.aulas-120,0)
-return graus===8 && comportamentoCompleto && extras>=8
-})
-
 return(
 
 <div className="container">
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
-
-<div className="card">
-
-<b>Alunos prontos para exame</b>
-
-{alunosProntos.map(a=>(
-<div key={a.id}>{a.nome}</div>
-))}
-
-</div>
 
 <div className="card">
 
@@ -281,17 +256,10 @@ onChange={e=>setForm({...form,idade:e.target.value})}
 value={form.faixa}
 onChange={e=>setForm({...form,faixa:e.target.value})}
 >
-
-{beltOrder.map(b=>
-<option key={b}>{b}</option>
-)}
-
+{beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
-<button
-className="green"
-onClick={addStudent}
->
+<button className="green" onClick={addStudent}>
 Adicionar aluno
 </button>
 
@@ -325,29 +293,21 @@ return(
 
 <div style={{display:"flex",gap:10,marginTop:8}}>
 
-<div
-className="beh"
+<div className="beh"
 style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>markBehavior(s.id,"relacionamento")}
-></div>
+onClick={()=>markBehavior(s.id,"relacionamento")}></div>
 
-<div
-className="beh"
+<div className="beh"
 style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
-onClick={()=>markBehavior(s.id,"comportamento")}
-></div>
+onClick={()=>markBehavior(s.id,"comportamento")}></div>
 
-<div
-className="beh"
+<div className="beh"
 style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
-onClick={()=>markBehavior(s.id,"notas")}
-></div>
+onClick={()=>markBehavior(s.id,"notas")}></div>
 
-<div
-className="beh"
+<div className="beh"
 style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
-onClick={()=>markBehavior(s.id,"habitos")}
-></div>
+onClick={()=>markBehavior(s.id,"habitos")}></div>
 
 </div>
 
@@ -357,10 +317,8 @@ onClick={()=>markBehavior(s.id,"habitos")}
 Presença
 </button>
 
-<button
-className="red"
-onClick={()=>removeStudent(s.id)}
->
+<button className="red"
+onClick={()=>removeStudent(s.id)}>
 Excluir
 </button>
 
@@ -385,9 +343,7 @@ Previsão troca faixa: {previsao}
 <b>Histórico graus presença</b>
 
 {s.historicoGraus.map((h,i)=>(
-<div key={i}>
-{h.data} - Grau {h.grau}
-</div>
+<div key={i}>{h.data} - Grau {h.grau}</div>
 ))}
 
 </div>
@@ -397,9 +353,7 @@ Previsão troca faixa: {previsao}
 <b>Histórico comportamental</b>
 
 {s.historicoComportamental.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.tipo}
-</div>
+<div key={i}>{h.data} - {h.tipo}</div>
 ))}
 
 </div>
@@ -419,3 +373,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 </script>
 </body>
 </html>
+```
