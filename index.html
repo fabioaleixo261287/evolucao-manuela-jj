@@ -1,171 +1,51 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>Acompanhamento Jiu Jitsu Alliance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<!-- React -->
-https://unpkg.com/react@18/umd/react.development.js</script>
-https://unpkg.com/react-dom@18/umd/react-dom.development.js
-<script src=".com/@babel/standalone/babel.min.js
-
-<!-- Modern UI Styles -->
 <style>
-:root {
-  --primary: #1976d2;
-  --primary-dark: #0f5ba8;
-  --success: #2ecc71;
-  --danger: #e74c3c;
-  --warning: #f1c40f;
-  --bg: #eef2f5;
-  --card-bg: #ffffff;
-  --radius: 14px;
-  --shadow: 0 6px 16px rgba(0,0,0,0.08);
-}
-
-/* Geral */
-body{
-  font-family: "Inter", Arial, sans-serif;
-  background: var(--bg);
-  margin:0;
-  padding:20px;
-  color:#333;
-}
-
-.container{
-  max-width:1100px;
-  margin:auto;
-}
-
-/* Títulos */
-h1{
-  font-size:26px;
-  font-weight:700;
-  margin-bottom:20px;
-  text-align:center;
-  color:var(--primary-dark);
-}
-
-/* Cards */
+body{font-family:Arial;background:#f4f6f8;margin:0;padding:20px}
+.container{max-width:1000px;margin:auto}
 .card{
-  background:var(--card-bg);
-  padding:20px;
-  border-radius:var(--radius);
-  margin-bottom:18px;
-  box-shadow:var(--shadow);
-  transition:0.2s;
+background:white;
+padding:16px;
+border-radius:10px;
+margin-bottom:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1)
 }
-.card:hover{
-  transform:translateY(-2px);
-}
-
-/* Layout */
-.row{
-  display:flex;
-  gap:14px;
-  flex-wrap:wrap;
-  margin-bottom:12px;
-}
-
-/* Inputs */
-input, select {
-  padding:10px 12px;
-  border-radius:10px;
-  border:1px solid #d9d9d9;
-  font-size:15px;
-  min-width:140px;
-  background:#fafafa;
-  transition:0.2s;
-}
-input:focus, select:focus{
-  border-color:var(--primary);
-  outline:none;
-  background:#fff;
-  box-shadow:0 0 0 3px rgba(25,118,210,0.15);
-}
-
-/* Botões */
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 button{
-  padding:10px 16px;
-  border:none;
-  border-radius:10px;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-  color:white;
-  background:var(--primary);
-  transition:0.2s;
+padding:6px 12px;
+border:none;
+border-radius:6px;
+background:#3498db;
+color:white;
+cursor:pointer
 }
-button:hover{
-  background:var(--primary-dark);
-  transform:translateY(-1px);
+button.red{background:#e74c3c}
+button.green{background:#2ecc71}
+input,select{
+padding:6px;
+border-radius:6px;
+border:1px solid #ccc
 }
-button.green{ background:var(--success); }
-button.green:hover{ background:#25b863; }
-button.red{ background:var(--danger); }
-button.red:hover{ background:#c0392b; }
-
-/* Barras */
-.bar{
-  display:flex;
-  gap:5px;
-}
-.box{
-  width:16px;
-  height:16px;
-  border-radius:5px;
-  border:1px solid #bbb;
-  background:#e1e1e1;
-  transition:0.2s;
-}
-.done{
-  background:var(--success);
-}
-
-.degree{
-  width:22px;
-  height:22px;
-  border-radius:6px;
-  border:1px solid #999;
-  background:#ddd;
-  transition:0.2s;
-}
-
-/* Comportamental */
-.beh{
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  background:#eee;
-  cursor:pointer;
-  transition:0.2s;
-  border:2px solid #ccc;
-}
-.beh:hover{
-  transform:scale(1.12);
-}
-
-/* Pronto para exame */
+.bar{display:flex;gap:3px}
+.box{width:14px;height:14px;border:1px solid #999;background:#eee}
+.done{background:#2ecc71}
+.degree{width:20px;height:20px;border:1px solid #555;border-radius:3px;background:#ddd}
+.beh{width:22px;height:22px;border-radius:22px;background:#eee;cursor:pointer}
 .ready{
-  background:#d5f5df;
-  padding:10px;
-  border-radius:10px;
-  margin-top:12px;
-  border-left:5px solid var(--success);
-  font-weight:700;
-  color:#1e7f43;
-}
-
-/* Nome do aluno */
-.card b{
-  font-size:18px;
-  color:#111;
-}
-
-/* Texto */
-.card > div{
-  margin-bottom:6px;
+background:#d4edda;
+padding:8px;
+border-radius:6px;
+margin-top:10px;
+font-weight:bold
 }
 </style>
 </head>
@@ -175,7 +55,6 @@ button.red:hover{ background:#c0392b; }
 
 <script type="text/babel">
 
-/* --------- Configurações --------- */
 const beltOrder=[
 "Branca","Cinza/Branca","Cinza","Cinza/Preta",
 "Amarela/Branca","Amarela","Amarela/Preta",
@@ -185,120 +64,118 @@ const beltOrder=[
 
 const trainingDays=[1,3,5,6];
 
-/* --------- Funções utilitárias --------- */
 function estimateDate(aulas){
-  let date=new Date()
-  let count=0
-  while(count<aulas){
-    date.setDate(date.getDate()+1)
-    if(trainingDays.includes(date.getDay())) count++
-  }
-  return date.toLocaleDateString()
+let date=new Date()
+let count=0
+while(count<aulas){
+date.setDate(date.getDate()+1)
+if(trainingDays.includes(date.getDay())) count++
+}
+return date.toLocaleDateString()
 }
 
 function ClassesBar({aulas}){
-  return(
-    <div className="bar">
-      {Array.from({length:15}).map((_,i)=>{
-        const done=i<(aulas%15)
-        return <div key={i} className={"box "+(done?"done":"")}></div>
-      })}
-    </div>
-  )
+return(
+<div className="bar">
+{Array.from({length:15}).map((_,i)=>{
+const done=i<(aulas%15)
+return <div key={i} className={"box "+(done?"done":"")}></div>
+})}
+</div>
+)
 }
 
 function PresenceBar({graus}){
-  return(
-    <div className="bar">
-      {Array.from({length:8}).map((_,i)=>{
-        let color="#ddd"
-        if(i<graus) color=i<4?"#fff":"#e74c3c"
-        return <div key={i} className="degree" style={{background:color}}></div>
-      })}
-    </div>
-  )
+return(
+<div className="bar">
+{Array.from({length:8}).map((_,i)=>{
+let color="#ddd"
+if(i<graus) color=i<4?"#fff":"#e74c3c"
+return <div key={i} className="degree" style={{background:color}}></div>
+})}
+</div>
+)
 }
 
-/* --------- App Principal --------- */
 function App(){
 
 const [students,setStudents]=React.useState(()=>{
-  const saved=localStorage.getItem("academia_preview_v2")
-  return saved?JSON.parse(saved):[]
+const saved=localStorage.getItem("academia_preview_v2")
+return saved?JSON.parse(saved):[]
 })
 
 const [form,setForm]=React.useState({
-  nome:"",
-  idade:"",
-  faixa:"Branca",
-  turma:"Baby"
+nome:"",
+idade:"",
+faixa:"Branca",
+turma:"Baby"
 })
 
 React.useEffect(()=>{
-  localStorage.setItem("academia_preview_v2",JSON.stringify(students))
+localStorage.setItem("academia_preview_v2",JSON.stringify(students))
 },[students])
 
 function addStudent(){
-  if(!form.nome)return
-  setStudents([...students,{
-    id:Date.now(),
-    ...form,
-    aulas:0,
-    historicoAulas:[],
-    historicoGraus:[],
-    historicoComportamental:[],
-    comportamental:{
-      relacionamento:null,
-      comportamento:null,
-      notas:null,
-      habitos:null
-    }
-  }])
-  setForm({nome:"",idade:"",faixa:"Branca",turma:"Baby"})
+if(!form.nome)return
+setStudents([...students,{
+id:Date.now(),
+...form,
+aulas:0,
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
+}])
+setForm({nome:"",idade:"",faixa:"Branca",turma:"Baby"})
 }
 
 function addAttendance(id){
-  setStudents(students.map(s=>{
-    if(s.id!==id) return s
-    const data=new Date().toLocaleDateString()
-    const novas=s.aulas+1
-    let historico=s.historicoGraus
+setStudents(students.map(s=>{
+if(s.id!==id) return s
+const data=new Date().toLocaleDateString()
+const novas=s.aulas+1
+let historico=s.historicoGraus
 
-    if(novas%15===0){
-      historico=[...historico,{grau:Math.floor(novas/15),data}]
-    }
+if(novas%15===0){
+historico=[...historico,{grau:Math.floor(novas/15),data}]
+}
 
-    return{
-      ...s,
-      aulas:novas,
-      historicoAulas:[...s.historicoAulas,{data}],
-      historicoGraus:historico
-    }
-  }))
+return{
+...s,
+aulas:novas,
+historicoAulas:[...s.historicoAulas,{data}],
+historicoGraus:historico
+}
+}))
 }
 
 function markBehavior(id,key){
-  setStudents(students.map(s=>{
-    if(s.id!==id) return s
-    const data=new Date().toLocaleDateString()
-    return{
-      ...s,
-      comportamental:{...s.comportamental,[key]:data},
-      historicoComportamental:[...s.historicoComportamental,{tipo:key,data}]
-    }
-  }))
+setStudents(students.map(s=>{
+if(s.id!==id) return s
+const data=new Date().toLocaleDateString()
+return{
+...s,
+comportamental:{...s.comportamental,[key]:data},
+historicoComportamental:[...s.historicoComportamental,{tipo:key,data}]
+}
+}))
 }
 
 function removeStudent(id){
-  if(!confirm("Excluir aluno?"))return
-  setStudents(students.filter(s=>s.id!==id))
+if(!confirm("Excluir aluno?"))return
+setStudents(students.filter(s=>s.id!==id))
 }
 
 const alunosProntos=students.filter(s=>{
-  const graus=Math.min(Math.floor(s.aulas/15),8)
-  const comportamentoCompleto=Object.values(s.comportamental).every(v=>v)
-  const extras=Math.max(s.aulas-120,0)
-  return graus===8 && comportamentoCompleto && extras>=8
+const graus=Math.min(Math.floor(s.aulas/15),8)
+const comportamentoCompleto=Object.values(s.comportamental).every(v=>v)
+const extras=Math.max(s.aulas-120,0)
+return graus===8 && comportamentoCompleto && extras>=8
 })
 
 return(
@@ -309,11 +186,12 @@ return(
 <div className="card">
 <b>Alunos prontos para exame</b>
 {alunosProntos.map(a=>(
-  <div key={a.id}>{a.nome}</div>
+<div key={a.id}>{a.nome}</div>
 ))}
 </div>
 
 <div className="card">
+
 <div className="row">
 
 <input placeholder="Nome"
@@ -326,7 +204,7 @@ onChange={e=>setForm({...form,idade:e.target.value})}/>
 
 <select value={form.faixa}
 onChange={e=>setForm({...form,faixa:e.target.value})}>
-  {beltOrder.map(b=><option key={b}>{b}</option>)}
+{beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
 <button className="green" onClick={addStudent}>
@@ -334,6 +212,7 @@ Adicionar aluno
 </button>
 
 </div>
+
 </div>
 
 {students.map(s=>{
@@ -347,6 +226,7 @@ const faltam=Math.max(128-s.aulas,0)
 const previsao=estimateDate(faltam)
 
 return(
+
 <div key={s.id} className="card">
 
 <b>{s.nome}</b> — {s.idade} anos
@@ -380,6 +260,7 @@ onClick={()=>markBehavior(s.id,"habitos")}></div>
 </div>
 
 <div style={{marginTop:10}}>
+
 <button onClick={()=>addAttendance(s.id)}>
 Presença
 </button>
@@ -388,6 +269,7 @@ Presença
 onClick={()=>removeStudent(s.id)}>
 Excluir
 </button>
+
 </div>
 
 <div style={{marginTop:8,fontSize:13}}>
@@ -405,21 +287,29 @@ Previsão troca faixa: {previsao}
 }
 
 <div style={{marginTop:10,fontSize:12}}>
+
 <b>Histórico graus presença</b>
+
 {s.historicoGraus.map((h,i)=>(
-  <div key={i}>{h.data} - Grau {h.grau}</div>
+<div key={i}>{h.data} - Grau {h.grau}</div>
 ))}
+
 </div>
 
 <div style={{marginTop:10,fontSize:12}}>
+
 <b>Histórico comportamental</b>
+
 {s.historicoComportamental.map((h,i)=>(
-  <div key={i}>{h.data} - {h.tipo}</div>
+<div key={i}>{h.data} - {h.tipo}</div>
 ))}
+
 </div>
 
 </div>
+
 )
+
 })}
 
 </div>
@@ -427,6 +317,7 @@ Previsão troca faixa: {previsao}
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
+
 </script>
 </body>
 </html>
