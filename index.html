@@ -1,15 +1,24 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <title>Acompanhamento Jiu Jitsu Alliance</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <style>
-body{font-family:Arial;background:#f4f6f8;margin:0;padding:20px}
+
+body{
+font-family:Arial;
+background:#f4f6f8;
+margin:0;
+padding:20px
+}
+
 .container{max-width:1000px;margin:auto}
 
 .card{
@@ -20,7 +29,12 @@ margin-bottom:12px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1)
 }
 
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.row{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:10px
+}
 
 button{
 padding:6px 12px;
@@ -39,6 +53,70 @@ padding:6px;
 border-radius:6px;
 border:1px solid #ccc
 }
+
+/* ========================= */
+/* FAIXA REALISTA */
+/* ========================= */
+
+.beltContainer{
+display:flex;
+align-items:center;
+margin-top:8px;
+margin-bottom:10px
+}
+
+.belt{
+height:18px;
+width:180px;
+border-top:3px solid #333;
+border-bottom:3px solid #333;
+position:relative
+}
+
+.beltTip{
+width:26px;
+height:24px;
+background:black;
+margin-left:4px
+}
+
+.beltStripe{
+position:absolute;
+right:6px;
+top:2px;
+display:flex;
+gap:2px
+}
+
+.stripe{
+width:6px;
+height:14px;
+border:1px solid #000
+}
+
+.stripe.white{background:white}
+.stripe.red{background:#e74c3c}
+
+/* ========================= */
+/* BARRA AULAS ANIMADA */
+/* ========================= */
+
+.progressContainer{
+width:100%;
+height:12px;
+background:#ddd;
+border-radius:10px;
+overflow:hidden;
+margin-top:6px
+}
+
+.progressFill{
+height:100%;
+background:#2ecc71;
+transition:width .6s ease
+}
+
+/* caixas antigas mantidas */
 
 .bar{display:flex;gap:3px}
 
@@ -74,6 +152,7 @@ border-radius:6px;
 margin-top:10px;
 font-weight:bold
 }
+
 </style>
 </head>
 
@@ -87,9 +166,9 @@ const beltOrder=[
 "Amarela/Branca","Amarela","Amarela/Preta",
 "Laranja/Branca","Laranja","Laranja/Preta",
 "Verde/Branca","Verde","Verde/Preta"
-];
+]
 
-const trainingDays=[1,3,5,6];
+const trainingDays=[1,3,5,6]
 
 function estimateDate(aulas){
 
@@ -105,16 +184,94 @@ return date.toLocaleDateString()
 
 }
 
+/* ========================= */
+/* BARRA DE AULAS ANIMADA */
+/* ========================= */
+
 function ClassesBar({aulas}){
+
+const progresso=(aulas%15)/15*100
+
 return(
+<div>
+
+<div className="progressContainer">
+<div
+className="progressFill"
+style={{width:progresso+"%"}}
+></div>
+</div>
+
 <div className="bar">
+
 {Array.from({length:15}).map((_,i)=>{
 const done=i<(aulas%15)
 return <div key={i} className={"box "+(done?"done":"")}></div>
 })}
+
+</div>
+
 </div>
 )
+
 }
+
+/* ========================= */
+/* FAIXA REALISTA */
+/* ========================= */
+
+function Belt({faixa,graus}){
+
+const colors={
+"Branca":"#ffffff",
+"Cinza":"#9ca3af",
+"Amarela":"#facc15",
+"Laranja":"#fb923c",
+"Verde":"#22c55e"
+}
+
+const corFaixa=Object.keys(colors).find(c=>faixa.includes(c))
+
+const brancos=Math.min(graus,4)
+const vermelhos=Math.max(graus-4,0)
+
+return(
+
+<div className="beltContainer">
+
+<div
+className="belt"
+style={{background:colors[corFaixa] || "#fff"}}
+>
+
+<div className="beltStripe">
+
+{Array.from({length:4}).map((_,i)=>{
+
+let type=""
+
+if(i<vermelhos) type="red"
+else if(i<brancos) type="white"
+
+return <div key={i} className={"stripe "+type}></div>
+
+})}
+
+</div>
+
+</div>
+
+<div className="beltTip"></div>
+
+</div>
+
+)
+
+}
+
+/* ========================= */
+/* GRAUS PRESENÇA */
+/* ========================= */
 
 function PresenceBar({graus}){
 
@@ -128,12 +285,8 @@ return(
 
 let color="#ddd"
 
-if(i<vermelhos){
-color="#e74c3c"
-}
-else if(i<brancos){
-color="#fff"
-}
+if(i<vermelhos) color="#e74c3c"
+else if(i<brancos) color="#fff"
 
 return(
 <div
@@ -147,7 +300,12 @@ style={{background:color}}
 
 </div>
 )
+
 }
+
+/* ========================= */
+/* APP */
+/* ========================= */
 
 function App(){
 
@@ -238,28 +396,11 @@ if(!confirm("Excluir aluno?"))return
 setStudents(students.filter(s=>s.id!==id))
 }
 
-const alunosProntos=students.filter(s=>{
-const graus=Math.min(Math.floor(s.aulas/15),8)
-const comportamentoCompleto=Object.values(s.comportamental).every(v=>v)
-const extras=Math.max(s.aulas-120,0)
-return graus===8 && comportamentoCompleto && extras>=8
-})
-
 return(
 
 <div className="container">
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
-
-<div className="card">
-
-<b>Alunos prontos para exame</b>
-
-{alunosProntos.map(a=>(
-<div key={a.id}>{a.nome}</div>
-))}
-
-</div>
 
 <div className="card">
 
@@ -302,12 +443,6 @@ Adicionar aluno
 {students.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),8)
-const comportamentoCompleto=Object.values(s.comportamental).every(v=>v)
-const extras=Math.max(s.aulas-120,0)
-const pronto=graus===8 && comportamentoCompleto && extras>=8
-
-const faltam=Math.max(128-s.aulas,0)
-const previsao=estimateDate(faltam)
 
 return(
 
@@ -317,92 +452,20 @@ return(
 
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:6}}>Aulas</div>
+<Belt faixa={s.faixa} graus={graus}/>
+
+<div>Aulas</div>
 <ClassesBar aulas={s.aulas}/>
 
 <div style={{marginTop:6}}>Graus presença</div>
 <PresenceBar graus={graus}/>
 
-<div style={{display:"flex",gap:10,marginTop:8}}>
-
-<div
-className="beh"
-style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>markBehavior(s.id,"relacionamento")}
-></div>
-
-<div
-className="beh"
-style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
-onClick={()=>markBehavior(s.id,"comportamento")}
-></div>
-
-<div
-className="beh"
-style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
-onClick={()=>markBehavior(s.id,"notas")}
-></div>
-
-<div
-className="beh"
-style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
-onClick={()=>markBehavior(s.id,"habitos")}
-></div>
-
-</div>
-
-<div style={{marginTop:10}}>
-
-<button onClick={()=>addAttendance(s.id)}>
-Presença
-</button>
-
 <button
-className="red"
-onClick={()=>removeStudent(s.id)}
+style={{marginTop:10}}
+onClick={()=>addAttendance(s.id)}
 >
-Excluir
+Registrar presença
 </button>
-
-</div>
-
-<div style={{marginTop:8,fontSize:13}}>
-Faltam {faltam} aulas para exame
-</div>
-
-<div style={{fontSize:13}}>
-Previsão troca faixa: {previsao}
-</div>
-
-{pronto &&
-<div className="ready">
-🥋 PRONTO PARA EXAME DE TROCA DE FAIXA
-</div>
-}
-
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico graus presença</b>
-
-{s.historicoGraus.map((h,i)=>(
-<div key={i}>
-{h.data} - Grau {h.grau}
-</div>
-))}
-
-</div>
-
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico comportamental</b>
-
-{s.historicoComportamental.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.tipo}
-</div>
-))}
-
-</div>
 
 </div>
 
@@ -411,7 +474,9 @@ Previsão troca faixa: {previsao}
 })}
 
 </div>
+
 )
+
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
@@ -419,3 +484,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 </script>
 </body>
 </html>
+```
