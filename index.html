@@ -1,113 +1,254 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Controle Evolução Jiu Jitsu</title>
+<title>Academia Jiu Jitsu - Controle de Alunos</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.tailwindcss.com"></script>
-
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+<style>
+
+body{
+font-family:system-ui,-apple-system,Segoe UI,Roboto;
+background:#eef1f5;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:720px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+}
+
+.card{
+background:white;
+padding:18px;
+border-radius:14px;
+margin-bottom:14px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.row{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:10px;
+}
+
+input,select{
+padding:7px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button{
+padding:7px 12px;
+border:none;
+border-radius:8px;
+background:#3498db;
+color:white;
+cursor:pointer;
+}
+
+button.red{background:#e74c3c}
+button.green{background:#2ecc71}
+
+.studentHeader{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:10px;
+}
+
+.avatar{
+width:44px;
+height:44px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+color:white;
+background:linear-gradient(135deg,#3498db,#6dd5fa);
+font-size:18px;
+}
+
+.beltContainer{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:6px;
+}
+
+.belt{
+width:160px;
+height:16px;
+border-radius:6px;
+border:1px solid #333;
+position:relative;
+overflow:hidden;
+}
+
+.belt::after{
+content:"";
+position:absolute;
+inset:0;
+background-image:repeating-linear-gradient(
+45deg,
+rgba(255,255,255,0.15) 0px,
+rgba(255,255,255,0.15) 2px,
+transparent 2px,
+transparent 6px
+);
+opacity:.4;
+}
+
+.beltTip{
+display:flex;
+background:black;
+padding:3px;
+gap:2px;
+border-radius:3px;
+}
+
+.beltDegree{
+width:9px;
+height:14px;
+background:white;
+transform:scale(0);
+animation:pop .35s ease forwards;
+}
+
+@keyframes pop{
+to{transform:scale(1)}
+}
+
+.beltEmpty{
+width:9px;
+height:14px;
+}
+
+.progressBar{
+height:6px;
+background:#e5e7eb;
+border-radius:6px;
+margin-top:6px;
+overflow:hidden;
+}
+
+.progressFill{
+height:100%;
+background:#2ecc71;
+}
+
+.beh{
+width:22px;
+height:22px;
+border-radius:50%;
+background:#eee;
+cursor:pointer;
+transition:.2s;
+}
+
+.beh:hover{
+transform:scale(1.1);
+}
+
+.behRow{
+display:flex;
+gap:6px;
+margin-top:10px;
+}
+
+.ready{
+background:#d4edda;
+padding:8px;
+border-radius:6px;
+margin-top:10px;
+font-weight:bold;
+}
+
+</style>
 </head>
 
-<body class="bg-slate-100">
+<body>
 
 <div id="root"></div>
 
 <script type="text/babel">
 
-const belts=[
-"Branca","Cinza/Branca","Cinza","Cinza/Preta",
-"Amarela/Branca","Amarela","Amarela/Preta",
-"Laranja/Branca","Laranja","Laranja/Preta",
-"Verde/Branca","Verde","Verde/Preta"
+const beltOrder=[
+"Branca","Cinza","Amarela","Laranja","Verde"
 ]
 
-const trainingDays=[1,3,5,6]
+const beltColors={
+"Branca":"#f5f5f5",
+"Cinza":"#9ca3af",
+"Amarela":"#facc15",
+"Laranja":"#fb923c",
+"Verde":"#16a34a"
+}
+
+const trainingDays=[1,3,5]
 
 function estimateDate(aulas){
-
 let date=new Date()
 let count=0
 
 while(count<aulas){
-
 date.setDate(date.getDate()+1)
-
-if(trainingDays.includes(date.getDay()))
-count++
-
+if(trainingDays.includes(date.getDay())) count++
 }
 
 return date.toLocaleDateString()
+}
+
+function Avatar({nome}){
+
+const initial=nome.charAt(0).toUpperCase()
+
+return(
+<div className="avatar">
+{initial}
+</div>
+)
 
 }
 
-/* ------------------- FAIXA VISUAL ------------------- */
+function Belt({faixa,graus,aulas}){
 
-function Belt({faixa,graus}){
-
-const colors={
-"Branca":"#f5f5f5",
-"Cinza/Branca":"linear-gradient(90deg,#9ca3af 50%,white 50%)",
-"Cinza":"#9ca3af",
-"Cinza/Preta":"linear-gradient(90deg,#9ca3af 50%,black 50%)",
-
-"Amarela/Branca":"linear-gradient(90deg,#facc15 50%,white 50%)",
-"Amarela":"#facc15",
-"Amarela/Preta":"linear-gradient(90deg,#facc15 50%,black 50%)",
-
-"Laranja/Branca":"linear-gradient(90deg,#fb923c 50%,white 50%)",
-"Laranja":"#fb923c",
-"Laranja/Preta":"linear-gradient(90deg,#fb923c 50%,black 50%)",
-
-"Verde/Branca":"linear-gradient(90deg,#16a34a 50%,white 50%)",
-"Verde":"#16a34a",
-"Verde/Preta":"linear-gradient(90deg,#16a34a 50%,black 50%)"
-}
+const progresso=(aulas%15)/15*100
 
 return(
 
-<div style={{display:"flex",alignItems:"center",gap:"6px",marginTop:"4px"}}>
+<div>
+
+<div className="beltContainer">
 
 <div
-style={{
-width:120,
-height:14,
-background:colors[faixa],
-borderRadius:4,
-border:"1px solid #333"
-}}
+className="belt"
+style={{background:beltColors[faixa]}}
 ></div>
 
-<div
-style={{
-display:"flex",
-background:"black",
-padding:"2px",
-gap:"2px"
-}}
->
+<div className="beltTip">
 
 {Array.from({length:4}).map((_,i)=>{
 
-const done=i<graus
+if(i<graus){
+return <div key={i} className="beltDegree"></div>
+}
 
-return(
-<div
-key={i}
-style={{
-width:8,
-height:14,
-background:done?"white":"transparent"
-}}
-></div>
-)
+return <div key={i} className="beltEmpty"></div>
 
 })}
 
@@ -115,11 +256,18 @@ background:done?"white":"transparent"
 
 </div>
 
+<div className="progressBar">
+<div
+className="progressFill"
+style={{width:progresso+"%"}}
+></div>
+</div>
+
+</div>
+
 )
 
 }
-
-/* ------------------- APP ------------------- */
 
 function App(){
 
@@ -128,8 +276,6 @@ const saved=localStorage.getItem("jj_students")
 return saved?JSON.parse(saved):[]
 })
 
-const [search,setSearch]=React.useState("")
-
 const [form,setForm]=React.useState({
 nome:"",
 idade:"",
@@ -137,30 +283,27 @@ faixa:"Branca"
 })
 
 React.useEffect(()=>{
-
 localStorage.setItem("jj_students",JSON.stringify(students))
-
 },[students])
 
 function addStudent(){
 
-if(!form.nome) return
+if(!form.nome)return
 
-setStudents([
-...students,
-{
+setStudents([...students,{
 id:Date.now(),
 ...form,
-aulas:0
+aulas:0,
+historico:[],
+comportamental:{
+relacionamento:false,
+comportamento:false,
+notas:false,
+habitos:false
 }
-])
+}])
 
-setForm({
-nome:"",
-idade:"",
-faixa:"Branca"
-})
-
+setForm({nome:"",idade:"",faixa:"Branca"})
 }
 
 function addAttendance(id){
@@ -169,9 +312,30 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
+const novas=s.aulas+1
+
 return{
 ...s,
-aulas:s.aulas+1
+aulas:novas,
+historico:[...s.historico,new Date().toLocaleDateString()]
+}
+
+}))
+
+}
+
+function toggleBehavior(id,key){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+return{
+...s,
+comportamental:{
+...s.comportamental,
+[key]:!s.comportamental[key]
+}
 }
 
 }))
@@ -186,69 +350,42 @@ setStudents(students.filter(s=>s.id!==id))
 
 }
 
-const alunosFiltrados=students.filter(s=>
-s.nome.toLowerCase().includes(search.toLowerCase())
-)
-
 return(
 
-<div className="max-w-6xl mx-auto p-6">
+<div className="container">
 
-<h1 className="text-3xl font-bold mb-6">
-🥋 Controle Evolução Jiu Jitsu
-</h1>
+<h1>🥋 Academia Jiu Jitsu</h1>
 
-<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+<div className="card">
 
-<div className="bg-white p-4 rounded-xl shadow">
-<div className="text-sm text-gray-500">Alunos</div>
-<div className="text-2xl font-bold">
-{students.length}
-</div>
-</div>
-
-<div className="bg-white p-4 rounded-xl shadow">
-<div className="text-sm text-gray-500">Aulas totais</div>
-<div className="text-2xl font-bold">
-{students.reduce((a,b)=>a+b.aulas,0)}
-</div>
-</div>
-
-</div>
-
-<div className="bg-white p-4 rounded-xl shadow mb-6">
-
-<div className="flex gap-2 flex-wrap">
+<div className="row">
 
 <input
-className="border p-2 rounded"
 placeholder="Nome"
 value={form.nome}
 onChange={e=>setForm({...form,nome:e.target.value})}
 />
 
 <input
-className="border p-2 rounded"
 placeholder="Idade"
 value={form.idade}
 onChange={e=>setForm({...form,idade:e.target.value})}
 />
 
 <select
-className="border p-2 rounded"
 value={form.faixa}
 onChange={e=>setForm({...form,faixa:e.target.value})}
 >
 
-{belts.map(b=>
+{beltOrder.map(b=>
 <option key={b}>{b}</option>
 )}
 
 </select>
 
 <button
+className="green"
 onClick={addStudent}
-className="bg-green-500 text-white px-4 rounded"
 >
 Adicionar
 </button>
@@ -257,62 +394,81 @@ Adicionar
 
 </div>
 
-<input
-className="border p-2 rounded mb-6 w-full"
-placeholder="Buscar aluno"
-value={search}
-onChange={e=>setSearch(e.target.value)}
-/>
+{students.map(s=>{
 
-<div className="grid gap-4">
-
-{alunosFiltrados.map(s=>{
-
-const faltam=Math.max(128-s.aulas,0)
-
-const previsao=estimateDate(faltam)
-
-const graus=Math.min(Math.floor(s.aulas/15),4)
+const graus=Math.floor(s.aulas/15)
+const faltam=Math.max(15-(s.aulas%15),0)
 
 return(
 
-<div key={s.id}
-className="bg-white p-5 rounded-xl shadow flex justify-between items-center">
+<div
+key={s.id}
+className="card"
+>
+
+<div className="studentHeader">
+
+<Avatar nome={s.nome}/>
 
 <div>
-
-<div className="font-semibold text-lg">
-{s.nome}
-</div>
-
-<div className="text-sm text-gray-500">
+<b>{s.nome}</b><br/>
+<span style={{fontSize:13,color:"#666"}}>
 {s.idade} anos
-</div>
-
-<Belt faixa={s.faixa} graus={graus}/>
-
-<div className="text-sm mt-2">
-Aulas: {s.aulas}
-</div>
-
-<div className="text-sm text-gray-500">
-Previsão faixa: {previsao}
+</span>
 </div>
 
 </div>
 
-<div className="flex gap-2">
+<Belt
+faixa={s.faixa}
+graus={graus}
+aulas={s.aulas}
+/>
+
+<div style={{marginTop:6,fontSize:13}}>
+Faltam {faltam} aulas para próximo grau
+</div>
+
+<div className="behRow">
+
+<div
+className="beh"
+style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
+onClick={()=>toggleBehavior(s.id,"relacionamento")}
+></div>
+
+<div
+className="beh"
+style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
+onClick={()=>toggleBehavior(s.id,"comportamento")}
+></div>
+
+<div
+className="beh"
+style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
+onClick={()=>toggleBehavior(s.id,"notas")}
+></div>
+
+<div
+className="beh"
+style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
+onClick={()=>toggleBehavior(s.id,"habitos")}
+></div>
+
+</div>
+
+<div style={{marginTop:10}}>
 
 <button
 onClick={()=>addAttendance(s.id)}
-className="bg-blue-500 text-white px-3 py-1 rounded"
 >
-Presença
+Registrar presença
 </button>
 
 <button
+className="red"
 onClick={()=>removeStudent(s.id)}
-className="bg-red-500 text-white px-3 py-1 rounded"
+style={{marginLeft:6}}
 >
 Excluir
 </button>
@@ -327,8 +483,6 @@ Excluir
 
 </div>
 
-</div>
-
 )
 
 }
@@ -339,3 +493,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </body>
 </html>
+```
