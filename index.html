@@ -2,141 +2,26 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Controle Jiu Jitsu</title>
+<title>Controle Evolução Jiu Jitsu</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-<style>
-
-body{
-font-family:Inter;
-margin:0;
-padding:20px;
-background:#f1f5f9;
-transition:.3s;
-}
-
-.dark{
-background:#0f172a;
-color:white;
-}
-
-.container{
-max-width:1100px;
-margin:auto;
-}
-
-h1{
-margin-bottom:20px;
-}
-
-.card{
-background:white;
-padding:16px;
-border-radius:10px;
-margin-bottom:12px;
-box-shadow:0 4px 14px rgba(0,0,0,.08);
-}
-
-.dark .card{
-background:#1e293b;
-}
-
-.row{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:10px;
-}
-
-input,select{
-padding:8px;
-border-radius:6px;
-border:1px solid #ccc;
-}
-
-button{
-padding:8px 14px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-weight:600;
-}
-
-.green{background:#22c55e;color:white}
-.red{background:#ef4444;color:white}
-.blue{background:#3b82f6;color:white}
-
-.bar{display:flex;gap:3px;margin-top:5px}
-
-.box{
-width:14px;
-height:14px;
-background:#eee;
-border-radius:3px;
-}
-
-.done{background:#22c55e}
-
-.degree{
-width:20px;
-height:20px;
-border-radius:4px;
-background:#ddd;
-}
-
-.beh{
-width:22px;
-height:22px;
-border-radius:50%;
-cursor:pointer;
-}
-
-.ready{
-background:#dcfce7;
-padding:8px;
-border-radius:6px;
-margin-top:10px;
-font-weight:bold;
-color:#166534;
-}
-
-.stats{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-bottom:15px;
-}
-
-.stat{
-flex:1;
-min-width:120px;
-background:white;
-padding:12px;
-border-radius:8px;
-text-align:center;
-font-weight:bold;
-}
-
-.dark .stat{
-background:#1e293b;
-}
-
-</style>
 </head>
 
-<body>
+<body class="bg-slate-100">
 
 <div id="root"></div>
 
 <script type="text/babel">
 
-const beltOrder=[
+const belts=[
 "Branca","Cinza/Branca","Cinza","Cinza/Preta",
 "Amarela/Branca","Amarela","Amarela/Preta",
 "Laranja/Branca","Laranja","Laranja/Preta",
@@ -163,58 +48,6 @@ return date.toLocaleDateString()
 
 }
 
-function ClassesBar({aulas}){
-
-return(
-
-<div className="bar">
-
-{Array.from({length:15}).map((_,i)=>{
-
-const done=i<(aulas%15)
-
-return(
-<div key={i}
-className={"box "+(done?"done":"")}/>
-)
-
-})}
-
-</div>
-
-)
-
-}
-
-function PresenceBar({graus}){
-
-return(
-
-<div className="bar">
-
-{Array.from({length:8}).map((_,i)=>{
-
-let color="#ddd"
-
-if(i<graus)
-color=i<4?"#fff":"#ef4444"
-
-return(
-<div
-key={i}
-className="degree"
-style={{background:color}}
-/>
-)
-
-})}
-
-</div>
-
-)
-
-}
-
 function App(){
 
 const [students,setStudents]=React.useState(()=>{
@@ -223,7 +56,6 @@ return saved?JSON.parse(saved):[]
 })
 
 const [search,setSearch]=React.useState("")
-const [dark,setDark]=React.useState(false)
 
 const [form,setForm]=React.useState({
 nome:"",
@@ -232,27 +64,21 @@ faixa:"Branca"
 })
 
 React.useEffect(()=>{
+
 localStorage.setItem("jj_students",JSON.stringify(students))
+
 },[students])
 
 function addStudent(){
 
-if(!form.nome)return
+if(!form.nome) return
 
 setStudents([
 ...students,
 {
 id:Date.now(),
 ...form,
-aulas:0,
-lastPresence:null,
-historicoGraus:[],
-comportamental:{
-relacionamento:null,
-comportamento:null,
-notas:null,
-habitos:null
-}
+aulas:0
 }
 ])
 
@@ -270,43 +96,9 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
-const novas=s.aulas+1
-const data=new Date().toLocaleDateString()
-
-let hist=s.historicoGraus
-
-if(novas%15===0){
-
-hist=[...hist,{
-grau:Math.floor(novas/15),
-data
-}]
-
-}
-
 return{
 ...s,
-aulas:novas,
-lastPresence:data,
-historicoGraus:hist
-}
-
-}))
-
-}
-
-function markBehavior(id,key){
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-return{
-...s,
-comportamental:{
-...s.comportamental,
-[key]:true
-}
+aulas:s.aulas+1
 }
 
 }))
@@ -315,7 +107,7 @@ comportamental:{
 
 function removeStudent(id){
 
-if(!confirm("Excluir aluno?"))return
+if(!confirm("Excluir aluno?")) return
 
 setStudents(students.filter(s=>s.id!==id))
 
@@ -325,83 +117,65 @@ const alunosFiltrados=students.filter(s=>
 s.nome.toLowerCase().includes(search.toLowerCase())
 )
 
-const alunosProntos=students.filter(s=>{
-
-const graus=Math.min(Math.floor(s.aulas/15),8)
-const comportamentoCompleto=Object.values(s.comportamental).every(v=>v)
-const extras=Math.max(s.aulas-120,0)
-
-return graus===8 && comportamentoCompleto && extras>=8
-
-})
-
 return(
 
-<div className={"container "+(dark?"dark":"")}>
+<div className="max-w-6xl mx-auto p-6">
 
-<h1>🥋 Controle Academia</h1>
+<h1 className="text-3xl font-bold mb-6">
+🥋 Controle Evolução Jiu Jitsu
+</h1>
 
-<div className="stats">
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
 
-<div className="stat">
-Alunos<br/>
+<div className="bg-white p-4 rounded-xl shadow">
+<div className="text-sm text-gray-500">Alunos</div>
+<div className="text-2xl font-bold">
 {students.length}
 </div>
+</div>
 
-<div className="stat">
-Prontos<br/>
-{alunosProntos.length}
+<div className="bg-white p-4 rounded-xl shadow">
+<div className="text-sm text-gray-500">Aulas totais</div>
+<div className="text-2xl font-bold">
+{students.reduce((a,b)=>a+b.aulas,0)}
+</div>
 </div>
 
 </div>
 
-<div className="row">
+<div className="bg-white p-4 rounded-xl shadow mb-6">
+
+<div className="flex gap-2 flex-wrap">
 
 <input
-placeholder="Buscar aluno"
-value={search}
-onChange={e=>setSearch(e.target.value)}
-/>
-
-<button
-className="blue"
-onClick={()=>setDark(!dark)}
->
-🌙 Tema
-</button>
-
-</div>
-
-<div className="card">
-
-<div className="row">
-
-<input
+className="border p-2 rounded"
 placeholder="Nome"
 value={form.nome}
 onChange={e=>setForm({...form,nome:e.target.value})}
 />
 
 <input
+className="border p-2 rounded"
 placeholder="Idade"
 value={form.idade}
 onChange={e=>setForm({...form,idade:e.target.value})}
 />
 
 <select
+className="border p-2 rounded"
 value={form.faixa}
 onChange={e=>setForm({...form,faixa:e.target.value})}
 >
 
-{beltOrder.map(b=>
+{belts.map(b=>
 <option key={b}>{b}</option>
 )}
 
 </select>
 
 <button
-className="green"
 onClick={addStudent}
+className="bg-green-500 text-white px-4 rounded"
 >
 Adicionar
 </button>
@@ -410,19 +184,16 @@ Adicionar
 
 </div>
 
+<input
+className="border p-2 rounded mb-6 w-full"
+placeholder="Buscar aluno"
+value={search}
+onChange={e=>setSearch(e.target.value)}
+/>
+
+<div className="grid gap-4">
+
 {alunosFiltrados.map(s=>{
-
-const graus=Math.min(Math.floor(s.aulas/15),8)
-
-const comportamentoCompleto=
-Object.values(s.comportamental).every(v=>v)
-
-const extras=Math.max(s.aulas-120,0)
-
-const pronto=
-graus===8 &&
-comportamentoCompleto &&
-extras>=8
 
 const faltam=Math.max(128-s.aulas,0)
 
@@ -430,81 +201,46 @@ const previsao=estimateDate(faltam)
 
 return(
 
-<div key={s.id} className="card">
+<div key={s.id}
+className="bg-white p-5 rounded-xl shadow flex justify-between items-center">
 
-<b>{s.nome}</b> — {s.idade} anos
+<div>
 
-<div>Faixa: {s.faixa}</div>
-
-<div style={{marginTop:6}}>
-Aulas
+<div className="font-semibold text-lg">
+{s.nome}
 </div>
 
-<ClassesBar aulas={s.aulas}/>
-
-<div style={{marginTop:6}}>
-Graus
+<div className="text-sm text-gray-500">
+{s.idade} anos — {s.faixa}
 </div>
 
-<PresenceBar graus={graus}/>
+<div className="text-sm mt-2">
+Aulas: {s.aulas}
+</div>
 
-<div style={{display:"flex",gap:10,marginTop:8}}>
-
-<div className="beh"
-style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>markBehavior(s.id,"relacionamento")}/>
-
-<div className="beh"
-style={{background:s.comportamental.comportamento?"#3b82f6":"#eee"}}
-onClick={()=>markBehavior(s.id,"comportamento")}/>
-
-<div className="beh"
-style={{background:s.comportamental.notas?"#ef4444":"#eee"}}
-onClick={()=>markBehavior(s.id,"notas")}/>
-
-<div className="beh"
-style={{background:s.comportamental.habitos?"#22c55e":"#eee"}}
-onClick={()=>markBehavior(s.id,"habitos")}/>
+<div className="text-sm text-gray-500">
+Previsão faixa: {previsao}
+</div>
 
 </div>
 
-<div style={{marginTop:10}}>
+<div className="flex gap-2">
 
 <button
-className="blue"
 onClick={()=>addAttendance(s.id)}
+className="bg-blue-500 text-white px-3 py-1 rounded"
 >
 Presença
 </button>
 
 <button
-className="red"
 onClick={()=>removeStudent(s.id)}
+className="bg-red-500 text-white px-3 py-1 rounded"
 >
 Excluir
 </button>
 
 </div>
-
-<div style={{fontSize:13}}>
-Faltam {faltam} aulas
-</div>
-
-<div style={{fontSize:13}}>
-Previsão faixa: {previsao}
-</div>
-
-{s.lastPresence &&
-<div style={{fontSize:12}}>
-Última presença: {s.lastPresence}
-</div>
-}
-
-{pronto &&
-<div className="ready">
-🥋 PRONTO PARA EXAME
-</div>
-}
 
 </div>
 
@@ -514,14 +250,15 @@ Previsão faixa: {previsao}
 
 </div>
 
+</div>
+
 )
 
 }
 
-ReactDOM.createRoot(
-document.getElementById("root")
-).render(<App/>)
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </script>
+
 </body>
 </html>
