@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-
 <meta charset="UTF-8">
-<title>Acompanhamento Jiu Jitsu</title>
+<title>Acompanhamento Jiu Jitsu Alliance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -14,60 +14,63 @@
 body{
 font-family:Arial;
 background:#f4f6f8;
+margin:0;
 padding:20px
 }
 
 .container{
-max-width:900px;
+max-width:1000px;
 margin:auto
 }
 
 .card{
 background:white;
-padding:15px;
+padding:16px;
 border-radius:10px;
-margin-bottom:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1)
+margin-bottom:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1)
 }
 
 .row{
 display:flex;
-gap:10px;
-flex-wrap:wrap
-}
-
-input,select{
-padding:8px;
-border-radius:6px;
-border:1px solid #ccc
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:10px
 }
 
 button{
 padding:6px 12px;
 border:none;
 border-radius:6px;
-cursor:pointer;
 background:#3498db;
-color:white
+color:white;
+cursor:pointer
 }
 
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
 
+input,select{
+padding:6px;
+border-radius:6px;
+border:1px solid #ccc
+}
+
 .bar{
 display:flex;
-gap:4px;
-margin-top:5px
+gap:3px
 }
 
 .box{
-width:15px;
-height:15px;
-border:1px solid #aaa;
+width:14px;
+height:14px;
+border:1px solid #999;
 background:#eee
 }
 
-.done{background:#2ecc71}
+.done{
+background:#2ecc71
+}
 
 .degree{
 width:20px;
@@ -75,20 +78,6 @@ height:20px;
 border:1px solid #555;
 border-radius:3px;
 background:#ddd
-}
-
-.avatar{
-width:60px;
-height:60px;
-border-radius:50%;
-object-fit:cover;
-border:3px solid #ddd
-}
-
-.studentHeader{
-display:flex;
-align-items:center;
-gap:10px
 }
 
 .beh{
@@ -99,8 +88,32 @@ background:#eee;
 cursor:pointer
 }
 
-</style>
+.ready{
+background:#d4edda;
+padding:8px;
+border-radius:6px;
+margin-top:10px;
+font-weight:bold
+}
 
+/* avatar */
+
+.avatar{
+width:60px;
+height:60px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid #ddd;
+}
+
+.studentHeader{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:6px
+}
+
+</style>
 </head>
 
 <body>
@@ -116,12 +129,26 @@ const beltOrder=[
 "Verde/Branca","Verde","Verde/Preta"
 ]
 
+const trainingDays=[1,3,5,6]
+
+function estimateDate(aulas){
+
+let date=new Date()
+let count=0
+
+while(count<aulas){
+date.setDate(date.getDate()+1)
+if(trainingDays.includes(date.getDay())) count++
+}
+
+return date.toLocaleDateString()
+
+}
+
 function ClassesBar({aulas}){
 
 return(
-
 <div className="bar">
-
 {Array.from({length:15}).map((_,i)=>{
 
 const done=i<(aulas%15)
@@ -131,9 +158,7 @@ return(
 )
 
 })}
-
 </div>
-
 )
 
 }
@@ -173,21 +198,19 @@ style={{background:color}}
 function App(){
 
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("jiujitsu_students")
+const saved=localStorage.getItem("academia_preview_v2")
 return saved?JSON.parse(saved):[]
 })
-
-const [search,setSearch]=React.useState("")
-const [selectedStudent,setSelectedStudent]=React.useState(null)
 
 const [form,setForm]=React.useState({
 nome:"",
 idade:"",
-faixa:"Branca"
+faixa:"Branca",
+turma:"Baby"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("jiujitsu_students",JSON.stringify(students))
+localStorage.setItem("academia_preview_v2",JSON.stringify(students))
 },[students])
 
 function addStudent(){
@@ -198,7 +221,6 @@ setStudents([...students,{
 
 id:Date.now(),
 ...form,
-
 avatar:"avatar.png",
 
 aulas:0,
@@ -219,7 +241,8 @@ habitos:null
 setForm({
 nome:"",
 idade:"",
-faixa:"Branca"
+faixa:"Branca",
+turma:"Baby"
 })
 
 }
@@ -236,12 +259,7 @@ const novas=s.aulas+1
 let historico=s.historicoGraus
 
 if(novas%15===0){
-
-historico=[...historico,{
-grau:Math.floor(novas/15),
-data
-}]
-
+historico=[...historico,{grau:Math.floor(novas/15),data}]
 }
 
 return{
@@ -250,10 +268,7 @@ return{
 
 aulas:novas,
 
-historicoAulas:[
-...s.historicoAulas,
-{data}
-],
+historicoAulas:[...s.historicoAulas,{data}],
 
 historicoGraus:historico
 
@@ -299,69 +314,11 @@ setStudents(students.filter(s=>s.id!==id))
 
 }
 
-if(selectedStudent){
-
-const s=selectedStudent
-
 return(
 
 <div className="container">
 
-<button
-onClick={()=>setSelectedStudent(null)}
->
-⬅ Voltar
-</button>
-
-<div className="card">
-
-<h2>{s.nome}</h2>
-
-<img
-src={s.avatar}
-className="avatar"
-style={{width:120,height:120}}
-/>
-
-<p>Idade: {s.idade}</p>
-<p>Faixa: {s.faixa}</p>
-<p>Aulas: {s.aulas}</p>
-
-<h3>Aulas</h3>
-<ClassesBar aulas={s.aulas}/>
-
-<h3>Graus</h3>
-<PresenceBar graus={Math.min(Math.floor(s.aulas/15),8)}/>
-
-<h3>Histórico de graus</h3>
-
-{s.historicoGraus.map((h,i)=>(
-<div key={i}>
-{h.data} - Grau {h.grau}
-</div>
-))}
-
-<h3>Histórico comportamental</h3>
-
-{s.historicoComportamental.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.tipo}
-</div>
-))}
-
-</div>
-
-</div>
-
-)
-
-}
-
-return(
-
-<div className="container">
-
-<h1>Academia Jiu Jitsu</h1>
+<h1>Acompanhamento Jiu Jitsu Alliance</h1>
 
 <div className="card">
 
@@ -383,42 +340,37 @@ onChange={e=>setForm({...form,idade:e.target.value})}
 value={form.faixa}
 onChange={e=>setForm({...form,faixa:e.target.value})}
 >
-
-{beltOrder.map(b=>
-<option key={b}>{b}</option>
-)}
-
+{beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
 <button
 className="green"
 onClick={addStudent}
 >
-Adicionar
+Adicionar aluno
 </button>
 
 </div>
 
 </div>
 
-<div className="card">
-
-<input
-placeholder="Buscar aluno..."
-value={search}
-onChange={e=>setSearch(e.target.value)}
-style={{width:"100%"}}
-/>
-
-</div>
-
-{students
-.filter(s =>
-s.nome.toLowerCase().includes(search.toLowerCase())
-)
-.map(s=>{
+{students.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),8)
+
+const comportamentoCompleto=
+Object.values(s.comportamental).every(v=>v)
+
+const extras=Math.max(s.aulas-120,0)
+
+const pronto=
+graus===8 &&
+comportamentoCompleto &&
+extras>=8
+
+const faltam=Math.max(128-s.aulas,0)
+
+const previsao=estimateDate(faltam)
 
 return(
 
@@ -426,11 +378,15 @@ return(
 
 <div className="studentHeader">
 
-<img src={s.avatar} className="avatar"/>
+<img
+src={s.avatar}
+className="avatar"
+/>
 
 <div>
 
 <b>{s.nome}</b><br/>
+
 {s.idade} anos
 
 </div>
@@ -439,48 +395,60 @@ return(
 
 <div>Faixa: {s.faixa}</div>
 
+<div style={{marginTop:6}}>
+Aulas
+</div>
+
 <ClassesBar aulas={s.aulas}/>
+
+<div style={{marginTop:6}}>
+Graus presença
+</div>
 
 <PresenceBar graus={graus}/>
 
-<div style={{display:"flex",gap:10,marginTop:6}}>
+<div style={{display:"flex",gap:10,marginTop:8}}>
 
 <div
 className="beh"
-style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee"
+}}
 onClick={()=>markBehavior(s.id,"relacionamento")}
 ></div>
 
 <div
 className="beh"
-style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee"
+}}
 onClick={()=>markBehavior(s.id,"comportamento")}
 ></div>
 
 <div
 className="beh"
-style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee"
+}}
 onClick={()=>markBehavior(s.id,"notas")}
 ></div>
 
 <div
 className="beh"
-style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee"
+}}
 onClick={()=>markBehavior(s.id,"habitos")}
 ></div>
 
 </div>
 
-<div style={{marginTop:8}}>
-
-<button onClick={()=>addAttendance(s.id)}>
-Presença
-</button>
+<div style={{marginTop:10}}>
 
 <button
-onClick={()=>setSelectedStudent(s)}
+onClick={()=>addAttendance(s.id)}
 >
-Abrir
+Presença
 </button>
 
 <button
@@ -489,6 +457,44 @@ onClick={()=>removeStudent(s.id)}
 >
 Excluir
 </button>
+
+</div>
+
+<div style={{marginTop:8,fontSize:13}}>
+Faltam {faltam} aulas para exame
+</div>
+
+<div style={{fontSize:13}}>
+Previsão troca faixa: {previsao}
+</div>
+
+{pronto &&
+<div className="ready">
+🥋 PRONTO PARA EXAME DE TROCA DE FAIXA
+</div>
+}
+
+<div style={{marginTop:10,fontSize:12}}>
+
+<b>Histórico graus presença</b>
+
+{s.historicoGraus.map((h,i)=>(
+<div key={i}>
+{h.data} - Grau {h.grau}
+</div>
+))}
+
+</div>
+
+<div style={{marginTop:10,fontSize:12}}>
+
+<b>Histórico comportamental</b>
+
+{s.historicoComportamental.map((h,i)=>(
+<div key={i}>
+{h.data} - {h.tipo}
+</div>
+))}
 
 </div>
 
@@ -504,7 +510,9 @@ Excluir
 
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
+ReactDOM
+.createRoot(document.getElementById("root"))
+.render(<App/>)
 
 </script>
 
