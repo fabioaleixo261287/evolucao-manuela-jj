@@ -48,6 +48,79 @@ return date.toLocaleDateString()
 
 }
 
+/* ------------------- FAIXA VISUAL ------------------- */
+
+function Belt({faixa,graus}){
+
+const colors={
+"Branca":"#f5f5f5",
+"Cinza/Branca":"linear-gradient(90deg,#9ca3af 50%,white 50%)",
+"Cinza":"#9ca3af",
+"Cinza/Preta":"linear-gradient(90deg,#9ca3af 50%,black 50%)",
+
+"Amarela/Branca":"linear-gradient(90deg,#facc15 50%,white 50%)",
+"Amarela":"#facc15",
+"Amarela/Preta":"linear-gradient(90deg,#facc15 50%,black 50%)",
+
+"Laranja/Branca":"linear-gradient(90deg,#fb923c 50%,white 50%)",
+"Laranja":"#fb923c",
+"Laranja/Preta":"linear-gradient(90deg,#fb923c 50%,black 50%)",
+
+"Verde/Branca":"linear-gradient(90deg,#16a34a 50%,white 50%)",
+"Verde":"#16a34a",
+"Verde/Preta":"linear-gradient(90deg,#16a34a 50%,black 50%)"
+}
+
+return(
+
+<div style={{display:"flex",alignItems:"center",gap:"6px",marginTop:"4px"}}>
+
+<div
+style={{
+width:120,
+height:14,
+background:colors[faixa],
+borderRadius:4,
+border:"1px solid #333"
+}}
+></div>
+
+<div
+style={{
+display:"flex",
+background:"black",
+padding:"2px",
+gap:"2px"
+}}
+>
+
+{Array.from({length:4}).map((_,i)=>{
+
+const done=i<graus
+
+return(
+<div
+key={i}
+style={{
+width:8,
+height:14,
+background:done?"white":"transparent"
+}}
+></div>
+)
+
+})}
+
+</div>
+
+</div>
+
+)
+
+}
+
+/* ------------------- APP ------------------- */
+
 function App(){
 
 const [students,setStudents]=React.useState(()=>{
@@ -199,6 +272,8 @@ const faltam=Math.max(128-s.aulas,0)
 
 const previsao=estimateDate(faltam)
 
+const graus=Math.min(Math.floor(s.aulas/15),4)
+
 return(
 
 <div key={s.id}
@@ -211,8 +286,10 @@ className="bg-white p-5 rounded-xl shadow flex justify-between items-center">
 </div>
 
 <div className="text-sm text-gray-500">
-{s.idade} anos — {s.faixa}
+{s.idade} anos
 </div>
+
+<Belt faixa={s.faixa} graus={graus}/>
 
 <div className="text-sm mt-2">
 Aulas: {s.aulas}
