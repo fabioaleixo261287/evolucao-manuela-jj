@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Sistema Academia Jiu Jitsu</title>
+<title>Sistema Academia</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -90,14 +90,6 @@ background:#eee;
 cursor:pointer
 }
 
-.ready{
-background:#d4edda;
-padding:8px;
-border-radius:6px;
-margin-top:10px;
-font-weight:bold
-}
-
 .avatar{
 width:60px;
 height:60px;
@@ -111,6 +103,19 @@ display:flex;
 align-items:center;
 gap:10px;
 margin-bottom:6px
+}
+
+.ready{
+background:#d4edda;
+padding:8px;
+border-radius:6px;
+margin-top:10px;
+font-weight:bold
+}
+
+.login{
+max-width:400px;
+margin:auto
 }
 
 img.info{
@@ -194,6 +199,8 @@ return(
 
 function App(){
 
+const [user,setUser]=React.useState(null)
+
 const [students,setStudents]=React.useState(()=>{
 const saved=localStorage.getItem("academia_final")
 return saved?JSON.parse(saved):[]
@@ -204,6 +211,38 @@ nome:"",
 nascimento:"",
 faixa:"Branca"
 })
+
+function loginProfessor(){
+
+const senha=prompt("Senha do professor")
+
+if(senha==="admin"){
+setUser({tipo:"professor"})
+}
+else{
+alert("Senha incorreta")
+}
+
+}
+
+function loginPais(){
+
+const nome=prompt("Nome do aluno")
+const nascimento=prompt("Data nascimento (AAAA-MM-DD)")
+
+const aluno=students.find(s=>
+s.nome===nome &&
+s.nascimento===nascimento
+)
+
+if(aluno){
+setUser({tipo:"pais",aluno})
+}
+else{
+alert("Aluno não encontrado")
+}
+
+}
 
 React.useEffect(()=>{
 localStorage.setItem("academia_final",JSON.stringify(students))
@@ -219,16 +258,12 @@ setStudents([...students,{
 
 id:Date.now(),
 nome:form.nome,
+nascimento:form.nascimento,
 idade,
 categoria:categoriaPorIdade(idade),
 faixa:form.faixa,
 avatar:"avatar.png",
 aulas:0,
-
-historicoAulas:[],
-historicoGraus:[],
-historicoComportamental:[],
-historicoFaixas:[],
 
 comportamental:{
 relacionamento:null,
@@ -254,62 +289,11 @@ setStudents(students.map(s=>{
 if(s.id!==id) return s
 
 if(s.aulas>=135){
-
-alert("Aluno atingiu 135 aulas. Necessário realizar exame de troca de faixa.")
-
+alert("Necessário exame de faixa")
 return s
-
 }
 
-const data=new Date().toLocaleDateString()
-
-const novas=s.aulas+1
-
-let historico=s.historicoGraus
-
-if(novas%15===0){
-historico=[...historico,{grau:Math.floor(novas/15),data}]
-}
-
-return{
-
-...s,
-
-aulas:novas,
-
-historicoAulas:[...s.historicoAulas,{data}],
-
-historicoGraus:historico
-
-}
-
-}))
-
-}
-
-function markBehavior(id,key){
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-const data=new Date().toLocaleDateString()
-
-return{
-
-...s,
-
-comportamental:{
-...s.comportamental,
-[key]:data
-},
-
-historicoComportamental:[
-...s.historicoComportamental,
-{tipo:key,data}
-]
-
-}
+return {...s,aulas:s.aulas+1}
 
 }))
 
@@ -323,20 +307,11 @@ if(s.id!==id) return s
 
 const idx=beltOrder.indexOf(s.faixa)
 
-const nova=beltOrder[idx+1]||s.faixa
-
 return{
 
 ...s,
-
-faixa:nova,
-
-aulas:0,
-
-historicoFaixas:[
-...s.historicoFaixas,
-{faixa:nova,data:new Date().toLocaleDateString()}
-]
+faixa:beltOrder[idx+1]||s.faixa,
+aulas:0
 
 }
 
@@ -344,12 +319,32 @@ historicoFaixas:[
 
 }
 
-function removeStudent(id){
+if(!user){
 
-if(!confirm("Excluir aluno?")) return
+return(
 
-setStudents(students.filter(s=>s.id!==id))
+<div className="login">
 
+<h2>Sistema Academia</h2>
+
+<button onClick={loginProfessor}>
+Área Professor
+</button>
+
+<button onClick={loginPais}>
+Área Pais / Aluno
+</button>
+
+</div>
+
+)
+
+}
+
+let lista=students
+
+if(user.tipo==="pais"){
+lista=[user.aluno]
 }
 
 return(
@@ -357,6 +352,8 @@ return(
 <div className="container">
 
 <h1>Sistema Academia</h1>
+
+{user.tipo==="professor" &&
 
 <div className="card">
 
@@ -381,10 +378,7 @@ onChange={e=>setForm({...form,faixa:e.target.value})}
 {beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
-<button
-className="green"
-onClick={addStudent}
->
+<button className="green" onClick={addStudent}>
 Adicionar aluno
 </button>
 
@@ -392,36 +386,15 @@ Adicionar aluno
 
 </div>
 
-{students.map(s=>{
+}
+
+{lista.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),15)
 
-const comportamentoCompleto=
-Object.values(s.comportamental).every(v=>v)
-
-const extras=Math.max(s.aulas-120,0)
-
-const pronto=
-graus===8 &&
-comportamentoCompleto &&
-extras>=8
-
-let cardColor="#fff"
-
-if(s.aulas>=135){
-cardColor="#ffd6d6"
-}
-else if(s.aulas>=120){
-cardColor="#fff4cc"
-}
-
 return(
 
-<div
-key={s.id}
-className="card"
-style={{background:cardColor}}
->
+<div key={s.id} className="card">
 
 <div className="studentHeader">
 
@@ -445,25 +418,7 @@ style={{background:cardColor}}
 <div style={{marginTop:6}}>Graus presença</div>
 <PresenceBar graus={graus}/>
 
-<div style={{display:"flex",gap:10,marginTop:8}}>
-
-<div className="beh"
-style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>markBehavior(s.id,"relacionamento")}></div>
-
-<div className="beh"
-style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
-onClick={()=>markBehavior(s.id,"comportamento")}></div>
-
-<div className="beh"
-style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
-onClick={()=>markBehavior(s.id,"notas")}></div>
-
-<div className="beh"
-style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
-onClick={()=>markBehavior(s.id,"habitos")}></div>
-
-</div>
+{user.tipo==="professor" &&
 
 <div style={{marginTop:10}}>
 
@@ -475,20 +430,8 @@ Presença
 Trocar Faixa
 </button>
 
-<button className="red" onClick={()=>removeStudent(s.id)}>
-Excluir
-</button>
-
 </div>
 
-<div style={{fontSize:13,marginTop:8}}>
-Aulas: {s.aulas} / 135
-</div>
-
-{pronto &&
-<div className="ready">
-🥋 ALUNO APTO PARA REALIZAR EXAME DE TROCA DE FAIXA
-</div>
 }
 
 </div>
