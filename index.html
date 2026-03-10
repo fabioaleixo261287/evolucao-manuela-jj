@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Sistema Academia</title>
+<title>Sistema Academia Jiu Jitsu</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -253,9 +253,16 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
-if(s.aulas>=135) return s
+if(s.aulas>=135){
+
+alert("Aluno atingiu 135 aulas. Necessário realizar exame de troca de faixa.")
+
+return s
+
+}
 
 const data=new Date().toLocaleDateString()
+
 const novas=s.aulas+1
 
 let historico=s.historicoGraus
@@ -389,9 +396,32 @@ Adicionar aluno
 
 const graus=Math.min(Math.floor(s.aulas/15),15)
 
+const comportamentoCompleto=
+Object.values(s.comportamental).every(v=>v)
+
+const extras=Math.max(s.aulas-120,0)
+
+const pronto=
+graus===8 &&
+comportamentoCompleto &&
+extras>=8
+
+let cardColor="#fff"
+
+if(s.aulas>=135){
+cardColor="#ffd6d6"
+}
+else if(s.aulas>=120){
+cardColor="#fff4cc"
+}
+
 return(
 
-<div key={s.id} className="card">
+<div
+key={s.id}
+className="card"
+style={{background:cardColor}}
+>
 
 <div className="studentHeader">
 
@@ -454,6 +484,12 @@ Excluir
 <div style={{fontSize:13,marginTop:8}}>
 Aulas: {s.aulas} / 135
 </div>
+
+{pronto &&
+<div className="ready">
+🥋 ALUNO APTO PARA REALIZAR EXAME DE TROCA DE FAIXA
+</div>
+}
 
 </div>
 
