@@ -49,6 +49,7 @@ cursor:pointer
 
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
+button.orange{background:#f39c12}
 
 input,select{
 padding:6px;
@@ -199,8 +200,6 @@ style={{background:color}}
 
 }
 
-/* LOGIN */
-
 function Login({onLogin}){
 
 const[user,setUser]=React.useState("")
@@ -256,10 +255,6 @@ function App(){
 
 const [login,setLogin]=React.useState(null)
 
-if(!login){
-return <Login onLogin={setLogin}/>
-}
-
 const [students,setStudents]=React.useState(()=>{
 const saved=localStorage.getItem("academia_preview_v2")
 return saved?JSON.parse(saved):[]
@@ -276,6 +271,54 @@ React.useEffect(()=>{
 localStorage.setItem("academia_preview_v2",JSON.stringify(students))
 },[students])
 
+if(!login){
+return <Login onLogin={setLogin}/>
+}
+
+/* TROCA DE FAIXA AUTOMÁTICA */
+
+function trocarFaixa(id){
+
+if(!confirm("Confirmar troca de faixa?")) return
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const index=beltOrder.indexOf(s.faixa)
+
+const proxima =
+index<beltOrder.length-1
+? beltOrder[index+1]
+: s.faixa
+
+return{
+
+...s,
+
+faixa:proxima,
+
+aulas:0,
+
+historicoAulas:[],
+historicoGraus:[],
+
+historicoFaixas:[
+...(s.historicoFaixas||[]),
+{
+faixaAnterior:s.faixa,
+data:new Date().toLocaleDateString()
+}
+]
+
+}
+
+}))
+
+}
+
+/* FUNÇÕES ORIGINAIS */
+
 function addStudent(){
 
 if(!form.nome) return
@@ -291,6 +334,7 @@ aulas:0,
 historicoAulas:[],
 historicoGraus:[],
 historicoComportamental:[],
+historicoFaixas:[],
 
 comportamental:{
 relacionamento:null,
@@ -423,16 +467,6 @@ Adicionar aluno
 
 const graus=Math.min(Math.floor(s.aulas/15),8)
 
-const comportamentoCompleto=
-Object.values(s.comportamental).every(v=>v)
-
-const extras=Math.max(s.aulas-120,0)
-
-const pronto=
-graus===8 &&
-comportamentoCompleto &&
-extras>=8
-
 const faltam=Math.max(128-s.aulas,0)
 
 const previsao=estimateDate(faltam)
@@ -443,10 +477,7 @@ return(
 
 <div className="studentHeader">
 
-<img
-src={s.avatar}
-className="avatar"
-/>
+<img src={s.avatar} className="avatar"/>
 
 <div>
 
@@ -460,34 +491,22 @@ className="avatar"
 
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:6}}>
-Aulas
-</div>
+<div style={{marginTop:6}}>Aulas</div>
 
 <ClassesBar aulas={s.aulas}/>
 
-<div style={{marginTop:6}}>
-Graus presença
-</div>
+<div style={{marginTop:6}}>Graus presença</div>
 
 <PresenceBar graus={graus}/>
-
-<div style={{display:"flex",gap:10,marginTop:8}}>
-
-<div className="beh" style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}} onClick={()=>markBehavior(s.id,"relacionamento")}></div>
-
-<div className="beh" style={{background:s.comportamental.comportamento?"#3498db":"#eee"}} onClick={()=>markBehavior(s.id,"comportamento")}></div>
-
-<div className="beh" style={{background:s.comportamental.notas?"#e74c3c":"#eee"}} onClick={()=>markBehavior(s.id,"notas")}></div>
-
-<div className="beh" style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}} onClick={()=>markBehavior(s.id,"habitos")}></div>
-
-</div>
 
 <div style={{marginTop:10}}>
 
 <button onClick={()=>addAttendance(s.id)}>
 Presença
+</button>
+
+<button className="orange" onClick={()=>trocarFaixa(s.id)}>
+Trocar Faixa
 </button>
 
 <button className="red" onClick={()=>removeStudent(s.id)}>
@@ -504,12 +523,6 @@ Faltam {faltam} aulas para exame
 Previsão troca faixa: {previsao}
 </div>
 
-{pronto &&
-<div className="ready">
-🥋 PRONTO PARA EXAME DE TROCA DE FAIXA
-</div>
-}
-
 </div>
 
 )
@@ -519,6 +532,7 @@ Previsão troca faixa: {previsao}
 </div>
 
 {login==="pais" &&
+
 <div style={{width:"420px"}}>
 
 <div className="card">
@@ -533,6 +547,7 @@ style={{width:"100%"}}
 </div>
 
 </div>
+
 }
 
 </div>
