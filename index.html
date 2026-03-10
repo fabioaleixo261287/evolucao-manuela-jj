@@ -18,9 +18,18 @@ margin:0;
 padding:20px
 }
 
+.layout{
+display:flex;
+gap:20px
+}
+
 .container{
-max-width:1000px;
-margin:auto
+flex:1;
+max-width:900px
+}
+
+.sidebar{
+width:300px
 }
 
 .card{
@@ -49,6 +58,7 @@ cursor:pointer
 
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
+button.orange{background:#f39c12}
 
 input,select{
 padding:6px;
@@ -96,8 +106,6 @@ margin-top:10px;
 font-weight:bold
 }
 
-/* avatar */
-
 .avatar{
 width:60px;
 height:60px;
@@ -111,6 +119,18 @@ display:flex;
 align-items:center;
 gap:10px;
 margin-bottom:6px
+}
+
+.login{
+max-width:350px;
+margin:auto;
+margin-top:120px
+}
+
+.sidebar img{
+width:100%;
+border-radius:8px;
+margin-bottom:10px
 }
 
 </style>
@@ -195,7 +215,46 @@ style={{background:color}}
 
 }
 
+function Login({onLogin}){
+
+const[user,setUser]=React.useState("")
+const[pass,setPass]=React.useState("")
+
+function entrar(){
+
+if(user==="professor" && pass==="123"){
+onLogin("professor")
+return
+}
+
+if(pass==="123"){
+onLogin("pais")
+}
+
+}
+
+return(
+
+<div className="login card">
+
+<h2>Login</h2>
+
+<input placeholder="Usuário" onChange={e=>setUser(e.target.value)}/>
+<br/><br/>
+<input type="password" placeholder="Senha" onChange={e=>setPass(e.target.value)}/>
+<br/><br/>
+
+<button onClick={entrar}>Entrar</button>
+
+</div>
+
+)
+
+}
+
 function App(){
+
+const[login,setLogin]=React.useState(null)
 
 const [students,setStudents]=React.useState(()=>{
 const saved=localStorage.getItem("academia_preview_v2")
@@ -205,13 +264,16 @@ return saved?JSON.parse(saved):[]
 const [form,setForm]=React.useState({
 nome:"",
 idade:"",
-faixa:"Branca",
-turma:"Baby"
+faixa:"Branca"
 })
 
 React.useEffect(()=>{
 localStorage.setItem("academia_preview_v2",JSON.stringify(students))
 },[students])
+
+if(!login){
+return <Login onLogin={setLogin}/>
+}
 
 function addStudent(){
 
@@ -241,8 +303,7 @@ habitos:null
 setForm({
 nome:"",
 idade:"",
-faixa:"Branca",
-turma:"Baby"
+faixa:"Branca"
 })
 
 }
@@ -265,11 +326,8 @@ historico=[...historico,{grau:Math.floor(novas/15),data}]
 return{
 
 ...s,
-
 aulas:novas,
-
 historicoAulas:[...s.historicoAulas,{data}],
-
 historicoGraus:historico
 
 }
@@ -306,6 +364,42 @@ historicoComportamental:[
 
 }
 
+function changeBelt(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const index=beltOrder.indexOf(s.faixa)
+
+if(index===beltOrder.length-1) return s
+
+const novaFaixa=beltOrder[index+1]
+
+return{
+
+...s,
+
+faixa:novaFaixa,
+aulas:0,
+
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
+
+}
+
+}))
+
+}
+
 function removeStudent(id){
 
 if(!confirm("Excluir aluno?")) return
@@ -315,6 +409,8 @@ setStudents(students.filter(s=>s.id!==id))
 }
 
 return(
+
+<div className="layout">
 
 <div className="container">
 
@@ -366,9 +462,9 @@ const extras=Math.max(s.aulas-120,0)
 const pronto=
 graus===8 &&
 comportamentoCompleto &&
-extras>=8
+extras>=15
 
-const faltam=Math.max(128-s.aulas,0)
+const faltam=Math.max(135-s.aulas,0)
 
 const previsao=estimateDate(faltam)
 
@@ -378,83 +474,52 @@ return(
 
 <div className="studentHeader">
 
-<img
-src={s.avatar}
-className="avatar"
-/>
+<img src={s.avatar} className="avatar"/>
 
 <div>
-
 <b>{s.nome}</b><br/>
-
 {s.idade} anos
-
 </div>
 
 </div>
 
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:6}}>
-Aulas
-</div>
-
+<div style={{marginTop:6}}>Aulas</div>
 <ClassesBar aulas={s.aulas}/>
 
-<div style={{marginTop:6}}>
-Graus presença
-</div>
-
+<div style={{marginTop:6}}>Graus presença</div>
 <PresenceBar graus={graus}/>
 
 <div style={{display:"flex",gap:10,marginTop:8}}>
 
-<div
-className="beh"
-style={{
-background:s.comportamental.relacionamento?"#f1c40f":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"relacionamento")}
-></div>
+<div className="beh"
+style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
+onClick={()=>markBehavior(s.id,"relacionamento")}></div>
 
-<div
-className="beh"
-style={{
-background:s.comportamental.comportamento?"#3498db":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"comportamento")}
-></div>
+<div className="beh"
+style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
+onClick={()=>markBehavior(s.id,"comportamento")}></div>
 
-<div
-className="beh"
-style={{
-background:s.comportamental.notas?"#e74c3c":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"notas")}
-></div>
+<div className="beh"
+style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
+onClick={()=>markBehavior(s.id,"notas")}></div>
 
-<div
-className="beh"
-style={{
-background:s.comportamental.habitos?"#2ecc71":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"habitos")}
-></div>
+<div className="beh"
+style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
+onClick={()=>markBehavior(s.id,"habitos")}></div>
 
 </div>
 
 <div style={{marginTop:10}}>
 
-<button
-onClick={()=>addAttendance(s.id)}
->
-Presença
+<button onClick={()=>addAttendance(s.id)}>Presença</button>
+
+<button className="orange" onClick={()=>changeBelt(s.id)}>
+Troca de Faixa
 </button>
 
-<button
-className="red"
-onClick={()=>removeStudent(s.id)}
->
+<button className="red" onClick={()=>removeStudent(s.id)}>
 Excluir
 </button>
 
@@ -474,35 +539,25 @@ Previsão troca faixa: {previsao}
 </div>
 }
 
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico graus presença</b>
-
-{s.historicoGraus.map((h,i)=>(
-<div key={i}>
-{h.data} - Grau {h.grau}
-</div>
-))}
-
-</div>
-
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico comportamental</b>
-
-{s.historicoComportamental.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.tipo}
-</div>
-))}
-
-</div>
-
 </div>
 
 )
 
 })}
+
+</div>
+
+<div className="sidebar">
+
+<div className="card">
+<img src="sistema_graduacao.jpeg"/>
+</div>
+
+<div className="card">
+<img src="graus_coloridos.jpeg"/>
+</div>
+
+</div>
 
 </div>
 
