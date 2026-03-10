@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -118,12 +119,6 @@ max-width:400px;
 margin:auto
 }
 
-img.info{
-width:100%;
-margin-top:20px;
-border-radius:10px
-}
-
 </style>
 </head>
 
@@ -214,12 +209,11 @@ faixa:"Branca"
 
 function loginProfessor(){
 
-const senha=prompt("Senha do professor")
+const senha=prompt("Senha professor")
 
 if(senha==="admin"){
 setUser({tipo:"professor"})
-}
-else{
+}else{
 alert("Senha incorreta")
 }
 
@@ -227,7 +221,7 @@ alert("Senha incorreta")
 
 function loginPais(){
 
-const nome=prompt("Nome do aluno")
+const nome=prompt("Nome aluno")
 const nascimento=prompt("Data nascimento (AAAA-MM-DD)")
 
 const aluno=students.find(s=>
@@ -237,8 +231,7 @@ s.nascimento===nascimento
 
 if(aluno){
 setUser({tipo:"pais",aluno})
-}
-else{
+}else{
 alert("Aluno não encontrado")
 }
 
@@ -263,6 +256,7 @@ idade,
 categoria:categoriaPorIdade(idade),
 faixa:form.faixa,
 avatar:"avatar.png",
+
 aulas:0,
 
 comportamental:{
@@ -270,7 +264,9 @@ relacionamento:null,
 comportamento:null,
 notas:null,
 habitos:null
-}
+},
+
+historicoComportamental:[]
 
 }])
 
@@ -299,6 +295,34 @@ return {...s,aulas:s.aulas+1}
 
 }
 
+function markBehavior(id,key){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const data=new Date().toLocaleDateString()
+
+return{
+
+...s,
+
+comportamental:{
+...s.comportamental,
+[key]:data
+},
+
+historicoComportamental:[
+...s.historicoComportamental,
+{tipo:key,data}
+]
+
+}
+
+}))
+
+}
+
 function trocarFaixa(id){
 
 setStudents(students.map(s=>{
@@ -311,7 +335,14 @@ return{
 
 ...s,
 faixa:beltOrder[idx+1]||s.faixa,
-aulas:0
+aulas:0,
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
 
 }
 
@@ -418,6 +449,34 @@ return(
 <div style={{marginTop:6}}>Graus presença</div>
 <PresenceBar graus={graus}/>
 
+<div style={{display:"flex",gap:10,marginTop:8}}>
+
+<div
+className="beh"
+style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
+onClick={()=>user.tipo==="professor" && markBehavior(s.id,"relacionamento")}
+></div>
+
+<div
+className="beh"
+style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
+onClick={()=>user.tipo==="professor" && markBehavior(s.id,"comportamento")}
+></div>
+
+<div
+className="beh"
+style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
+onClick={()=>user.tipo==="professor" && markBehavior(s.id,"notas")}
+></div>
+
+<div
+className="beh"
+style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
+onClick={()=>user.tipo==="professor" && markBehavior(s.id,"habitos")}
+></div>
+
+</div>
+
 {user.tipo==="professor" &&
 
 <div style={{marginTop:10}}>
@@ -434,14 +493,23 @@ Trocar Faixa
 
 }
 
+<div style={{marginTop:10,fontSize:12}}>
+
+<b>Histórico comportamental</b>
+
+{s.historicoComportamental.map((h,i)=>(
+<div key={i}>
+{h.data} - {h.tipo}
+</div>
+))}
+
+</div>
+
 </div>
 
 )
 
 })}
-
-<img src="sistema_graduacao.jpeg" className="info"/>
-<img src="graus_coloridos.jpeg" className="info"/>
 
 </div>
 
@@ -455,3 +523,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </body>
 </html>
+```
