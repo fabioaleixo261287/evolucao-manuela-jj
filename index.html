@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-
 <meta charset="UTF-8">
-<title>Sistema Academia</title>
-
+<title>Acompanhamento Jiu Jitsu Alliance</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -113,10 +111,9 @@ gap:10px;
 margin-bottom:6px
 }
 
-img.info{
-width:100%;
-margin-top:20px;
-border-radius:10px
+.login{
+max-width:400px;
+margin:auto
 }
 
 </style>
@@ -135,14 +132,46 @@ const beltOrder=[
 "Verde/Branca","Verde","Verde/Preta"
 ]
 
-function categoriaPorIdade(idade){
+const trainingDays=[1,3,5,6]
 
-idade=parseInt(idade)
+function getAge(date){
 
-if(idade<=4) return "BABY EAGLE"
-if(idade<=8) return "LITTLE EAGLE"
-if(idade<=12) return "EAGLE WARRIOR"
-return "EAGLE YOUTH"
+const hoje=new Date()
+const nasc=new Date(date)
+
+let idade=hoje.getFullYear()-nasc.getFullYear()
+
+const m=hoje.getMonth()-nasc.getMonth()
+
+if(m<0 || (m===0 && hoje.getDate()<nasc.getDate()))
+idade--
+
+return idade
+
+}
+
+function getCategory(idade){
+
+if(idade>=3 && idade<=4) return "BABY EAGLE"
+if(idade>=5 && idade<=8) return "LITTLE EAGLE"
+if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
+if(idade>=13 && idade<=15) return "EAGLE YOUTH"
+
+return "FORA CATEGORIA"
+
+}
+
+function estimateDate(aulas){
+
+let date=new Date()
+let count=0
+
+while(count<aulas){
+date.setDate(date.getDate()+1)
+if(trainingDays.includes(date.getDay())) count++
+}
+
+return date.toLocaleDateString()
 
 }
 
@@ -181,7 +210,11 @@ if(i<vermelhos) color="#e74c3c"
 else if(i<brancos) color="#fff"
 
 return(
-<div key={i} className="degree" style={{background:color}}></div>
+<div
+key={i}
+className="degree"
+style={{background:color}}
+></div>
 )
 
 })}
@@ -192,10 +225,113 @@ return(
 
 }
 
+function Login({setUser,students,setFilho}){
+
+const [tipo,setTipo]=React.useState("")
+const [nome,setNome]=React.useState("")
+const [nascimento,setNascimento]=React.useState("")
+const [senha,setSenha]=React.useState("")
+
+function loginProfessor(){
+
+if(senha==="admin") setUser("professor")
+else alert("Senha incorreta")
+
+}
+
+function loginPais(){
+
+const aluno=students.find(
+s=>s.nome===nome && s.nascimento===nascimento
+)
+
+if(aluno){
+setFilho(nome)
+setUser("pais")
+}else{
+alert("Aluno não encontrado")
+}
+
+}
+
+return(
+
+<div className="login card">
+
+<h2>Login</h2>
+
+<button className="green" onClick={()=>setTipo("professor")}>
+Professor
+</button>
+
+<button onClick={()=>setTipo("pais")}>
+Pais
+</button>
+
+<br/><br/>
+
+{tipo==="professor" &&
+
+<div>
+
+<input
+type="password"
+placeholder="Senha"
+value={senha}
+onChange={e=>setSenha(e.target.value)}
+/>
+
+<br/><br/>
+
+<button onClick={loginProfessor}>
+Entrar
+</button>
+
+</div>
+
+}
+
+{tipo==="pais" &&
+
+<div>
+
+<input
+placeholder="Nome do aluno"
+value={nome}
+onChange={e=>setNome(e.target.value)}
+/>
+
+<br/><br/>
+
+<input
+type="date"
+value={nascimento}
+onChange={e=>setNascimento(e.target.value)}
+/>
+
+<br/><br/>
+
+<button onClick={loginPais}>
+Entrar
+</button>
+
+</div>
+
+}
+
+</div>
+
+)
+
+}
+
 function App(){
 
+const [user,setUser]=React.useState("")
+const [filho,setFilho]=React.useState("")
+
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_final")
+const saved=localStorage.getItem("academia_alliance_v4")
 return saved?JSON.parse(saved):[]
 })
 
@@ -206,23 +342,30 @@ faixa:"Branca"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("academia_final",JSON.stringify(students))
+localStorage.setItem("academia_alliance_v4",JSON.stringify(students))
 },[students])
 
 function addStudent(){
 
 if(!form.nome) return
 
-const idade=new Date().getFullYear()-new Date(form.nascimento).getFullYear()
+const idade=getAge(form.nascimento)
 
 setStudents([...students,{
 
 id:Date.now(),
+
 nome:form.nome,
-idade,
-categoria:categoriaPorIdade(idade),
+nascimento:form.nascimento,
+
+idade:idade,
+
+categoria:getCategory(idade),
+
 faixa:form.faixa,
+
 avatar:"avatar.png",
+
 aulas:0,
 
 historicoAulas:[],
@@ -253,15 +396,24 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
-if(s.aulas>=135) return s
+if(s.aulas>=135){
+alert("Aluno atingiu 135 aulas. Realize a troca de faixa.")
+return s
+}
 
 const data=new Date().toLocaleDateString()
+
 const novas=s.aulas+1
 
 let historico=s.historicoGraus
 
 if(novas%15===0){
-historico=[...historico,{grau:Math.floor(novas/15),data}]
+
+historico=[...historico,{
+grau:Math.floor(novas/15),
+data
+}]
+
 }
 
 return{
@@ -314,21 +466,35 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
-const idx=beltOrder.indexOf(s.faixa)
+const data=new Date().toLocaleDateString()
 
-const nova=beltOrder[idx+1]||s.faixa
+const atualIndex=beltOrder.indexOf(s.faixa)
+const proximaFaixa=beltOrder[atualIndex+1] || s.faixa
+
+alert(`${s.nome} avançou para ${proximaFaixa}`)
 
 return{
 
 ...s,
 
-faixa:nova,
+faixa:proximaFaixa,
 
 aulas:0,
 
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+},
+
 historicoFaixas:[
 ...s.historicoFaixas,
-{faixa:nova,data:new Date().toLocaleDateString()}
+{faixa:proximaFaixa,data}
 ]
 
 }
@@ -345,18 +511,37 @@ setStudents(students.filter(s=>s.id!==id))
 
 }
 
+if(user==="")
+return <Login setUser={setUser} students={students} setFilho={setFilho}/>
+
+let lista=students
+
+if(user==="pais"){
+lista=students.filter(s=>s.nome===filho)
+}
+
 return(
 
 <div className="container">
 
-<h1>Sistema Academia</h1>
+<h1>Acompanhamento Jiu Jitsu Alliance</h1>
+
+<div className="card">
+
+<img src="graus_coloridos.jpeg" width="100%"/>
+<br/><br/>
+<img src="sistema_graduacao.jpeg" width="100%"/>
+
+</div>
+
+{user==="professor" &&
 
 <div className="card">
 
 <div className="row">
 
 <input
-placeholder="Nome aluno"
+placeholder="Nome"
 value={form.nome}
 onChange={e=>setForm({...form,nome:e.target.value})}
 />
@@ -374,10 +559,7 @@ onChange={e=>setForm({...form,faixa:e.target.value})}
 {beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
-<button
-className="green"
-onClick={addStudent}
->
+<button className="green" onClick={addStudent}>
 Adicionar aluno
 </button>
 
@@ -385,9 +567,15 @@ Adicionar aluno
 
 </div>
 
-{students.map(s=>{
+}
+
+{lista.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),15)
+
+const faltam=Math.max(135-s.aulas,0)
+
+const previsao=estimateDate(faltam)
 
 return(
 
@@ -400,8 +588,10 @@ return(
 <div>
 
 <b>{s.nome}</b><br/>
+
 {s.idade} anos<br/>
-{s.categoria}
+
+Categoria: {s.categoria}
 
 </div>
 
@@ -410,32 +600,40 @@ return(
 <div>Faixa: {s.faixa}</div>
 
 <div style={{marginTop:6}}>Aulas</div>
+
 <ClassesBar aulas={s.aulas}/>
 
 <div style={{marginTop:6}}>Graus presença</div>
+
 <PresenceBar graus={graus}/>
 
 <div style={{display:"flex",gap:10,marginTop:8}}>
 
 <div className="beh"
 style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>markBehavior(s.id,"relacionamento")}></div>
+onClick={()=>markBehavior(s.id,"relacionamento")}
+></div>
 
 <div className="beh"
 style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
-onClick={()=>markBehavior(s.id,"comportamento")}></div>
+onClick={()=>markBehavior(s.id,"comportamento")}
+></div>
 
 <div className="beh"
 style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
-onClick={()=>markBehavior(s.id,"notas")}></div>
+onClick={()=>markBehavior(s.id,"notas")}
+></div>
 
 <div className="beh"
 style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
-onClick={()=>markBehavior(s.id,"habitos")}></div>
+onClick={()=>markBehavior(s.id,"habitos")}
+></div>
 
 </div>
 
-<div style={{marginTop:10}}>
+{user==="professor" &&
+
+<div style={{marginTop:10,display:"flex",gap:10}}>
 
 <button onClick={()=>addAttendance(s.id)}>
 Presença
@@ -451,8 +649,35 @@ Excluir
 
 </div>
 
-<div style={{fontSize:13,marginTop:8}}>
-Aulas: {s.aulas} / 135
+}
+
+<div style={{marginTop:8,fontSize:13}}>
+Faltam {faltam} aulas
+</div>
+
+<div style={{fontSize:13}}>
+Previsão troca faixa: {previsao}
+</div>
+
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico graus</b>
+{s.historicoGraus.map((h,i)=>(
+<div key={i}>{h.data} - Grau {h.grau}</div>
+))}
+</div>
+
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico comportamental</b>
+{s.historicoComportamental.map((h,i)=>(
+<div key={i}>{h.data} - {h.tipo}</div>
+))}
+</div>
+
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico de faixas</b>
+{s.historicoFaixas.map((h,i)=>(
+<div key={i}>{h.data} - {h.faixa}</div>
+))}
 </div>
 
 </div>
@@ -460,9 +685,6 @@ Aulas: {s.aulas} / 135
 )
 
 })}
-
-<img src="sistema_graduacao.jpeg" className="info"/>
-<img src="graus_coloridos.jpeg" className="info"/>
 
 </div>
 
