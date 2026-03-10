@@ -3,11 +3,11 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Sistema Jiu Jitsu</title>
+<title>Acompanhamento Jiu Jitsu Alliance</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <style>
@@ -24,19 +24,19 @@ display:flex;
 gap:20px
 }
 
-.left{
+.container{
 flex:1
 }
 
-.right{
-width:420px
+.sidebar{
+width:400px
 }
 
 .card{
 background:white;
 padding:16px;
 border-radius:10px;
-margin-bottom:14px;
+margin-bottom:12px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1)
 }
 
@@ -82,6 +82,18 @@ background:#eee
 background:#2ecc71
 }
 
+.progress{
+height:10px;
+background:#ddd;
+border-radius:10px;
+overflow:hidden
+}
+
+.progressFill{
+height:100%;
+background:#27ae60
+}
+
 .avatar{
 width:60px;
 height:60px;
@@ -97,6 +109,11 @@ gap:10px;
 margin-bottom:6px
 }
 
+.turmaTitle{
+margin-top:20px;
+font-size:20px
+}
+
 .login{
 max-width:300px;
 margin:auto;
@@ -104,7 +121,6 @@ margin-top:120px
 }
 
 </style>
-
 </head>
 
 <body>
@@ -114,20 +130,27 @@ margin-top:120px
 <script type="text/babel">
 
 const beltOrder=[
-"Branca",
-"Cinza/Branca",
-"Cinza",
-"Cinza/Preta",
-"Amarela/Branca",
-"Amarela",
-"Amarela/Preta",
-"Laranja/Branca",
-"Laranja",
-"Laranja/Preta",
-"Verde/Branca",
-"Verde",
-"Verde/Preta"
+"Branca","Cinza/Branca","Cinza","Cinza/Preta",
+"Amarela/Branca","Amarela","Amarela/Preta",
+"Laranja/Branca","Laranja","Laranja/Preta",
+"Verde/Branca","Verde","Verde/Preta"
 ]
+
+const trainingDays=[1,3,5,6]
+
+function estimateDate(aulas){
+
+let date=new Date()
+let count=0
+
+while(count<aulas){
+date.setDate(date.getDate()+1)
+if(trainingDays.includes(date.getDay())) count++
+}
+
+return date.toLocaleDateString()
+
+}
 
 function Login({onLogin}){
 
@@ -155,18 +178,9 @@ return(
 
 <div className="row">
 
-<input
-placeholder="Usuário"
-value={user}
-onChange={e=>setUser(e.target.value)}
-/>
+<input placeholder="Usuário" value={user} onChange={e=>setUser(e.target.value)}/>
 
-<input
-type="password"
-placeholder="Senha"
-value={pass}
-onChange={e=>setPass(e.target.value)}
-/>
+<input type="password" placeholder="Senha" value={pass} onChange={e=>setPass(e.target.value)}/>
 
 <button onClick={entrar}>Entrar</button>
 
@@ -183,18 +197,21 @@ function App(){
 const[login,setLogin]=React.useState(null)
 
 const[students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("jiu_jitsu_sistema")
+const saved=localStorage.getItem("academia_preview_v3")
 return saved?JSON.parse(saved):[]
 })
+
+const[editId,setEditId]=React.useState(null)
 
 const[form,setForm]=React.useState({
 nome:"",
 idade:"",
-faixa:"Branca"
+faixa:"Branca",
+turma:"Baby"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("jiu_jitsu_sistema",JSON.stringify(students))
+localStorage.setItem("academia_preview_v3",JSON.stringify(students))
 },[students])
 
 if(!login){
@@ -214,14 +231,23 @@ avatar:"avatar.png",
 aulas:0,
 historicoAulas:[],
 historicoGraus:[],
-historicoFaixa:[]
+historicoComportamental:[],
+historicoFaixa:[],
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
 
 }])
 
 setForm({
 nome:"",
 idade:"",
-faixa:"Branca"
+faixa:"Branca",
+turma:"Baby"
 })
 
 }
@@ -235,127 +261,124 @@ if(s.id!==id) return s
 const data=new Date().toLocaleDateString()
 const novas=s.aulas+1
 
-let historicoGraus=s.historicoGraus
+let historico=s.historicoGraus
 
 if(novas%15===0){
-
-historicoGraus=[
-...historicoGraus,
-{
-grau:Math.floor(novas/15),
-data:data
-}
-]
-
+historico=[...historico,{grau:Math.floor(novas/15),data}]
 }
 
 return{
-
 ...s,
 aulas:novas,
 historicoAulas:[...s.historicoAulas,{data}],
-historicoGraus:historicoGraus
-
+historicoGraus:historico
 }
 
 }))
 
 }
 
-function trocarFaixa(id){
+function editStudent(s){
+
+setEditId(s.id)
+
+setForm({
+nome:s.nome,
+idade:s.idade,
+faixa:s.faixa,
+turma:s.turma
+})
+
+}
+
+function saveEdit(){
 
 setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-const index=beltOrder.indexOf(s.faixa)
-
-const proxima =
-index<beltOrder.length-1
-?beltOrder[index+1]
-:s.faixa
-
-const data=new Date().toLocaleDateString()
-
-return{
-
-...s,
-
-faixa:proxima,
-
-aulas:0,
-
-historicoFaixa:[
-...s.historicoFaixa,
-{
-faixaAnterior:s.faixa,
-novaFaixa:proxima,
-data:data
-}
-],
-
-historicoAulas:[],
-historicoGraus:[]
-
-}
-
+if(s.id!==editId) return s
+return{...s,...form}
 }))
+
+setEditId(null)
+
+setForm({
+nome:"",
+idade:"",
+faixa:"Branca",
+turma:"Baby"
+})
 
 }
 
 function removeStudent(id){
 
 if(!confirm("Excluir aluno?")) return
-
 setStudents(students.filter(s=>s.id!==id))
 
 }
+
+function progress(aulas){
+return Math.min((aulas/128)*100,100)
+}
+
+const turmas=[...new Set(students.map(s=>s.turma))]
 
 return(
 
 <div className="layout">
 
-<div className="left">
+<div className="container">
 
-<h1>Sistema Alunos Jiu Jitsu</h1>
+<h1>Acompanhamento Jiu Jitsu Alliance</h1>
 
 <div className="card">
 
 <div className="row">
 
-<input
-placeholder="Nome"
-value={form.nome}
-onChange={e=>setForm({...form,nome:e.target.value})}
-/>
+<input placeholder="Nome" value={form.nome} onChange={e=>setForm({...form,nome:e.target.value})}/>
 
-<input
-placeholder="Idade"
-value={form.idade}
-onChange={e=>setForm({...form,idade:e.target.value})}
-/>
+<input placeholder="Idade" value={form.idade} onChange={e=>setForm({...form,idade:e.target.value})}/>
 
-<select
-value={form.faixa}
-onChange={e=>setForm({...form,faixa:e.target.value})}
->
-{beltOrder.map(b=>
-<option key={b}>{b}</option>
-)}
+<select value={form.faixa} onChange={e=>setForm({...form,faixa:e.target.value})}>
+{beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
-<button
-className="green"
-onClick={addStudent}
->
-Adicionar
+<select value={form.turma} onChange={e=>setForm({...form,turma:e.target.value})}>
+<option>Baby</option>
+<option>Kids</option>
+<option>Infantil</option>
+</select>
+
+{editId ?
+
+<button className="orange" onClick={saveEdit}>
+Salvar
 </button>
 
-</div>
+:
+
+<button className="green" onClick={addStudent}>
+Adicionar aluno
+</button>
+
+}
 
 </div>
 
-{students.map(s=>(
+</div>
+
+{turmas.map(turma=>(
+
+<div key={turma}>
+
+<div className="turmaTitle">
+🥋 Turma {turma}
+</div>
+
+{students.filter(s=>s.turma===turma).map(s=>{
+
+const faltam=Math.max(128-s.aulas,0)
+
+return(
 
 <div key={s.id} className="card">
 
@@ -372,25 +395,14 @@ Adicionar
 
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:8}}>
-Aulas: {s.aulas}
+<div style={{marginTop:8}}>Progresso da faixa</div>
+
+<div className="progress">
+<div className="progressFill" style={{width:progress(s.aulas)+"%"}}></div>
 </div>
 
-<div className="bar">
-
-{Array.from({length:15}).map((_,i)=>{
-
-const done=i<(s.aulas%15)
-
-return(
-<div
-key={i}
-className={"box "+(done?"done":"")}
-></div>
-)
-
-})}
-
+<div style={{marginTop:8}}>
+Faltam {faltam} aulas
 </div>
 
 <div style={{marginTop:10}}>
@@ -399,37 +411,21 @@ className={"box "+(done?"done":"")}
 Presença
 </button>
 
-<button
-className="orange"
-onClick={()=>trocarFaixa(s.id)}
->
-Trocar Faixa
+<button className="orange" onClick={()=>editStudent(s)}>
+Editar
 </button>
 
-<button
-className="red"
-onClick={()=>removeStudent(s.id)}
->
+<button className="red" onClick={()=>removeStudent(s.id)}>
 Excluir
 </button>
 
 </div>
 
-{s.historicoFaixa.length>0 &&
-
-<div style={{marginTop:10,fontSize:13}}>
-
-<b>Histórico de Faixas</b>
-
-{s.historicoFaixa.map((h,i)=>(
-<div key={i}>
-{h.data} — {h.faixaAnterior} → {h.novaFaixa}
-</div>
-))}
-
 </div>
 
-}
+)
+
+})}
 
 </div>
 
@@ -437,16 +433,13 @@ Excluir
 
 </div>
 
-<div className="right">
+<div className="sidebar">
 
 <div className="card">
 
 <h3>Graus Coloridos</h3>
 
-<img
-src="graus_coloridos.jpeg"
-style={{width:"100%"}}
-/>
+<img src="graus_coloridos.jpeg" style={{width:"100%"}}/>
 
 </div>
 
@@ -454,10 +447,7 @@ style={{width:"100%"}}
 
 <h3>Sistema de Graduação</h3>
 
-<img
-src="sistema_graduacao.jpeg"
-style={{width:"100%"}}
-/>
+<img src="sistema_graduacao.jpeg" style={{width:"100%"}}/>
 
 </div>
 
@@ -469,9 +459,9 @@ style={{width:"100%"}}
 
 }
 
-ReactDOM.createRoot(
-document.getElementById("root")
-).render(<App/>)
+ReactDOM
+.createRoot(document.getElementById("root"))
+.render(<App/>)
 
 </script>
 
