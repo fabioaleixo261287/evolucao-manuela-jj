@@ -211,5 +211,333 @@ turma:"Baby"
 
 React.useEffect(()=>{
 localStorage.setItem("academia_preview_v2",JSON.stringify(students))
+},[students])
+
+function addStudent(){
+
+if(!form.nome) return
+
+setStudents([...students,{
+
+id:Date.now(),
+...form,
+avatar:"avatar.png",
+
+aulas:0,
+
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
+
+}])
+
+setForm({
+nome:"",
+idade:"",
+faixa:"Branca",
+turma:"Baby"
+})
+
+}
+
+function addAttendance(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const data=new Date().toLocaleDateString()
+const novas=s.aulas+1
+
+let historico=s.historicoGraus
+
+if(novas%15===0){
+historico=[...historico,{grau:Math.floor(novas/15),data}]
+}
+
+return{
+
+...s,
+
+aulas:novas,
+
+historicoAulas:[...s.historicoAulas,{data}],
+
+historicoGraus:historico
+
+}
+
+}))
+
+}
+
+function markBehavior(id,key){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const data=new Date().toLocaleDateString()
+
+return{
+
+...s,
+
+comportamental:{
+...s.comportamental,
+[key]:data
 },
+
+historicoComportamental:[
+...s.historicoComportamental,
+{tipo:key,data}
+]
+
+}
+
+}))
+
+}
+
+function changeBelt(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const index=beltOrder.indexOf(s.faixa)
+
+if(index===beltOrder.length-1) return s
+
+const novaFaixa=beltOrder[index+1]
+
+return{
+
+...s,
+
+faixa:novaFaixa,
+
+aulas:0,
+
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
+
+}
+
+}))
+
+}
+
+function removeStudent(id){
+
+if(!confirm("Excluir aluno?")) return
+
+setStudents(students.filter(s=>s.id!==id))
+
+}
+
+return(
+
+<div className="container">
+
+<h1>Acompanhamento Jiu Jitsu Alliance</h1>
+
+<div className="card">
+
+<div className="row">
+
+<input
+placeholder="Nome"
+value={form.nome}
+onChange={e=>setForm({...form,nome:e.target.value})}
+/>
+
+<input
+placeholder="Idade"
+value={form.idade}
+onChange={e=>setForm({...form,idade:e.target.value})}
+/>
+
+<select
+value={form.faixa}
+onChange={e=>setForm({...form,faixa:e.target.value})}
+>
+{beltOrder.map(b=><option key={b}>{b}</option>)}
+</select>
+
+<button
+className="green"
+onClick={addStudent}
+>
+Adicionar aluno
+</button>
+
+</div>
+
+</div>
+
+{students.map(s=>{
+
+const graus=Math.min(Math.floor(s.aulas/15),8)
+
+const comportamentoCompleto=
+Object.values(s.comportamental).every(v=>v)
+
+const extras=Math.max(s.aulas-120,0)
+
+const pronto=
+graus===8 &&
+comportamentoCompleto &&
+extras>=15
+
+const faltam=Math.max(135-s.aulas,0)
+
+const previsao=estimateDate(faltam)
+
+return(
+
+<div key={s.id} className="card">
+
+<div className="studentHeader">
+
+<img
+src={s.avatar}
+className="avatar"
+/>
+
+<div>
+
+<b>{s.nome}</b><br/>
+
+{s.idade} anos
+
+</div>
+
+</div>
+
+<div>Faixa: {s.faixa}</div>
+
+<div style={{marginTop:6}}>
+Aulas
+</div>
+
+<ClassesBar aulas={s.aulas}/>
+
+<div style={{marginTop:6}}>
+Graus presença
+</div>
+
+<PresenceBar graus={graus}/>
+
+<div style={{display:"flex",gap:10,marginTop:8}}>
+
+<div className="beh"
+style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
+onClick={()=>markBehavior(s.id,"relacionamento")}></div>
+
+<div className="beh"
+style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
+onClick={()=>markBehavior(s.id,"comportamento")}></div>
+
+<div className="beh"
+style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
+onClick={()=>markBehavior(s.id,"notas")}></div>
+
+<div className="beh"
+style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
+onClick={()=>markBehavior(s.id,"habitos")}></div>
+
+</div>
+
+<div style={{marginTop:10}}>
+
+<button onClick={()=>addAttendance(s.id)}>
+Presença
+</button>
+
+<button className="orange"
+onClick={()=>changeBelt(s.id)}>
+Troca de Faixa
+</button>
+
+<button className="red"
+onClick={()=>removeStudent(s.id)}>
+Excluir
+</button>
+
+</div>
+
+<div style={{marginTop:8,fontSize:13}}>
+Faltam {faltam} aulas para exame
+</div>
+
+<div style={{fontSize:13}}>
+Previsão troca faixa: {previsao}
+</div>
+
+{pronto &&
+<div className="ready">
+🥋 PRONTO PARA EXAME DE TROCA DE FAIXA
+</div>
+}
+
+<div style={{marginTop:10,fontSize:12}}>
+
+<b>Histórico graus presença</b>
+
+{s.historicoGraus.map((h,i)=>(
+<div key={i}>
+{h.data} - Grau {h.grau}
+</div>
+))}
+
+</div>
+
+<div style={{marginTop:10,fontSize:12}}>
+
+<b>Histórico comportamental</b>
+
+{s.historicoComportamental.map((h,i)=>(
+<div key={i}>
+{h.data} - {h.tipo}
+</div>
+))}
+
+</div>
+
+</div>
+
+)
+
+})}
+
+</div>
+
+)
+
+}
+
+ReactDOM
+.createRoot(document.getElementById("root"))
+.render(<App/>)
+
+</script>
+
+</body>
+</html>
 ```
