@@ -96,8 +96,6 @@ margin-top:10px;
 font-weight:bold
 }
 
-/* avatar */
-
 .avatar{
 width:60px;
 height:60px;
@@ -143,6 +141,18 @@ if(trainingDays.includes(date.getDay())) count++
 
 return date.toLocaleDateString()
 
+}
+
+function definirTurma(idade){
+
+idade=parseInt(idade)
+
+if(idade>=3 && idade<=4) return "BABY EAGLE"
+if(idade>=5 && idade<=8) return "LITTLE EAGLE"
+if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
+if(idade>=13 && idade<=15) return "EAGLE YOUTH"
+
+return "FORA DA TURMA"
 }
 
 function ClassesBar({aulas}){
@@ -195,23 +205,83 @@ style={{background:color}}
 
 }
 
+function Login({onLogin}){
+
+const [user,setUser]=React.useState("")
+const [pass,setPass]=React.useState("")
+
+function entrar(){
+
+if(user==="admin" && pass==="admin123"){
+onLogin({tipo:"professor"})
+return
+}
+
+if(pass==="123"){
+onLogin({tipo:"pai",aluno:user})
+}
+
+}
+
+return(
+
+<div className="container">
+
+<div className="card">
+
+<h2>Login Academia</h2>
+
+<div className="row">
+
+<input
+placeholder="Usuário"
+value={user}
+onChange={e=>setUser(e.target.value)}
+/>
+
+<input
+type="password"
+placeholder="Senha"
+value={pass}
+onChange={e=>setPass(e.target.value)}
+/>
+
+<button onClick={entrar}>
+Entrar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+)
+
+}
+
 function App(){
 
+const [login,setLogin]=React.useState(null)
+
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_preview_v2")
+const saved=localStorage.getItem("academia_preview_v3")
 return saved?JSON.parse(saved):[]
 })
 
 const [form,setForm]=React.useState({
 nome:"",
 idade:"",
-faixa:"Branca",
-turma:"Baby"
+faixa:"Branca"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("academia_preview_v2",JSON.stringify(students))
+localStorage.setItem("academia_preview_v3",JSON.stringify(students))
 },[students])
+
+if(!login){
+return <Login onLogin={setLogin}/>
+}
 
 function addStudent(){
 
@@ -221,7 +291,9 @@ setStudents([...students,{
 
 id:Date.now(),
 ...form,
-avatar:"avatar.png",
+turma:definirTurma(form.idade),
+
+avatar:"https://i.imgur.com/4ZQZ4Zx.png",
 
 aulas:0,
 
@@ -241,8 +313,7 @@ habitos:null
 setForm({
 nome:"",
 idade:"",
-faixa:"Branca",
-turma:"Baby"
+faixa:"Branca"
 })
 
 }
@@ -314,11 +385,19 @@ setStudents(students.filter(s=>s.id!==id))
 
 }
 
+let alunosVisiveis=students
+
+if(login.tipo==="pai"){
+alunosVisiveis=students.filter(s=>s.nome===login.aluno)
+}
+
 return(
 
 <div className="container">
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
+
+{login.tipo==="professor" &&
 
 <div className="card">
 
@@ -354,7 +433,9 @@ Adicionar aluno
 
 </div>
 
-{students.map(s=>{
+}
+
+{alunosVisiveis.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),8)
 
@@ -386,13 +467,13 @@ className="avatar"
 <div>
 
 <b>{s.nome}</b><br/>
-
 {s.idade} anos
 
 </div>
 
 </div>
 
+<div>Turma: {s.turma}</div>
 <div>Faixa: {s.faixa}</div>
 
 <div style={{marginTop:6}}>
@@ -451,12 +532,16 @@ onClick={()=>addAttendance(s.id)}
 Presença
 </button>
 
+{login.tipo==="professor" &&
+
 <button
 className="red"
 onClick={()=>removeStudent(s.id)}
 >
 Excluir
 </button>
+
+}
 
 </div>
 
@@ -473,30 +558,6 @@ Previsão troca faixa: {previsao}
 🥋 PRONTO PARA EXAME DE TROCA DE FAIXA
 </div>
 }
-
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico graus presença</b>
-
-{s.historicoGraus.map((h,i)=>(
-<div key={i}>
-{h.data} - Grau {h.grau}
-</div>
-))}
-
-</div>
-
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico comportamental</b>
-
-{s.historicoComportamental.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.tipo}
-</div>
-))}
-
-</div>
 
 </div>
 
