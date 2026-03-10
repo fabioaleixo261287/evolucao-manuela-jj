@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -19,17 +18,9 @@ margin:0;
 padding:20px
 }
 
-.layout{
-display:flex;
-gap:20px
-}
-
 .container{
-flex:1
-}
-
-.sidebar{
-width:400px
+max-width:1000px;
+margin:auto
 }
 
 .card{
@@ -58,7 +49,6 @@ cursor:pointer
 
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
-button.orange{background:#f39c12}
 
 input,select{
 padding:6px;
@@ -82,16 +72,28 @@ background:#eee
 background:#2ecc71
 }
 
-.progress{
-height:10px;
-background:#ddd;
-border-radius:10px;
-overflow:hidden
+.degree{
+width:20px;
+height:20px;
+border:1px solid #555;
+border-radius:3px;
+background:#ddd
 }
 
-.progressFill{
-height:100%;
-background:#27ae60
+.beh{
+width:22px;
+height:22px;
+border-radius:22px;
+background:#eee;
+cursor:pointer
+}
+
+.ready{
+background:#d4edda;
+padding:8px;
+border-radius:6px;
+margin-top:10px;
+font-weight:bold
 }
 
 .avatar{
@@ -99,7 +101,7 @@ width:60px;
 height:60px;
 border-radius:50%;
 object-fit:cover;
-border:3px solid #ddd
+border:3px solid #ddd;
 }
 
 .studentHeader{
@@ -107,17 +109,6 @@ display:flex;
 align-items:center;
 gap:10px;
 margin-bottom:6px
-}
-
-.turmaTitle{
-margin-top:20px;
-font-size:20px
-}
-
-.login{
-max-width:300px;
-margin:auto;
-margin-top:120px
 }
 
 </style>
@@ -152,37 +143,114 @@ return date.toLocaleDateString()
 
 }
 
+function definirTurma(idade){
+
+idade=parseInt(idade)
+
+if(idade>=3 && idade<=4) return "BABY EAGLE"
+if(idade>=5 && idade<=8) return "LITTLE EAGLE"
+if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
+if(idade>=13 && idade<=15) return "EAGLE YOUTH"
+
+return "FORA DA TURMA"
+}
+
+function ClassesBar({aulas}){
+
+return(
+<div className="bar">
+{Array.from({length:15}).map((_,i)=>{
+
+const done=i<(aulas%15)
+
+return(
+<div key={i} className={"box "+(done?"done":"")}></div>
+)
+
+})}
+</div>
+)
+
+}
+
+function PresenceBar({graus}){
+
+const brancos=Math.min(graus,4)
+const vermelhos=Math.max(graus-4,0)
+
+return(
+
+<div className="bar">
+
+{Array.from({length:4}).map((_,i)=>{
+
+let color="#ddd"
+
+if(i<vermelhos) color="#e74c3c"
+else if(i<brancos) color="#fff"
+
+return(
+<div
+key={i}
+className="degree"
+style={{background:color}}
+></div>
+)
+
+})}
+
+</div>
+
+)
+
+}
+
 function Login({onLogin}){
 
-const[user,setUser]=React.useState("")
-const[pass,setPass]=React.useState("")
+const [user,setUser]=React.useState("")
+const [pass,setPass]=React.useState("")
 
 function entrar(){
 
-if(user==="professor" && pass==="123"){
-onLogin("professor")
+if(user==="admin" && pass==="admin123"){
+onLogin({tipo:"professor"})
 return
 }
 
 if(pass==="123"){
-onLogin("pais")
+onLogin({tipo:"pai",aluno:user})
 }
 
 }
 
 return(
 
-<div className="login card">
+<div className="container">
 
-<h2>Login</h2>
+<div className="card">
+
+<h2>Login Academia</h2>
 
 <div className="row">
 
-<input placeholder="Usuário" value={user} onChange={e=>setUser(e.target.value)}/>
+<input
+placeholder="Usuário"
+value={user}
+onChange={e=>setUser(e.target.value)}
+/>
 
-<input type="password" placeholder="Senha" value={pass} onChange={e=>setPass(e.target.value)}/>
+<input
+type="password"
+placeholder="Senha"
+value={pass}
+onChange={e=>setPass(e.target.value)}
+/>
 
-<button onClick={entrar}>Entrar</button>
+<button onClick={entrar}>
+Entrar
+</button>
+
+</div>
 
 </div>
 
@@ -194,20 +262,17 @@ return(
 
 function App(){
 
-const[login,setLogin]=React.useState(null)
+const [login,setLogin]=React.useState(null)
 
-const[students,setStudents]=React.useState(()=>{
+const [students,setStudents]=React.useState(()=>{
 const saved=localStorage.getItem("academia_preview_v3")
 return saved?JSON.parse(saved):[]
 })
 
-const[editId,setEditId]=React.useState(null)
-
-const[form,setForm]=React.useState({
+const [form,setForm]=React.useState({
 nome:"",
 idade:"",
-faixa:"Branca",
-turma:"Baby"
+faixa:"Branca"
 })
 
 React.useEffect(()=>{
@@ -226,13 +291,15 @@ setStudents([...students,{
 
 id:Date.now(),
 ...form,
-avatar:"avatar.png",
+turma:definirTurma(form.idade),
+
+avatar:"https://i.imgur.com/4ZQZ4Zx.png",
 
 aulas:0,
+
 historicoAulas:[],
 historicoGraus:[],
 historicoComportamental:[],
-historicoFaixa:[],
 
 comportamental:{
 relacionamento:null,
@@ -246,8 +313,7 @@ habitos:null
 setForm({
 nome:"",
 idade:"",
-faixa:"Branca",
-turma:"Baby"
+faixa:"Branca"
 })
 
 }
@@ -268,115 +334,124 @@ historico=[...historico,{grau:Math.floor(novas/15),data}]
 }
 
 return{
+
 ...s,
+
 aulas:novas,
+
 historicoAulas:[...s.historicoAulas,{data}],
+
 historicoGraus:historico
+
 }
 
 }))
 
 }
 
-function editStudent(s){
-
-setEditId(s.id)
-
-setForm({
-nome:s.nome,
-idade:s.idade,
-faixa:s.faixa,
-turma:s.turma
-})
-
-}
-
-function saveEdit(){
+function markBehavior(id,key){
 
 setStudents(students.map(s=>{
-if(s.id!==editId) return s
-return{...s,...form}
+
+if(s.id!==id) return s
+
+const data=new Date().toLocaleDateString()
+
+return{
+
+...s,
+
+comportamental:{
+...s.comportamental,
+[key]:data
+},
+
+historicoComportamental:[
+...s.historicoComportamental,
+{tipo:key,data}
+]
+
+}
+
 }))
-
-setEditId(null)
-
-setForm({
-nome:"",
-idade:"",
-faixa:"Branca",
-turma:"Baby"
-})
 
 }
 
 function removeStudent(id){
 
 if(!confirm("Excluir aluno?")) return
+
 setStudents(students.filter(s=>s.id!==id))
 
 }
 
-function progress(aulas){
-return Math.min((aulas/128)*100,100)
+let alunosVisiveis=students
+
+if(login.tipo==="pai"){
+alunosVisiveis=students.filter(s=>s.nome===login.aluno)
 }
 
-const turmas=[...new Set(students.map(s=>s.turma))]
-
 return(
-
-<div className="layout">
 
 <div className="container">
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
 
+{login.tipo==="professor" &&
+
 <div className="card">
 
 <div className="row">
 
-<input placeholder="Nome" value={form.nome} onChange={e=>setForm({...form,nome:e.target.value})}/>
+<input
+placeholder="Nome"
+value={form.nome}
+onChange={e=>setForm({...form,nome:e.target.value})}
+/>
 
-<input placeholder="Idade" value={form.idade} onChange={e=>setForm({...form,idade:e.target.value})}/>
+<input
+placeholder="Idade"
+value={form.idade}
+onChange={e=>setForm({...form,idade:e.target.value})}
+/>
 
-<select value={form.faixa} onChange={e=>setForm({...form,faixa:e.target.value})}>
+<select
+value={form.faixa}
+onChange={e=>setForm({...form,faixa:e.target.value})}
+>
 {beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
-<select value={form.turma} onChange={e=>setForm({...form,turma:e.target.value})}>
-<option>Baby</option>
-<option>Kids</option>
-<option>Infantil</option>
-</select>
-
-{editId ?
-
-<button className="orange" onClick={saveEdit}>
-Salvar
-</button>
-
-:
-
-<button className="green" onClick={addStudent}>
+<button
+className="green"
+onClick={addStudent}
+>
 Adicionar aluno
 </button>
 
+</div>
+
+</div>
+
 }
 
-</div>
+{alunosVisiveis.map(s=>{
 
-</div>
+const graus=Math.min(Math.floor(s.aulas/15),8)
 
-{turmas.map(turma=>(
+const comportamentoCompleto=
+Object.values(s.comportamental).every(v=>v)
 
-<div key={turma}>
+const extras=Math.max(s.aulas-120,0)
 
-<div className="turmaTitle">
-🥋 Turma {turma}
-</div>
-
-{students.filter(s=>s.turma===turma).map(s=>{
+const pronto=
+graus===8 &&
+comportamentoCompleto &&
+extras>=8
 
 const faltam=Math.max(128-s.aulas,0)
+
+const previsao=estimateDate(faltam)
 
 return(
 
@@ -384,74 +459,111 @@ return(
 
 <div className="studentHeader">
 
-<img src={s.avatar} className="avatar"/>
+<img
+src={s.avatar}
+className="avatar"
+/>
 
 <div>
+
 <b>{s.nome}</b><br/>
 {s.idade} anos
-</div>
 
 </div>
 
+</div>
+
+<div>Turma: {s.turma}</div>
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:8}}>Progresso da faixa</div>
-
-<div className="progress">
-<div className="progressFill" style={{width:progress(s.aulas)+"%"}}></div>
+<div style={{marginTop:6}}>
+Aulas
 </div>
 
-<div style={{marginTop:8}}>
-Faltam {faltam} aulas
+<ClassesBar aulas={s.aulas}/>
+
+<div style={{marginTop:6}}>
+Graus presença
+</div>
+
+<PresenceBar graus={graus}/>
+
+<div style={{display:"flex",gap:10,marginTop:8}}>
+
+<div
+className="beh"
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"relacionamento")}
+></div>
+
+<div
+className="beh"
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"comportamento")}
+></div>
+
+<div
+className="beh"
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"notas")}
+></div>
+
+<div
+className="beh"
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"habitos")}
+></div>
+
 </div>
 
 <div style={{marginTop:10}}>
 
-<button onClick={()=>addAttendance(s.id)}>
+<button
+onClick={()=>addAttendance(s.id)}
+>
 Presença
 </button>
 
-<button className="orange" onClick={()=>editStudent(s)}>
-Editar
-</button>
+{login.tipo==="professor" &&
 
-<button className="red" onClick={()=>removeStudent(s.id)}>
+<button
+className="red"
+onClick={()=>removeStudent(s.id)}
+>
 Excluir
 </button>
 
+}
+
 </div>
+
+<div style={{marginTop:8,fontSize:13}}>
+Faltam {faltam} aulas para exame
+</div>
+
+<div style={{fontSize:13}}>
+Previsão troca faixa: {previsao}
+</div>
+
+{pronto &&
+<div className="ready">
+🥋 PRONTO PARA EXAME DE TROCA DE FAIXA
+</div>
+}
 
 </div>
 
 )
 
 })}
-
-</div>
-
-))}
-
-</div>
-
-<div className="sidebar">
-
-<div className="card">
-
-<h3>Graus Coloridos</h3>
-
-<img src="graus_coloridos.jpeg" style={{width:"100%"}}/>
-
-</div>
-
-<div className="card">
-
-<h3>Sistema de Graduação</h3>
-
-<img src="sistema_graduacao.jpeg" style={{width:"100%"}}/>
-
-</div>
-
-</div>
 
 </div>
 
@@ -467,4 +579,3 @@ ReactDOM
 
 </body>
 </html>
-```
