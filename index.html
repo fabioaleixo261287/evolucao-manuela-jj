@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -50,7 +49,6 @@ cursor:pointer
 
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
-button.orange{background:#f39c12}
 
 input,select{
 padding:6px;
@@ -97,6 +95,8 @@ border-radius:6px;
 margin-top:10px;
 font-weight:bold
 }
+
+/* avatar */
 
 .avatar{
 width:60px;
@@ -306,43 +306,6 @@ historicoComportamental:[
 
 }
 
-function changeBelt(id){
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-const index=beltOrder.indexOf(s.faixa)
-
-if(index===beltOrder.length-1) return s
-
-const novaFaixa=beltOrder[index+1]
-
-return{
-
-...s,
-
-faixa:novaFaixa,
-
-aulas:0,
-
-historicoAulas:[],
-historicoGraus:[],
-historicoComportamental:[],
-
-comportamental:{
-relacionamento:null,
-comportamento:null,
-notas:null,
-habitos:null
-}
-
-}
-
-}))
-
-}
-
 function removeStudent(id){
 
 if(!confirm("Excluir aluno?")) return
@@ -403,9 +366,9 @@ const extras=Math.max(s.aulas-120,0)
 const pronto=
 graus===8 &&
 comportamentoCompleto &&
-extras>=15
+extras>=8
 
-const faltam=Math.max(135-s.aulas,0)
+const faltam=Math.max(128-s.aulas,0)
 
 const previsao=estimateDate(faltam)
 
@@ -446,37 +409,52 @@ Graus presença
 
 <div style={{display:"flex",gap:10,marginTop:8}}>
 
-<div className="beh"
-style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>markBehavior(s.id,"relacionamento")}></div>
+<div
+className="beh"
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"relacionamento")}
+></div>
 
-<div className="beh"
-style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
-onClick={()=>markBehavior(s.id,"comportamento")}></div>
+<div
+className="beh"
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"comportamento")}
+></div>
 
-<div className="beh"
-style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
-onClick={()=>markBehavior(s.id,"notas")}></div>
+<div
+className="beh"
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"notas")}
+></div>
 
-<div className="beh"
-style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
-onClick={()=>markBehavior(s.id,"habitos")}></div>
+<div
+className="beh"
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"habitos")}
+></div>
 
 </div>
 
 <div style={{marginTop:10}}>
 
-<button onClick={()=>addAttendance(s.id)}>
+<button
+onClick={()=>addAttendance(s.id)}
+>
 Presença
 </button>
 
-<button className="orange"
-onClick={()=>changeBelt(s.id)}>
-Troca de Faixa
-</button>
-
-<button className="red"
-onClick={()=>removeStudent(s.id)}>
+<button
+className="red"
+onClick={()=>removeStudent(s.id)}
+>
 Excluir
 </button>
 
@@ -540,4 +518,3 @@ ReactDOM
 
 </body>
 </html>
-```
