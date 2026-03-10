@@ -18,9 +18,17 @@ margin:0;
 padding:20px
 }
 
+.layout{
+display:flex;
+gap:20px
+}
+
 .container{
-max-width:1000px;
-margin:auto
+flex:1
+}
+
+.sidebar{
+width:420px
 }
 
 .card{
@@ -115,7 +123,7 @@ margin-bottom:6px
 .login{
 max-width:300px;
 margin:auto;
-margin-top:100px
+margin-top:120px
 }
 
 </style>
@@ -275,8 +283,6 @@ if(!login){
 return <Login onLogin={setLogin}/>
 }
 
-/* TROCA DE FAIXA AUTOMÁTICA */
-
 function trocarFaixa(id){
 
 if(!confirm("Confirmar troca de faixa?")) return
@@ -287,37 +293,25 @@ if(s.id!==id) return s
 
 const index=beltOrder.indexOf(s.faixa)
 
-const proxima =
+const proxima=
 index<beltOrder.length-1
-? beltOrder[index+1]
-: s.faixa
+?beltOrder[index+1]
+:s.faixa
 
 return{
 
 ...s,
 
 faixa:proxima,
-
 aulas:0,
-
 historicoAulas:[],
-historicoGraus:[],
-
-historicoFaixas:[
-...(s.historicoFaixas||[]),
-{
-faixaAnterior:s.faixa,
-data:new Date().toLocaleDateString()
-}
-]
+historicoGraus:[]
 
 }
 
 }))
 
 }
-
-/* FUNÇÕES ORIGINAIS */
 
 function addStudent(){
 
@@ -330,11 +324,9 @@ id:Date.now(),
 avatar:"avatar.png",
 
 aulas:0,
-
 historicoAulas:[],
 historicoGraus:[],
 historicoComportamental:[],
-historicoFaixas:[],
 
 comportamental:{
 relacionamento:null,
@@ -372,11 +364,8 @@ historico=[...historico,{grau:Math.floor(novas/15),data}]
 return{
 
 ...s,
-
 aulas:novas,
-
 historicoAulas:[...s.historicoAulas,{data}],
-
 historicoGraus:historico
 
 }
@@ -423,7 +412,7 @@ setStudents(students.filter(s=>s.id!==id))
 
 return(
 
-<div style={{display:"flex",gap:"20px"}}>
+<div className="layout">
 
 <div className="container">
 
@@ -480,11 +469,8 @@ return(
 <img src={s.avatar} className="avatar"/>
 
 <div>
-
 <b>{s.nome}</b><br/>
-
 {s.idade} anos
-
 </div>
 
 </div>
@@ -531,9 +517,18 @@ Previsão troca faixa: {previsao}
 
 </div>
 
-{login==="pais" &&
+<div className="sidebar">
 
-<div style={{width:"420px"}}>
+<div className="card">
+
+<h3>Graus Coloridos</h3>
+
+<img
+src="graus_coloridos.jpeg"
+style={{width:"100%"}}
+/>
+
+</div>
 
 <div className="card">
 
@@ -547,8 +542,6 @@ style={{width:"100%"}}
 </div>
 
 </div>
-
-}
 
 </div>
 
