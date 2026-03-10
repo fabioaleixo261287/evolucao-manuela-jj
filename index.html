@@ -1,12 +1,13 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Acompanhamento Jiu Jitsu Alliance</title>
+<title>Sistema Jiu Jitsu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <style>
@@ -23,11 +24,11 @@ display:flex;
 gap:20px
 }
 
-.container{
+.left{
 flex:1
 }
 
-.sidebar{
+.right{
 width:420px
 }
 
@@ -35,7 +36,7 @@ width:420px
 background:white;
 padding:16px;
 border-radius:10px;
-margin-bottom:12px;
+margin-bottom:14px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1)
 }
 
@@ -81,36 +82,12 @@ background:#eee
 background:#2ecc71
 }
 
-.degree{
-width:20px;
-height:20px;
-border:1px solid #555;
-border-radius:3px;
-background:#ddd
-}
-
-.beh{
-width:22px;
-height:22px;
-border-radius:22px;
-background:#eee;
-cursor:pointer
-}
-
-.ready{
-background:#d4edda;
-padding:8px;
-border-radius:6px;
-margin-top:10px;
-font-weight:bold
-}
-
 .avatar{
 width:60px;
 height:60px;
 border-radius:50%;
 object-fit:cover;
-border:3px solid #ddd;
+border:3px solid #ddd
 }
 
 .studentHeader{
@@ -127,6 +104,7 @@ margin-top:120px
 }
 
 </style>
+
 </head>
 
 <body>
@@ -136,77 +114,20 @@ margin-top:120px
 <script type="text/babel">
 
 const beltOrder=[
-"Branca","Cinza/Branca","Cinza","Cinza/Preta",
-"Amarela/Branca","Amarela","Amarela/Preta",
-"Laranja/Branca","Laranja","Laranja/Preta",
-"Verde/Branca","Verde","Verde/Preta"
+"Branca",
+"Cinza/Branca",
+"Cinza",
+"Cinza/Preta",
+"Amarela/Branca",
+"Amarela",
+"Amarela/Preta",
+"Laranja/Branca",
+"Laranja",
+"Laranja/Preta",
+"Verde/Branca",
+"Verde",
+"Verde/Preta"
 ]
-
-const trainingDays=[1,3,5,6]
-
-function estimateDate(aulas){
-
-let date=new Date()
-let count=0
-
-while(count<aulas){
-date.setDate(date.getDate()+1)
-if(trainingDays.includes(date.getDay())) count++
-}
-
-return date.toLocaleDateString()
-
-}
-
-function ClassesBar({aulas}){
-
-return(
-<div className="bar">
-{Array.from({length:15}).map((_,i)=>{
-
-const done=i<(aulas%15)
-
-return(
-<div key={i} className={"box "+(done?"done":"")}></div>
-)
-
-})}
-</div>
-)
-
-}
-
-function PresenceBar({graus}){
-
-const brancos=Math.min(graus,4)
-const vermelhos=Math.max(graus-4,0)
-
-return(
-
-<div className="bar">
-
-{Array.from({length:4}).map((_,i)=>{
-
-let color="#ddd"
-
-if(i<vermelhos) color="#e74c3c"
-else if(i<brancos) color="#fff"
-
-return(
-<div
-key={i}
-className="degree"
-style={{background:color}}
-></div>
-)
-
-})}
-
-</div>
-
-)
-
-}
 
 function Login({onLogin}){
 
@@ -247,9 +168,7 @@ value={pass}
 onChange={e=>setPass(e.target.value)}
 />
 
-<button onClick={entrar}>
-Entrar
-</button>
+<button onClick={entrar}>Entrar</button>
 
 </div>
 
@@ -261,56 +180,25 @@ Entrar
 
 function App(){
 
-const [login,setLogin]=React.useState(null)
+const[login,setLogin]=React.useState(null)
 
-const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_preview_v2")
+const[students,setStudents]=React.useState(()=>{
+const saved=localStorage.getItem("jiu_jitsu_sistema")
 return saved?JSON.parse(saved):[]
 })
 
-const [form,setForm]=React.useState({
+const[form,setForm]=React.useState({
 nome:"",
 idade:"",
-faixa:"Branca",
-turma:"Baby"
+faixa:"Branca"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("academia_preview_v2",JSON.stringify(students))
+localStorage.setItem("jiu_jitsu_sistema",JSON.stringify(students))
 },[students])
 
 if(!login){
 return <Login onLogin={setLogin}/>
-}
-
-function trocarFaixa(id){
-
-if(!confirm("Confirmar troca de faixa?")) return
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-const index=beltOrder.indexOf(s.faixa)
-
-const proxima=
-index<beltOrder.length-1
-?beltOrder[index+1]
-:s.faixa
-
-return{
-
-...s,
-
-faixa:proxima,
-aulas:0,
-historicoAulas:[],
-historicoGraus:[]
-
-}
-
-}))
-
 }
 
 function addStudent(){
@@ -326,22 +214,14 @@ avatar:"avatar.png",
 aulas:0,
 historicoAulas:[],
 historicoGraus:[],
-historicoComportamental:[],
-
-comportamental:{
-relacionamento:null,
-comportamento:null,
-notas:null,
-habitos:null
-}
+historicoFaixa:[]
 
 }])
 
 setForm({
 nome:"",
 idade:"",
-faixa:"Branca",
-turma:"Baby"
+faixa:"Branca"
 })
 
 }
@@ -355,10 +235,18 @@ if(s.id!==id) return s
 const data=new Date().toLocaleDateString()
 const novas=s.aulas+1
 
-let historico=s.historicoGraus
+let historicoGraus=s.historicoGraus
 
 if(novas%15===0){
-historico=[...historico,{grau:Math.floor(novas/15),data}]
+
+historicoGraus=[
+...historicoGraus,
+{
+grau:Math.floor(novas/15),
+data:data
+}
+]
+
 }
 
 return{
@@ -366,7 +254,7 @@ return{
 ...s,
 aulas:novas,
 historicoAulas:[...s.historicoAulas,{data}],
-historicoGraus:historico
+historicoGraus:historicoGraus
 
 }
 
@@ -374,11 +262,18 @@ historicoGraus:historico
 
 }
 
-function markBehavior(id,key){
+function trocarFaixa(id){
 
 setStudents(students.map(s=>{
 
 if(s.id!==id) return s
+
+const index=beltOrder.indexOf(s.faixa)
+
+const proxima =
+index<beltOrder.length-1
+?beltOrder[index+1]
+:s.faixa
 
 const data=new Date().toLocaleDateString()
 
@@ -386,15 +281,21 @@ return{
 
 ...s,
 
-comportamental:{
-...s.comportamental,
-[key]:data
-},
+faixa:proxima,
 
-historicoComportamental:[
-...s.historicoComportamental,
-{tipo:key,data}
-]
+aulas:0,
+
+historicoFaixa:[
+...s.historicoFaixa,
+{
+faixaAnterior:s.faixa,
+novaFaixa:proxima,
+data:data
+}
+],
+
+historicoAulas:[],
+historicoGraus:[]
 
 }
 
@@ -414,9 +315,9 @@ return(
 
 <div className="layout">
 
-<div className="container">
+<div className="left">
 
-<h1>Acompanhamento Jiu Jitsu Alliance</h1>
+<h1>Sistema Alunos Jiu Jitsu</h1>
 
 <div className="card">
 
@@ -438,29 +339,23 @@ onChange={e=>setForm({...form,idade:e.target.value})}
 value={form.faixa}
 onChange={e=>setForm({...form,faixa:e.target.value})}
 >
-{beltOrder.map(b=><option key={b}>{b}</option>)}
+{beltOrder.map(b=>
+<option key={b}>{b}</option>
+)}
 </select>
 
 <button
 className="green"
 onClick={addStudent}
 >
-Adicionar aluno
+Adicionar
 </button>
 
 </div>
 
 </div>
 
-{students.map(s=>{
-
-const graus=Math.min(Math.floor(s.aulas/15),8)
-
-const faltam=Math.max(128-s.aulas,0)
-
-const previsao=estimateDate(faltam)
-
-return(
+{students.map(s=>(
 
 <div key={s.id} className="card">
 
@@ -477,13 +372,26 @@ return(
 
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:6}}>Aulas</div>
+<div style={{marginTop:8}}>
+Aulas: {s.aulas}
+</div>
 
-<ClassesBar aulas={s.aulas}/>
+<div className="bar">
 
-<div style={{marginTop:6}}>Graus presença</div>
+{Array.from({length:15}).map((_,i)=>{
 
-<PresenceBar graus={graus}/>
+const done=i<(s.aulas%15)
+
+return(
+<div
+key={i}
+className={"box "+(done?"done":"")}
+></div>
+)
+
+})}
+
+</div>
 
 <div style={{marginTop:10}}>
 
@@ -491,33 +399,45 @@ return(
 Presença
 </button>
 
-<button className="orange" onClick={()=>trocarFaixa(s.id)}>
+<button
+className="orange"
+onClick={()=>trocarFaixa(s.id)}
+>
 Trocar Faixa
 </button>
 
-<button className="red" onClick={()=>removeStudent(s.id)}>
+<button
+className="red"
+onClick={()=>removeStudent(s.id)}
+>
 Excluir
 </button>
 
 </div>
 
-<div style={{marginTop:8,fontSize:13}}>
-Faltam {faltam} aulas para exame
+{s.historicoFaixa.length>0 &&
+
+<div style={{marginTop:10,fontSize:13}}>
+
+<b>Histórico de Faixas</b>
+
+{s.historicoFaixa.map((h,i)=>(
+<div key={i}>
+{h.data} — {h.faixaAnterior} → {h.novaFaixa}
+</div>
+))}
+
 </div>
 
-<div style={{fontSize:13}}>
-Previsão troca faixa: {previsao}
-</div>
+}
 
 </div>
 
-)
-
-})}
+))}
 
 </div>
 
-<div className="sidebar">
+<div className="right">
 
 <div className="card">
 
@@ -549,11 +469,12 @@ style={{width:"100%"}}
 
 }
 
-ReactDOM
-.createRoot(document.getElementById("root"))
-.render(<App/>)
+ReactDOM.createRoot(
+document.getElementById("root")
+).render(<App/>)
 
 </script>
 
 </body>
 </html>
+```
