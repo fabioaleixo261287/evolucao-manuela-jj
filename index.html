@@ -52,6 +52,7 @@ cursor:pointer
 
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
+button.orange{background:#f39c12}
 
 input,select{
 padding:6px;
@@ -106,17 +107,17 @@ gap:10px;
 margin-bottom:6px
 }
 
+.login{
+max-width:400px;
+margin:auto
+}
+
 .ready{
 background:#d4edda;
 padding:8px;
 border-radius:6px;
 margin-top:10px;
 font-weight:bold
-}
-
-.login{
-max-width:400px;
-margin:auto
 }
 
 </style>
@@ -207,6 +208,8 @@ nascimento:"",
 faixa:"Branca"
 })
 
+const [editing,setEditing]=React.useState(null)
+
 function loginProfessor(){
 
 const senha=prompt("Senha professor")
@@ -222,12 +225,9 @@ alert("Senha incorreta")
 function loginPais(){
 
 const nome=prompt("Nome aluno")
-const nascimento=prompt("Data nascimento (AAAA-MM-DD)")
+const nascimento=prompt("Nascimento AAAA-MM-DD")
 
-const aluno=students.find(s=>
-s.nome===nome &&
-s.nascimento===nascimento
-)
+const aluno=students.find(s=>s.nome===nome && s.nascimento===nascimento)
 
 if(aluno){
 setUser({tipo:"pais",aluno})
@@ -248,7 +248,6 @@ if(!form.nome) return
 const idade=new Date().getFullYear()-new Date(form.nascimento).getFullYear()
 
 setStudents([...students,{
-
 id:Date.now(),
 nome:form.nome,
 nascimento:form.nascimento,
@@ -256,24 +255,52 @@ idade,
 categoria:categoriaPorIdade(idade),
 faixa:form.faixa,
 avatar:"avatar.png",
-
 aulas:0,
-
 comportamental:{
 relacionamento:null,
 comportamento:null,
 notas:null,
 habitos:null
 },
-
 historicoComportamental:[]
-
 }])
 
+setForm({nome:"",nascimento:"",faixa:"Branca"})
+
+}
+
+function updateStudent(){
+
+const idade=new Date().getFullYear()-new Date(form.nascimento).getFullYear()
+
+setStudents(students.map(s=>{
+
+if(s.id!==editing) return s
+
+return{
+...s,
+nome:form.nome,
+nascimento:form.nascimento,
+faixa:form.faixa,
+idade,
+categoria:categoriaPorIdade(idade)
+}
+
+}))
+
+setEditing(null)
+setForm({nome:"",nascimento:"",faixa:"Branca"})
+
+}
+
+function startEdit(student){
+
+setEditing(student.id)
+
 setForm({
-nome:"",
-nascimento:"",
-faixa:"Branca"
+nome:student.nome,
+nascimento:student.nascimento,
+faixa:student.faixa
 })
 
 }
@@ -304,19 +331,9 @@ if(s.id!==id) return s
 const data=new Date().toLocaleDateString()
 
 return{
-
 ...s,
-
-comportamental:{
-...s.comportamental,
-[key]:data
-},
-
-historicoComportamental:[
-...s.historicoComportamental,
-{tipo:key,data}
-]
-
+comportamental:{...s.comportamental,[key]:data},
+historicoComportamental:[...s.historicoComportamental,{tipo:key,data}]
 }
 
 }))
@@ -332,18 +349,15 @@ if(s.id!==id) return s
 const idx=beltOrder.indexOf(s.faixa)
 
 return{
-
 ...s,
 faixa:beltOrder[idx+1]||s.faixa,
 aulas:0,
-
 comportamental:{
 relacionamento:null,
 comportamento:null,
 notas:null,
 habitos:null
 }
-
 }
 
 }))
@@ -391,7 +405,7 @@ return(
 <div className="row">
 
 <input
-placeholder="Nome aluno"
+placeholder="Nome"
 value={form.nome}
 onChange={e=>setForm({...form,nome:e.target.value})}
 />
@@ -409,9 +423,19 @@ onChange={e=>setForm({...form,faixa:e.target.value})}
 {beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
+{editing?
+
+<button className="orange" onClick={updateStudent}>
+Salvar edição
+</button>
+
+:
+
 <button className="green" onClick={addStudent}>
 Adicionar aluno
 </button>
+
+}
 
 </div>
 
@@ -449,31 +473,45 @@ return(
 <div style={{marginTop:6}}>Graus presença</div>
 <PresenceBar graus={graus}/>
 
-<div style={{display:"flex",gap:10,marginTop:8}}>
+<div style={{marginTop:10}}>
+
+<b>Graus comportamentais</b>
+
+<div style={{display:"flex",gap:10,marginTop:6}}>
 
 <div
+title="Relacionamento"
 className="beh"
 style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
 onClick={()=>user.tipo==="professor" && markBehavior(s.id,"relacionamento")}
 ></div>
 
 <div
+title="Comportamento"
 className="beh"
 style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
 onClick={()=>user.tipo==="professor" && markBehavior(s.id,"comportamento")}
 ></div>
 
 <div
+title="Notas / Escola"
 className="beh"
 style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
 onClick={()=>user.tipo==="professor" && markBehavior(s.id,"notas")}
 ></div>
 
 <div
+title="Hábitos / Disciplina"
 className="beh"
 style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
 onClick={()=>user.tipo==="professor" && markBehavior(s.id,"habitos")}
 ></div>
+
+</div>
+
+<div style={{fontSize:12,marginTop:6}}>
+🟡 Relacionamento | 🔵 Comportamento | 🔴 Notas | 🟢 Hábitos
+</div>
 
 </div>
 
@@ -487,6 +525,10 @@ Presença
 
 <button className="green" onClick={()=>trocarFaixa(s.id)}>
 Trocar Faixa
+</button>
+
+<button className="orange" onClick={()=>startEdit(s)}>
+Editar
 </button>
 
 </div>
