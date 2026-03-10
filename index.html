@@ -84,16 +84,7 @@ background:#ddd
 width:22px;
 height:22px;
 border-radius:22px;
-background:#eee;
-cursor:pointer
-}
-
-.ready{
-background:#d4edda;
-padding:8px;
-border-radius:6px;
-margin-top:10px;
-font-weight:bold
+background:#eee
 }
 
 .avatar{
@@ -331,7 +322,7 @@ const [user,setUser]=React.useState("")
 const [filho,setFilho]=React.useState("")
 
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_alliance_v4")
+const saved=localStorage.getItem("academia_alliance_final")
 return saved?JSON.parse(saved):[]
 })
 
@@ -342,7 +333,7 @@ faixa:"Branca"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("academia_alliance_v4",JSON.stringify(students))
+localStorage.setItem("academia_alliance_final",JSON.stringify(students))
 },[students])
 
 function addStudent(){
@@ -359,7 +350,6 @@ nome:form.nome,
 nascimento:form.nascimento,
 
 idade:idade,
-
 categoria:getCategory(idade),
 
 faixa:form.faixa,
@@ -397,7 +387,7 @@ setStudents(students.map(s=>{
 if(s.id!==id) return s
 
 if(s.aulas>=135){
-alert("Aluno atingiu 135 aulas. Realize a troca de faixa.")
+alert("Aluno atingiu 135 aulas. Faça a troca de faixa.")
 return s
 }
 
@@ -469,9 +459,8 @@ if(s.id!==id) return s
 const data=new Date().toLocaleDateString()
 
 const atualIndex=beltOrder.indexOf(s.faixa)
-const proximaFaixa=beltOrder[atualIndex+1] || s.faixa
 
-alert(`${s.nome} avançou para ${proximaFaixa}`)
+const proximaFaixa=beltOrder[atualIndex+1] || s.faixa
 
 return{
 
@@ -525,14 +514,6 @@ return(
 <div className="container">
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
-
-<div className="card">
-
-<img src="graus_coloridos.jpeg" width="100%"/>
-<br/><br/>
-<img src="sistema_graduacao.jpeg" width="100%"/>
-
-</div>
 
 {user==="professor" &&
 
@@ -610,23 +591,35 @@ Categoria: {s.categoria}
 <div style={{display:"flex",gap:10,marginTop:8}}>
 
 <div className="beh"
-style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>markBehavior(s.id,"relacionamento")}
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"relacionamento"):null}
 ></div>
 
 <div className="beh"
-style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
-onClick={()=>markBehavior(s.id,"comportamento")}
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"comportamento"):null}
 ></div>
 
 <div className="beh"
-style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
-onClick={()=>markBehavior(s.id,"notas")}
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"notas"):null}
 ></div>
 
 <div className="beh"
-style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
-onClick={()=>markBehavior(s.id,"habitos")}
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"habitos"):null}
 ></div>
 
 </div>
@@ -685,6 +678,16 @@ Previsão troca faixa: {previsao}
 )
 
 })}
+
+<div className="card">
+
+<img src="graus_coloridos.jpeg" width="100%"/>
+
+<br/><br/>
+
+<img src="sistema_graduacao.jpeg" width="100%"/>
+
+</div>
 
 </div>
 
