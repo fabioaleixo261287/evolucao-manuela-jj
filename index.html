@@ -31,7 +31,7 @@ gap:20px
 
 .imagesPanel img{
 width:100%;
-margin-bottom:15px;
+margin-bottom:12px;
 border-radius:8px
 }
 
@@ -240,23 +240,18 @@ style={{background:color}}
 
 function Login({setUser}){
 
-const [type,setType]=React.useState("professor")
-
 return(
 
 <div className="login card">
 
 <h2>Login</h2>
 
-<select value={type} onChange={e=>setType(e.target.value)}>
-<option value="professor">Professor</option>
-<option value="pais">Pais</option>
-</select>
+<button onClick={()=>setUser("professor")}>
+Professor
+</button>
 
-<br/><br/>
-
-<button onClick={()=>setUser(type)}>
-Entrar
+<button onClick={()=>setUser("pais")}>
+Pais
 </button>
 
 </div>
@@ -293,14 +288,14 @@ const idade=calculateAge(form.nascimento)
 setStudents([...students,{
 
 id:Date.now(),
-
 nome:form.nome,
 idade,
 nascimento:form.nascimento,
 categoria:category(idade),
 
 faixa:form.faixa,
-avatar:"avatar.png",
+
+avatar:"https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
 
 aulas:0,
 
@@ -353,7 +348,6 @@ return{
 aulas:novas,
 
 historicoAulas:[...s.historicoAulas,{data}],
-
 historicoGraus:historico
 
 }
@@ -378,53 +372,17 @@ return{
 
 faixa:nova,
 aulas:0,
-historicoGraus:[],
 historicoAulas:[],
+historicoGraus:[],
 
 historicoFaixas:[
-...s.historicoFaixas,
+...(s.historicoFaixas||[]),
 {data:new Date().toLocaleDateString(),faixa:nova}
 ]
 
 }
 
 }))
-
-}
-
-function markBehavior(id,key){
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-const data=new Date().toLocaleDateString()
-
-return{
-
-...s,
-
-comportamental:{
-...s.comportamental,
-[key]:data
-},
-
-historicoComportamental:[
-...s.historicoComportamental,
-{tipo:key,data}
-]
-
-}
-
-}))
-
-}
-
-function removeStudent(id){
-
-if(!confirm("Excluir aluno?")) return
-
-setStudents(students.filter(s=>s.id!==id))
 
 }
 
@@ -439,8 +397,6 @@ return(
 <div className="layout">
 
 <div>
-
-{user==="professor" &&
 
 <div className="card">
 
@@ -473,14 +429,10 @@ Adicionar aluno
 
 </div>
 
-}
-
 {students.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),15)
-
 const faltam=Math.max(135-s.aulas,0)
-
 const previsao=estimateDate(faltam)
 
 return(
@@ -492,27 +444,19 @@ return(
 <img src={s.avatar} className="avatar"/>
 
 <div>
-
 <b>{s.nome}</b><br/>
 {s.idade} anos<br/>
-{category(s.idade)}
-
+{s.categoria}
 </div>
 
 </div>
 
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:6}}>
-Aulas
-</div>
-
+<div style={{marginTop:6}}>Aulas</div>
 <ClassesBar aulas={s.aulas}/>
 
-<div style={{marginTop:6}}>
-Graus presença
-</div>
-
+<div style={{marginTop:6}}>Graus presença</div>
 <PresenceBar graus={graus}/>
 
 <div style={{marginTop:10}}>
@@ -525,12 +469,6 @@ Presença
 Troca de Faixa
 </button>
 
-{user==="professor" &&
-<button className="red" onClick={()=>removeStudent(s.id)}>
-Excluir
-</button>
-}
-
 </div>
 
 <div style={{marginTop:8,fontSize:13}}>
@@ -539,18 +477,6 @@ Faltam {faltam} aulas para exame
 
 <div style={{fontSize:13}}>
 Previsão troca faixa: {previsao}
-</div>
-
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico troca faixa</b>
-
-{s.historicoFaixas.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.faixa}
-</div>
-))}
-
 </div>
 
 </div>
@@ -577,9 +503,7 @@ Previsão troca faixa: {previsao}
 
 }
 
-ReactDOM
-.createRoot(document.getElementById("root"))
-.render(<App/>)
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </script>
 
