@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+
 <meta charset="UTF-8">
-<title>Acompanhamento Jiu Jitsu Alliance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Jiu Jitsu Infantil</title>
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -13,8 +13,7 @@
 
 body{
 font-family:Arial;
-background:#f4f6f8;
-margin:0;
+background:#f2f4f7;
 padding:20px
 }
 
@@ -24,116 +23,89 @@ gap:20px
 }
 
 .container{
-flex:1;
-max-width:900px
+flex:1
 }
 
 .sidebar{
-width:300px
+width:320px
 }
 
 .card{
 background:white;
+border-radius:12px;
 padding:16px;
-border-radius:10px;
-margin-bottom:12px;
+margin-bottom:16px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1)
-}
-
-.row{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:10px
-}
-
-button{
-padding:6px 12px;
-border:none;
-border-radius:6px;
-background:#3498db;
-color:white;
-cursor:pointer
-}
-
-button.red{background:#e74c3c}
-button.green{background:#2ecc71}
-button.orange{background:#f39c12}
-
-input,select{
-padding:6px;
-border-radius:6px;
-border:1px solid #ccc
-}
-
-.bar{
-display:flex;
-gap:3px
-}
-
-.box{
-width:14px;
-height:14px;
-border:1px solid #999;
-background:#eee
-}
-
-.done{
-background:#2ecc71
-}
-
-.degree{
-width:20px;
-height:20px;
-border:1px solid #555;
-border-radius:3px;
-background:#ddd
-}
-
-.beh{
-width:22px;
-height:22px;
-border-radius:22px;
-background:#eee;
-cursor:pointer
-}
-
-.ready{
-background:#d4edda;
-padding:8px;
-border-radius:6px;
-margin-top:10px;
-font-weight:bold
-}
-
-.avatar{
-width:60px;
-height:60px;
-border-radius:50%;
-object-fit:cover;
-border:3px solid #ddd;
 }
 
 .studentHeader{
 display:flex;
 align-items:center;
-gap:10px;
-margin-bottom:6px
+gap:10px
 }
 
-.login{
-max-width:350px;
-margin:auto;
-margin-top:120px
+.avatar{
+width:60px;
+height:60px;
+border-radius:50%
 }
+
+.bar{
+display:flex;
+gap:4px;
+margin-top:4px
+}
+
+.box{
+width:18px;
+height:18px;
+border:1px solid #999;
+background:#eee
+}
+
+.done{
+background:#4CAF50
+}
+
+.degree{
+width:28px;
+height:28px;
+border-radius:6px;
+border:1px solid #777;
+background:#ddd
+}
+
+.btn{
+border:none;
+padding:8px 14px;
+border-radius:8px;
+cursor:pointer;
+color:white
+}
+
+.blue{background:#3498db}
+.orange{background:#f39c12}
+.red{background:#e74c3c}
 
 .sidebar img{
 width:100%;
-border-radius:8px;
-margin-bottom:10px
+margin-bottom:10px;
+border-radius:8px
+}
+
+.history{
+font-size:13px;
+margin-top:10px
+}
+
+.turmaTitulo{
+margin-top:30px;
+border-bottom:2px solid #ddd;
+padding-bottom:5px
 }
 
 </style>
+
 </head>
 
 <body>
@@ -143,50 +115,77 @@ margin-bottom:10px
 <script type="text/babel">
 
 const beltOrder=[
-"Branca","Cinza/Branca","Cinza","Cinza/Preta",
-"Amarela/Branca","Amarela","Amarela/Preta",
-"Laranja/Branca","Laranja","Laranja/Preta",
-"Verde/Branca","Verde","Verde/Preta"
+"Branca",
+"Cinza/Branca",
+"Cinza",
+"Cinza/Preta",
+"Amarela/Branca",
+"Amarela",
+"Amarela/Preta",
+"Laranja/Branca",
+"Laranja",
+"Laranja/Preta",
+"Verde/Branca",
+"Verde",
+"Verde/Preta"
 ]
 
-const trainingDays=[1,3,5,6]
+const turmas=[
+"BABY EAGLE",
+"LITTLE EAGLE",
+"EAGLE WARRIOR",
+"EAGLE YOUTH"
+]
 
-function estimateDate(aulas){
+function calcularIdade(dataNascimento){
 
-let date=new Date()
-let count=0
+const hoje=new Date()
+const nasc=new Date(dataNascimento)
 
-while(count<aulas){
-date.setDate(date.getDate()+1)
-if(trainingDays.includes(date.getDay())) count++
+let idade=hoje.getFullYear()-nasc.getFullYear()
+
+const m=hoje.getMonth()-nasc.getMonth()
+
+if(m<0 || (m===0 && hoje.getDate()<nasc.getDate())){
+idade--
 }
 
-return date.toLocaleDateString()
+return idade
+
+}
+
+function definirTurma(idade){
+
+if(idade>=3 && idade<=4) return "BABY EAGLE"
+if(idade>=5 && idade<=8) return "LITTLE EAGLE"
+if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
+if(idade>=13 && idade<=15) return "EAGLE YOUTH"
+
+return "FORA DA CATEGORIA"
 
 }
 
 function ClassesBar({aulas}){
 
 return(
+
 <div className="bar">
+
 {Array.from({length:15}).map((_,i)=>{
 
 const done=i<(aulas%15)
 
-return(
-<div key={i} className={"box "+(done?"done":"")}></div>
-)
+return <div key={i} className={"box "+(done?"done":"")}></div>
 
 })}
+
 </div>
+
 )
 
 }
 
 function PresenceBar({graus}){
-
-const brancos=Math.min(graus,4)
-const vermelhos=Math.max(graus-4,0)
 
 return(
 
@@ -196,15 +195,16 @@ return(
 
 let color="#ddd"
 
-if(i<vermelhos) color="#e74c3c"
-else if(i<brancos) color="#fff"
+if(i<graus) color="#fff"
 
 return(
+
 <div
 key={i}
 className="degree"
 style={{background:color}}
 ></div>
+
 )
 
 })}
@@ -215,81 +215,53 @@ style={{background:color}}
 
 }
 
-function Login({onLogin}){
-
-const[user,setUser]=React.useState("")
-const[pass,setPass]=React.useState("")
-
-function entrar(){
-
-if(user==="professor" && pass==="123"){
-onLogin("professor")
-return
-}
-
-if(pass==="123"){
-onLogin("pais")
-}
-
-}
-
-return(
-
-<div className="login card">
-
-<h2>Login</h2>
-
-<input placeholder="Usuário" onChange={e=>setUser(e.target.value)}/>
-<br/><br/>
-<input type="password" placeholder="Senha" onChange={e=>setPass(e.target.value)}/>
-<br/><br/>
-
-<button onClick={entrar}>Entrar</button>
-
-</div>
-
-)
-
-}
-
 function App(){
 
-const[login,setLogin]=React.useState(null)
-
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_preview_v2")
+
+const saved=localStorage.getItem("jiujitsu_sistema")
+
 return saved?JSON.parse(saved):[]
+
 })
 
-const [form,setForm]=React.useState({
-nome:"",
-idade:"",
-faixa:"Branca"
-})
+const [nome,setNome]=React.useState("")
+const [nascimento,setNascimento]=React.useState("")
 
 React.useEffect(()=>{
-localStorage.setItem("academia_preview_v2",JSON.stringify(students))
-},[students])
 
-if(!login){
-return <Login onLogin={setLogin}/>
-}
+localStorage.setItem(
+"jiujitsu_sistema",
+JSON.stringify(students)
+)
+
+},[students])
 
 function addStudent(){
 
-if(!form.nome) return
+if(!nome || !nascimento) return
 
-setStudents([...students,{
+const idade=calcularIdade(nascimento)
 
+const turma=definirTurma(idade)
+
+setStudents([
+
+...students,
+
+{
 id:Date.now(),
-...form,
-avatar:"avatar.png",
-
+nome,
+nascimento,
+idade,
+turma,
+faixa:"Branca",
 aulas:0,
 
 historicoAulas:[],
 historicoGraus:[],
 historicoComportamental:[],
+historicoFaixas:[],
 
 comportamental:{
 relacionamento:null,
@@ -298,13 +270,12 @@ notas:null,
 habitos:null
 }
 
-}])
+}
 
-setForm({
-nome:"",
-idade:"",
-faixa:"Branca"
-})
+])
+
+setNome("")
+setNascimento("")
 
 }
 
@@ -315,48 +286,32 @@ setStudents(students.map(s=>{
 if(s.id!==id) return s
 
 const data=new Date().toLocaleDateString()
+
 const novas=s.aulas+1
 
-let historico=s.historicoGraus
+let historicoGraus=s.historicoGraus
 
 if(novas%15===0){
-historico=[...historico,{grau:Math.floor(novas/15),data}]
-}
 
-return{
-
-...s,
-aulas:novas,
-historicoAulas:[...s.historicoAulas,{data}],
-historicoGraus:historico
-
-}
-
-}))
-
-}
-
-function markBehavior(id,key){
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-const data=new Date().toLocaleDateString()
-
-return{
-
-...s,
-
-comportamental:{
-...s.comportamental,
-[key]:data
-},
-
-historicoComportamental:[
-...s.historicoComportamental,
-{tipo:key,data}
+historicoGraus=[
+...historicoGraus,
+{grau:Math.floor(novas/15),data}
 ]
+
+}
+
+return{
+
+...s,
+
+aulas:novas,
+
+historicoAulas:[
+...s.historicoAulas,
+{data}
+],
+
+historicoGraus
 
 }
 
@@ -376,11 +331,23 @@ if(index===beltOrder.length-1) return s
 
 const novaFaixa=beltOrder[index+1]
 
+const data=new Date().toLocaleDateString()
+
 return{
 
 ...s,
 
 faixa:novaFaixa,
+
+historicoFaixas:[
+...s.historicoFaixas,
+{
+de:s.faixa,
+para:novaFaixa,
+data
+}
+],
+
 aulas:0,
 
 historicoAulas:[],
@@ -400,73 +367,53 @@ habitos:null
 
 }
 
-function removeStudent(id){
-
-if(!confirm("Excluir aluno?")) return
-
-setStudents(students.filter(s=>s.id!==id))
-
-}
-
 return(
 
 <div className="layout">
 
 <div className="container">
 
-<h1>Acompanhamento Jiu Jitsu Alliance</h1>
-
 <div className="card">
 
-<div className="row">
+<h3>Novo aluno</h3>
 
 <input
 placeholder="Nome"
-value={form.nome}
-onChange={e=>setForm({...form,nome:e.target.value})}
+value={nome}
+onChange={e=>setNome(e.target.value)}
 />
 
 <input
-placeholder="Idade"
-value={form.idade}
-onChange={e=>setForm({...form,idade:e.target.value})}
+type="date"
+value={nascimento}
+onChange={e=>setNascimento(e.target.value)}
 />
 
-<select
-value={form.faixa}
-onChange={e=>setForm({...form,faixa:e.target.value})}
->
-{beltOrder.map(b=><option key={b}>{b}</option>)}
-</select>
-
-<button
-className="green"
-onClick={addStudent}
->
-Adicionar aluno
+<button className="btn blue" onClick={addStudent}>
+Adicionar
 </button>
 
 </div>
 
-</div>
+{turmas.map(turma=>{
 
-{students.map(s=>{
+const alunosTurma=students.filter(s=>s.turma===turma)
 
-const graus=Math.min(Math.floor(s.aulas/15),8)
+if(alunosTurma.length===0) return null
 
-const comportamentoCompleto=
-Object.values(s.comportamental).every(v=>v)
+return(
 
-const extras=Math.max(s.aulas-120,0)
+<div key={turma}>
 
-const pronto=
-graus===8 &&
-comportamentoCompleto &&
-extras>=15
+<h2 className="turmaTitulo">
+{turma}
+</h2>
 
-const faltam=Math.max(135-s.aulas,0)
+{alunosTurma.map(s=>{
 
-const previsao=estimateDate(faltam)
+const graus=Math.floor(s.aulas/15)
+
+const faltam=135-s.aulas
 
 return(
 
@@ -474,70 +421,55 @@ return(
 
 <div className="studentHeader">
 
-<img src={s.avatar} className="avatar"/>
+<img src="avatar.png" className="avatar"/>
 
 <div>
-<b>{s.nome}</b><br/>
+
+<h3>{s.nome}</h3>
+
 {s.idade} anos
-</div>
 
 </div>
 
-<div>Faixa: {s.faixa}</div>
+</div>
 
-<div style={{marginTop:6}}>Aulas</div>
+<p>Faixa: {s.faixa}</p>
+
+<p>Aulas</p>
+
 <ClassesBar aulas={s.aulas}/>
 
-<div style={{marginTop:6}}>Graus presença</div>
+<p>Graus presença</p>
+
 <PresenceBar graus={graus}/>
 
-<div style={{display:"flex",gap:10,marginTop:8}}>
+<br/>
 
-<div className="beh"
-style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>markBehavior(s.id,"relacionamento")}></div>
+<button
+className="btn blue"
+onClick={()=>addAttendance(s.id)}
+>
+Presença
+</button>
 
-<div className="beh"
-style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
-onClick={()=>markBehavior(s.id,"comportamento")}></div>
-
-<div className="beh"
-style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
-onClick={()=>markBehavior(s.id,"notas")}></div>
-
-<div className="beh"
-style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
-onClick={()=>markBehavior(s.id,"habitos")}></div>
-
-</div>
-
-<div style={{marginTop:10}}>
-
-<button onClick={()=>addAttendance(s.id)}>Presença</button>
-
-<button className="orange" onClick={()=>changeBelt(s.id)}>
+<button
+className="btn orange"
+onClick={()=>changeBelt(s.id)}
+>
 Troca de Faixa
 </button>
 
-<button className="red" onClick={()=>removeStudent(s.id)}>
-Excluir
-</button>
+<p>
 
-</div>
-
-<div style={{marginTop:8,fontSize:13}}>
 Faltam {faltam} aulas para exame
+
+</p>
+
 </div>
 
-<div style={{fontSize:13}}>
-Previsão troca faixa: {previsao}
-</div>
+)
 
-{pronto &&
-<div className="ready">
-🥋 PRONTO PARA EXAME DE TROCA DE FAIXA
-</div>
-}
+})}
 
 </div>
 
@@ -549,13 +481,9 @@ Previsão troca faixa: {previsao}
 
 <div className="sidebar">
 
-<div className="card">
-<img src="sistema_graduacao.jpeg"/>
-</div>
-
-<div className="card">
 <img src="graus_coloridos.jpeg"/>
-</div>
+
+<img src="sistema_graduacao.jpeg"/>
 
 </div>
 
