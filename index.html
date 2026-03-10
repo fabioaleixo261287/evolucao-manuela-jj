@@ -1,3 +1,8 @@
+Versão melhor
+
+
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -5,372 +10,532 @@
 <meta charset="UTF-8">
 <title>Acompanhamento Jiu Jitsu Alliance</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <style>
 
 body{
 font-family:Arial;
-background:#f3f4f7;
-margin:0;
-padding:20px;
-}
-
-h1{
-text-align:center;
-color:#4b5563;
+background:#f4f6f8;
+padding:20px
 }
 
 .container{
-max-width:1200px;
-margin:auto;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:20px;
-margin-top:20px;
+max-width:1000px;
+margin:auto
 }
 
 .card{
 background:white;
-border-radius:10px;
 padding:15px;
-box-shadow:0 3px 8px rgba(0,0,0,0.15);
+border-radius:10px;
+margin-bottom:15px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1)
 }
 
-.studentHeader{
+.row{
 display:flex;
-align-items:center;
-gap:10px;
-margin-bottom:10px;
+gap:8px;
+flex-wrap:wrap
 }
 
-.avatar{
-width:70px;
-height:70px;
-border-radius:50%;
-object-fit:cover;
+button{
+padding:6px 12px;
+border:none;
+border-radius:6px;
+background:#3498db;
+color:white;
+cursor:pointer
+}
+
+button.green{background:#2ecc71}
+button.red{background:#e74c3c}
+
+input,select{
+padding:6px;
+border-radius:6px;
+border:1px solid #ccc
 }
 
 .bar{
 display:flex;
-gap:3px;
-margin:6px 0;
+gap:3px
 }
 
 .box{
 width:14px;
 height:14px;
-background:#ccc;
+border:1px solid #999
 }
 
 .done{
-background:#f4c430;
+background:#2ecc71
 }
 
-button{
-border:none;
-padding:8px 14px;
-border-radius:6px;
-color:white;
-cursor:pointer;
-}
-
-.blue{background:#3b82f6}
-.red{background:#e74c3c}
-.green{background:#22c55e}
-
-.buttons{
-display:flex;
-gap:10px;
-margin-top:10px;
+.degree{
+width:20px;
+height:20px;
+border:1px solid #555;
+border-radius:3px
 }
 
 .beh{
-width:35px;
-height:35px;
-border-radius:50%;
-cursor:pointer;
+width:22px;
+height:22px;
+border-radius:50%
 }
 
-.section{
-background:white;
-padding:20px;
-border-radius:10px;
-margin-top:25px;
-box-shadow:0 3px 8px rgba(0,0,0,0.15);
+.avatar{
+width:60px;
+height:60px;
+border-radius:50%
 }
 
-.chart{
-height:200px;
-}
-
-.beltSystem{
+.studentHeader{
 display:flex;
-justify-content:space-between;
-margin-top:15px;
-}
-
-.belt{
-text-align:center;
-font-size:13px;
-}
-
-.pdfBox{
-text-align:center;
-margin-top:20px;
-}
-
-.bigCircle{
-width:90px;
-height:90px;
-border-radius:50%;
-display:inline-block;
-margin:10px;
+gap:10px;
+align-items:center
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="container">
+<div id="root"></div>
 
-<h1>Acompanhamento Jiu Jitsu Alliance</h1>
+<script type="text/babel">
 
-<div class="grid" id="students"></div>
+const beltOrder=[
+"Branca","Cinza/Branca","Cinza","Cinza/Preta",
+"Amarela/Branca","Amarela","Amarela/Preta",
+"Laranja/Branca","Laranja","Laranja/Preta",
+"Verde/Branca","Verde","Verde/Preta"
+]
 
-<div class="section">
+function getAge(date){
 
-<h2 style="text-align:center">Últimos 30 Dias</h2>
+const hoje=new Date()
+const nasc=new Date(date)
 
-<canvas id="chart" class="chart"></canvas>
+let idade=hoje.getFullYear()-nasc.getFullYear()
+
+const m=hoje.getMonth()-nasc.getMonth()
+
+if(m<0||(m===0&&hoje.getDate()<nasc.getDate())) idade--
+
+return idade
+}
+
+function getCategory(i){
+
+if(i<=4) return "BABY EAGLE"
+if(i<=8) return "LITTLE EAGLE"
+if(i<=12) return "EAGLE WARRIOR"
+if(i<=15) return "EAGLE YOUTH"
+
+return "FORA CATEGORIA"
+}
+
+function ClassesBar({aulas}){
+
+return(
+
+<div className="bar">
+
+{Array.from({length:15}).map((_,i)=>{
+
+const done=i<(aulas%15)
+
+return(
+<div key={i} className={"box "+(done?"done":"")}></div>
+)
+
+})}
 
 </div>
 
-<div class="section">
+)
 
-<h2 style="text-align:center">Sistema de Graduação Infantil</h2>
+}
 
-<div class="beltSystem">
+function PresenceBar({graus}){
 
-<div class="belt">Branca</div>
-<div class="belt">Cinza/Branca</div>
-<div class="belt">Cinza</div>
-<div class="belt">Cinza/Preta</div>
-<div class="belt">Amarela/Branca</div>
-<div class="belt">Amarela</div>
-<div class="belt">Laranja</div>
-<div class="belt">Verde</div>
+return(
 
-</div>
+<div className="bar">
 
-<p style="text-align:center;margin-top:20px">
+{Array.from({length:4}).map((_,i)=>{
 
-✔ A cada 15 aulas um grau<br>
-✔ Após 135 aulas troca de faixa
+let color="#ddd"
 
-</p>
+if(i<graus) color="#fff"
+
+return(
+<div key={i} className="degree" style={{background:color}}></div>
+)
+
+})}
 
 </div>
 
-<div class="section pdfBox">
+)
 
-<h2>Gerar Relatório PDF</h2>
+}
+
+function Login({setUser,students,setFilho}){
+
+const [tipo,setTipo]=React.useState("")
+const [nome,setNome]=React.useState("")
+const [nasc,setNasc]=React.useState("")
+const [senha,setSenha]=React.useState("")
+
+function loginProfessor(){
+
+if(senha==="admin") setUser("professor")
+else alert("Senha incorreta")
+
+}
+
+function loginPais(){
+
+const aluno=students.find(
+s=>s.nome===nome && s.nascimento===nasc
+)
+
+if(aluno){
+setFilho(nome)
+setUser("pais")
+}else{
+alert("Aluno não encontrado")
+}
+
+}
+
+return(
+
+<div className="card">
+
+<h2>Login</h2>
+
+<button onClick={()=>setTipo("professor")}>Professor</button>
+<button onClick={()=>setTipo("pais")}>Pais</button>
+
+<br/><br/>
+
+{tipo==="professor" &&
 
 <div>
 
-<div class="bigCircle" style="background:#f1c40f"></div>
-<div class="bigCircle" style="background:#2980b9"></div>
-<div class="bigCircle" style="background:#e74c3c"></div>
-<div class="bigCircle" style="background:#27ae60"></div>
+<input type="password"
+placeholder="Senha"
+value={senha}
+onChange={e=>setSenha(e.target.value)}
+/>
+
+<button onClick={loginProfessor}>
+Entrar
+</button>
 
 </div>
 
-<button class="green" onclick="gerarPDF()">Gerar Relatório PDF</button>
-
-</div>
-
-</div>
-
-<script>
-
-const students=[
-
-{
-nome:"Lucas",
-idade:4,
-categoria:"BABY EAGLE",
-faixa:"Branca",
-aulas:40,
-comportamental:[1,0,1,1],
-avatar:"https://randomuser.me/api/portraits/boys/10.jpg"
-},
-
-{
-nome:"Julia",
-idade:10,
-categoria:"EAGLE WARRIOR",
-faixa:"Cinza",
-aulas:70,
-comportamental:[1,1,1,1],
-avatar:"https://randomuser.me/api/portraits/girls/10.jpg"
-},
-
-{
-nome:"Gabriel",
-idade:14,
-categoria:"EAGLE YOUTH",
-faixa:"Amarela",
-aulas:95,
-comportamental:[1,1,0,1],
-avatar:"https://randomuser.me/api/portraits/boys/15.jpg"
 }
 
-]
+{tipo==="pais" &&
 
-function render(){
+<div>
 
-const container=document.getElementById("students")
+<input
+placeholder="Nome aluno"
+value={nome}
+onChange={e=>setNome(e.target.value)}
+/>
 
-container.innerHTML=""
+<input
+type="date"
+value={nasc}
+onChange={e=>setNasc(e.target.value)}
+/>
 
-students.forEach((s,i)=>{
+<button onClick={loginPais}>
+Entrar
+</button>
+
+</div>
+
+}
+
+</div>
+
+)
+
+}
+
+function App(){
+
+const [user,setUser]=React.useState("")
+const [filho,setFilho]=React.useState("")
+
+const [students,setStudents]=React.useState(()=>{
+
+const saved=localStorage.getItem("jiujitsu")
+
+return saved?JSON.parse(saved):[]
+
+})
+
+const [form,setForm]=React.useState({
+nome:"",
+nascimento:"",
+faixa:"Branca"
+})
+
+React.useEffect(()=>{
+
+localStorage.setItem("jiujitsu",JSON.stringify(students))
+
+},[students])
+
+function addStudent(){
+
+const idade=getAge(form.nascimento)
+
+setStudents([...students,{
+
+id:Date.now(),
+nome:form.nome,
+nascimento:form.nascimento,
+idade:idade,
+categoria:getCategory(idade),
+faixa:form.faixa,
+
+aulas:0,
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
+
+}])
+
+}
+
+function addAttendance(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+if(s.aulas>=135){
+alert("Aluno atingiu 135 aulas")
+return s
+}
+
+return{
+...s,
+aulas:s.aulas+1
+}
+
+}))
+
+}
+
+function markBehavior(id,key){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+return{
+
+...s,
+comportamental:{
+...s.comportamental,
+[key]:true
+}
+
+}
+
+}))
+
+}
+
+function trocarFaixa(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const i=beltOrder.indexOf(s.faixa)
+
+return{
+
+...s,
+faixa:beltOrder[i+1]||s.faixa,
+aulas:0
+
+}
+
+}))
+
+}
+
+if(user==="")
+return <Login setUser={setUser} students={students} setFilho={setFilho}/>
+
+let lista=students
+
+if(user==="pais")
+lista=students.filter(s=>s.nome===filho)
+
+return(
+
+<div className="container">
+
+<h1>Acompanhamento Jiu Jitsu</h1>
+
+{user==="professor" &&
+
+<div className="card">
+
+<input placeholder="Nome"
+onChange={e=>setForm({...form,nome:e.target.value})}
+/>
+
+<input type="date"
+onChange={e=>setForm({...form,nascimento:e.target.value})}
+/>
+
+<select
+onChange={e=>setForm({...form,faixa:e.target.value})}
+>
+
+{beltOrder.map(b=>
+<option key={b}>{b}</option>
+)}
+
+</select>
+
+<button className="green"
+onClick={addStudent}>
+Adicionar
+</button>
+
+</div>
+
+}
+
+{lista.map(s=>{
 
 const graus=Math.floor(s.aulas/15)
 
-const faltam=Math.max(135-s.aulas,0)
+return(
 
-const div=document.createElement("div")
+<div key={s.id} className="card">
 
-div.className="card"
+<div className="studentHeader">
 
-div.innerHTML=`
-
-<div class="studentHeader">
-
-<img src="${s.avatar}" class="avatar">
+<img src="avatar.png" className="avatar"/>
 
 <div>
 
-<b>${s.nome}</b><br>
-${s.idade} anos<br>
-${s.categoria}
+<b>{s.nome}</b><br/>
+
+{s.idade} anos<br/>
+
+{s.categoria}
 
 </div>
 
 </div>
 
-<div>Faixa: ${s.faixa}</div>
+<div>Faixa: {s.faixa}</div>
 
-<div class="bar">
+<ClassesBar aulas={s.aulas}/>
 
-${Array(9).fill(0).map((_,x)=>
-`<div class="box ${x<graus?'done':''}"></div>`
-).join("")}
+<PresenceBar graus={graus}/>
+
+<div style={{display:"flex",gap:10,marginTop:10}}>
+
+<div className="beh"
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"relacionamento"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"comportamento"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"notas"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"habitos"):null}
+></div>
 
 </div>
 
-<div class="bar">
+{user==="professor" &&
 
-${Array(8).fill(0).map((_,x)=>
-`<div class="box ${x<(s.aulas%15)?'done':''}"></div>`
-).join("")}
+<div style={{marginTop:10}}>
 
-</div>
+<button onClick={()=>addAttendance(s.id)}>
+Presença
+</button>
 
-<div style="display:flex;gap:10px;margin-top:10px">
-
-<div class="beh" style="background:${s.comportamental[0]?'#f1c40f':'#ddd'}"></div>
-<div class="beh" style="background:${s.comportamental[1]?'#2980b9':'#ddd'}"></div>
-<div class="beh" style="background:${s.comportamental[2]?'#e74c3c':'#ddd'}"></div>
-<div class="beh" style="background:${s.comportamental[3]?'#27ae60':'#ddd'}"></div>
+<button className="green"
+onClick={()=>trocarFaixa(s.id)}>
+Trocar Faixa
+</button>
 
 </div>
 
-<div class="buttons">
-
-<button class="blue" onclick="presenca(${i})">Presença</button>
-
-<button class="green" onclick="trocarFaixa(${i})">Trocar Faixa</button>
-
-<button class="red" onclick="excluir(${i})">Excluir</button>
+}
 
 </div>
 
-<p style="margin-top:8px;font-size:13px">
+)
 
-Faltam ${faltam} aulas para exame
+})}
 
-</p>
+<div className="card">
 
-`
+<img src="sistema_graduacao.jpeg" width="100%"/>
 
-container.appendChild(div)
+<br/><br/>
 
-})
+<img src="graus_coloridos.jpeg" width="100%"/>
 
-}
+</div>
 
-function presenca(i){
+</div>
 
-if(students[i].aulas>=135)return
-
-students[i].aulas++
-
-render()
+)
 
 }
 
-function trocarFaixa(i){
-
-students[i].aulas=0
-
-alert("Faixa atualizada!")
-
-render()
-
-}
-
-function excluir(i){
-
-students.splice(i,1)
-
-render()
-
-}
-
-function gerarPDF(){
-
-alert("PDF gerado!")
-
-}
-
-render()
-
-const ctx=document.getElementById("chart")
-
-new Chart(ctx,{
-
-type:'bar',
-
-data:{
-
-labels:["1","2","3","4","5","6","7","8","9","10"],
-
-datasets:[{
-
-label:"Aulas últimos dias",
-
-data:[2,3,4,5,6,5,7,8,6,5]
-
-}]
-
-}
-
-})
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </script>
 
