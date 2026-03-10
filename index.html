@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -24,12 +25,11 @@ gap:20px
 }
 
 .container{
-max-width:1000px;
 flex:1
 }
 
 .sidebar{
-width:350px
+width:360px
 }
 
 .card{
@@ -58,7 +58,6 @@ cursor:pointer
 
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
-button.orange{background:#f39c12}
 
 input,select{
 padding:6px;
@@ -125,6 +124,11 @@ margin:auto;
 margin-top:120px
 }
 
+.turmaTitle{
+margin-top:20px;
+font-size:20px
+}
+
 </style>
 </head>
 
@@ -157,20 +161,31 @@ return date.toLocaleDateString()
 
 }
 
-function calcularIdade(nascimento){
+function calcularIdade(nasc){
 
 const hoje=new Date()
-const nasc=new Date(nascimento)
+const nascimento=new Date(nasc)
 
-let idade=hoje.getFullYear()-nasc.getFullYear()
+let idade=hoje.getFullYear()-nascimento.getFullYear()
 
-const m=hoje.getMonth()-nasc.getMonth()
+const m=hoje.getMonth()-nascimento.getMonth()
 
-if(m<0 || (m===0 && hoje.getDate()<nasc.getDate())){
+if(m<0 || (m===0 && hoje.getDate()<nascimento.getDate())){
 idade--
 }
 
 return idade
+
+}
+
+function getCategory(idade){
+
+if(idade>=3 && idade<=4) return "BABY EAGLE"
+if(idade>=5 && idade<=8) return "LITTLE EAGLE"
+if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
+if(idade>=13 && idade<=15) return "EAGLE YOUTH"
+
+return "OUTROS"
 
 }
 
@@ -297,8 +312,8 @@ setStudents([...students,{
 
 id:Date.now(),
 nome:form.nome,
-idade:idade,
 nascimento:form.nascimento,
+idade:idade,
 faixa:form.faixa,
 avatar:"avatar.png",
 
@@ -307,7 +322,6 @@ aulas:0,
 historicoAulas:[],
 historicoGraus:[],
 historicoComportamental:[],
-historicoTrocaFaixa:[],
 
 comportamental:{
 relacionamento:null,
@@ -342,12 +356,10 @@ historico=[...historico,{grau:Math.floor(novas/15),data}]
 }
 
 return{
-
 ...s,
 aulas:novas,
 historicoAulas:[...s.historicoAulas,{data}],
 historicoGraus:historico
-
 }
 
 }))
@@ -363,62 +375,15 @@ if(s.id!==id) return s
 const data=new Date().toLocaleDateString()
 
 return{
-
 ...s,
-
 comportamental:{
 ...s.comportamental,
 [key]:data
 },
-
 historicoComportamental:[
 ...s.historicoComportamental,
 {tipo:key,data}
 ]
-
-}
-
-}))
-
-}
-
-function changeBelt(id){
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-const index=beltOrder.indexOf(s.faixa)
-
-if(index===beltOrder.length-1) return s
-
-const novaFaixa=beltOrder[index+1]
-
-const data=new Date().toLocaleDateString()
-
-return{
-
-...s,
-
-faixa:novaFaixa,
-
-aulas:0,
-
-historicoAulas:[],
-historicoGraus:[],
-
-comportamental:{
-relacionamento:null,
-comportamento:null,
-notas:null,
-habitos:null
-},
-
-historicoTrocaFaixa:[
-...s.historicoTrocaFaixa,
-{de:s.faixa,para:novaFaixa,data}
-]
-
 }
 
 }))
@@ -543,10 +508,6 @@ Graus presença
 Presença
 </button>
 
-<button className="orange" onClick={()=>changeBelt(s.id)}>
-Troca de Faixa Realizada
-</button>
-
 <button className="red" onClick={()=>removeStudent(s.id)}>
 Excluir
 </button>
@@ -589,17 +550,6 @@ Previsão troca faixa: {previsao}
 
 </div>
 
-<div style={{marginTop:10,fontSize:12}}>
-<b>Histórico troca de faixa</b>
-
-{s.historicoTrocaFaixa.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.de} → {h.para}
-</div>
-))}
-
-</div>
-
 </div>
 
 )
@@ -634,3 +584,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </body>
 </html>
+```
