@@ -246,14 +246,10 @@ s=>s.nome===nome && s.nascimento===nascimento
 )
 
 if(aluno){
-
 setFilho(nome)
 setUser("pais")
-
 }else{
-
 alert("Aluno não encontrado")
-
 }
 
 }
@@ -263,8 +259,6 @@ return(
 <div className="login card">
 
 <h2>Login</h2>
-
-<br/>
 
 <button className="green" onClick={()=>setTipo("professor")}>
 Professor
@@ -337,7 +331,7 @@ const [user,setUser]=React.useState("")
 const [filho,setFilho]=React.useState("")
 
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_alliance_v3")
+const saved=localStorage.getItem("academia_alliance_v4")
 return saved?JSON.parse(saved):[]
 })
 
@@ -348,7 +342,7 @@ faixa:"Branca"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("academia_alliance_v3",JSON.stringify(students))
+localStorage.setItem("academia_alliance_v4",JSON.stringify(students))
 },[students])
 
 function addStudent(){
@@ -438,6 +432,34 @@ historicoGraus:historico
 
 }
 
+function markBehavior(id,key){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const data=new Date().toLocaleDateString()
+
+return{
+
+...s,
+
+comportamental:{
+...s.comportamental,
+[key]:data
+},
+
+historicoComportamental:[
+...s.historicoComportamental,
+{tipo:key,data}
+]
+
+}
+
+}))
+
+}
+
 function trocarFaixa(id){
 
 setStudents(students.map(s=>{
@@ -447,7 +469,6 @@ if(s.id!==id) return s
 const data=new Date().toLocaleDateString()
 
 const atualIndex=beltOrder.indexOf(s.faixa)
-
 const proximaFaixa=beltOrder[atualIndex+1] || s.faixa
 
 alert(`${s.nome} avançou para ${proximaFaixa}`)
@@ -473,10 +494,7 @@ habitos:null
 
 historicoFaixas:[
 ...s.historicoFaixas,
-{
-faixa:proximaFaixa,
-data:data
-}
+{faixa:proximaFaixa,data}
 ]
 
 }
@@ -538,17 +556,10 @@ onChange={e=>setForm({...form,nascimento:e.target.value})}
 value={form.faixa}
 onChange={e=>setForm({...form,faixa:e.target.value})}
 >
-
-{beltOrder.map(b=>
-<option key={b}>{b}</option>
-)}
-
+{beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
-<button
-className="green"
-onClick={addStudent}
->
+<button className="green" onClick={addStudent}>
 Adicionar aluno
 </button>
 
@@ -578,9 +589,7 @@ return(
 
 <b>{s.nome}</b><br/>
 
-{s.idade} anos
-
-<br/>
+{s.idade} anos<br/>
 
 Categoria: {s.categoria}
 
@@ -590,17 +599,37 @@ Categoria: {s.categoria}
 
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:6}}>
-Aulas
-</div>
+<div style={{marginTop:6}}>Aulas</div>
 
 <ClassesBar aulas={s.aulas}/>
 
-<div style={{marginTop:6}}>
-Graus presença
-</div>
+<div style={{marginTop:6}}>Graus presença</div>
 
 <PresenceBar graus={graus}/>
+
+<div style={{display:"flex",gap:10,marginTop:8}}>
+
+<div className="beh"
+style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
+onClick={()=>markBehavior(s.id,"relacionamento")}
+></div>
+
+<div className="beh"
+style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
+onClick={()=>markBehavior(s.id,"comportamento")}
+></div>
+
+<div className="beh"
+style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
+onClick={()=>markBehavior(s.id,"notas")}
+></div>
+
+<div className="beh"
+style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
+onClick={()=>markBehavior(s.id,"habitos")}
+></div>
+
+</div>
 
 {user==="professor" &&
 
@@ -610,17 +639,11 @@ Graus presença
 Presença
 </button>
 
-<button
-className="green"
-onClick={()=>trocarFaixa(s.id)}
->
+<button className="green" onClick={()=>trocarFaixa(s.id)}>
 Trocar Faixa
 </button>
 
-<button
-className="red"
-onClick={()=>removeStudent(s.id)}
->
+<button className="red" onClick={()=>removeStudent(s.id)}>
 Excluir
 </button>
 
@@ -637,27 +660,24 @@ Previsão troca faixa: {previsao}
 </div>
 
 <div style={{marginTop:10,fontSize:12}}>
-
 <b>Histórico graus</b>
-
 {s.historicoGraus.map((h,i)=>(
-<div key={i}>
-{h.data} - Grau {h.grau}
-</div>
+<div key={i}>{h.data} - Grau {h.grau}</div>
 ))}
-
 </div>
 
 <div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico de faixas</b>
-
-{s.historicoFaixas.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.faixa}
-</div>
+<b>Histórico comportamental</b>
+{s.historicoComportamental.map((h,i)=>(
+<div key={i}>{h.data} - {h.tipo}</div>
 ))}
+</div>
 
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico de faixas</b>
+{s.historicoFaixas.map((h,i)=>(
+<div key={i}>{h.data} - {h.faixa}</div>
+))}
 </div>
 
 </div>
@@ -672,9 +692,7 @@ Previsão troca faixa: {previsao}
 
 }
 
-ReactDOM
-.createRoot(document.getElementById("root"))
-.render(<App/>)
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </script>
 
