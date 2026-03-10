@@ -1,4 +1,4 @@
-```html
+Versão melhor
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -52,7 +52,6 @@ cursor:pointer
 
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
-button.orange{background:#f39c12}
 
 input,select{
 padding:6px;
@@ -92,6 +91,14 @@ background:#eee;
 cursor:pointer
 }
 
+.ready{
+background:#d4edda;
+padding:8px;
+border-radius:6px;
+margin-top:10px;
+font-weight:bold
+}
+
 .avatar{
 width:60px;
 height:60px;
@@ -107,17 +114,10 @@ gap:10px;
 margin-bottom:6px
 }
 
-.login{
-max-width:400px;
-margin:auto
-}
-
-.ready{
-background:#d4edda;
-padding:8px;
-border-radius:6px;
-margin-top:10px;
-font-weight:bold
+img.info{
+width:100%;
+margin-top:20px;
+border-radius:10px
 }
 
 </style>
@@ -195,8 +195,6 @@ return(
 
 function App(){
 
-const [user,setUser]=React.useState(null)
-
 const [students,setStudents]=React.useState(()=>{
 const saved=localStorage.getItem("academia_final")
 return saved?JSON.parse(saved):[]
@@ -207,35 +205,6 @@ nome:"",
 nascimento:"",
 faixa:"Branca"
 })
-
-const [editing,setEditing]=React.useState(null)
-
-function loginProfessor(){
-
-const senha=prompt("Senha professor")
-
-if(senha==="admin"){
-setUser({tipo:"professor"})
-}else{
-alert("Senha incorreta")
-}
-
-}
-
-function loginPais(){
-
-const nome=prompt("Nome aluno")
-const nascimento=prompt("Nascimento AAAA-MM-DD")
-
-const aluno=students.find(s=>s.nome===nome && s.nascimento===nascimento)
-
-if(aluno){
-setUser({tipo:"pais",aluno})
-}else{
-alert("Aluno não encontrado")
-}
-
-}
 
 React.useEffect(()=>{
 localStorage.setItem("academia_final",JSON.stringify(students))
@@ -248,59 +217,33 @@ if(!form.nome) return
 const idade=new Date().getFullYear()-new Date(form.nascimento).getFullYear()
 
 setStudents([...students,{
+
 id:Date.now(),
 nome:form.nome,
-nascimento:form.nascimento,
 idade,
 categoria:categoriaPorIdade(idade),
 faixa:form.faixa,
 avatar:"avatar.png",
 aulas:0,
+
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+historicoFaixas:[],
+
 comportamental:{
 relacionamento:null,
 comportamento:null,
 notas:null,
 habitos:null
-},
-historicoComportamental:[]
+}
+
 }])
 
-setForm({nome:"",nascimento:"",faixa:"Branca"})
-
-}
-
-function updateStudent(){
-
-const idade=new Date().getFullYear()-new Date(form.nascimento).getFullYear()
-
-setStudents(students.map(s=>{
-
-if(s.id!==editing) return s
-
-return{
-...s,
-nome:form.nome,
-nascimento:form.nascimento,
-faixa:form.faixa,
-idade,
-categoria:categoriaPorIdade(idade)
-}
-
-}))
-
-setEditing(null)
-setForm({nome:"",nascimento:"",faixa:"Branca"})
-
-}
-
-function startEdit(student){
-
-setEditing(student.id)
-
 setForm({
-nome:student.nome,
-nascimento:student.nascimento,
-faixa:student.faixa
+nome:"",
+nascimento:"",
+faixa:"Branca"
 })
 
 }
@@ -311,12 +254,28 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
-if(s.aulas>=135){
-alert("Necessário exame de faixa")
-return s
+if(s.aulas>=135) return s
+
+const data=new Date().toLocaleDateString()
+const novas=s.aulas+1
+
+let historico=s.historicoGraus
+
+if(novas%15===0){
+historico=[...historico,{grau:Math.floor(novas/15),data}]
 }
 
-return {...s,aulas:s.aulas+1}
+return{
+
+...s,
+
+aulas:novas,
+
+historicoAulas:[...s.historicoAulas,{data}],
+
+historicoGraus:historico
+
+}
 
 }))
 
@@ -331,9 +290,19 @@ if(s.id!==id) return s
 const data=new Date().toLocaleDateString()
 
 return{
+
 ...s,
-comportamental:{...s.comportamental,[key]:data},
-historicoComportamental:[...s.historicoComportamental,{tipo:key,data}]
+
+comportamental:{
+...s.comportamental,
+[key]:data
+},
+
+historicoComportamental:[
+...s.historicoComportamental,
+{tipo:key,data}
+]
+
 }
 
 }))
@@ -348,48 +317,33 @@ if(s.id!==id) return s
 
 const idx=beltOrder.indexOf(s.faixa)
 
+const nova=beltOrder[idx+1]||s.faixa
+
 return{
+
 ...s,
-faixa:beltOrder[idx+1]||s.faixa,
+
+faixa:nova,
+
 aulas:0,
-comportamental:{
-relacionamento:null,
-comportamento:null,
-notas:null,
-habitos:null
-}
+
+historicoFaixas:[
+...s.historicoFaixas,
+{faixa:nova,data:new Date().toLocaleDateString()}
+]
+
 }
 
 }))
 
 }
 
-if(!user){
+function removeStudent(id){
 
-return(
+if(!confirm("Excluir aluno?")) return
 
-<div className="login">
+setStudents(students.filter(s=>s.id!==id))
 
-<h2>Sistema Academia</h2>
-
-<button onClick={loginProfessor}>
-Área Professor
-</button>
-
-<button onClick={loginPais}>
-Área Pais / Aluno
-</button>
-
-</div>
-
-)
-
-}
-
-let lista=students
-
-if(user.tipo==="pais"){
-lista=[user.aluno]
 }
 
 return(
@@ -398,14 +352,12 @@ return(
 
 <h1>Sistema Academia</h1>
 
-{user.tipo==="professor" &&
-
 <div className="card">
 
 <div className="row">
 
 <input
-placeholder="Nome"
+placeholder="Nome aluno"
 value={form.nome}
 onChange={e=>setForm({...form,nome:e.target.value})}
 />
@@ -423,27 +375,18 @@ onChange={e=>setForm({...form,faixa:e.target.value})}
 {beltOrder.map(b=><option key={b}>{b}</option>)}
 </select>
 
-{editing?
-
-<button className="orange" onClick={updateStudent}>
-Salvar edição
-</button>
-
-:
-
-<button className="green" onClick={addStudent}>
+<button
+className="green"
+onClick={addStudent}
+>
 Adicionar aluno
 </button>
 
-}
-
 </div>
 
 </div>
 
-}
-
-{lista.map(s=>{
+{students.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),15)
 
@@ -473,49 +416,25 @@ return(
 <div style={{marginTop:6}}>Graus presença</div>
 <PresenceBar graus={graus}/>
 
-<div style={{marginTop:10}}>
+<div style={{display:"flex",gap:10,marginTop:8}}>
 
-<b>Graus comportamentais</b>
-
-<div style={{display:"flex",gap:10,marginTop:6}}>
-
-<div
-title="Relacionamento"
-className="beh"
+<div className="beh"
 style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}}
-onClick={()=>user.tipo==="professor" && markBehavior(s.id,"relacionamento")}
-></div>
+onClick={()=>markBehavior(s.id,"relacionamento")}></div>
 
-<div
-title="Comportamento"
-className="beh"
+<div className="beh"
 style={{background:s.comportamental.comportamento?"#3498db":"#eee"}}
-onClick={()=>user.tipo==="professor" && markBehavior(s.id,"comportamento")}
-></div>
+onClick={()=>markBehavior(s.id,"comportamento")}></div>
 
-<div
-title="Notas / Escola"
-className="beh"
+<div className="beh"
 style={{background:s.comportamental.notas?"#e74c3c":"#eee"}}
-onClick={()=>user.tipo==="professor" && markBehavior(s.id,"notas")}
-></div>
+onClick={()=>markBehavior(s.id,"notas")}></div>
 
-<div
-title="Hábitos / Disciplina"
-className="beh"
+<div className="beh"
 style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}}
-onClick={()=>user.tipo==="professor" && markBehavior(s.id,"habitos")}
-></div>
+onClick={()=>markBehavior(s.id,"habitos")}></div>
 
 </div>
-
-<div style={{fontSize:12,marginTop:6}}>
-🟡 Relacionamento | 🔵 Comportamento | 🔴 Notas | 🟢 Hábitos
-</div>
-
-</div>
-
-{user.tipo==="professor" &&
 
 <div style={{marginTop:10}}>
 
@@ -527,24 +446,14 @@ Presença
 Trocar Faixa
 </button>
 
-<button className="orange" onClick={()=>startEdit(s)}>
-Editar
+<button className="red" onClick={()=>removeStudent(s.id)}>
+Excluir
 </button>
 
 </div>
 
-}
-
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico comportamental</b>
-
-{s.historicoComportamental.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.tipo}
-</div>
-))}
-
+<div style={{fontSize:13,marginTop:8}}>
+Aulas: {s.aulas} / 135
 </div>
 
 </div>
@@ -552,6 +461,9 @@ Editar
 )
 
 })}
+
+<img src="sistema_graduacao.jpeg" className="info"/>
+<img src="graus_coloridos.jpeg" className="info"/>
 
 </div>
 
@@ -565,4 +477,3 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </body>
 </html>
-```
