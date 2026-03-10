@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Acompanhamento Jiu Jitsu Alliance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -36,7 +35,7 @@ background:#2c3e50;
 color:white;
 padding:10px;
 border-radius:8px;
-margin-top:20px;
+margin-top:20px
 }
 
 .row{
@@ -69,15 +68,13 @@ border:1px solid #ccc
 width:60px;
 height:60px;
 border-radius:50%;
-object-fit:cover;
-border:3px solid #ddd;
+border:3px solid #ddd
 }
 
 .studentHeader{
 display:flex;
 align-items:center;
-gap:10px;
-margin-bottom:6px
+gap:10px
 }
 
 .modal{
@@ -97,6 +94,14 @@ background:white;
 padding:20px;
 border-radius:10px;
 width:320px
+}
+
+.beh{
+width:22px;
+height:22px;
+border-radius:22px;
+background:#eee;
+cursor:pointer
 }
 
 </style>
@@ -175,9 +180,7 @@ value={pass}
 onChange={e=>setPass(e.target.value)}
 />
 
-<button onClick={entrar}>
-Entrar
-</button>
+<button onClick={entrar}>Entrar</button>
 
 </div>
 
@@ -194,7 +197,7 @@ function App(){
 const [login,setLogin]=React.useState(null)
 
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_v6")
+const saved=localStorage.getItem("academia_v7")
 return saved?JSON.parse(saved):[]
 })
 
@@ -207,7 +210,7 @@ faixa:"Branca"
 const [edit,setEdit]=React.useState(null)
 
 React.useEffect(()=>{
-localStorage.setItem("academia_v6",JSON.stringify(students))
+localStorage.setItem("academia_v7",JSON.stringify(students))
 },[students])
 
 if(!login){
@@ -221,12 +224,28 @@ if(!form.nome) return
 setStudents([...students,{
 
 id:Date.now(),
-...form,
+
+nome:form.nome,
+idade:form.idade,
+faixa:form.faixa,
+
 turma:definirTurma(form.idade),
+
 avatar:"https://i.imgur.com/4ZQZ4Zx.png",
+
 aulas:0,
+
+historicoAulas:[],
 historicoGraus:[],
-historicoFaixas:[]
+historicoFaixas:[],
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
+
 }])
 
 setForm({
@@ -243,26 +262,37 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
-const novas = s.aulas + 1
+const data=new Date().toLocaleDateString()
 
-let historico=s.historicoGraus
+const novas=s.aulas+1
 
-if(novas % 15 === 0){
+let historicoGraus=s.historicoGraus
 
-historico=[
-...historico,
+if(novas%15===0){
+
+historicoGraus=[
+...historicoGraus,
 {
 grau:Math.floor(novas/15),
-data:new Date().toLocaleDateString()
+data
 }
 ]
 
 }
 
 return{
+
 ...s,
+
 aulas:novas,
-historicoGraus:historico
+
+historicoAulas:[
+...s.historicoAulas,
+{data}
+],
+
+historicoGraus
+
 }
 
 }))
@@ -271,12 +301,16 @@ historicoGraus:historico
 
 function trocarFaixa(id){
 
+if(!confirm("Confirmar troca de faixa?")) return
+
 setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
 return{
+
 ...s,
+
 historicoFaixas:[
 ...s.historicoFaixas,
 {
@@ -284,8 +318,31 @@ faixa:s.faixa,
 data:new Date().toLocaleDateString()
 }
 ],
+
 aulas:0,
 historicoGraus:[]
+
+}
+
+}))
+
+}
+
+function markBehavior(id,key){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+return{
+
+...s,
+
+comportamental:{
+...s.comportamental,
+[key]:new Date().toLocaleDateString()
+}
+
 }
 
 }))
@@ -293,7 +350,11 @@ historicoGraus:[]
 }
 
 function removeStudent(id){
+
+if(!confirm("Excluir aluno?")) return
+
 setStudents(students.filter(s=>s.id!==id))
+
 }
 
 function salvarEdicao(){
@@ -356,19 +417,17 @@ Adicionar aluno
 
 {turmas.map(turma=>{
 
-const alunosDaTurma=alunosVisiveis.filter(a=>a.turma===turma)
+const alunos=alunosVisiveis.filter(a=>a.turma===turma)
 
-if(alunosDaTurma.length===0) return null
+if(alunos.length===0) return null
 
 return(
 
 <div key={turma}>
 
-<div className="turmaTitle">
-{turma}
-</div>
+<div className="turmaTitle">{turma}</div>
 
-{alunosDaTurma.map(s=>(
+{alunos.map(s=>(
 
 <div key={s.id} className="card">
 
@@ -386,6 +445,42 @@ return(
 <div>Faixa: {s.faixa}</div>
 <div>Aulas: {s.aulas}</div>
 
+<div style={{display:"flex",gap:10,marginTop:8}}>
+
+<div
+className="beh"
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"relacionamento")}
+></div>
+
+<div
+className="beh"
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"comportamento")}
+></div>
+
+<div
+className="beh"
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"notas")}
+></div>
+
+<div
+className="beh"
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee"
+}}
+onClick={()=>markBehavior(s.id,"habitos")}
+></div>
+
+</div>
+
 <div style={{marginTop:10}}>
 
 <button onClick={()=>addAttendance(s.id)}>
@@ -396,24 +491,15 @@ Presença
 
 <>
 
-<button
-className="green"
-onClick={()=>trocarFaixa(s.id)}
->
+<button className="green" onClick={()=>trocarFaixa(s.id)}>
 Trocar Faixa
 </button>
 
-<button
-className="orange"
-onClick={()=>setEdit({...s})}
->
+<button className="orange" onClick={()=>setEdit({...s})}>
 Editar
 </button>
 
-<button
-className="red"
-onClick={()=>removeStudent(s.id)}
->
+<button className="red" onClick={()=>removeStudent(s.id)}>
 Excluir
 </button>
 
@@ -456,6 +542,54 @@ Excluir
 )
 
 })}
+
+{edit &&
+
+<div className="modal">
+
+<div className="modalCard">
+
+<h3>Editar aluno</h3>
+
+<input
+value={edit.nome}
+onChange={e=>setEdit({...edit,nome:e.target.value})}
+/>
+
+<input
+value={edit.idade}
+onChange={e=>setEdit({...edit,idade:e.target.value})}
+/>
+
+<select
+value={edit.faixa}
+onChange={e=>setEdit({...edit,faixa:e.target.value})}
+>
+{beltOrder.map(b=><option key={b}>{b}</option>)}
+</select>
+
+<select
+value={edit.turma}
+onChange={e=>setEdit({...edit,turma:e.target.value})}
+>
+{turmas.map(t=><option key={t}>{t}</option>)}
+</select>
+
+<br/><br/>
+
+<button className="green" onClick={salvarEdicao}>
+Salvar
+</button>
+
+<button className="red" onClick={()=>setEdit(null)}>
+Cancelar
+</button>
+
+</div>
+
+</div>
+
+}
 
 </div>
 
