@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -18,9 +19,17 @@ margin:0;
 padding:20px
 }
 
+.layout{
+display:flex;
+gap:20px
+}
+
 .container{
-max-width:1000px;
-margin:auto
+flex:1
+}
+
+.sidebar{
+width:380px
 }
 
 .card{
@@ -111,6 +120,17 @@ gap:10px;
 margin-bottom:6px
 }
 
+.login{
+max-width:320px;
+margin:auto;
+margin-top:120px
+}
+
+.turmaTitle{
+margin-top:20px;
+font-size:20px
+}
+
 </style>
 </head>
 
@@ -143,7 +163,7 @@ return date.toLocaleDateString()
 
 }
 
-function definirTurma(idade){
+function getCategory(idade){
 
 idade=parseInt(idade)
 
@@ -152,7 +172,8 @@ if(idade>=5 && idade<=8) return "LITTLE EAGLE"
 if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
 if(idade>=13 && idade<=15) return "EAGLE YOUTH"
 
-return "FORA DA TURMA"
+return "OUTROS"
+
 }
 
 function ClassesBar({aulas}){
@@ -207,50 +228,35 @@ style={{background:color}}
 
 function Login({onLogin}){
 
-const [user,setUser]=React.useState("")
-const [pass,setPass]=React.useState("")
+const[user,setUser]=React.useState("")
+const[pass,setPass]=React.useState("")
 
 function entrar(){
 
-if(user==="admin" && pass==="admin123"){
-onLogin({tipo:"professor"})
+if(user==="professor" && pass==="123"){
+onLogin("professor")
 return
 }
 
 if(pass==="123"){
-onLogin({tipo:"pai",aluno:user})
+onLogin("pais")
 }
 
 }
 
 return(
 
-<div className="container">
+<div className="login card">
 
-<div className="card">
-
-<h2>Login Academia</h2>
+<h2>Login</h2>
 
 <div className="row">
 
-<input
-placeholder="Usuário"
-value={user}
-onChange={e=>setUser(e.target.value)}
-/>
+<input placeholder="Usuário" value={user} onChange={e=>setUser(e.target.value)}/>
 
-<input
-type="password"
-placeholder="Senha"
-value={pass}
-onChange={e=>setPass(e.target.value)}
-/>
+<input type="password" placeholder="Senha" value={pass} onChange={e=>setPass(e.target.value)}/>
 
-<button onClick={entrar}>
-Entrar
-</button>
-
-</div>
+<button onClick={entrar}>Entrar</button>
 
 </div>
 
@@ -265,7 +271,7 @@ function App(){
 const [login,setLogin]=React.useState(null)
 
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_preview_v3")
+const saved=localStorage.getItem("academia_preview_v2")
 return saved?JSON.parse(saved):[]
 })
 
@@ -276,7 +282,7 @@ faixa:"Branca"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("academia_preview_v3",JSON.stringify(students))
+localStorage.setItem("academia_preview_v2",JSON.stringify(students))
 },[students])
 
 if(!login){
@@ -291,9 +297,7 @@ setStudents([...students,{
 
 id:Date.now(),
 ...form,
-turma:definirTurma(form.idade),
-
-avatar:"https://i.imgur.com/4ZQZ4Zx.png",
+avatar:"avatar.png",
 
 aulas:0,
 
@@ -385,19 +389,15 @@ setStudents(students.filter(s=>s.id!==id))
 
 }
 
-let alunosVisiveis=students
-
-if(login.tipo==="pai"){
-alunosVisiveis=students.filter(s=>s.nome===login.aluno)
-}
+const categorias=["BABY EAGLE","LITTLE EAGLE","EAGLE WARRIOR","EAGLE YOUTH"]
 
 return(
+
+<div className="layout">
 
 <div className="container">
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
-
-{login.tipo==="professor" &&
 
 <div className="card">
 
@@ -433,9 +433,17 @@ Adicionar aluno
 
 </div>
 
-}
+{categorias.map(cat=>(
 
-{alunosVisiveis.map(s=>{
+<div key={cat}>
+
+<div className="turmaTitle">
+🥋 {cat}
+</div>
+
+{students
+.filter(s=>getCategory(s.idade)===cat)
+.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),8)
 
@@ -459,21 +467,18 @@ return(
 
 <div className="studentHeader">
 
-<img
-src={s.avatar}
-className="avatar"
-/>
+<img src={s.avatar} className="avatar"/>
 
 <div>
 
 <b>{s.nome}</b><br/>
+
 {s.idade} anos
 
 </div>
 
 </div>
 
-<div>Turma: {s.turma}</div>
 <div>Faixa: {s.faixa}</div>
 
 <div style={{marginTop:6}}>
@@ -490,58 +495,21 @@ Graus presença
 
 <div style={{display:"flex",gap:10,marginTop:8}}>
 
-<div
-className="beh"
-style={{
-background:s.comportamental.relacionamento?"#f1c40f":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"relacionamento")}
-></div>
+<div className="beh" style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}} onClick={()=>markBehavior(s.id,"relacionamento")}></div>
 
-<div
-className="beh"
-style={{
-background:s.comportamental.comportamento?"#3498db":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"comportamento")}
-></div>
+<div className="beh" style={{background:s.comportamental.comportamento?"#3498db":"#eee"}} onClick={()=>markBehavior(s.id,"comportamento")}></div>
 
-<div
-className="beh"
-style={{
-background:s.comportamental.notas?"#e74c3c":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"notas")}
-></div>
+<div className="beh" style={{background:s.comportamental.notas?"#e74c3c":"#eee"}} onClick={()=>markBehavior(s.id,"notas")}></div>
 
-<div
-className="beh"
-style={{
-background:s.comportamental.habitos?"#2ecc71":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"habitos")}
-></div>
+<div className="beh" style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}} onClick={()=>markBehavior(s.id,"habitos")}></div>
 
 </div>
 
 <div style={{marginTop:10}}>
 
-<button
-onClick={()=>addAttendance(s.id)}
->
-Presença
-</button>
+<button onClick={()=>addAttendance(s.id)}>Presença</button>
 
-{login.tipo==="professor" &&
-
-<button
-className="red"
-onClick={()=>removeStudent(s.id)}
->
-Excluir
-</button>
-
-}
+<button className="red" onClick={()=>removeStudent(s.id)}>Excluir</button>
 
 </div>
 
@@ -567,6 +535,26 @@ Previsão troca faixa: {previsao}
 
 </div>
 
+))}
+
+</div>
+
+<div className="sidebar">
+
+<div className="card">
+<h3>Graus Coloridos</h3>
+<img src="graus_coloridos.jpeg" style={{width:"100%"}}/>
+</div>
+
+<div className="card">
+<h3>Sistema de Graduação</h3>
+<img src="sistema_graduacao.jpeg" style={{width:"100%"}}/>
+</div>
+
+</div>
+
+</div>
+
 )
 
 }
@@ -579,3 +567,4 @@ ReactDOM
 
 </body>
 </html>
+```
