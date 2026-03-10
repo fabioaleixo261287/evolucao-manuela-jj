@@ -19,8 +19,20 @@ padding:20px
 }
 
 .container{
-max-width:1000px;
+max-width:1200px;
 margin:auto
+}
+
+.layout{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px
+}
+
+.imagesPanel img{
+width:100%;
+margin-bottom:15px;
+border-radius:8px
 }
 
 .card{
@@ -111,6 +123,13 @@ gap:10px;
 margin-bottom:6px
 }
 
+.login{
+max-width:400px;
+margin:auto;
+margin-top:120px;
+text-align:center
+}
+
 </style>
 </head>
 
@@ -163,15 +182,19 @@ return(
 
 function PresenceBar({graus}){
 
+const brancos=Math.min(graus,4)
+const vermelhos=Math.max(graus-4,0)
+
 return(
 
 <div className="bar">
 
-{Array.from({length:8}).map((_,i)=>{
+{Array.from({length:4}).map((_,i)=>{
 
 let color="#ddd"
 
-if(i<graus) color="#fff"
+if(i<vermelhos) color="#e74c3c"
+else if(i<brancos) color="#fff"
 
 return(
 <div
@@ -189,21 +212,56 @@ style={{background:color}}
 
 }
 
+function Login({setUser}){
+
+return(
+
+<div className="login card">
+
+<h2>Login</h2>
+
+<br/>
+
+<button
+className="green"
+onClick={()=>setUser("professor")}
+>
+Professor
+</button>
+
+<br/><br/>
+
+<button
+onClick={()=>setUser("pais")}
+>
+Pais
+</button>
+
+</div>
+
+)
+
+}
+
 function App(){
 
+const [user,setUser]=React.useState("")
+const [filho,setFilho]=React.useState("")
+
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("academia_preview_v3")
+const saved=localStorage.getItem("academia_preview_v2")
 return saved?JSON.parse(saved):[]
 })
 
 const [form,setForm]=React.useState({
 nome:"",
 idade:"",
-faixa:"Branca"
+faixa:"Branca",
+turma:"Baby"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("academia_preview_v3",JSON.stringify(students))
+localStorage.setItem("academia_preview_v2",JSON.stringify(students))
 },[students])
 
 function addStudent(){
@@ -213,12 +271,8 @@ if(!form.nome) return
 setStudents([...students,{
 
 id:Date.now(),
-
-nome:form.nome,
-idade:form.idade,
-faixa:form.faixa,
-
-avatar:"https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+...form,
+avatar:"avatar.png",
 
 aulas:0,
 
@@ -238,7 +292,8 @@ habitos:null
 setForm({
 nome:"",
 idade:"",
-faixa:"Branca"
+faixa:"Branca",
+turma:"Baby"
 })
 
 }
@@ -265,7 +320,6 @@ return{
 aulas:novas,
 
 historicoAulas:[...s.historicoAulas,{data}],
-
 historicoGraus:historico
 
 }
@@ -279,8 +333,6 @@ function markBehavior(id,key){
 setStudents(students.map(s=>{
 
 if(s.id!==id) return s
-
-if(s.comportamental[key]) return s
 
 const data=new Date().toLocaleDateString()
 
@@ -307,9 +359,16 @@ historicoComportamental:[
 function removeStudent(id){
 
 if(!confirm("Excluir aluno?")) return
-
 setStudents(students.filter(s=>s.id!==id))
 
+}
+
+if(user==="") return <Login setUser={setUser}/>
+
+let visibleStudents=students
+
+if(user==="pais"){
+visibleStudents=students.filter(s=>s.nome===filho)
 }
 
 return(
@@ -317,6 +376,30 @@ return(
 <div className="container">
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
+
+<div className="layout">
+
+<div>
+
+{user==="pais" &&
+
+<div className="card">
+
+<select
+value={filho}
+onChange={e=>setFilho(e.target.value)}
+>
+<option value="">Selecione seu filho</option>
+{students.map(s=>
+<option key={s.id}>{s.nome}</option>
+)}
+</select>
+
+</div>
+
+}
+
+{user==="professor" &&
 
 <div className="card">
 
@@ -352,22 +435,15 @@ Adicionar aluno
 
 </div>
 
-{students.map(s=>{
+}
 
-const graus=Math.min(Math.floor(s.aulas/15),8)
+{visibleStudents.map(s=>{
 
-const comportamentoCompleto=
-Object.values(s.comportamental).every(v=>v)
-
+const graus=Math.min(Math.floor(s.aulas/15),15)
+const comportamentoCompleto=Object.values(s.comportamental).every(v=>v)
 const extras=Math.max(s.aulas-120,0)
-
-const pronto=
-graus===8 &&
-comportamentoCompleto &&
-extras>=15
-
+const pronto=graus===8 && comportamentoCompleto && extras>=8
 const faltam=Math.max(135-s.aulas,0)
-
 const previsao=estimateDate(faltam)
 
 return(
@@ -376,91 +452,52 @@ return(
 
 <div className="studentHeader">
 
-<img
-src={s.avatar}
-className="avatar"
-/>
+<img src={s.avatar} className="avatar"/>
 
 <div>
-
 <b>{s.nome}</b><br/>
-
 {s.idade} anos
-
 </div>
 
 </div>
 
 <div>Faixa: {s.faixa}</div>
 
-<div style={{marginTop:6}}>
-Aulas
-</div>
+<div style={{marginTop:6}}>Aulas</div>
 
 <ClassesBar aulas={s.aulas}/>
 
-<div style={{marginTop:6}}>
-Graus presença
-</div>
+<div style={{marginTop:6}}>Graus presença</div>
 
 <PresenceBar graus={graus}/>
 
+{user==="professor" &&
+
 <div style={{display:"flex",gap:10,marginTop:8}}>
 
-<div
-className="beh"
-title="Relacionamento"
-style={{
-background:s.comportamental.relacionamento?"#f1c40f":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"relacionamento")}
-></div>
+<div className="beh" style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee"}} onClick={()=>markBehavior(s.id,"relacionamento")}></div>
 
-<div
-className="beh"
-title="Comportamento"
-style={{
-background:s.comportamental.comportamento?"#3498db":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"comportamento")}
-></div>
+<div className="beh" style={{background:s.comportamental.comportamento?"#3498db":"#eee"}} onClick={()=>markBehavior(s.id,"comportamento")}></div>
 
-<div
-className="beh"
-title="Notas escolares"
-style={{
-background:s.comportamental.notas?"#e74c3c":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"notas")}
-></div>
+<div className="beh" style={{background:s.comportamental.notas?"#e74c3c":"#eee"}} onClick={()=>markBehavior(s.id,"notas")}></div>
 
-<div
-className="beh"
-title="Hábitos / disciplina"
-style={{
-background:s.comportamental.habitos?"#2ecc71":"#eee"
-}}
-onClick={()=>markBehavior(s.id,"habitos")}
-></div>
+<div className="beh" style={{background:s.comportamental.habitos?"#2ecc71":"#eee"}} onClick={()=>markBehavior(s.id,"habitos")}></div>
 
 </div>
+
+}
+
+{user==="professor" &&
 
 <div style={{marginTop:10}}>
 
-<button
-onClick={()=>addAttendance(s.id)}
->
-Presença
-</button>
+<button onClick={()=>addAttendance(s.id)}>Presença</button>
 
-<button
-className="red"
-onClick={()=>removeStudent(s.id)}
->
-Excluir
-</button>
+<button className="red" onClick={()=>removeStudent(s.id)}>Excluir</button>
 
 </div>
+
+}
 
 <div style={{marginTop:8,fontSize:13}}>
 Faltam {faltam} aulas para exame
@@ -476,35 +513,23 @@ Previsão troca faixa: {previsao}
 </div>
 }
 
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico graus presença</b>
-
-{s.historicoGraus.map((h,i)=>(
-<div key={i}>
-{h.data} - Grau {h.grau}
-</div>
-))}
-
-</div>
-
-<div style={{marginTop:10,fontSize:12}}>
-
-<b>Histórico comportamental</b>
-
-{s.historicoComportamental.map((h,i)=>(
-<div key={i}>
-{h.data} - {h.tipo}
-</div>
-))}
-
-</div>
-
 </div>
 
 )
 
 })}
+
+</div>
+
+<div className="imagesPanel">
+
+<img src="sistema_graduacao.jpeg"/>
+
+<img src="graus_coloridos.jpeg"/>
+
+</div>
+
+</div>
 
 </div>
 
