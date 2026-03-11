@@ -125,56 +125,6 @@ max-width:400px;
 margin:auto
 }
 
-/* ----------- CHAT WHATSAPP ----------- */
-
-.chatBox{
-margin-top:15px;
-border-top:1px solid #ddd;
-padding-top:10px
-}
-
-.chatMessages{
-max-height:180px;
-overflow-y:auto;
-padding:6px;
-background:#f0f0f0;
-border-radius:8px;
-margin-bottom:6px
-}
-
-.msgRow{
-display:flex;
-margin-bottom:6px
-}
-
-.msgRow.me{
-justify-content:flex-end
-}
-
-.msgBubble{
-max-width:70%;
-padding:6px 10px;
-border-radius:10px;
-font-size:13px
-}
-
-.msgBubble.me{
-background:#dcf8c6
-}
-
-.msgBubble.other{
-background:white
-}
-
-.chatInput{
-display:flex;
-gap:6px
-}
-
-.chatInput input{
-flex:1
-}
-
 </style>
 </head>
 
@@ -183,93 +133,6 @@ flex:1
 <div id="root"></div>
 
 <script type="text/babel">
-
-/* ============================
-   CHAT WHATSAPP (ADICIONADO)
-============================ */
-
-function WhatsAppChat({studentId,user}){
-
-const storageKey="chat_"+studentId
-
-const [msgs,setMsgs]=React.useState(()=>{
-const saved=localStorage.getItem(storageKey)
-return saved?JSON.parse(saved):[]
-})
-
-const [text,setText]=React.useState("")
-
-React.useEffect(()=>{
-localStorage.setItem(storageKey,JSON.stringify(msgs))
-},[msgs])
-
-function send(){
-
-if(!text) return
-
-setMsgs([
-...msgs,
-{
-text,
-sender:user,
-time:new Date().toLocaleTimeString()
-}
-])
-
-setText("")
-
-}
-
-return(
-
-<div className="chatBox">
-
-<b>Chat</b>
-
-<div className="chatMessages">
-
-{msgs.map((m,i)=>(
-
-<div key={i} className={"msgRow "+(m.sender===user?"me":"")}>
-
-<div className={"msgBubble "+(m.sender===user?"me":"other")}>
-
-{m.text}
-
-<div style={{fontSize:9,color:"#666",marginTop:2}}>
-{m.time}
-</div>
-
-</div>
-
-</div>
-
-))}
-
-</div>
-
-<div className="chatInput">
-
-<input
-placeholder="Mensagem..."
-value={text}
-onChange={e=>setText(e.target.value)}
-onKeyDown={e=>{if(e.key==="Enter") send()}}
-/>
-
-<button onClick={send}>Enviar</button>
-
-</div>
-
-</div>
-
-)
-
-}
-
-/* ============================
-   RESTANTE DO SEU SCRIPT
-============================ */
 
 const beltOrder=[
 "Branca","Cinza/Branca","Cinza","Cinza/Preta",
@@ -281,44 +144,62 @@ const beltOrder=[
 const trainingDays=[1,3,5,6]
 
 function getAge(date){
+
 const hoje=new Date()
 const nasc=new Date(date)
+
 let idade=hoje.getFullYear()-nasc.getFullYear()
+
 const m=hoje.getMonth()-nasc.getMonth()
+
 if(m<0 || (m===0 && hoje.getDate()<nasc.getDate()))
 idade--
+
 return idade
+
 }
 
 function getCategory(idade){
+
 if(idade>=3 && idade<=4) return "BABY EAGLE"
 if(idade>=5 && idade<=8) return "LITTLE EAGLE"
 if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
 if(idade>=13 && idade<=15) return "EAGLE YOUTH"
+
 return "FORA CATEGORIA"
+
 }
 
 function estimateDate(aulas){
+
 let date=new Date()
 let count=0
+
 while(count<aulas){
 date.setDate(date.getDate()+1)
 if(trainingDays.includes(date.getDay())) count++
 }
+
 return date.toLocaleDateString()
+
 }
 
 function ClassesBar({aulas}){
+
 return(
 <div className="bar">
 {Array.from({length:15}).map((_,i)=>{
+
 const done=i<(aulas%15)
+
 return(
 <div key={i} className={"box "+(done?"done":"")}></div>
 )
+
 })}
 </div>
 )
+
 }
 
 function PresenceBar({graus}){
@@ -327,21 +208,31 @@ const brancos=Math.min(graus,4)
 const vermelhos=Math.max(graus-4,0)
 
 return(
+
 <div className="bar">
+
 {Array.from({length:4}).map((_,i)=>{
+
 let color="#ddd"
+
 if(i<vermelhos) color="#e74c3c"
 else if(i<brancos) color="#fff"
+
 return(
-<div key={i} className="degree" style={{background:color}}></div>
+<div
+key={i}
+className="degree"
+style={{background:color}}
+></div>
 )
+
 })}
+
 </div>
+
 )
 
 }
-
-/* LOGIN, APP E RESTANTE DO CÓDIGO ORIGINAL CONTINUA IGUAL */
 
 function Login({setUser,students,setFilho}){
 
@@ -351,8 +242,10 @@ const [nascimento,setNascimento]=React.useState("")
 const [senha,setSenha]=React.useState("")
 
 function loginProfessor(){
+
 if(senha==="admin") setUser("professor")
 else alert("Senha incorreta")
+
 }
 
 function loginPais(){
@@ -387,38 +280,52 @@ Pais
 <br/><br/>
 
 {tipo==="professor" &&
+
 <div>
+
 <input
 type="password"
 placeholder="Senha"
 value={senha}
 onChange={e=>setSenha(e.target.value)}
 />
+
 <br/><br/>
+
 <button onClick={loginProfessor}>
 Entrar
 </button>
+
 </div>
+
 }
 
 {tipo==="pais" &&
+
 <div>
+
 <input
 placeholder="Nome do aluno"
 value={nome}
 onChange={e=>setNome(e.target.value)}
 />
+
 <br/><br/>
+
 <input
 type="date"
 value={nascimento}
 onChange={e=>setNascimento(e.target.value)}
 />
+
 <br/><br/>
+
 <button onClick={loginPais}>
 Entrar
 </button>
+
 </div>
+
 }
 
 </div>
@@ -426,8 +333,6 @@ Entrar
 )
 
 }
-
-/* APP ORIGINAL */
 
 function App(){
 
@@ -449,8 +354,6 @@ React.useEffect(()=>{
 localStorage.setItem("academia_alliance_final",JSON.stringify(students))
 },[students])
 
-/* funções originais mantidas */
-
 function addStudent(){
 
 if(!form.nome) return
@@ -460,6 +363,7 @@ const idade=getAge(form.nascimento)
 setStudents([...students,{
 
 id:Date.now(),
+
 nome:form.nome,
 nascimento:form.nascimento,
 
@@ -494,8 +398,6 @@ faixa:"Branca"
 
 }
 
-/* resto do seu código continua exatamente igual */
-
 function addAttendance(id){
 
 setStudents(students.map(s=>{
@@ -520,17 +422,24 @@ const novas=s.aulas+1
 let historico=s.historicoGraus
 
 if(novas%15===0){
+
 historico=[...historico,{
 grau:Math.floor(novas/15),
 data
 }]
+
 }
 
 return{
+
 ...s,
+
 aulas:novas,
+
 historicoAulas:[...s.historicoAulas,{data}],
+
 historicoGraus:historico
+
 }
 
 }))
@@ -546,15 +455,19 @@ if(s.id!==id) return s
 const data=new Date().toLocaleDateString()
 
 return{
+
 ...s,
+
 comportamental:{
 ...s.comportamental,
 [key]:data
 },
+
 historicoComportamental:[
 ...s.historicoComportamental,
 {tipo:key,data}
 ]
+
 }
 
 }))
@@ -574,22 +487,29 @@ const atualIndex=beltOrder.indexOf(s.faixa)
 const proximaFaixa=beltOrder[atualIndex+1] || s.faixa
 
 return{
+
 ...s,
+
 faixa:proximaFaixa,
+
 aulas:0,
+
 historicoAulas:[],
 historicoGraus:[],
 historicoComportamental:[],
+
 comportamental:{
 relacionamento:null,
 comportamento:null,
 notas:null,
 habitos:null
 },
+
 historicoFaixas:[
 ...s.historicoFaixas,
 {faixa:proximaFaixa,data}
 ]
+
 }
 
 }))
@@ -609,10 +529,12 @@ function uploadAvatar(id,file){
 const reader=new FileReader()
 
 reader.onload=e=>{
+
 setStudents(students.map(s=>{
 if(s.id!==id) return s
 return {...s,avatar:e.target.result}
 }))
+
 }
 
 reader.readAsDataURL(file)
@@ -708,7 +630,9 @@ if(file) uploadAvatar(s.id,file)
 <div>
 
 <b>{s.nome}</b><br/>
+
 {s.idade} anos<br/>
+
 Categoria: {s.categoria}
 
 </div>
@@ -809,9 +733,6 @@ Previsão troca faixa: {previsao}
 <div key={i}>{h.data} - {h.faixa}</div>
 ))}
 </div>
-
-{/* CHAT ADICIONADO */}
-<WhatsAppChat studentId={s.id} user={user}/>
 
 </div>
 
