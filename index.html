@@ -92,7 +92,6 @@ input,select{
   border-radius:50%;
   object-fit:cover;
   border:3px solid #ddd;
-  position:relative;
 }
 
 .editAvatar{
@@ -131,23 +130,29 @@ input,select{
 }
 
 .messages{
-  max-height:200px;
+  max-height:250px;
   overflow-y:auto;
   margin-bottom:10px;
 }
 
 .message{
-  background:#e1ffc7;
   padding:6px 10px;
   border-radius:12px;
   margin-bottom:5px;
   display:inline-block;
   max-width:70%;
+  word-wrap:break-word;
 }
 
-.message.self{
+.message.user{
   background:#dcf8c6;
   margin-left:auto;
+}
+
+.message.prof{
+  background:#fff;
+  border:1px solid #ddd;
+  margin-right:auto;
 }
 
 .chatInput{
@@ -160,11 +165,6 @@ input,select{
   padding:6px;
   border-radius:6px;
   border:1px solid #ccc;
-}
-
-.chatInput button{
-  padding:6px 10px;
-  border-radius:6px;
 }
 </style>
 </head>
@@ -188,8 +188,7 @@ function getAge(date){
   const nasc=new Date(date)
   let idade=hoje.getFullYear()-nasc.getFullYear()
   const m=hoje.getMonth()-nasc.getMonth()
-  if(m<0 || (m===0 && hoje.getDate()<nasc.getDate()))
-    idade--
+  if(m<0 || (m===0 && hoje.getDate()<nasc.getDate())) idade--
   return idade
 }
 
@@ -280,28 +279,37 @@ function Login({setUser,students,setFilho}){
   )
 }
 
-// Componente do chat
+// Chat estilo WhatsApp com professor e aluno
 function Chat(){
-  const [messages,setMessages]=React.useState([])
+  const [messages,setMessages]=React.useState([
+    {text:"Bem-vindo ao chat da academia!", sender:"prof"}
+  ])
   const [input,setInput]=React.useState("")
+  const messagesEndRef=React.useRef(null)
 
   function sendMessage(){
     if(input.trim()==="") return
-    setMessages([...messages,{text:input,self:true}])
+    setMessages([...messages,{text:input,sender:"user"}])
     setInput("")
   }
+
+  React.useEffect(()=>{
+    messagesEndRef.current?.scrollIntoView({behavior:"smooth"})
+  },[messages])
 
   return(
     <div className="chatBox">
       <div className="messages">
         {messages.map((m,i)=>(
-          <div key={i} className={"message "+(m.self?"self":"")}>{m.text}</div>
+          <div key={i} className={`message ${m.sender==="user"?"user":"prof"}`}>
+            {m.text}
+          </div>
         ))}
+        <div ref={messagesEndRef}/>
       </div>
       <div className="chatInput">
-        <input type="text" placeholder="Mensagem..." value={input} onChange={e=>setInput(e.target.value)}/>
+        <input type="text" placeholder="Mensagem..." value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter") sendMessage()}}/>
         <button onClick={sendMessage}>Enviar</button>
-        <button>📎</button>
       </div>
     </div>
   )
@@ -463,19 +471,18 @@ function App(){
               <b>Histórico de faixas</b>
               {s.historicoFaixas.map((h,i)=>(<div key={i}>{h.data} - {h.faixa}</div>))}
             </div>
-
           </div>
         )
       })}
+
+      {/* Chat acima das imagens */}
+      <Chat/>
 
       <div className="card">
         <img src="graus_coloridos.jpeg" width="100%"/>
         <br/><br/>
         <img src="sistema_graduacao.jpeg" width="100%"/>
       </div>
-
-      {/* Chat inserido */}
-      <Chat/>
 
     </div>
   )
