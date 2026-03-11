@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -27,14 +28,14 @@ margin:auto
 background:white;
 padding:16px;
 border-radius:12px;
-margin-bottom:12px;
+margin-bottom:14px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1);
 border:2px solid #e6f2ff;
 }
 
 .row{
 display:flex;
-gap:8px;
+gap:10px;
 flex-wrap:wrap;
 margin-bottom:10px
 }
@@ -59,12 +60,12 @@ border:1px solid #ccc
 
 .bar{
 display:flex;
-gap:3px
+gap:4px
 }
 
 .box{
-width:14px;
-height:14px;
+width:16px;
+height:16px;
 border:1px solid #999;
 background:#eee
 }
@@ -74,18 +75,19 @@ background:#2ecc71
 }
 
 .degree{
-width:20px;
-height:20px;
+width:22px;
+height:22px;
 border:1px solid #555;
 border-radius:3px;
 background:#ddd
 }
 
 .beh{
-width:22px;
-height:22px;
-border-radius:22px;
-background:#eee
+width:26px;
+height:26px;
+border-radius:50%;
+background:#ddd;
+cursor:pointer
 }
 
 .avatar{
@@ -93,12 +95,28 @@ width:60px;
 height:60px;
 border-radius:50%;
 border:3px solid #ddd;
+object-fit:cover
+}
+
+.avatarBox{
+position:relative
+}
+
+.editAvatar{
+position:absolute;
+bottom:-6px;
+right:-6px;
+font-size:10px;
+padding:2px 6px;
+border-radius:6px;
+background:#3498db;
+color:white
 }
 
 .studentHeader{
 display:flex;
 align-items:center;
-gap:10px;
+gap:12px;
 margin-bottom:6px
 }
 
@@ -126,6 +144,14 @@ color:white
 
 .prof{background:#3498db}
 .pais{background:#2ecc71}
+
+.history{
+font-size:12px;
+background:#fafafa;
+padding:8px;
+border-radius:8px;
+margin-top:8px
+}
 
 </style>
 </head>
@@ -172,195 +198,6 @@ if(trainingDays.includes(date.getDay())) count++
 return date.toLocaleDateString()
 }
 
-function ClassesBar({aulas}){
-return(
-<div className="bar">
-{Array.from({length:15}).map((_,i)=>{
-const done=i<(aulas%15)
-return <div key={i} className={"box "+(done?"done":"")}></div>
-})}
-</div>
-)
-}
-
-function PresenceBar({graus}){
-const brancos=Math.min(graus,4)
-const vermelhos=Math.max(graus-4,0)
-
-return(
-<div className="bar">
-
-{Array.from({length:4}).map((_,i)=>{
-let color="#ddd"
-if(i<vermelhos) color="#e74c3c"
-else if(i<brancos) color="#fff"
-
-return(
-<div key={i} className="degree" style={{background:color}}></div>
-)
-})}
-
-</div>
-)
-}
-
-function Chat({student,user,sendMessage}){
-
-const [msg,setMsg]=React.useState("")
-
-return(
-
-<div>
-
-<h3>💬 Conversa</h3>
-
-<div className="chatBox">
-
-{student.chat.map((c,i)=>(
-
-<div key={i} style={{
-textAlign:c.user==="professor"?"left":"right"
-}}>
-
-<div className={"msg "+(c.user==="professor"?"prof":"pais")}>
-
-{c.user==="professor"?"👨‍🏫 ":"👨‍👩‍👧 "}
-{c.text}
-
-</div>
-
-<div style={{fontSize:10}}>
-{c.data}
-</div>
-
-</div>
-
-))}
-
-</div>
-
-<div style={{display:"flex",gap:5}}>
-
-<input
-style={{flex:1}}
-value={msg}
-placeholder="Mensagem..."
-onChange={e=>setMsg(e.target.value)}
-/>
-
-<button onClick={()=>{
-sendMessage(student.id,msg)
-setMsg("")
-}}>
-Enviar
-</button>
-
-</div>
-
-</div>
-
-)
-
-}
-
-function Login({setUser,students,setFilho}){
-
-const [tipo,setTipo]=React.useState("")
-const [nome,setNome]=React.useState("")
-const [nascimento,setNascimento]=React.useState("")
-const [senha,setSenha]=React.useState("")
-
-function loginProfessor(){
-if(senha==="admin") setUser("professor")
-else alert("Senha incorreta")
-}
-
-function loginPais(){
-
-const aluno=students.find(
-s=>s.nome===nome && s.nascimento===nascimento
-)
-
-if(aluno){
-setFilho(nome)
-setUser("pais")
-}else{
-alert("Aluno não encontrado")
-}
-
-}
-
-return(
-
-<div className="login card">
-
-<h2>Login</h2>
-
-<button className="green" onClick={()=>setTipo("professor")}>
-Professor
-</button>
-
-<button onClick={()=>setTipo("pais")}>
-Pais
-</button>
-
-<br/><br/>
-
-{tipo==="professor" &&
-
-<div>
-
-<input
-type="password"
-placeholder="Senha"
-value={senha}
-onChange={e=>setSenha(e.target.value)}
-/>
-
-<br/><br/>
-
-<button onClick={loginProfessor}>
-Entrar
-</button>
-
-</div>
-
-}
-
-{tipo==="pais" &&
-
-<div>
-
-<input
-placeholder="Nome do aluno"
-value={nome}
-onChange={e=>setNome(e.target.value)}
-/>
-
-<br/><br/>
-
-<input
-type="date"
-value={nascimento}
-onChange={e=>setNascimento(e.target.value)}
-/>
-
-<br/><br/>
-
-<button onClick={loginPais}>
-Entrar
-</button>
-
-</div>
-
-}
-
-</div>
-
-)
-
-}
-
 function App(){
 
 const [user,setUser]=React.useState("")
@@ -399,6 +236,7 @@ faixa:form.faixa,
 avatar:"emoji",
 
 aulas:0,
+bloqueado:false,
 
 chat:[],
 
@@ -408,15 +246,125 @@ historicoComportamental:[],
 historicoFaixas:[],
 
 comportamental:{
-relacionamento:null,
-comportamento:null,
-notas:null,
-habitos:null
+relacionamento:false,
+comportamento:false,
+notas:false,
+habitos:false
 }
 
 }])
 
 setForm({nome:"",nascimento:"",faixa:"Branca"})
+
+}
+
+function addAttendance(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+if(s.bloqueado){
+alert("Aluno aguardando troca de faixa")
+return s
+}
+
+const novas=s.aulas+1
+const data=new Date().toLocaleDateString()
+
+let bloqueio=false
+
+if(novas>=135 &&
+Object.values(s.comportamental).every(v=>v===true)){
+bloqueio=true
+alert("🏆 Aluno pronto para troca de faixa")
+}
+
+return{
+...s,
+aulas:novas,
+bloqueado:bloqueio,
+historicoAulas:[...s.historicoAulas,{data}]
+}
+
+}))
+
+}
+
+function toggleComportamento(id,tipo){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const novo=!s.comportamental[tipo]
+
+return{
+...s,
+comportamental:{
+...s.comportamental,
+[tipo]:novo
+},
+historicoComportamental:[
+...s.historicoComportamental,
+{tipo:tipo,valor:novo,data:new Date().toLocaleDateString()}
+]
+}
+
+}))
+
+}
+
+function trocarFaixa(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+let index=beltOrder.indexOf(s.faixa)
+
+if(index<beltOrder.length-1){
+const nova=beltOrder[index+1]
+
+return{
+...s,
+faixa:nova,
+aulas:0,
+bloqueado:false,
+comportamental:{
+relacionamento:false,
+comportamento:false,
+notas:false,
+habitos:false
+},
+historicoFaixas:[
+...s.historicoFaixas,
+{faixa:nova,data:new Date().toLocaleDateString()}
+]
+}
+
+}
+
+return s
+
+}))
+
+}
+
+function uploadAvatar(id,file){
+
+const reader=new FileReader()
+
+reader.onload=e=>{
+
+setStudents(students.map(s=>{
+if(s.id!==id) return s
+return {...s,avatar:e.target.result}
+}))
+
+}
+
+reader.readAsDataURL(file)
 
 }
 
@@ -428,13 +376,15 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
-const data=new Date().toLocaleString()
-
 return{
 ...s,
 chat:[
 ...s.chat,
-{user:user,text:text,data:data}
+{
+user:user,
+text:text,
+data:new Date().toLocaleString()
+}
 ]
 }
 
@@ -442,62 +392,22 @@ chat:[
 
 }
 
-function addAttendance(id){
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-const novas=s.aulas+1
-const data=new Date().toLocaleDateString()
-
-let historico=s.historicoGraus
-
-if(novas%15===0){
-alert("🎉 Parabéns! Você ganhou um grau!")
-historico=[...historico,{grau:Math.floor(novas/15),data}]
-}
-
-if(novas===135){
-alert("🏆 Hora da troca de faixa!")
-}
-
-return{
-...s,
-aulas:novas,
-historicoAulas:[...s.historicoAulas,{data}],
-historicoGraus:historico
-}
-
-}))
-
-}
-
-function uploadAvatar(id,file){
-
-const reader=new FileReader()
-
-reader.onload=function(e){
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-return{
-...s,
-avatar:e.target.result
-}
-
-}))
-
-}
-
-reader.readAsDataURL(file)
-
-}
-
 if(user==="")
-return <Login setUser={setUser} students={students} setFilho={setFilho}/>
+return(
+<div className="login card">
+
+<h2>Login</h2>
+
+<button className="green" onClick={()=>setUser("professor")}>
+Professor
+</button>
+
+<button onClick={()=>setUser("pais")}>
+Pais
+</button>
+
+</div>
+)
 
 let lista=students
 if(user==="pais"){
@@ -557,13 +467,15 @@ return(
 
 <div className="studentHeader">
 
+<div className="avatarBox">
+
 {s.avatar==="emoji" ?
 
 <div className="avatar" style={{
 display:"flex",
 alignItems:"center",
 justifyContent:"center",
-fontSize:32
+fontSize:30
 }}>
 🙂
 </div>
@@ -573,6 +485,24 @@ fontSize:32
 <img src={s.avatar} className="avatar"/>
 
 }
+
+<label className="editAvatar">
+
+✏
+
+<input
+type="file"
+accept="image/*"
+style={{display:"none"}}
+onChange={e=>{
+const file=e.target.files[0]
+if(file) uploadAvatar(s.id,file)
+}}
+/>
+
+</label>
+
+</div>
 
 <div>
 
@@ -584,40 +514,58 @@ Categoria: {s.categoria}
 
 </div>
 
-<div style={{marginTop:6}}>
-
-<input
-type="file"
-accept="image/*"
-onChange={e=>{
-const file=e.target.files[0]
-if(file) uploadAvatar(s.id,file)
-}}
-/>
-
-</div>
-
 <div>Faixa: {s.faixa}</div>
 
 <div style={{marginTop:6}}>Aulas</div>
-<ClassesBar aulas={s.aulas}/>
 
-<div style={{marginTop:6}}>Graus presença</div>
-<PresenceBar graus={graus}/>
+<div className="bar">
+
+{Array.from({length:15}).map((_,i)=>(
+<div key={i} className={"box "+(i<(s.aulas%15)?"done":"")}></div>
+))}
+
+</div>
+
+<div style={{marginTop:8}}>
+
+Graus comportamentais
+
+<div className="row">
+
+{Object.keys(s.comportamental).map(k=>(
+
+<div
+key={k}
+className="beh"
+style={{
+background:s.comportamental[k]?"#2ecc71":"#ddd"
+}}
+onClick={()=>user==="professor" && toggleComportamento(s.id,k)}
+></div>
+
+))}
+
+</div>
+
+</div>
 
 {user==="professor" &&
 
-<div style={{marginTop:10,display:"flex",gap:10}}>
+<div className="row">
 
 <button onClick={()=>addAttendance(s.id)}>
 Presença
+</button>
+
+<button className="green" onClick={()=>trocarFaixa(s.id)}>
+Trocar faixa
 </button>
 
 </div>
 
 }
 
-<div style={{marginTop:8,fontSize:13}}>
+<div style={{fontSize:13}}>
 Faltam {faltam} aulas
 </div>
 
@@ -625,27 +573,32 @@ Faltam {faltam} aulas
 Previsão troca faixa: {previsao}
 </div>
 
-<div style={{marginTop:15}}>
+<div className="history">
 
-<h3>Sistema de Graduação</h3>
-
-<img
-src="graus_coloridos.jpeg"
-style={{width:"100%",maxWidth:400,marginBottom:10,borderRadius:10}}
-/>
-
-<img
-src="sistema_graduacao.jpeg"
-style={{width:"100%",maxWidth:400,borderRadius:10}}
-/>
+<b>Histórico de Presença</b><br/>
+{s.historicoAulas.map((h,i)=>(
+<div key={i}>{h.data}</div>
+))}
 
 </div>
 
-<Chat
-student={s}
-user={user}
-sendMessage={sendMessage}
-/>
+<div className="history">
+
+<b>Histórico Comportamental</b><br/>
+{s.historicoComportamental.map((h,i)=>(
+<div key={i}>{h.tipo} - {h.valor?"✔":"✖"} - {h.data}</div>
+))}
+
+</div>
+
+<div className="history">
+
+<b>Histórico Troca Faixa</b><br/>
+{s.historicoFaixas.map((h,i)=>(
+<div key={i}>{h.faixa} - {h.data}</div>
+))}
+
+</div>
 
 </div>
 
@@ -665,3 +618,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 
 </body>
 </html>
+```
