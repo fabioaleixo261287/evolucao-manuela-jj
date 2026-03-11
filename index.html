@@ -2,7 +2,8 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Controle Jiu Jitsu Alliance</title>
+<title>Acompanhamento Jiu Jitsu Alliance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -13,6 +14,7 @@
 body{
 font-family:Arial;
 background:#f4f6f8;
+margin:0;
 padding:20px
 }
 
@@ -24,15 +26,16 @@ margin:auto
 .card{
 background:white;
 padding:16px;
-margin-bottom:14px;
 border-radius:10px;
+margin-bottom:12px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1)
 }
 
 .row{
 display:flex;
 gap:8px;
-flex-wrap:wrap
+flex-wrap:wrap;
+margin-bottom:10px
 }
 
 button{
@@ -44,8 +47,8 @@ color:white;
 cursor:pointer
 }
 
-button.green{background:#2ecc71}
 button.red{background:#e74c3c}
+button.green{background:#2ecc71}
 
 input,select{
 padding:6px;
@@ -53,21 +56,27 @@ border-radius:6px;
 border:1px solid #ccc
 }
 
-.bar{display:flex;gap:3px}
+.bar{
+display:flex;
+gap:3px
+}
 
 .box{
 width:14px;
 height:14px;
-border:1px solid #aaa;
+border:1px solid #999;
 background:#eee
 }
 
-.done{background:#2ecc71}
+.done{
+background:#2ecc71
+}
 
 .degree{
 width:20px;
 height:20px;
-border:1px solid #444;
+border:1px solid #555;
+border-radius:3px;
 background:#ddd
 }
 
@@ -82,32 +91,75 @@ background:#eee
 width:60px;
 height:60px;
 border-radius:50%;
-object-fit:cover
+object-fit:cover;
+border:3px solid #ddd;
 }
 
-.avatarBox{
-position:relative;
-width:60px
+.studentHeader{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:6px
 }
 
-.editAvatar{
-position:absolute;
-bottom:-5px;
-right:-5px;
-font-size:10px;
-background:#3498db;
-color:white;
-padding:2px 6px;
-border-radius:6px;
-cursor:pointer
+.login{
+max-width:400px;
+margin:auto
 }
+
+/* CHAT */
 
 .chatBox{
-border:1px solid #ddd;
-max-height:180px;
-overflow:auto;
-padding:6px;
+margin-top:12px;
+border-top:1px solid #eee;
+padding-top:10px
+}
+
+.chatMessages{
+max-height:150px;
+overflow-y:auto;
+font-size:12px;
 margin-bottom:6px
+}
+
+.chatMsg{
+background:#f1f1f1;
+padding:6px;
+border-radius:6px;
+margin-bottom:4px
+}
+
+.chatInput{
+display:flex;
+gap:6px;
+align-items:center
+}
+
+.clip{
+font-size:18px;
+cursor:pointer;
+padding:4px;
+border-radius:6px
+}
+
+.clip:hover{
+background:#eee
+}
+
+.previewFile{
+font-size:11px;
+background:#fafafa;
+padding:4px;
+border-radius:4px;
+display:flex;
+justify-content:space-between;
+margin-bottom:4px
+}
+
+.previewFile button{
+background:#e74c3c;
+padding:2px 6px;
+font-size:10px
 }
 
 </style>
@@ -126,20 +178,62 @@ const beltOrder=[
 "Verde/Branca","Verde","Verde/Preta"
 ]
 
+const trainingDays=[1,3,5,6]
+
+function getAge(date){
+
+const hoje=new Date()
+const nasc=new Date(date)
+
+let idade=hoje.getFullYear()-nasc.getFullYear()
+
+const m=hoje.getMonth()-nasc.getMonth()
+
+if(m<0 || (m===0 && hoje.getDate()<nasc.getDate()))
+idade--
+
+return idade
+
+}
+
+function getCategory(idade){
+
+if(idade>=3 && idade<=4) return "BABY EAGLE"
+if(idade>=5 && idade<=8) return "LITTLE EAGLE"
+if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
+if(idade>=13 && idade<=15) return "EAGLE YOUTH"
+
+return "FORA CATEGORIA"
+
+}
+
+function estimateDate(aulas){
+
+let date=new Date()
+let count=0
+
+while(count<aulas){
+date.setDate(date.getDate()+1)
+if(trainingDays.includes(date.getDay())) count++
+}
+
+return date.toLocaleDateString()
+
+}
+
 function ClassesBar({aulas}){
 
 return(
 <div className="bar">
+{Array.from({length:15}).map((_,i)=>{
 
-{Array.from({length:15}).map((_,i)=>(
+const done=i<(aulas%15)
 
-<div
-key={i}
-className={"box "+(i<(aulas%15)?"done":"")}
-></div>
+return(
+<div key={i} className={"box "+(done?"done":"")}></div>
+)
 
-))}
-
+})}
 </div>
 )
 
@@ -147,21 +241,25 @@ className={"box "+(i<(aulas%15)?"done":"")}
 
 function PresenceBar({graus}){
 
+const brancos=Math.min(graus,4)
+const vermelhos=Math.max(graus-4,0)
+
 return(
 
 <div className="bar">
 
 {Array.from({length:4}).map((_,i)=>{
 
-let cor="#ddd"
+let color="#ddd"
 
-if(i<graus) cor="#fff"
+if(i<vermelhos) color="#e74c3c"
+else if(i<brancos) color="#fff"
 
 return(
 <div
 key={i}
 className="degree"
-style={{background:cor}}
+style={{background:color}}
 ></div>
 )
 
@@ -173,199 +271,124 @@ style={{background:cor}}
 
 }
 
-function Chat({aluno,user,students,setStudents}){
+/* CHAT */
+
+function Chat({studentId}){
+
+const key="chat_"+studentId
+
+const [messages,setMessages]=React.useState(()=>{
+const saved=localStorage.getItem(key)
+return saved?JSON.parse(saved):[]
+})
 
 const [msg,setMsg]=React.useState("")
 const [file,setFile]=React.useState(null)
-const [preview,setPreview]=React.useState(null)
 
-async function compressImage(file){
+React.useEffect(()=>{
+localStorage.setItem(key,JSON.stringify(messages))
+},[messages])
 
-return new Promise(resolve=>{
-
-const img=new Image()
-const canvas=document.createElement("canvas")
-const ctx=canvas.getContext("2d")
-
-img.onload=()=>{
-
-let w=img.width
-let h=img.height
-const max=1200
-
-if(w>max){
-h=h*(max/w)
-w=max
-}
-
-canvas.width=w
-canvas.height=h
-
-ctx.drawImage(img,0,0,w,h)
-
-canvas.toBlob(blob=>{
-resolve(blob)
-},"image/jpeg",0.7)
-
-}
-
-img.src=URL.createObjectURL(file)
-
-})
-
-}
-
-function selectFile(e){
+function handleFile(e){
 
 const f=e.target.files[0]
 
 if(!f) return
 
-if(f.size>5000000){
+if(f.size>5*1024*1024){
 alert("Arquivo máximo 5MB")
 return
 }
 
 setFile(f)
 
-const reader=new FileReader()
-
-reader.onload=e=>setPreview(e.target.result)
-
-reader.readAsDataURL(f)
-
 }
 
-async function send(){
+function removeFile(){
+setFile(null)
+}
+
+function send(){
 
 if(!msg && !file) return
 
-let arquivo=null
-let tipo=null
+let fileUrl=null
+let fileName=null
 
 if(file){
-
-if(file.type.startsWith("image")){
-
-const comp=await compressImage(file)
-
-arquivo=await new Promise(res=>{
-const reader=new FileReader()
-reader.onload=e=>res(e.target.result)
-reader.readAsDataURL(comp)
-})
-
-tipo="imagem"
-
-}else{
-
-arquivo=await new Promise(res=>{
-const reader=new FileReader()
-reader.onload=e=>res(e.target.result)
-reader.readAsDataURL(file)
-})
-
-tipo="pdf"
-
+fileUrl=URL.createObjectURL(file)
+fileName=file.name
 }
 
+setMessages([
+...messages,
+{
+text:msg,
+file:fileUrl,
+name:fileName,
+date:new Date().toLocaleString()
 }
-
-const nova={
-autor:user==="professor"?"Professor":"Pai",
-texto:msg,
-arquivo,
-tipo,
-data:new Date().toLocaleString()
-}
-
-setStudents(students.map(s=>{
-
-if(s.id!==aluno.id) return s
-
-return{
-...s,
-chat:[...(s.chat||[]),nova]
-}
-
-}))
+])
 
 setMsg("")
 setFile(null)
-setPreview(null)
 
 }
 
 return(
 
-<div>
-
-<h4>Chat</h4>
-
 <div className="chatBox">
 
-{(aluno.chat||[]).map((m,i)=>(
+<div className="chatMessages">
 
-<div key={i} style={{marginBottom:6}}>
+{messages.map((m,i)=>(
+<div key={i} className="chatMsg">
 
-<b>{m.autor}</b>: {m.texto}
+<div>{m.text}</div>
 
-<br/>
-
-{m.arquivo &&(
-
-m.tipo==="imagem"?
-
-<img src={m.arquivo} width="100"/>
-
-:
-
-<a href={m.arquivo} download="arquivo.pdf">
-⬇ baixar PDF
+{m.file &&
+<div>
+<a href={m.file} download={m.name}>
+📥 {m.name}
 </a>
-
-)}
-
-<div style={{fontSize:10,color:"#777"}}>
-{m.data}
 </div>
+}
 
 </div>
-
 ))}
 
 </div>
 
+{file &&
+<div className="previewFile">
+{file.name}
+<button onClick={removeFile}>remover</button>
+</div>
+}
+
+<div className="chatInput">
+
+<label className="clip">
+📎
 <input
+type="file"
+accept="image/*,.pdf"
+style={{display:"none"}}
+onChange={handleFile}
+/>
+</label>
+
+<input
+placeholder="Mensagem"
 value={msg}
-placeholder="Mensagem..."
 onChange={e=>setMsg(e.target.value)}
 />
 
-<input
-type="file"
-accept="image/*,application/pdf"
-onChange={selectFile}
-/>
-
-<button onClick={send}>Enviar</button>
-
-{preview &&(
-
-<div>
-
-<img src={preview} width="60"/>
-
-<button onClick={()=>{
-setFile(null)
-setPreview(null)
-}}>
-remover
+<button onClick={send}>
+Enviar
 </button>
 
 </div>
-
-)}
 
 </div>
 
@@ -383,7 +406,7 @@ const [senha,setSenha]=React.useState("")
 function loginProfessor(){
 
 if(senha==="admin") setUser("professor")
-else alert("senha incorreta")
+else alert("Senha incorreta")
 
 }
 
@@ -404,11 +427,11 @@ alert("Aluno não encontrado")
 
 return(
 
-<div className="card">
+<div className="login card">
 
 <h2>Login</h2>
 
-<button onClick={()=>setTipo("professor")}>
+<button className="green" onClick={()=>setTipo("professor")}>
 Professor
 </button>
 
@@ -418,15 +441,18 @@ Pais
 
 <br/><br/>
 
-{tipo==="professor" &&(
+{tipo==="professor" &&
 
 <div>
 
 <input
 type="password"
-placeholder="senha"
+placeholder="Senha"
+value={senha}
 onChange={e=>setSenha(e.target.value)}
 />
+
+<br/><br/>
 
 <button onClick={loginProfessor}>
 Entrar
@@ -434,21 +460,27 @@ Entrar
 
 </div>
 
-)}
+}
 
-{tipo==="pais" &&(
+{tipo==="pais" &&
 
 <div>
 
 <input
 placeholder="Nome do aluno"
+value={nome}
 onChange={e=>setNome(e.target.value)}
 />
 
+<br/><br/>
+
 <input
 type="date"
+value={nascimento}
 onChange={e=>setNascimento(e.target.value)}
 />
+
+<br/><br/>
 
 <button onClick={loginPais}>
 Entrar
@@ -456,7 +488,7 @@ Entrar
 
 </div>
 
-)}
+}
 
 </div>
 
@@ -470,7 +502,7 @@ const [user,setUser]=React.useState("")
 const [filho,setFilho]=React.useState("")
 
 const [students,setStudents]=React.useState(()=>{
-const saved=localStorage.getItem("bjj_app")
+const saved=localStorage.getItem("academia_alliance_final")
 return saved?JSON.parse(saved):[]
 })
 
@@ -481,12 +513,14 @@ faixa:"Branca"
 })
 
 React.useEffect(()=>{
-localStorage.setItem("bjj_app",JSON.stringify(students))
+localStorage.setItem("academia_alliance_final",JSON.stringify(students))
 },[students])
 
 function addStudent(){
 
 if(!form.nome) return
+
+const idade=getAge(form.nascimento)
 
 setStudents([...students,{
 
@@ -494,17 +528,35 @@ id:Date.now(),
 
 nome:form.nome,
 nascimento:form.nascimento,
+
+idade:idade,
+categoria:getCategory(idade),
+
 faixa:form.faixa,
 
-avatar:"",
+avatar:"avatar.png",
 
 aulas:0,
 
-chat:[],
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+historicoFaixas:[],
 
-historicoFaixas:[]
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+}
 
 }])
+
+setForm({
+nome:"",
+nascimento:"",
+faixa:"Branca"
+})
 
 }
 
@@ -514,31 +566,122 @@ setStudents(students.map(s=>{
 
 if(s.id!==id) return s
 
+if(s.aulas>=135){
+alert("Aluno atingiu 135 aulas. Faça a troca de faixa.")
+return s
+}
+
+const data=new Date().toLocaleDateString()
+
+const novas=s.aulas+1
+
+let historico=s.historicoGraus
+
+if(novas%15===0){
+
+historico=[...historico,{
+grau:Math.floor(novas/15),
+data
+}]
+
+}
+
 return{
+
 ...s,
-aulas:s.aulas+1
+
+aulas:novas,
+
+historicoAulas:[...s.historicoAulas,{data}],
+
+historicoGraus:historico
+
 }
 
 }))
 
 }
 
-function uploadAvatar(id,file){
-
-const reader=new FileReader()
-
-reader.onload=e=>{
+function markBehavior(id,key){
 
 setStudents(students.map(s=>{
+
 if(s.id!==id) return s
-return {...s,avatar:e.target.result}
+
+const data=new Date().toLocaleDateString()
+
+return{
+
+...s,
+
+comportamental:{
+...s.comportamental,
+[key]:data
+},
+
+historicoComportamental:[
+...s.historicoComportamental,
+{tipo:key,data}
+]
+
+}
+
 }))
 
 }
 
-reader.readAsDataURL(file)
+function trocarFaixa(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const data=new Date().toLocaleDateString()
+
+const atualIndex=beltOrder.indexOf(s.faixa)
+
+const proximaFaixa=beltOrder[atualIndex+1] || s.faixa
+
+return{
+
+...s,
+
+faixa:proximaFaixa,
+
+aulas:0,
+
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+},
+
+historicoFaixas:[
+...s.historicoFaixas,
+{faixa:proximaFaixa,data}
+]
 
 }
+
+}))
+
+}
+
+function removeStudent(id){
+
+if(!confirm("Excluir aluno?")) return
+
+setStudents(students.filter(s=>s.id!==id))
+
+}
+
+if(user==="")
+return <Login setUser={setUser} students={students} setFilho={setFilho}/>
 
 let lista=students
 
@@ -546,105 +689,187 @@ if(user==="pais"){
 lista=students.filter(s=>s.nome===filho)
 }
 
-if(user==="")
-return <Login setUser={setUser} students={students} setFilho={setFilho}/>
-
 return(
 
 <div className="container">
 
-<h1>Controle Jiu Jitsu</h1>
+<h1>Acompanhamento Jiu Jitsu Alliance</h1>
 
-{user==="professor" &&(
+{user==="professor" &&
 
 <div className="card">
 
+<div className="row">
+
 <input
 placeholder="Nome"
+value={form.nome}
 onChange={e=>setForm({...form,nome:e.target.value})}
 />
 
 <input
 type="date"
+value={form.nascimento}
 onChange={e=>setForm({...form,nascimento:e.target.value})}
 />
 
 <select
+value={form.faixa}
 onChange={e=>setForm({...form,faixa:e.target.value})}
 >
-
 {beltOrder.map(b=><option key={b}>{b}</option>)}
-
 </select>
 
 <button className="green" onClick={addStudent}>
-Adicionar
+Adicionar aluno
 </button>
 
 </div>
 
-)}
+</div>
 
-{lista.map(s=>(
+}
+
+{lista.map(s=>{
+
+const graus=Math.min(Math.floor(s.aulas/15),15)
+
+const faltam=Math.max(135-s.aulas,0)
+
+const previsao=estimateDate(faltam)
+
+return(
 
 <div key={s.id} className="card">
 
-<div style={{display:"flex",gap:10}}>
+<div className="studentHeader">
 
-<div className="avatarBox">
-
-<img
-src={s.avatar||"https://i.imgur.com/0y0y0y0.png"}
-className="avatar"
-/>
-
-<label className="editAvatar">
-
-✏
-
-<input
-type="file"
-style={{display:"none"}}
-onChange={e=>uploadAvatar(s.id,e.target.files[0])}
-/>
-
-</label>
-
-</div>
+<img src={s.avatar} className="avatar"/>
 
 <div>
 
 <b>{s.nome}</b><br/>
-Faixa: {s.faixa}
+
+{s.idade} anos<br/>
+
+Categoria: {s.categoria}
 
 </div>
 
 </div>
 
-<div style={{marginTop:8}}>
-Aulas
-</div>
+<div>Faixa: {s.faixa}</div>
+
+<div style={{marginTop:6}}>Aulas</div>
 
 <ClassesBar aulas={s.aulas}/>
 
-{user==="professor" &&(
+<div style={{marginTop:6}}>Graus presença</div>
+
+<PresenceBar graus={graus}/>
+
+<div style={{display:"flex",gap:10,marginTop:8}}>
+
+<div className="beh"
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"relacionamento"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"comportamento"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"notas"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"habitos"):null}
+></div>
+
+</div>
+
+{user==="professor" &&
+
+<div style={{marginTop:10,display:"flex",gap:10}}>
 
 <button onClick={()=>addAttendance(s.id)}>
 Presença
 </button>
 
-)}
+<button className="green" onClick={()=>trocarFaixa(s.id)}>
+Trocar Faixa
+</button>
 
-<Chat
-aluno={s}
-user={user}
-students={students}
-setStudents={setStudents}
-/>
+<button className="red" onClick={()=>removeStudent(s.id)}>
+Excluir
+</button>
 
 </div>
 
+}
+
+<div style={{marginTop:8,fontSize:13}}>
+Faltam {faltam} aulas
+</div>
+
+<div style={{fontSize:13}}>
+Previsão troca faixa: {previsao}
+</div>
+
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico graus</b>
+{s.historicoGraus.map((h,i)=>(
+<div key={i}>{h.data} - Grau {h.grau}</div>
 ))}
+</div>
+
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico comportamental</b>
+{s.historicoComportamental.map((h,i)=>(
+<div key={i}>{h.data} - {h.tipo}</div>
+))}
+</div>
+
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico de faixas</b>
+{s.historicoFaixas.map((h,i)=>(
+<div key={i}>{h.data} - {h.faixa}</div>
+))}
+</div>
+
+<Chat studentId={s.id}/>
+
+</div>
+
+)
+
+})}
+
+<div className="card">
+
+<img src="graus_coloridos.jpeg" width="100%"/>
+
+<br/><br/>
+
+<img src="sistema_graduacao.jpeg" width="100%"/>
+
+</div>
 
 </div>
 
