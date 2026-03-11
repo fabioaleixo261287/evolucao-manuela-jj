@@ -107,8 +107,6 @@ max-width:400px;
 margin:auto
 }
 
-/* CAMERA */
-
 .avatarUpload{
 position:relative;
 display:inline-block;
@@ -123,8 +121,6 @@ height:60px;
 opacity:0;
 cursor:pointer;
 }
-
-/* CHAT */
 
 .chatBox{
 margin-top:12px;
@@ -218,8 +214,6 @@ if(trainingDays.includes(date.getDay())) count++
 return date.toLocaleDateString()
 }
 
-/* COMPRESSÃO FOTO */
-
 function compressImage(file,callback){
 
 const reader=new FileReader()
@@ -296,8 +290,6 @@ return(
 </div>
 )
 }
-
-/* CHAT */
 
 function Chat({studentId}){
 
@@ -881,6 +873,26 @@ Previsão troca faixa: {previsao}
 )
 
 })}
+
+<div className="card">
+
+<h3>Sistema de Graduação Alliance</h3>
+
+<div style={{display:"flex",gap:"20px",flexWrap:"wrap"}}>
+
+<div>
+<img src="graus_coloridos.jpeg" style={{maxWidth:"300px",borderRadius:"8px"}}/>
+<p style={{fontSize:"13px"}}>Graus comportamentais</p>
+</div>
+
+<div>
+<img src="sistema_graduacao.jpeg" style={{maxWidth:"300px",borderRadius:"8px"}}/>
+<p style={{fontSize:"13px"}}>Sistema de graduação infantil</p>
+</div>
+
+</div>
+
+</div>
 
 </div>
 
