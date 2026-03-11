@@ -107,7 +107,7 @@ max-width:400px;
 margin:auto
 }
 
-/* NOVO - troca de avatar */
+/* CAMERA */
 
 .avatarUpload{
 position:relative;
@@ -218,6 +218,55 @@ if(trainingDays.includes(date.getDay())) count++
 return date.toLocaleDateString()
 }
 
+/* COMPRESSÃO FOTO */
+
+function compressImage(file,callback){
+
+const reader=new FileReader()
+
+reader.onload=function(e){
+
+const img=new Image()
+
+img.onload=function(){
+
+const canvas=document.createElement("canvas")
+
+const max=400
+
+let w=img.width
+let h=img.height
+
+if(w>h){
+if(w>max){
+h=h*(max/w)
+w=max
+}
+}else{
+if(h>max){
+w=w*(max/h)
+h=max
+}
+}
+
+canvas.width=w
+canvas.height=h
+
+const ctx=canvas.getContext("2d")
+ctx.drawImage(img,0,0,w,h)
+
+callback(canvas.toDataURL("image/jpeg",0.7))
+
+}
+
+img.src=e.target.result
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
 function ClassesBar({aulas}){
 return(
 <div className="bar">
@@ -271,6 +320,12 @@ endRef.current.scrollIntoView({behavior:"smooth"})
 }
 },[messages])
 
+React.useEffect(()=>{
+if("Notification" in window){
+Notification.requestPermission()
+}
+},[])
+
 function handleFile(e){
 
 const f=e.target.files[0]
@@ -314,6 +369,12 @@ image:isImage,
 date:new Date().toLocaleString()
 }
 ])
+
+if(document.hidden){
+if(Notification.permission==="granted"){
+new Notification("Nova mensagem no chat")
+}
+}
 
 setMsg("")
 setFile(null)
@@ -501,53 +562,6 @@ React.useEffect(()=>{
 localStorage.setItem("academia_alliance_final",JSON.stringify(students))
 },[students])
 
-function compressImage(file,callback){
-
-const img=new Image()
-const reader=new FileReader()
-
-reader.onload=function(e){
-
-img.src=e.target.result
-
-img.onload=function(){
-
-const canvas=document.createElement("canvas")
-
-const maxSize=300
-let w=img.width
-let h=img.height
-
-if(w>h){
-if(w>maxSize){
-h=h*(maxSize/w)
-w=maxSize
-}
-}else{
-if(h>maxSize){
-w=w*(maxSize/h)
-h=maxSize
-}
-}
-
-canvas.width=w
-canvas.height=h
-
-const ctx=canvas.getContext("2d")
-ctx.drawImage(img,0,0,w,h)
-
-const compressed=canvas.toDataURL("image/jpeg",0.7)
-
-callback(compressed)
-
-}
-
-}
-
-reader.readAsDataURL(file)
-
-}
-
 function changeAvatar(id,file){
 
 compressImage(file,(img)=>{
@@ -713,7 +727,48 @@ return(
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
 
-{lista.map(s=>(
+{user==="professor" &&
+
+<div className="card">
+
+<div className="row">
+
+<input
+placeholder="Nome"
+value={form.nome}
+onChange={e=>setForm({...form,nome:e.target.value})}
+/>
+
+<input
+type="date"
+value={form.nascimento}
+onChange={e=>setForm({...form,nascimento:e.target.value})}
+/>
+
+<select
+value={form.faixa}
+onChange={e=>setForm({...form,faixa:e.target.value})}
+>
+{beltOrder.map(b=><option key={b}>{b}</option>)}
+</select>
+
+<button className="green" onClick={addStudent}>
+Adicionar aluno
+</button>
+
+</div>
+
+</div>
+
+}
+
+{lista.map(s=>{
+
+const graus=Math.min(Math.floor(s.aulas/15),15)
+const faltam=Math.max(135-s.aulas,0)
+const previsao=estimateDate(faltam)
+
+return(
 
 <div key={s.id} className="card">
 
@@ -745,11 +800,87 @@ Categoria: {s.categoria}
 
 </div>
 
+<div>Faixa: {s.faixa}</div>
+
+<div style={{marginTop:6}}>Aulas</div>
+
+<ClassesBar aulas={s.aulas}/>
+
+<div style={{marginTop:6}}>Graus presença</div>
+
+<PresenceBar graus={graus}/>
+
+<div style={{display:"flex",gap:10,marginTop:8}}>
+
+<div className="beh"
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"relacionamento"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"comportamento"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"notas"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"habitos"):null}
+></div>
+
+</div>
+
+{user==="professor" &&
+
+<div style={{marginTop:10,display:"flex",gap:10}}>
+
+<button onClick={()=>addAttendance(s.id)}>
+Presença
+</button>
+
+<button className="green" onClick={()=>trocarFaixa(s.id)}>
+Trocar Faixa
+</button>
+
+<button className="red" onClick={()=>removeStudent(s.id)}>
+Excluir
+</button>
+
+</div>
+
+}
+
+<div style={{marginTop:8,fontSize:13}}>
+Faltam {faltam} aulas
+</div>
+
+<div style={{fontSize:13}}>
+Previsão troca faixa: {previsao}
+</div>
+
 <Chat studentId={s.id}/>
 
 </div>
 
-))}
+)
+
+})}
 
 </div>
 
