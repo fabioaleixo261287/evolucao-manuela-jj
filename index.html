@@ -396,7 +396,7 @@ idade:idade,
 categoria:getCategory(idade),
 faixa:form.faixa,
 
-avatar:"https://api.dicebear.com/7.x/adventurer/svg?seed="+form.nome,
+avatar:"emoji",
 
 aulas:0,
 
@@ -473,6 +473,29 @@ historicoGraus:historico
 
 }
 
+function uploadAvatar(id,file){
+
+const reader=new FileReader()
+
+reader.onload=function(e){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+return{
+...s,
+avatar:e.target.result
+}
+
+}))
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
 if(user==="")
 return <Login setUser={setUser} students={students} setFilho={setFilho}/>
 
@@ -534,28 +557,52 @@ return(
 
 <div className="studentHeader">
 
+{s.avatar==="emoji" ?
+
+<div className="avatar" style={{
+display:"flex",
+alignItems:"center",
+justifyContent:"center",
+fontSize:32
+}}>
+🙂
+</div>
+
+:
+
 <img src={s.avatar} className="avatar"/>
+
+}
 
 <div>
 
 <b>{s.nome}</b><br/>
-
 {s.idade} anos<br/>
-
 Categoria: {s.categoria}
 
 </div>
 
 </div>
 
+<div style={{marginTop:6}}>
+
+<input
+type="file"
+accept="image/*"
+onChange={e=>{
+const file=e.target.files[0]
+if(file) uploadAvatar(s.id,file)
+}}
+/>
+
+</div>
+
 <div>Faixa: {s.faixa}</div>
 
 <div style={{marginTop:6}}>Aulas</div>
-
 <ClassesBar aulas={s.aulas}/>
 
 <div style={{marginTop:6}}>Graus presença</div>
-
 <PresenceBar graus={graus}/>
 
 {user==="professor" &&
@@ -576,6 +623,22 @@ Faltam {faltam} aulas
 
 <div style={{fontSize:13}}>
 Previsão troca faixa: {previsao}
+</div>
+
+<div style={{marginTop:15}}>
+
+<h3>Sistema de Graduação</h3>
+
+<img
+src="graus_coloridos.jpeg"
+style={{width:"100%",maxWidth:400,marginBottom:10,borderRadius:10}}
+/>
+
+<img
+src="sistema_graduacao.jpeg"
+style={{width:"100%",maxWidth:400,borderRadius:10}}
+/>
+
 </div>
 
 <Chat
