@@ -1,15 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 
 <meta charset="UTF-8">
 <title>Sistema Jiu-Jitsu Infantil</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 
 <style>
 
@@ -27,14 +22,14 @@ margin:auto
 
 .card{
 background:white;
-padding:20px;
+padding:15px;
 border-radius:10px;
 margin-bottom:15px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1)
 }
 
 button{
-padding:8px 12px;
+padding:6px 10px;
 border:none;
 border-radius:6px;
 cursor:pointer
@@ -43,11 +38,63 @@ cursor:pointer
 .green{background:#2ecc71;color:white}
 .blue{background:#3498db;color:white}
 
-input{
-padding:8px;
+.avatar{
+width:70px;
+height:70px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid #ddd
+}
+
+.avatarBox{
+position:relative;
+width:70px
+}
+
+.editAvatar{
+position:absolute;
+bottom:-5px;
+left:50%;
+transform:translateX(-50%);
+font-size:10px;
+background:#3498db;
+color:white;
+border:none;
+border-radius:6px
+}
+
+.chatBox{
+max-height:200px;
+overflow:auto;
+background:#fafafa;
+padding:10px;
+border-radius:10px;
 margin-bottom:10px;
-width:100%;
-box-sizing:border-box
+border:1px solid #ddd
+}
+
+.msg{
+padding:6px 10px;
+border-radius:10px;
+margin-bottom:5px;
+color:white;
+display:inline-block;
+max-width:70%
+}
+
+.prof{background:#3498db}
+.pais{background:#2ecc71}
+
+.row{
+display:flex;
+gap:10px
+}
+
+.beh{
+width:20px;
+height:20px;
+border-radius:50%;
+border:1px solid #ccc
 }
 
 </style>
@@ -58,16 +105,14 @@ box-sizing:border-box
 
 <div class="container">
 
-<div class="card">
+<div id="login" class="card">
 
 <h2>Login</h2>
 
-<input id="email" placeholder="Email">
-<input id="senha" type="password" placeholder="Senha">
+<button onclick="loginProfessor()">Professor</button>
+<button onclick="loginAluno()">Pais / Aluno</button>
 
-<button onclick="login()" class="blue">
-Entrar
-</button>
+<div id="loginArea"></div>
 
 </div>
 
@@ -77,231 +122,401 @@ Entrar
 
 <script>
 
-const firebaseConfig = {
+const MAX_FILE_SIZE = 5 * 1024 * 1024
 
-apiKey: "SUA_API_KEY",
-authDomain: "SEU_PROJETO.firebaseapp.com",
-databaseURL: "https://SEU_PROJETO.firebaseio.com",
-projectId: "SEU_PROJETO",
-storageBucket: "SEU_PROJETO.appspot.com",
-messagingSenderId: "XXXX",
-appId: "XXXX"
+let user=""
+
+let students = JSON.parse(localStorage.getItem("students") || "[]")
+
+function save(){
+localStorage.setItem("students",JSON.stringify(students))
+}
+
+function loginProfessor(){
+
+document.getElementById("loginArea").innerHTML = `
+<input id="senha" placeholder="Senha">
+<button onclick="entrarProfessor()">Entrar</button>
+`
 
 }
 
-firebase.initializeApp(firebaseConfig)
+function entrarProfessor(){
 
-const db = firebase.database()
-
-function login(){
-
-const email = document.getElementById("email").value
 const senha = document.getElementById("senha").value
 
-firebase.auth().signInWithEmailAndPassword(email,senha)
+if(senha !== "admin"){
+alert("Senha incorreta")
+return
+}
 
-.catch(e=>{
-alert(e.message)
-})
+user="professor"
+
+document.getElementById("login").style.display="none"
+
+render()
 
 }
 
-firebase.auth().onAuthStateChanged(user=>{
+function loginAluno(){
 
-if(!user) return
-
-db.ref("users/"+user.uid).once("value")
-.then(snapshot=>{
-
-const tipo = snapshot.val().tipo
-
-if(tipo==="professor"){
-painelProfessor()
-}else{
-painelPais(snapshot.val().alunoId)
-}
-
-})
-
-})
-
-function painelProfessor(){
-
-document.getElementById("app").innerHTML = `
-<div class="card">
-
-<h2>Painel Professor</h2>
-
-<button class="green" onclick="novoAluno()">
-Novo aluno
-</button>
-
-<div id="listaAlunos"></div>
-
-</div>
-`
-
-carregarAlunos()
-
-}
-
-function carregarAlunos(){
-
-db.ref("alunos").on("value",snapshot=>{
-
-const alunos = snapshot.val()
-
-let html=""
-
-for(let id in alunos){
-
-const a = alunos[id]
-
-html+=`
-<div class="card">
-
-<b>${a.nome}</b><br>
-Faixa: ${a.faixa}<br>
-Aulas: ${a.aulas}
-
-<br><br>
-
-<button onclick="presenca('${id}')">
-Presença
-</button>
-
-<button onclick="chat('${id}')">
-Chat
-</button>
-
-</div>
+document.getElementById("loginArea").innerHTML = `
+<input id="nome" placeholder="Nome do aluno">
+<input id="nasc" type="date">
+<button onclick="entrarAluno()">Entrar</button>
 `
 
 }
 
-document.getElementById("listaAlunos").innerHTML = html
+function entrarAluno(){
 
-})
+const nome = document.getElementById("nome").value
+const nasc = document.getElementById("nasc").value
+
+const aluno = students.find(s=>s.nome===nome && s.nascimento===nasc)
+
+if(!aluno){
+alert("Aluno não encontrado")
+return
+}
+
+user="pais"
+
+renderAluno(aluno)
+
+document.getElementById("login").style.display="none"
 
 }
 
 function novoAluno(){
 
 const nome = prompt("Nome do aluno")
+const nasc = prompt("Data nascimento YYYY-MM-DD")
 
-if(!nome) return
-
-const id = Date.now()
-
-db.ref("alunos/"+id).set({
-
-nome:nome,
+students.push({
+id:Date.now(),
+nome,
+nascimento:nasc,
 faixa:"Branca",
-aulas:0
-
+aulas:0,
+avatar:"emoji",
+chat:[],
+comportamental:{
+relacionamento:false,
+comportamento:false,
+notas:false,
+habitos:false
+},
+historicoAulas:[],
+historicoFaixas:[]
 })
+
+save()
+render()
 
 }
 
 function presenca(id){
 
-db.ref("alunos/"+id+"/aulas")
-.transaction(a=>{
+const s = students.find(a=>a.id===id)
 
-if(a>=135){
-alert("Limite atingido")
-return a
+if(s.aulas >= 135){
+alert("Limite de aulas atingido")
+return
 }
 
-return (a||0)+1
+s.aulas++
 
+s.historicoAulas.push({
+data:new Date().toLocaleDateString()
 })
 
+save()
+render()
+
 }
 
-function chat(alunoId){
+function trocarFaixa(id){
 
-document.getElementById("app").innerHTML = `
-<div class="card">
+const ordem=["Branca","Cinza","Amarela","Laranja","Verde"]
 
-<h3>Chat</h3>
+const s = students.find(a=>a.id===id)
 
-<div id="chatBox"></div>
+let idx = ordem.indexOf(s.faixa)
 
-<input id="msg">
+if(idx < ordem.length-1){
 
-<button onclick="enviar('${alunoId}')">
-Enviar
-</button>
+s.faixa = ordem[idx+1]
 
-</div>
-`
+s.historicoFaixas.push({
+faixa:s.faixa,
+data:new Date().toLocaleDateString()
+})
 
-db.ref("chat/"+alunoId).on("value",snapshot=>{
+s.aulas=0
 
-const msgs = snapshot.val()
+}
+
+save()
+render()
+
+}
+
+function render(){
 
 let html=""
 
-for(let id in msgs){
-
-const m = msgs[id]
-
 html+=`
-<div>
-<b>${m.user}</b>: ${m.text}
+<div class="card">
+<button class="green" onclick="novoAluno()">Novo aluno</button>
 </div>
 `
 
-}
+students.forEach(s=>{
 
-document.getElementById("chatBox").innerHTML = html
-
-})
-
-}
-
-function enviar(alunoId){
-
-const text = document.getElementById("msg").value
-
-db.ref("chat/"+alunoId).push({
-
-user:"professor",
-text:text,
-data:Date.now()
-
-})
-
-}
-
-function painelPais(alunoId){
-
-document.getElementById("app").innerHTML = `
+html+=`
 <div class="card">
 
-<h2>Área dos Pais</h2>
+<div class="row">
 
-<div id="dadosAluno"></div>
+<div class="avatarBox">
 
-<button onclick="chat('${alunoId}')">
-Abrir Chat
+${s.avatar==="emoji"
+? `<div class="avatar">🙂</div>`
+: `<img src="${s.avatar}" class="avatar">`
+}
+
+<input type="file" id="file${s.id}" style="display:none"
+onchange="uploadAvatar(${s.id},this.files[0])">
+
+<button class="editAvatar"
+onclick="document.getElementById('file${s.id}').click()">
+Editar
 </button>
 
 </div>
-`
 
-db.ref("alunos/"+alunoId).on("value",snapshot=>{
+<div>
 
-const a = snapshot.val()
+<b>${s.nome}</b><br>
+Faixa: ${s.faixa}<br>
+Aulas: ${s.aulas}/135
 
-document.getElementById("dadosAluno").innerHTML = `
-<b>${a.nome}</b><br>
-Faixa: ${a.faixa}<br>
-Aulas: ${a.aulas}
+<br><br>
+
+<button onclick="presenca(${s.id})">Presença</button>
+<button onclick="trocarFaixa(${s.id})">Trocar faixa</button>
+
+</div>
+
+</div>
+
+${renderComportamento(s)}
+
+${renderChat(s)}
+
+</div>
 `
 
 })
+
+document.getElementById("app").innerHTML = html
+
+}
+
+function renderAluno(s){
+
+let html=`
+<div class="card">
+
+<b>${s.nome}</b><br>
+Faixa: ${s.faixa}<br>
+Aulas: ${s.aulas}/135
+
+</div>
+
+${renderChat(s)}
+
+`
+
+document.getElementById("app").innerHTML = html
+
+}
+
+function renderComportamento(s){
+
+return `
+<b>Graus comportamentais</b>
+
+<div class="row">
+
+${Object.keys(s.comportamental).map(tipo=>`
+
+<div>
+
+<div style="font-size:12px">${tipo}</div>
+
+<div class="beh"
+style="background:${s.comportamental[tipo]?'#2ecc71':'#eee'}"
+onclick="toggleComportamento(${s.id},'${tipo}')">
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+`
+
+}
+
+function toggleComportamento(id,tipo){
+
+if(user!=="professor") return
+
+const s = students.find(a=>a.id===id)
+
+s.comportamental[tipo] = !s.comportamental[tipo]
+
+save()
+render()
+
+}
+
+function renderChat(s){
+
+return `
+<h3>Chat</h3>
+
+<div class="chatBox">
+
+${s.chat.map((c,i)=>`
+
+<div>
+
+<div class="msg ${c.user==='professor'?'prof':'pais'}">
+
+${c.text}
+
+${c.file?`
+
+<div>
+
+${c.fileType.startsWith("image")
+
+? `<img src="${c.file}" style="max-width:200px">`
+
+: `<a href="${c.file}" target="_blank">📄 ${c.fileName}</a>`
+}
+
+<br>
+
+<a href="${c.file}" download="${c.fileName}">
+📥 Download
+</a>
+
+<button onclick="removerArquivo(${s.id},${i})">
+🗑
+</button>
+
+</div>
+
+`:''}
+
+</div>
+
+<div style="font-size:10px">${c.data}</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+<input id="msg${s.id}">
+<input type="file" id="filemsg${s.id}">
+
+<button onclick="enviarMsg(${s.id})">
+Enviar
+</button>
+`
+
+}
+
+function enviarMsg(id){
+
+const text = document.getElementById("msg"+id).value
+const fileInput = document.getElementById("filemsg"+id)
+const file = fileInput.files[0]
+
+const s = students.find(a=>a.id===id)
+
+function salvarMensagem(fileData,fileName,fileType){
+
+s.chat.push({
+user:user,
+text:text,
+file:fileData,
+fileName:fileName,
+fileType:fileType,
+data:new Date().toLocaleString()
+})
+
+save()
+render()
+
+}
+
+if(file){
+
+if(file.size > MAX_FILE_SIZE){
+alert("Arquivo maior que 5MB")
+return
+}
+
+const reader = new FileReader()
+
+reader.onload = e=>{
+salvarMensagem(e.target.result,file.name,file.type)
+}
+
+reader.readAsDataURL(file)
+
+}else{
+
+salvarMensagem(null,null,null)
+
+}
+
+}
+
+function removerArquivo(id,index){
+
+const s = students.find(a=>a.id===id)
+
+s.chat[index].file=null
+
+save()
+render()
+
+}
+
+function uploadAvatar(id,file){
+
+const reader = new FileReader()
+
+reader.onload = e=>{
+
+const s = students.find(a=>a.id===id)
+
+s.avatar = e.target.result
+
+save()
+render()
+
+}
+
+reader.readAsDataURL(file)
 
 }
 
@@ -309,3 +524,4 @@ Aulas: ${a.aulas}
 
 </body>
 </html>
+```
