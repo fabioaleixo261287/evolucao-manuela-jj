@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+quero que fique do mesmo modo porém com adição do chat para comunicação entre professor e aluno <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
@@ -107,40 +107,6 @@ max-width:400px;
 margin:auto
 }
 
-/* CHAT */
-
-.chatArea{
-background:#eef2f5;
-padding:8px;
-border-radius:8px;
-max-height:160px;
-overflow-y:auto;
-margin-top:8px
-}
-
-.msg{
-padding:6px 8px;
-border-radius:6px;
-margin:4px 0;
-max-width:70%;
-font-size:12px
-}
-
-.prof{
-background:#ffffff;
-border:1px solid #ddd
-}
-
-.pais{
-background:#d4edda;
-margin-left:auto
-}
-
-.chatRow{
-display:flex;
-flex-direction:column
-}
-
 </style>
 </head>
 
@@ -172,6 +138,7 @@ if(m<0 || (m===0 && hoje.getDate()<nasc.getDate()))
 idade--
 
 return idade
+
 }
 
 function getCategory(idade){
@@ -182,6 +149,7 @@ if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
 if(idade>=13 && idade<=15) return "EAGLE YOUTH"
 
 return "FORA CATEGORIA"
+
 }
 
 function estimateDate(aulas){
@@ -195,6 +163,7 @@ if(trainingDays.includes(date.getDay())) count++
 }
 
 return date.toLocaleDateString()
+
 }
 
 function ClassesBar({aulas}){
@@ -389,8 +358,6 @@ avatar:"avatar.png",
 
 aulas:0,
 
-chat:[],
-
 historicoAulas:[],
 historicoGraus:[],
 historicoComportamental:[],
@@ -410,30 +377,6 @@ nome:"",
 nascimento:"",
 faixa:"Branca"
 })
-
-}
-
-function enviarMensagem(id,texto){
-
-if(!texto) return
-
-setStudents(students.map(s=>{
-
-if(s.id!==id) return s
-
-return{
-...s,
-chat:[
-...s.chat,
-{
-autor:user==="professor"?"professor":"pais",
-texto,
-data:new Date().toLocaleString()
-}
-]
-}
-
-}))
 
 }
 
@@ -479,6 +422,84 @@ historicoGraus:historico
 
 }
 
+function markBehavior(id,key){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const data=new Date().toLocaleDateString()
+
+return{
+
+...s,
+
+comportamental:{
+...s.comportamental,
+[key]:data
+},
+
+historicoComportamental:[
+...s.historicoComportamental,
+{tipo:key,data}
+]
+
+}
+
+}))
+
+}
+
+function trocarFaixa(id){
+
+setStudents(students.map(s=>{
+
+if(s.id!==id) return s
+
+const data=new Date().toLocaleDateString()
+
+const atualIndex=beltOrder.indexOf(s.faixa)
+
+const proximaFaixa=beltOrder[atualIndex+1] || s.faixa
+
+return{
+
+...s,
+
+faixa:proximaFaixa,
+
+aulas:0,
+
+historicoAulas:[],
+historicoGraus:[],
+historicoComportamental:[],
+
+comportamental:{
+relacionamento:null,
+comportamento:null,
+notas:null,
+habitos:null
+},
+
+historicoFaixas:[
+...s.historicoFaixas,
+{faixa:proximaFaixa,data}
+]
+
+}
+
+}))
+
+}
+
+function removeStudent(id){
+
+if(!confirm("Excluir aluno?")) return
+
+setStudents(students.filter(s=>s.id!==id))
+
+}
+
 if(user==="")
 return <Login setUser={setUser} students={students} setFilho={setFilho}/>
 
@@ -494,9 +515,48 @@ return(
 
 <h1>Acompanhamento Jiu Jitsu Alliance</h1>
 
+{user==="professor" &&
+
+<div className="card">
+
+<div className="row">
+
+<input
+placeholder="Nome"
+value={form.nome}
+onChange={e=>setForm({...form,nome:e.target.value})}
+/>
+
+<input
+type="date"
+value={form.nascimento}
+onChange={e=>setForm({...form,nascimento:e.target.value})}
+/>
+
+<select
+value={form.faixa}
+onChange={e=>setForm({...form,faixa:e.target.value})}
+>
+{beltOrder.map(b=><option key={b}>{b}</option>)}
+</select>
+
+<button className="green" onClick={addStudent}>
+Adicionar aluno
+</button>
+
+</div>
+
+</div>
+
+}
+
 {lista.map(s=>{
 
 const graus=Math.min(Math.floor(s.aulas/15),15)
+
+const faltam=Math.max(135-s.aulas,0)
+
+const previsao=estimateDate(faltam)
 
 return(
 
@@ -528,54 +588,89 @@ Categoria: {s.categoria}
 
 <PresenceBar graus={graus}/>
 
+<div style={{display:"flex",gap:10,marginTop:8}}>
+
+<div className="beh"
+style={{
+background:s.comportamental.relacionamento?"#f1c40f":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"relacionamento"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.comportamento?"#3498db":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"comportamento"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.notas?"#e74c3c":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"notas"):null}
+></div>
+
+<div className="beh"
+style={{
+background:s.comportamental.habitos?"#2ecc71":"#eee",
+cursor:user==="professor"?"pointer":"default"
+}}
+onClick={user==="professor"?()=>markBehavior(s.id,"habitos"):null}
+></div>
+
+</div>
+
 {user==="professor" &&
 
-<button style={{marginTop:8}} onClick={()=>addAttendance(s.id)}>
-Registrar Presença
+<div style={{marginTop:10,display:"flex",gap:10}}>
+
+<button onClick={()=>addAttendance(s.id)}>
+Presença
 </button>
 
+<button className="green" onClick={()=>trocarFaixa(s.id)}>
+Trocar Faixa
+</button>
+
+<button className="red" onClick={()=>removeStudent(s.id)}>
+Excluir
+</button>
+
+</div>
+
 }
 
-<div style={{marginTop:10}}>
-
-<b>Chat professor / pais</b>
-
-<div className="chatArea">
-
-{s.chat.map((m,i)=>(
-
-<div key={i} className="chatRow">
-
-<div className={"msg "+(m.autor==="professor"?"prof":"pais")}>
-
-<b>{m.autor}</b><br/>
-
-{m.texto}
-
+<div style={{marginTop:8,fontSize:13}}>
+Faltam {faltam} aulas
 </div>
 
+<div style={{fontSize:13}}>
+Previsão troca faixa: {previsao}
 </div>
 
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico graus</b>
+{s.historicoGraus.map((h,i)=>(
+<div key={i}>{h.data} - Grau {h.grau}</div>
 ))}
-
 </div>
 
-<input
-placeholder="Escrever mensagem..."
-style={{marginTop:6,width:"80%"}}
-onKeyDown={(e)=>{
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico comportamental</b>
+{s.historicoComportamental.map((h,i)=>(
+<div key={i}>{h.data} - {h.tipo}</div>
+))}
+</div>
 
-if(e.key==="Enter"){
-
-enviarMensagem(s.id,e.target.value)
-
-e.target.value=""
-
-}
-
-}}
-/>
-
+<div style={{marginTop:10,fontSize:12}}>
+<b>Histórico de faixas</b>
+{s.historicoFaixas.map((h,i)=>(
+<div key={i}>{h.data} - {h.faixa}</div>
+))}
 </div>
 
 </div>
@@ -583,6 +678,16 @@ e.target.value=""
 )
 
 })}
+
+<div className="card">
+
+<img src="graus_coloridos.jpeg" width="100%"/>
+
+<br/><br/>
+
+<img src="sistema_graduacao.jpeg" width="100%"/>
+
+</div>
 
 </div>
 
