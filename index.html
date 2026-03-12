@@ -94,11 +94,24 @@ input,select{
   border:3px solid #ddd;
 }
 
+.editAvatar{
+  position:absolute;
+  bottom:0;
+  right:0;
+  font-size:10px;
+  background:#3498db;
+  color:white;
+  border-radius:6px;
+  padding:2px 4px;
+  cursor:pointer;
+}
+
 .studentHeader{
   display:flex;
   align-items:center;
   gap:10px;
-  margin-bottom:6px
+  margin-bottom:6px;
+  position:relative;
 }
 
 .login{
@@ -106,80 +119,74 @@ input,select{
   margin:auto
 }
 
-.avatarUpload{
-  position:relative;
-  display:inline-block;
-}
-
-.avatarUpload input{
-  position:absolute;
-  top:0;
-  left:0;
-  width:60px;
-  height:60px;
-  opacity:0;
-  cursor:pointer;
-}
-
+/* Chat estilo WhatsApp */
 .chatBox{
-  margin-top:12px;
-  border-top:1px solid #eee;
-  padding-top:10px
+  border:1px solid #ccc;
+  border-radius:10px;
+  padding:10px;
+  max-width:500px;
+  margin-top:20px;
+  background:#fff;
 }
 
-.chatMessages{
-  max-height:150px;
+.messages{
+  max-height:250px;
   overflow-y:auto;
-  font-size:12px;
-  margin-bottom:6px
+  margin-bottom:10px;
+}
+
+.message{
+  padding:6px 10px;
+  border-radius:12px;
+  margin-bottom:5px;
+  display:inline-block;
+  max-width:70%;
+  word-wrap:break-word;
+}
+
+.message.user{
+  background:#dcf8c6;
+  margin-left:auto;
+}
+
+.message.prof{
+  background:#fff;
+  border:1px solid #ddd;
+  margin-right:auto;
 }
 
 .chatInput{
   display:flex;
-  gap:6px;
-  align-items:center
+  gap:5px;
+  align-items:center;
 }
 
-.clip{
+.chatInput input[type=text]{
+  flex:1;
+  padding:6px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.clipButton{
   font-size:18px;
   cursor:pointer;
-  padding:4px;
-  border-radius:6px
-}
-
-.clip:hover{
-  background:#eee
-}
-
-.previewFile{
-  font-size:11px;
-  background:#fafafa;
-  padding:4px;
-  border-radius:4px;
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:4px
-}
-
-.previewFile button{
-  background:#e74c3c;
-  padding:2px 6px;
-  font-size:10px
+  background:none;
+  border:none;
 }
 </style>
 </head>
 
 <body>
-
 <div id="root"></div>
 
 <script type="text/babel">
 
 const beltOrder=[
-  "Branca","Cinza/Branca","Cinza","Cinza/Preta",
-  "Amarela/Branca","Amarela","Amarela/Preta",
-  "Laranja/Branca","Laranja","Laranja/Preta",
-  "Verde/Branca","Verde","Verde/Preta"
+"Branca","Cinza/Branca","Cinza","Cinza/Preta",
+"Amarela/Branca","Amarela","Amarela/Preta",
+"Laranja/Branca","Laranja","Laranja/Preta",
+"Verde/Branca","Verde","Verde/Preta"
 ]
 
 const trainingDays=[1,3,5,6]
@@ -211,37 +218,12 @@ function estimateDate(aulas){
   return date.toLocaleDateString()
 }
 
-function compressImage(file,callback){
-  const reader=new FileReader()
-  reader.onload=function(e){
-    const img=new Image()
-    img.onload=function(){
-      const canvas=document.createElement("canvas")
-      const max=400
-      let w=img.width
-      let h=img.height
-      if(w>h){
-        if(w>max){ h=h*(max/w); w=max }
-      }else{
-        if(h>max){ w=w*(max/h); h=max }
-      }
-      canvas.width=w
-      canvas.height=h
-      const ctx=canvas.getContext("2d")
-      ctx.drawImage(img,0,0,w,h)
-      callback(canvas.toDataURL("image/jpeg",0.7))
-    }
-    img.src=e.target.result
-  }
-  reader.readAsDataURL(file)
-}
-
 function ClassesBar({aulas}){
   return(
     <div className="bar">
       {Array.from({length:15}).map((_,i)=>{
         const done=i<(aulas%15)
-        return <div key={i} className={"box "+(done?"done":"")}></div>
+        return(<div key={i} className={"box "+(done?"done":"")}></div>)
       })}
     </div>
   )
@@ -256,62 +238,8 @@ function PresenceBar({graus}){
         let color="#ddd"
         if(i<vermelhos) color="#e74c3c"
         else if(i<brancos) color="#fff"
-        return <div key={i} className="degree" style={{background:color}}></div>
+        return(<div key={i} className="degree" style={{background:color}}></div>)
       })}
-    </div>
-  )
-}
-
-function Chat({studentId}){
-  const key="chat_"+studentId
-  const [messages,setMessages]=React.useState(()=>JSON.parse(localStorage.getItem(key)||"[]"))
-  const [msg,setMsg]=React.useState("")
-  const [file,setFile]=React.useState(null)
-  const endRef=React.useRef()
-
-  React.useEffect(()=>{
-    localStorage.setItem(key,JSON.stringify(messages))
-    if(endRef.current) endRef.current.scrollIntoView({behavior:"smooth"})
-  },[messages])
-
-  function handleFile(e){
-    const f=e.target.files[0]
-    if(!f) return
-    if(f.size>5*1024*1024){ alert("Arquivo máximo 5MB"); return }
-    setFile(f)
-  }
-
-  function removeFile(){ setFile(null) }
-
-  function send(){
-    if(!msg && !file) return
-    let fileUrl=null, fileName=null, isImage=false
-    if(file){ fileUrl=URL.createObjectURL(file); fileName=file.name; isImage=file.type.startsWith("image") }
-    setMessages([...messages,{text:msg,file:fileUrl,name:fileName,image:isImage,date:new Date().toLocaleString()}])
-    setMsg(""); setFile(null)
-  }
-
-  return(
-    <div className="chatBox">
-      <div className="chatMessages">
-        {messages.map((m,i)=>(
-          <div key={i} style={{marginBottom:6}}>
-            <div style={{background:"#e8f4ff",padding:"6px 8px",borderRadius:8,display:"inline-block",maxWidth:"80%"}}>
-              {m.text && <div>{m.text}</div>}
-              {m.image && <img src={m.file} style={{maxWidth:180,borderRadius:6,marginTop:4}} />}
-              {m.file && !m.image && <div><a href={m.file} download={m.name}>📥 {m.name}</a></div>}
-            </div>
-            <div style={{fontSize:10,color:"#888"}}>{m.date}</div>
-          </div>
-        ))}
-        <div ref={endRef}></div>
-      </div>
-      {file && <div className="previewFile">{file.name}<button onClick={removeFile}>remover</button></div>}
-      <div className="chatInput">
-        <label className="clip">📎<input type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={handleFile}/></label>
-        <input placeholder="Mensagem" value={msg} onChange={e=>setMsg(e.target.value)}/>
-        <button onClick={send}>Enviar</button>
-      </div>
     </div>
   )
 }
@@ -322,10 +250,15 @@ function Login({setUser,students,setFilho}){
   const [nascimento,setNascimento]=React.useState("")
   const [senha,setSenha]=React.useState("")
 
-  function loginProfessor(){ if(senha==="admin") setUser("professor"); else alert("Senha incorreta") }
+  function loginProfessor(){
+    if(senha==="admin") setUser("professor")
+    else alert("Senha incorreta")
+  }
+
   function loginPais(){
     const aluno=students.find(s=>s.nome===nome && s.nascimento===nascimento)
-    if(aluno){ setFilho(nome); setUser("pais") }else{ alert("Aluno não encontrado") }
+    if(aluno){setFilho(nome); setUser("pais")}
+    else{alert("Aluno não encontrado")}
   }
 
   return(
@@ -334,18 +267,70 @@ function Login({setUser,students,setFilho}){
       <button className="green" onClick={()=>setTipo("professor")}>Professor</button>
       <button onClick={()=>setTipo("pais")}>Pais</button>
       <br/><br/>
-      {tipo==="professor" && <div>
+      {tipo==="professor" &&
+      <div>
         <input type="password" placeholder="Senha" value={senha} onChange={e=>setSenha(e.target.value)}/>
         <br/><br/>
         <button onClick={loginProfessor}>Entrar</button>
-      </div>}
-      {tipo==="pais" && <div>
+      </div>
+      }
+      {tipo==="pais" &&
+      <div>
         <input placeholder="Nome do aluno" value={nome} onChange={e=>setNome(e.target.value)}/>
         <br/><br/>
         <input type="date" value={nascimento} onChange={e=>setNascimento(e.target.value)}/>
         <br/><br/>
         <button onClick={loginPais}>Entrar</button>
-      </div>}
+      </div>
+      }
+    </div>
+  )
+}
+
+// Chat estilo WhatsApp com opção de arquivo
+function Chat(){
+  const [messages,setMessages]=React.useState([
+    {text:"Bem-vindo ao chat da academia!", sender:"prof"}
+  ])
+  const [input,setInput]=React.useState("")
+  const messagesEndRef=React.useRef(null)
+
+  function sendMessage(){
+    if(input.trim()==="") return
+    setMessages([...messages,{text:input,sender:"user"}])
+    setInput("")
+  }
+
+  function sendFile(file){
+    const reader=new FileReader()
+    reader.onload=e=>{
+      setMessages([...messages,{text:file.name, sender:"user", file:e.target.result}])
+    }
+    reader.readAsDataURL(file)
+  }
+
+  React.useEffect(()=>{
+    messagesEndRef.current?.scrollIntoView({behavior:"smooth"})
+  },[messages])
+
+  return(
+    <div className="chatBox">
+      <div className="messages">
+        {messages.map((m,i)=>(
+          <div key={i} className={`message ${m.sender==="user"?"user":"prof"}`}>
+            {m.file ? (m.file.startsWith("data:image") ? <img src={m.file} style={{maxWidth:"150px"}}/> : <a href={m.file} target="_blank">{m.text}</a>) : m.text}
+          </div>
+        ))}
+        <div ref={messagesEndRef}/>
+      </div>
+      <div className="chatInput">
+        <input type="text" placeholder="Mensagem..." value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter") sendMessage()}}/>
+        <label className="clipButton">
+          📎
+          <input type="file" style={{display:"none"}} onChange={e=>{const file=e.target.files[0]; if(file) sendFile(file)}}/>
+        </label>
+        <button onClick={sendMessage}>Enviar</button>
+      </div>
     </div>
   )
 }
@@ -353,16 +338,13 @@ function Login({setUser,students,setFilho}){
 function App(){
   const [user,setUser]=React.useState("")
   const [filho,setFilho]=React.useState("")
-  const [students,setStudents]=React.useState(()=>JSON.parse(localStorage.getItem("academia_alliance_final")||"[]"))
+  const [students,setStudents]=React.useState(()=>{
+    const saved=localStorage.getItem("academia_alliance_final")
+    return saved?JSON.parse(saved):[]
+  })
   const [form,setForm]=React.useState({nome:"",nascimento:"",faixa:"Branca"})
 
-  React.useEffect(()=>{ localStorage.setItem("academia_alliance_final",JSON.stringify(students)) },[students])
-
-  function changeAvatar(id,file){
-    compressImage(file,(img)=>{
-      setStudents(students.map(s=>s.id===id?{...s,avatar:img}:s))
-    })
-  }
+  React.useEffect(()=>{localStorage.setItem("academia_alliance_final",JSON.stringify(students))},[students])
 
   function addStudent(){
     if(!form.nome) return
@@ -388,12 +370,14 @@ function App(){
   function addAttendance(id){
     setStudents(students.map(s=>{
       if(s.id!==id) return s
-      if(s.aulas>=135){ alert("Aluno atingiu 135 aulas. Faça a troca de faixa."); return s }
+      if(s.aulas>=135){alert("Aluno atingiu 135 aulas. Faça a troca de faixa."); return s}
       const data=new Date().toLocaleDateString()
       const novas=s.aulas+1
       let historico=s.historicoGraus
-      if(novas%15===0){ historico=[...historico,{grau:Math.floor(novas/15),data}] }
-      return {...s, aulas:novas, historicoAulas:[...s.historicoAulas,{data}], historicoGraus:historico}
+      if(novas%15===0){
+        historico=[...historico,{grau:Math.floor(novas/15),data}]
+      }
+      return{...s,aulas:novas,historicoAulas:[...s.historicoAulas,{data}],historicoGraus:historico}
     }))
   }
 
@@ -401,11 +385,7 @@ function App(){
     setStudents(students.map(s=>{
       if(s.id!==id) return s
       const data=new Date().toLocaleDateString()
-      return {
-        ...s,
-        comportamental:{...s.comportamental,[key]:data},
-        historicoComportamental:[...s.historicoComportamental,{tipo:key,data}]
-      }
+      return{...s,comportamental:{...s.comportamental,[key]:data},historicoComportamental:[...s.historicoComportamental,{tipo:key,data}]}
     }))
   }
 
@@ -415,26 +395,30 @@ function App(){
       const data=new Date().toLocaleDateString()
       const atualIndex=beltOrder.indexOf(s.faixa)
       const proximaFaixa=beltOrder[atualIndex+1] || s.faixa
-      return {
-        ...s,
-        faixa:proximaFaixa,
-        aulas:0,
-        historicoFaixas:[...s.historicoFaixas,{faixa:proximaFaixa,data}]
-      }
+      return{...s,faixa:proximaFaixa,aulas:0,historicoAulas:[],historicoGraus:[],historicoComportamental:[],comportamental:{relacionamento:null,comportamento:null,notas:null,habitos:null},historicoFaixas:[...s.historicoFaixas,{faixa:proximaFaixa,data}]}
     }))
   }
 
-  function removeStudent(id){ if(confirm("Excluir aluno?")) setStudents(students.filter(s=>s.id!==id)) }
+  function removeStudent(id){
+    if(!confirm("Excluir aluno?")) return
+    setStudents(students.filter(s=>s.id!==id))
+  }
+
+  function uploadAvatar(id,file){
+    const reader=new FileReader()
+    reader.onload=e=>{
+      setStudents(students.map(s=>{if(s.id!==id) return s; return {...s,avatar:e.target.result}}))
+    }
+    reader.readAsDataURL(file)
+  }
 
   if(user==="") return <Login setUser={setUser} students={students} setFilho={setFilho}/>
-
   let lista=students
   if(user==="pais") lista=students.filter(s=>s.nome===filho)
 
   return(
     <div className="container">
       <h1>Acompanhamento Jiu Jitsu Alliance</h1>
-
       {user==="professor" &&
         <div className="card">
           <div className="row">
@@ -452,12 +436,16 @@ function App(){
         const graus=Math.min(Math.floor(s.aulas/15),15)
         const faltam=Math.max(135-s.aulas,0)
         const previsao=estimateDate(faltam)
+
         return(
           <div key={s.id} className="card">
             <div className="studentHeader">
-              <div className="avatarUpload">
+              <div style={{position:"relative"}}>
                 <img src={s.avatar} className="avatar"/>
-                <input type="file" accept="image/*" capture="environment" onChange={(e)=>{const file=e.target.files[0]; if(file) changeAvatar(s.id,file)}}/>
+                <label className="editAvatar">
+                  ✏
+                  <input type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const file=e.target.files[0]; if(file) uploadAvatar(s.id,file)}}/>
+                </label>
               </div>
               <div>
                 <b>{s.nome}</b><br/>
@@ -469,17 +457,13 @@ function App(){
             <div>Faixa: {s.faixa}</div>
             <div style={{marginTop:6}}>Aulas</div>
             <ClassesBar aulas={s.aulas}/>
-
             <div style={{marginTop:6}}>Graus presença</div>
             <PresenceBar graus={graus}/>
-
             <div style={{display:"flex",gap:10,marginTop:8}}>
-              {["relacionamento","comportamento","notas","habitos"].map((key,i)=>(
-                <div key={i} className="beh"
-                  style={{background:s.comportamental[key]?"#"+["f1c40f","3498db","e74c3c","2ecc71"][i]:"#eee",cursor:user==="professor"?"pointer":"default"}}
-                  onClick={user==="professor"?()=>markBehavior(s.id,key):null}>
-                </div>
-              ))}
+              <div className="beh" style={{background:s.comportamental.relacionamento?"#f1c40f":"#eee",cursor:user==="professor"?"pointer":"default"}} onClick={user==="professor"?()=>markBehavior(s.id,"relacionamento"):null}></div>
+              <div className="beh" style={{background:s.comportamental.comportamento?"#3498db":"#eee",cursor:user==="professor"?"pointer":"default"}} onClick={user==="professor"?()=>markBehavior(s.id,"comportamento"):null}></div>
+              <div className="beh" style={{background:s.comportamental.notas?"#e74c3c":"#eee",cursor:user==="professor"?"pointer":"default"}} onClick={user==="professor"?()=>markBehavior(s.id,"notas"):null}></div>
+              <div className="beh" style={{background:s.comportamental.habitos?"#2ecc71":"#eee",cursor:user==="professor"?"pointer":"default"}} onClick={user==="professor"?()=>markBehavior(s.id,"habitos"):null}></div>
             </div>
 
             {user==="professor" &&
@@ -493,20 +477,33 @@ function App(){
             <div style={{marginTop:8,fontSize:13}}>Faltam {faltam} aulas</div>
             <div style={{fontSize:13}}>Previsão troca faixa: {previsao}</div>
 
-            <Chat studentId={s.id}/>
+            <div style={{marginTop:10,fontSize:12}}>
+              <b>Histórico graus</b>
+              {s.historicoGraus.map((h,i)=>(<div key={i}>{h.data} - Grau {h.grau}</div>))}
+            </div>
+
+            <div style={{marginTop:10,fontSize:12}}>
+              <b>Histórico comportamental</b>
+              {s.historicoComportamental.map((h,i)=>(<div key={i}>{h.data} - {h.tipo}</div>))}
+            </div>
+
+            <div style={{marginTop:10,fontSize:12}}>
+              <b>Histórico de faixas</b>
+              {s.historicoFaixas.map((h,i)=>(<div key={i}>{h.data} - {h.faixa}</div>))}
+            </div>
           </div>
         )
       })}
 
+      {/* Chat acima das imagens */}
+      <Chat/>
+
       <div className="card">
-        <h3>Sistema de Graduação Alliance</h3>
-        <div style={{display:"flex",flexDirection:"column",gap:"20px"}}>
-          <div>
-            <img src="graus_coloridos.jpeg" style={{maxWidth:"300px",borderRadius:"8px"}}/>
-            <p style={{fontSize:"13px"}}>Graus comportamentais</p>
-          </div>
-          <div>
-            <img src="sistema_graduacao.jpeg" style={{maxWidth:"300px",borderRadius:"8px"}}/>
-            <p style={{fontSize:"13px"}}>Sistema de graduação infantil</p>
-          </div>
-       
+        <img src="graus_coloridos.jpeg" width="100%"/>
+        <br/><br/>
+        <img src="sistema_graduacao.jpeg" width="100%"/>
+      </div>
+
+    </div>
+  )
+}
