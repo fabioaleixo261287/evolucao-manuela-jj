@@ -37,11 +37,16 @@ button.small-edit { background: none; color: #777; padding: 2px; font-size: 16px
 .msg { padding:10px; border-radius:10px; font-size:14px; max-width:80%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
 .msg.sent { background:#dcf8c6; align-self:flex-end; }
 .msg.received { background:#fff; align-self:flex-start; }
-.chat-input-area { display:flex; gap:8px; padding:12px; background:#f0f0f0; border-top: 1px solid #ddd; }
+.chat-input-area { display:flex; gap:8px; padding:12px; background:#f0f0f0; border-top: 1px solid #ddd; align-items: center; }
 .chat-input-area textarea { flex:1; border:none; padding:10px; border-radius:8px; height: 40px; resize: none; }
 
 .history-list { font-size: 11px; color: #666; max-height: 80px; overflow-y: auto; background: #fafafa; padding: 8px; border-radius: 6px; border: 1px solid #eee; }
-.doc-card { display: flex; justify-content: space-between; background: #f8f9fa; padding: 6px 10px; border-radius: 6px; margin-bottom: 4px; font-size: 12px; border: 1px solid #eee; }
+.repo-box { margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 10px; border: 1px solid #ddd; }
+.doc-card { display: flex; justify-content: space-between; background: white; padding: 6px 10px; border-radius: 6px; margin-bottom: 4px; font-size: 12px; border: 1px solid #eee; align-items: center; }
+
+/* Pre-visualização Chat */
+.chat-preview-img { max-width: 150px; border-radius: 5px; display: block; margin-top: 5px; }
+.chat-file-link { display: inline-block; background: #eee; padding: 5px; border-radius: 5px; text-decoration: none; color: #333; font-size: 11px; margin-top: 5px; }
 </style>
 </head>
 <body>
@@ -50,9 +55,19 @@ button.small-edit { background: none; color: #777; padding: 2px; font-size: 16px
 <script type="text/babel">
 const BELTS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
 
+function getAge(nasc) {
+    if(!nasc) return 0;
+    const today = new Date();
+    const birthDate = new Date(nasc);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) { age--; }
+    return age;
+}
+
 function getRules(nasc, faixa) {
     if(!nasc) return { p: "Eagle", m: 15 };
-    const idade = new Date().getFullYear() - new Date(nasc).getFullYear();
+    const idade = getAge(nasc);
     const isW = faixa.includes("Branca") || faixa.includes("Cinza");
     const isY = faixa.includes("Amarela") || faixa.includes("Laranja");
     if (idade <= 5) return { p: "Baby Eagle", m: 12 };
@@ -66,12 +81,11 @@ function App() {
     const [user, setUser] = React.useState("");
     const [filho, setFilho] = React.useState("");
     const [editingId, setEditingId] = React.useState(null);
-    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_v5_prod") || "[]"));
+    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_v6_prod") || "[]"));
     const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
 
-    React.useEffect(() => { localStorage.setItem("alliance_v5_prod", JSON.stringify(students)) }, [students]);
+    React.useEffect(() => { localStorage.setItem("alliance_v6_prod", JSON.stringify(students)) }, [students]);
 
-    // Função para comprimir imagem e evitar restart do sistema
     const handleImageUpload = (id, e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -80,18 +94,56 @@ function App() {
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 200; // Tamanho pequeno para o avatar
+                const MAX_WIDTH = 200;
                 const scaleSize = MAX_WIDTH / img.width;
                 canvas.width = MAX_WIDTH;
                 canvas.height = img.height * scaleSize;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const compressedData = canvas.toDataURL('image/jpeg', 0.7); // Comprime 70%
+                const compressedData = canvas.toDataURL('image/jpeg', 0.7);
                 setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: compressedData } : s));
             };
             img.src = event.target.result;
         };
         reader.readAsDataURL(file);
+    };
+
+    const handleChatFile = (id, e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const fileData = {
+                name: file.name,
+                type: file.type,
+                content: event.target.result
+            };
+            setStudents(prev => prev.map(s => s.id === id ? { 
+                ...s, 
+                chat: [...s.chat, { sender: user === 'professor' ? 'Professor' : 'Pais', text: "", file: fileData }] 
+            } : s));
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleRepoUpload = (id, e) => {
+        if (user !== "professor") return;
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const newDoc = { name: file.name, content: event.target.result, date: new Date().toLocaleDateString() };
+            setStudents(prev => prev.map(s => s.id === id ? { ...s, docs: [...s.docs, newDoc] } : s));
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const sendMessage = (id) => {
+        const input = document.getElementById(`msg-${id}`);
+        const txt = input.value.trim();
+        if(!txt) return;
+        setStudents(prev => prev.map(st => st.id === id ? {...st, chat: [...st.chat, {sender: user==='professor'?'Professor':'Pais', text: txt}]} : st));
+        input.value = "";
     };
 
     const markClass = (id, n) => {
@@ -160,7 +212,7 @@ function App() {
                             </label>
                             <div style={{flex:1}}>
                                 <div style={{display:'flex', alignItems:'center'}}>
-                                    <h3 style={{margin:0}}>{s.nome}</h3>
+                                    <h3 style={{margin:0}}>{s.nome} ({getAge(s.nascimento)} anos)</h3>
                                     {user === "professor" && <button className="small-edit" onClick={() => setEditingId(editingId === s.id ? null : s.id)}>⚙️</button>}
                                 </div>
                                 <small style={{color:'#666'}}>{rules.p} | Faixa {s.faixa}</small>
@@ -196,12 +248,32 @@ function App() {
                         <div className="row">
                             {['REL', 'DIS', 'ORG', 'HAB'].map(k => (
                                 <button key={k} onClick={() => {
+                                    if(user !== "professor") return;
                                     const novo = !s.comportamental[k];
                                     setStudents(students.map(st => st.id === s.id ? {...st, comportamental: {...st.comportamental, [k]: novo}, history: [{date: new Date().toLocaleDateString(), msg: `Sigla ${k} ${novo?'Ativada':'Removida'}`}, ...st.history]} : st));
                                 }} style={{background: s.comportamental[k] ? '#2ecc71' : '#eee', color: s.comportamental[k] ? '#fff' : '#888', borderRadius:'10px', fontSize:'11px'}}>
                                     {k}
                                 </button>
                             ))}
+                        </div>
+
+                        {/* Repositório de Documentos */}
+                        <div className="repo-box">
+                            <strong>📂 Documentos do Aluno</strong>
+                            {user === "professor" && (
+                                <div style={{marginTop: 5}}>
+                                    <input type="file" id={`repo-${s.id}`} hidden onChange={(e) => handleRepoUpload(s.id, e)} />
+                                    <button onClick={() => document.getElementById(`repo-${s.id}`).click()} style={{fontSize: 10, background: '#3498db'}}>+ Adicionar Doc</button>
+                                </div>
+                            )}
+                            <div style={{marginTop: 8}}>
+                                {s.docs && s.docs.map((doc, idx) => (
+                                    <div key={idx} className="doc-card">
+                                        <span>{doc.name} <small>({doc.date})</small></span>
+                                        <a href={doc.content} download={doc.name} style={{color: '#075e54', fontWeight: 'bold', textDecoration: 'none'}}>Download</a>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         <div className="history-list" style={{marginTop:10}}>
@@ -214,18 +286,36 @@ function App() {
                                 {s.chat.map((m, i) => (
                                     <div key={i} className={`msg ${m.sender === (user === 'professor' ? 'Professor' : 'Pais') ? 'sent' : 'received'}`}>
                                         <small style={{fontSize:9, fontWeight:'bold'}}>{m.sender.toUpperCase()}</small>
-                                        <div>{m.text}</div>
+                                        {m.text && <div>{m.text}</div>}
+                                        {m.file && (
+                                            <div>
+                                                {m.file.type.includes('image') ? (
+                                                    <img src={m.file.content} className="chat-preview-img" alt="Anexo" />
+                                                ) : (
+                                                    <div style={{fontSize: 20}}>📄</div>
+                                                )}
+                                                <a href={m.file.content} download={m.file.name} className="chat-file-link">
+                                                    Download {m.file.name}
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
                             <div className="chat-input-area">
-                                <textarea id={`msg-${s.id}`} placeholder="Mensagem..." />
-                                <button onClick={() => {
-                                    const txt = document.getElementById(`msg-${s.id}`).value;
-                                    if(!txt) return;
-                                    setStudents(students.map(st => st.id === s.id ? {...st, chat: [...st.chat, {sender: user==='professor'?'Professor':'Pais', text: txt}]} : st));
-                                    document.getElementById(`msg-${s.id}`).value = "";
-                                }}>➤</button>
+                                <input type="file" id={`chat-file-${s.id}`} hidden onChange={(e) => handleChatFile(s.id, e)} />
+                                <button onClick={() => document.getElementById(`chat-file-${s.id}`).click()} style={{background: 'none', color: '#075e54', fontSize: 20, padding: 0}}>📎</button>
+                                <textarea 
+                                    id={`msg-${s.id}`} 
+                                    placeholder="Mensagem..." 
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            sendMessage(s.id);
+                                        }
+                                    }}
+                                />
+                                <button onClick={() => sendMessage(s.id)}>➤</button>
                             </div>
                         </div>
                     </div>
