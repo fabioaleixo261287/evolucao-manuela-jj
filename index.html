@@ -158,6 +158,7 @@ input,select{
 .chatInput{
   display:flex;
   gap:5px;
+  align-items:center;
 }
 
 .chatInput input[type=text]{
@@ -165,6 +166,13 @@ input,select{
   padding:6px;
   border-radius:6px;
   border:1px solid #ccc;
+}
+
+.clipButton{
+  font-size:18px;
+  cursor:pointer;
+  background:none;
+  border:none;
 }
 </style>
 </head>
@@ -279,7 +287,7 @@ function Login({setUser,students,setFilho}){
   )
 }
 
-// Chat estilo WhatsApp com professor e aluno
+// Chat estilo WhatsApp com opção de arquivo
 function Chat(){
   const [messages,setMessages]=React.useState([
     {text:"Bem-vindo ao chat da academia!", sender:"prof"}
@@ -293,6 +301,14 @@ function Chat(){
     setInput("")
   }
 
+  function sendFile(file){
+    const reader=new FileReader()
+    reader.onload=e=>{
+      setMessages([...messages,{text:file.name, sender:"user", file:e.target.result}])
+    }
+    reader.readAsDataURL(file)
+  }
+
   React.useEffect(()=>{
     messagesEndRef.current?.scrollIntoView({behavior:"smooth"})
   },[messages])
@@ -302,13 +318,17 @@ function Chat(){
       <div className="messages">
         {messages.map((m,i)=>(
           <div key={i} className={`message ${m.sender==="user"?"user":"prof"}`}>
-            {m.text}
+            {m.file ? (m.file.startsWith("data:image") ? <img src={m.file} style={{maxWidth:"150px"}}/> : <a href={m.file} target="_blank">{m.text}</a>) : m.text}
           </div>
         ))}
         <div ref={messagesEndRef}/>
       </div>
       <div className="chatInput">
         <input type="text" placeholder="Mensagem..." value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter") sendMessage()}}/>
+        <label className="clipButton">
+          📎
+          <input type="file" style={{display:"none"}} onChange={e=>{const file=e.target.files[0]; if(file) sendFile(file)}}/>
+        </label>
         <button onClick={sendMessage}>Enviar</button>
       </div>
     </div>
@@ -487,9 +507,3 @@ function App(){
     </div>
   )
 }
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
-
-</script>
-</body>
-</html>
