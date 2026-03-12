@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Acompanhamento Jiu Jitsu Alliance</title>
+<title>Acompanhamento Jiu Jitsu Alliance - Premium</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -10,33 +10,47 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <style>
-body{ font-family:Arial; background:#f4f6f8; margin:0; padding:20px }
+body{ font-family: Arial, sans-serif; background:#f4f6f8; margin:0; padding:20px }
 .container{ max-width:1000px; margin:auto }
-.card{ background:white; padding:16px; border-radius:10px; margin-bottom:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1) }
-.row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px }
-button{ padding:6px 12px; border:none; border-radius:6px; background:#3498db; color:white; cursor:pointer }
+.card{ background:white; padding:18px; border-radius:10px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1) }
+.row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; align-items: center; }
+
+button{ padding:8px 14px; border:none; border-radius:6px; background:#3498db; color:white; cursor:pointer; font-weight: bold; }
+button:disabled{ background:#ccc; cursor:not-allowed }
 button.red{background:#e74c3c}
 button.green{background:#2ecc71}
-input,select{ padding:6px; border-radius:6px; border:1px solid #ccc }
-.bar{ display:flex; gap:3px }
-.box{ width:14px; height:14px; border:1px solid #999; background:#eee }
-.done{ background:#2ecc71 }
-.degree{ width:20px; height:20px; border:1px solid #555; border-radius:3px; background:#ddd }
-.beh{ width:22px; height:22px; border-radius:22px; background:#eee }
-.avatar{ width:60px; height:60px; border-radius:50%; object-fit:cover; border:3px solid #ddd; }
-.editAvatar{ position:absolute; bottom:0; right:0; font-size:10px; background:#3498db; color:white; border-radius:6px; padding:2px 4px; cursor:pointer; }
-.studentHeader{ display:flex; align-items:center; gap:10px; margin-bottom:6px; position:relative; }
-.login{ max-width:400px; margin:auto }
+button.orange{background:#f39c12}
 
-/* Chat Estilo WhatsApp Atualizado */
-.chatBox{ border:1px solid #eee; border-radius:10px; padding:10px; background:#e5ddd5; margin-top:15px; }
-.messages{ max-height:200px; overflow-y:auto; margin-bottom:10px; display:flex; flex-direction:column; gap:5px; padding:5px; }
-.message{ padding:8px 12px; border-radius:8px; font-size:14px; max-width:80%; position:relative; box-shadow:0 1px 1px rgba(0,0,0,0.1); }
-.message.sent{ background:#dcf8c6; align-self:flex-end; border-bottom-right-radius:2px; }
-.message.received{ background:#fff; align-self:flex-start; border-bottom-left-radius:2px; }
-.message small{ display:block; font-size:10px; color: #777; margin-bottom:2px; }
-.chatInput{ display:flex; gap:5px; }
-.chatInput input{ flex:1; border:none; padding:10px; border-radius:20px; }
+input, select{ padding:8px; border-radius:6px; border:1px solid #ccc }
+
+/* Bolinhas de Aula Numeradas */
+.bar-bolinhas{ display:flex; gap:5px; flex-wrap:wrap; margin:10px 0 }
+.bolinha-aula{ width:28px; height:28px; border-radius:50%; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:11px; background:#eee; color:#666 }
+.bolinha-aula.done{ background:#2ecc71; color:white; border-color:#27ae60 }
+
+.bar{ display:flex; gap:4px }
+.degree{ width:22px; height:22px; border:1px solid #555; border-radius:3px; background:#ddd }
+.beh{ width:26px; height:26px; border-radius:50%; background:#eee; border:1px solid #ccc; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:white }
+
+/* Foto Editável */
+.avatar-container { position: relative; width: 70px; height: 70px; }
+.avatar{ width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid #3498db; cursor: pointer; }
+.edit-hint { position: absolute; bottom: 0; right: 0; background: #3498db; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+/* Histórico */
+.hist-box { background: #f9f9f9; padding: 10px; border-radius: 8px; font-size: 12px; margin-top: 10px; max-height: 100px; overflow-y: auto; border-left: 3px solid #3498db; }
+
+/* Chat */
+.chatBox{ border-radius:10px; background:#e5ddd5; margin-top:15px; border: 1px solid #ddd; overflow: hidden; }
+.messages{ max-height:200px; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:6px; }
+.message{ padding:8px 12px; border-radius:8px; font-size:13px; max-width:80%; position:relative; box-shadow:0 1px 1px rgba(0,0,0,0.1); }
+.message.sent{ background:#dcf8c6; align-self:flex-end; }
+.message.received{ background:#fff; align-self:flex-start; }
+.message small { display: block; font-size: 9px; color: #888; text-align: right; margin-top: 4px; }
+.chatInput{ display:flex; gap:5px; padding:10px; background:#f0f0f0; align-items: center; }
+.chatInput input{ flex:1; border:none; padding:10px; border-radius:20px; outline: none; }
+
+.repo-link { display: flex; align-items: center; gap: 8px; padding: 10px; background: #ebf5fb; border-radius: 8px; color: #2980b9; text-decoration: none; font-weight: bold; margin-top: 10px; }
 </style>
 </head>
 
@@ -45,163 +59,199 @@ input,select{ padding:6px; border-radius:6px; border:1px solid #ccc }
 
 <script type="text/babel">
 
-const beltOrder=["Branca","Cinza/Branca","Cinza","Cinza/Preta","Amarela/Branca","Amarela","Amarela/Preta","Laranja/Branca","Laranja","Laranja/Preta","Verde/Branca","Verde","Verde/Preta"]
-const trainingDays=[1,3,5,6]
+const BELT_ORDER = ["Branca","Cinza/Branca","Cinza","Cinza/Preta","Amarela/Branca","Amarela","Amarela/Preta","Laranja/Branca","Laranja","Laranja/Preta","Verde/Branca","Verde","Verde/Preta"];
+const BEHAVIOR_TYPES = [
+    { key: 'relacionamento', color: '#f1c40f', label: 'Amarelo' },
+    { key: 'comportamento', color: '#3498db', label: 'Azul' },
+    { key: 'notas', color: '#e74c3c', label: 'Vermelho' },
+    { key: 'habitos', color: '#2ecc71', label: 'Verde' }
+];
 
-function getAge(date){
-  const hoje=new Date(); const nasc=new Date(date);
-  let idade=hoje.getFullYear()-nasc.getFullYear();
-  const m=hoje.getMonth()-nasc.getMonth();
-  if(m<0 || (m===0 && hoje.getDate()<nasc.getDate())) idade--;
-  return idade;
-}
+function App() {
+    const [user, setUser] = React.useState("");
+    const [filho, setFilho] = React.useState("");
+    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_v_final_v2") || "[]"));
+    const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
 
-function getCategory(idade){
-  if(idade>=3 && idade<=4) return "BABY EAGLE"; if(idade>=5 && idade<=8) return "LITTLE EAGLE";
-  if(idade>=9 && idade<=12) return "EAGLE WARRIOR"; if(idade>=13 && idade<=15) return "EAGLE YOUTH";
-  return "FORA CATEGORIA";
-}
+    React.useEffect(() => { localStorage.setItem("alliance_v_final_v2", JSON.stringify(students)) }, [students]);
 
-function estimateDate(aulas){
-  let date=new Date(); let count=0;
-  while(count<aulas){ date.setDate(date.getDate()+1); if(trainingDays.includes(date.getDay())) count++; }
-  return date.toLocaleDateString();
-}
+    const addStudent = () => {
+        if (!form.nome) return;
+        const newStudent = {
+            id: Date.now(), ...form, avatar: "https://via.placeholder.com/70",
+            aulas: 0, historicoAulas: [], historicoGraus: [], historicoComportamental: [],
+            chat: [], comportamental: { relacionamento: null, comportamento: null, notas: null, habitos: null }
+        };
+        setStudents([...students, newStudent]);
+        setForm({ nome: "", nascimento: "", faixa: "Branca" });
+    };
 
-function ClassesBar({aulas}){
-  return(<div className="bar">{Array.from({length:15}).map((_,i)=>(<div key={i} className={"box "+(i<(aulas%15)?"done":"")}></div>))}</div>)
-}
+    const handleAttendance = (id) => {
+        setStudents(students.map(s => {
+            if (s.id !== id || s.aulas >= 135) return s;
+            const novasAulas = s.aulas + 1;
+            const data = new Date().toLocaleString('pt-BR');
+            let hGraus = s.historicoGraus || [];
+            if (novasAulas % 15 === 0) hGraus.push({ grau: novasAulas / 15, data });
+            return { ...s, aulas: novasAulas, historicoAulas: [...s.historicoAulas, { data }], historicoGraus: hGraus };
+        }));
+    };
 
-function PresenceBar({graus}){
-  return(<div className="bar">{Array.from({length:4}).map((_,i)=>{
-    let color="#ddd"; if(i<Math.max(graus-4,0)) color="#e74c3c"; else if(i<Math.min(graus,4)) color="#fff";
-    return(<div key={i} className="degree" style={{background:color}}></div>)
-  })}</div>)
-}
+    const handleBeltChange = (id) => {
+        setStudents(students.map(s => {
+            if (s.id !== id) return s;
+            const currentIdx = BELT_ORDER.indexOf(s.faixa);
+            const proxima = BELT_ORDER[currentIdx + 1] || s.faixa;
+            return { ...s, faixa: proxima, aulas: 0, historicoAulas: [], historicoGraus: [] };
+        }));
+    };
 
-// Componente de Chat Reutilizável
-function Chat({ chatData, onSend, userType }) {
-  const [text, setText] = React.useState("");
-  const endRef = React.useRef(null);
-  React.useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }) }, [chatData]);
+    const toggleBehavior = (id, key) => {
+        setStudents(students.map(s => {
+            if (s.id !== id) return s;
+            const isSet = s.comportamental[key];
+            const data = new Date().toLocaleString('pt-BR');
+            return {
+                ...s,
+                comportamental: { ...s.comportamental, [key]: isSet ? null : data },
+                historicoComportamental: isSet 
+                    ? s.historicoComportamental.filter(h => h.tipo !== key || h.data !== isSet)
+                    : [...(s.historicoComportamental || []), { tipo: key, data }]
+            };
+        }));
+    };
 
-  return (
-    <div className="chatBox">
-      <div className="messages">
-        {chatData.map((m, i) => (
-          <div key={i} className={`message ${m.sender === userType ? 'sent' : 'received'}`}>
-            <small>{m.sender === 'professor' ? 'Professor' : 'Responsável'}</small>
-            {m.text}
-          </div>
-        ))}
-        <div ref={endRef} />
-      </div>
-      <div className="chatInput">
-        <input value={text} onChange={e => setText(e.target.value)} placeholder="Conversar..." onKeyDown={e => {if(e.key==='Enter'){onSend(text); setText("")}}} />
-        <button className="green" onClick={() => {onSend(text); setText("")}}>➤</button>
-      </div>
-    </div>
-  );
-}
+    const sendMsg = (id, text, isFile = false) => {
+        if (!text.trim()) return;
+        const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        setStudents(students.map(s => s.id === id ? {
+            ...s, chat: [...(s.chat || []), { sender: user, text, time, isFile }]
+        } : s));
+    };
 
-function Login({setUser,students,setFilho}){
-  const [tipo,setTipo]=React.useState(""); const [nome,setNome]=React.useState("");
-  const [nasc,setNasc]=React.useState(""); const [senha,setSenha]=React.useState("");
-  return(
-    <div className="login card">
-      <h2>Login Alliance</h2>
-      <button className="green" onClick={()=>setTipo("professor")}>Professor</button> <button onClick={()=>setTipo("pais")}>Pais</button>
-      {tipo==="professor" && <div><br/><input type="password" placeholder="Senha" value={senha} onChange={e=>setSenha(e.target.value)}/><br/><br/><button onClick={()=>senha==="admin"?setUser("professor"):alert("Erro")}>Entrar</button></div>}
-      {tipo==="pais" && <div><br/><input placeholder="Nome do aluno" value={nome} onChange={e=>setNome(e.target.value)}/><br/><br/><input type="date" value={nasc} onChange={e=>setNasc(e.target.value)}/><br/><br/><button onClick={()=>{const a=students.find(s=>s.nome===nome && s.nascimento===nasc); if(a){setFilho(nome); setUser("pais")}else alert("Não encontrado")}}>Entrar</button></div>}
-    </div>
-  )
-}
+    const updatePhoto = (id) => {
+        const url = prompt("Cole a URL da nova imagem:");
+        if (url) setStudents(students.map(s => s.id === id ? { ...s, avatar: url } : s));
+    };
 
-function App(){
-  const [user,setUser]=React.useState(""); const [filho,setFilho]=React.useState("");
-  const [students,setStudents]=React.useState(()=>JSON.parse(localStorage.getItem("academia_alliance_v2")||"[]"));
-  const [form,setForm]=React.useState({nome:"",nascimento:"",faixa:"Branca"});
-
-  React.useEffect(()=>{localStorage.setItem("academia_alliance_v2",JSON.stringify(students))},[students]);
-
-  function addStudent(){
-    if(!form.nome) return; const idade=getAge(form.nascimento);
-    setStudents([...students,{ id:Date.now(), nome:form.nome, nascimento:form.nascimento, idade, categoria:getCategory(idade), faixa:form.faixa, avatar:"avatar.png", aulas:0, historicoAulas:[], historicoGraus:[], historicoComportamental:[], historicoFaixas:[], chat:[], comportamental:{relacionamento:null,comportamento:null,notas:null,habitos:null} }]);
-    setForm({nome:"",nascimento:"",faixa:"Branca"});
-  }
-
-  function addAttendance(id){
-    setStudents(students.map(s=>{
-      if(s.id!==id || s.aulas>=135) return s;
-      const novas=s.aulas+1; const data=new Date().toLocaleDateString();
-      let hG=s.historicoGraus; if(novas%15===0) hG=[...hG,{grau:Math.floor(novas/15),data}];
-      return {...s, aulas:novas, historicoAulas:[...s.historicoAulas,{data}], historicoGraus:hG};
-    }));
-  }
-
-  function markBehavior(id,key){
-    setStudents(students.map(s=>{
-      if(s.id!==id) return s; const data=new Date().toLocaleDateString();
-      return {...s, comportamental:{...s.comportamental,[key]:data}, historicoComportamental:[...s.historicoComportamental,{tipo:key,data}]};
-    }));
-  }
-
-  function sendMsg(id, text){
-    if(!text.trim()) return;
-    setStudents(students.map(s => s.id === id ? {...s, chat: [...(s.chat||[]), {sender: user, text, date: new Date().toLocaleString()}]} : s));
-  }
-
-  if(user==="") return <Login setUser={setUser} students={students} setFilho={setFilho}/>;
-  const lista = user==="pais" ? students.filter(s=>s.nome===filho) : students;
-
-  return(
-    <div className="container">
-      <h1>Acompanhamento Jiu Jitsu Alliance</h1>
-      {user==="professor" && <div className="card"><div className="row">
-        <input placeholder="Nome" value={form.nome} onChange={e=>setForm({...form,nome:e.target.value})}/>
-        <input type="date" value={form.nascimento} onChange={e=>setForm({...form,nascimento:e.target.value})}/>
-        <select value={form.faixa} onChange={e=>setForm({...form,faixa:e.target.value})}>{beltOrder.map(b=><option key={b}>{b}</option>)}</select>
-        <button className="green" onClick={addStudent}>Adicionar</button>
-      </div></div>}
-
-      {lista.map(s=>(
-        <div key={s.id} className="card">
-          <div className="studentHeader">
-            <img src={s.avatar} className="avatar"/>
-            <div><b>{s.nome}</b><br/>{s.idade} anos | {s.categoria}</div>
-          </div>
-          <div>Faixa: {s.faixa} | Aulas: {s.aulas}</div>
-          <ClassesBar aulas={s.aulas}/><br/>
-          <PresenceBar graus={Math.floor(s.aulas/15)}/>
-          
-          <div style={{display:"flex",gap:10,marginTop:10}}>
-            {['relacionamento','comportamento','notas','habitos'].map(k=>(
-              <div key={k} className="beh" style={{background:s.comportamental[k]?"#2ecc71":"#eee"}} onClick={()=>user==="professor"&&markBehavior(s.id,k)}></div>
-            ))}
-          </div>
-
-          {user==="professor" && <div style={{marginTop:10,display:"flex",gap:5}}>
-            <button onClick={()=>addAttendance(s.id)}>Presença</button>
-            <button className="red" onClick={()=>setStudents(students.filter(x=>x.id!==s.id))}>Excluir</button>
-          </div>}
-
-          <div style={{marginTop:10, fontSize:'12px', color:'#666'}}>Previsão Troca: {estimateDate(135-s.aulas)}</div>
-          
-          <hr/>
-          <h4>Chat com {user==="professor"?"Pais":"Professor"}</h4>
-          <Chat chatData={s.chat || []} userType={user} onSend={(t)=>sendMsg(s.id, t)} />
+    if (!user) return (
+        <div className="card" style={{ maxWidth: 400, margin: '100px auto', textAlign: 'center' }}>
+            <h2>Alliance Jiu Jitsu</h2>
+            <button className="green" onClick={() => setUser("professor")} style={{width:'100%', marginBottom:10}}>Acesso Professor</button>
+            <button onClick={() => setUser("pais")} style={{width:'100%'}}>Acesso Pais</button>
         </div>
-      ))}
+    );
 
-      <div className="card">
-        <img src="graus_coloridos.jpeg" width="100%" style={{marginBottom:10}}/>
-        <img src="sistema_graduacao.jpeg" width="100%"/>
-      </div>
-    </div>
-  )
+    const lista = user === "pais" ? students.filter(s => s.nome.toLowerCase().includes(filho.toLowerCase()) && filho !== "") : students;
+
+    return (
+        <div className="container">
+            <div className="row" style={{justifyContent:'space-between'}}>
+                <h1>{user === "professor" ? "Gestão Alliance" : "Área do Aluno"}</h1>
+                <button onClick={() => {setUser(""); setFilho("")}} className="red">Sair</button>
+            </div>
+
+            {user === "professor" && (
+                <div className="card">
+                    <h3>Novo Aluno</h3>
+                    <div className="row">
+                        <input placeholder="Nome" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
+                        <input type="date" value={form.nascimento} onChange={e => setForm({ ...form, nascimento: e.target.value })} />
+                        <select value={form.faixa} onChange={e => setForm({ ...form, faixa: e.target.value })}>
+                            {BELT_ORDER.map(b => <option key={b} value={b}>{b}</option>)}
+                        </select>
+                        <button className="green" onClick={addStudent}>Cadastrar</button>
+                    </div>
+                </div>
+            )}
+
+            {user === "pais" && !filho && (
+                <div className="card"><input placeholder="Nome do Aluno..." style={{width:'100%', boxSizing:'border-box'}} onChange={e => setFilho(e.target.value)} /></div>
+            )}
+
+            {lista.map(s => {
+                const aulasNoGrau = (s.aulas % 15 === 0 && s.aulas > 0) ? 15 : s.aulas % 15;
+                return (
+                    <div key={s.id} className="card">
+                        <div className="studentHeader">
+                            <div className="avatar-container" onClick={() => updatePhoto(s.id)}>
+                                <img src={s.avatar} className="avatar" title="Clique para editar foto" />
+                                <div className="edit-hint">✎</div>
+                            </div>
+                            <div>
+                                <b>{s.nome}</b><br />
+                                <small>{s.faixa} | {s.aulas} aulas</small>
+                            </div>
+                        </div>
+
+                        <div style={{marginTop:10}}>Aulas (Ciclo de 15):</div>
+                        <div className="bar-bolinhas">
+                            {Array.from({ length: 15 }).map((_, i) => (
+                                <div key={i} className={`bolinha-aula ${i < aulasNoGrau ? 'done' : ''}`}>{i + 1}</div>
+                            ))}
+                        </div>
+
+                        <div style={{marginTop:10}}>Graus de Presença (Físicos):</div>
+                        <div className="bar">
+                            {Array.from({ length: 8 }).map((_, i) => (
+                                <div key={i} className="degree" style={{ background: i < Math.floor(s.aulas / 15) ? (i < 4 ? '#fff' : '#e74c3c') : '#ddd' }}></div>
+                            ))}
+                        </div>
+
+                        <div style={{ marginTop: 15 }}>Grau Comportamental (Clique p/ Alternar):</div>
+                        <div className="row" style={{ marginTop: 5 }}>
+                            {BEHAVIOR_TYPES.map(bt => (
+                                <div key={bt.key} className="beh" 
+                                     style={{ background: s.comportamental[bt.key] ? bt.color : '#eee' }}
+                                     onClick={() => user === "professor" && toggleBehavior(s.id, bt.key)}>
+                                     {bt.label[0]}
+                                </div>
+                            ))}
+                        </div>
+
+                        {user === "professor" && (
+                            <div className="row" style={{ marginTop: 15 }}>
+                                <button className="green" onClick={() => handleAttendance(s.id)} disabled={s.aulas >= 135}>+ Presença</button>
+                                <button className="orange" onClick={() => handleBeltChange(s.id)}>⬆ Troca de Faixa</button>
+                                <button className="red" onClick={() => setStudents(students.filter(x => x.id !== s.id))}>Excluir</button>
+                            </div>
+                        )}
+
+                        <div className="hist-box">
+                            <b>Histórico de Aulas:</b> {s.historicoAulas.slice(-3).map(h => h.data).join(', ') || 'Nenhuma'}<br/>
+                            <b>Graus Conquistados:</b> {s.historicoGraus.map(g => `${g.grau}º em ${g.data}`).join(' | ') || 'Nenhum'}<br/>
+                            <b>Comportamental:</b> {s.historicoComportamental.map(h => `${h.tipo} (${h.data})`).join(' | ') || 'Nenhum'}
+                        </div>
+
+                        <a href="#" className="repo-link" onClick={() => alert('Download do Repositório de Documentos Alliance...')}>
+                            📂 Repositório de Documentos (Regulamento/PDF)
+                        </a>
+
+                        <div className="chatBox">
+                            <div className="messages">
+                                {s.chat.map((m, i) => (
+                                    <div key={i} className={`message ${m.sender === user ? 'sent' : 'received'}`}>
+                                        <small style={{textAlign:'left', fontWeight:'bold'}}>{m.sender.toUpperCase()}</small>
+                                        {m.text}
+                                        <small>{m.time}</small>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="chatInput">
+                                <label style={{cursor:'pointer', fontSize:'18px'}}>📎
+                                    <input type="file" style={{display:'none'}} onChange={e => sendMsg(s.id, `📎 Arquivo: ${e.target.files[0].name}`, true)} />
+                                </label>
+                                <input placeholder="Escreva aqui..." onKeyDown={e => { if(e.key==='Enter') { sendMsg(s.id, e.target.value); e.target.value="" } }} />
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
 </body>
 </html>
