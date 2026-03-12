@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -252,6 +253,11 @@ React.useEffect(()=>{
 localStorage.setItem("chat_"+alunoId,JSON.stringify(messages))
 },[messages])
 
+function getHora(){
+const d=new Date()
+return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+}
+
 function compressImage(file,callback){
 
 const img=new Image()
@@ -294,14 +300,16 @@ function sendMessage(){
 
 if(input.trim()==="" && !file) return
 
-const sender=user==="professor"?"prof":"user"
+const sender=user==="professor"?"prof":"pais"
+const nome=user==="professor"?"Professor":"Pais"
+const hora=getHora()
 
 if(file){
 
 if(file.type.startsWith("image")){
 
 compressImage(file,(img)=>{
-setMessages([...messages,{sender,type:"image",data:img}])
+setMessages([...messages,{sender,nome,hora,type:"image",data:img}])
 })
 
 }else{
@@ -309,7 +317,7 @@ setMessages([...messages,{sender,type:"image",data:img}])
 const reader=new FileReader()
 
 reader.onload=e=>{
-setMessages([...messages,{sender,type:"file",data:e.target.result,name:file.name}])
+setMessages([...messages,{sender,nome,hora,type:"file",data:e.target.result,name:file.name}])
 }
 
 reader.readAsDataURL(file)
@@ -321,7 +329,7 @@ setFile(null)
 }
 
 if(input.trim()!==""){
-setMessages([...messages,{sender,type:"text",text:input}])
+setMessages([...messages,{sender,nome,hora,type:"text",text:input}])
 setInput("")
 }
 
@@ -335,26 +343,34 @@ return(
 
 {messages.map((m,i)=>{
 
+const isUser=m.sender==="pais"
+
 if(m.type==="text"){
 return(
-<div key={i} className={`message ${m.sender==="user"?"user":"prof"}`}>
-{m.text}
+<div key={i} className={`message ${isUser?"user":"prof"}`}>
+<div style={{fontSize:11,fontWeight:"bold"}}>{m.nome}</div>
+<div>{m.text}</div>
+<div style={{fontSize:10,textAlign:"right",opacity:0.6}}>{m.hora}</div>
 </div>
 )
 }
 
 if(m.type==="image"){
 return(
-<div key={i} className={`message ${m.sender==="user"?"user":"prof"}`}>
-<img src={m.data} style={{maxWidth:"150px"}}/>
+<div key={i} className={`message ${isUser?"user":"prof"}`}>
+<div style={{fontSize:11,fontWeight:"bold"}}>{m.nome}</div>
+<img src={m.data} style={{maxWidth:"160px",borderRadius:"6px"}}/>
+<div style={{fontSize:10,textAlign:"right",opacity:0.6}}>{m.hora}</div>
 </div>
 )
 }
 
 if(m.type==="file"){
 return(
-<div key={i} className={`message ${m.sender==="user"?"user":"prof"}`}>
+<div key={i} className={`message ${isUser?"user":"prof"}`}>
+<div style={{fontSize:11,fontWeight:"bold"}}>{m.nome}</div>
 📎 <a href={m.data} download={m.name}>{m.name}</a>
+<div style={{fontSize:10,textAlign:"right",opacity:0.6}}>{m.hora}</div>
 </div>
 )
 }
@@ -695,3 +711,179 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+function Chat({user,alunoId}){
+
+const [messages,setMessages]=React.useState(()=>{
+const saved=localStorage.getItem("chat_"+alunoId)
+return saved?JSON.parse(saved):[]
+})
+
+const [input,setInput]=React.useState("")
+const [file,setFile]=React.useState(null)
+
+React.useEffect(()=>{
+localStorage.setItem("chat_"+alunoId,JSON.stringify(messages))
+},[messages])
+
+function getHora(){
+const d=new Date()
+return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+}
+
+function compressImage(file,callback){
+
+const img=new Image()
+const reader=new FileReader()
+
+reader.onload=e=>{
+img.src=e.target.result
+}
+
+img.onload=()=>{
+
+const canvas=document.createElement("canvas")
+const max=800
+
+let w=img.width
+let h=img.height
+
+if(w>h && w>max){h*=max/w; w=max}
+else if(h>max){w*=max/h; h=max}
+
+canvas.width=w
+canvas.height=h
+
+const ctx=canvas.getContext("2d")
+ctx.drawImage(img,0,0,w,h)
+
+canvas.toBlob(blob=>{
+const reader2=new FileReader()
+reader2.onload=e=>callback(e.target.result)
+reader2.readAsDataURL(blob)
+},"image/jpeg",0.7)
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
+function sendMessage(){
+
+if(input.trim()==="" && !file) return
+
+const sender=user==="professor"?"prof":"pais"
+const nome=user==="professor"?"Professor":"Pais"
+const hora=getHora()
+
+if(file){
+
+if(file.type.startsWith("image")){
+
+compressImage(file,(img)=>{
+setMessages([...messages,{sender,nome,hora,type:"image",data:img}])
+})
+
+}else{
+
+const reader=new FileReader()
+
+reader.onload=e=>{
+setMessages([...messages,{sender,nome,hora,type:"file",data:e.target.result,name:file.name}])
+}
+
+reader.readAsDataURL(file)
+
+}
+
+setFile(null)
+
+}
+
+if(input.trim()!==""){
+setMessages([...messages,{sender,nome,hora,type:"text",text:input}])
+setInput("")
+}
+
+}
+
+return(
+
+<div className="chatBox">
+
+<div className="messages">
+
+{messages.map((m,i)=>{
+
+const isUser=m.sender==="pais"
+
+if(m.type==="text"){
+return(
+<div key={i} className={`message ${isUser?"user":"prof"}`}>
+<div style={{fontSize:11,fontWeight:"bold"}}>{m.nome}</div>
+<div>{m.text}</div>
+<div style={{fontSize:10,textAlign:"right",opacity:0.6}}>{m.hora}</div>
+</div>
+)
+}
+
+if(m.type==="image"){
+return(
+<div key={i} className={`message ${isUser?"user":"prof"}`}>
+<div style={{fontSize:11,fontWeight:"bold"}}>{m.nome}</div>
+<img src={m.data} style={{maxWidth:"160px",borderRadius:"6px"}}/>
+<div style={{fontSize:10,textAlign:"right",opacity:0.6}}>{m.hora}</div>
+</div>
+)
+}
+
+if(m.type==="file"){
+return(
+<div key={i} className={`message ${isUser?"user":"prof"}`}>
+<div style={{fontSize:11,fontWeight:"bold"}}>{m.nome}</div>
+📎 <a href={m.data} download={m.name}>{m.name}</a>
+<div style={{fontSize:10,textAlign:"right",opacity:0.6}}>{m.hora}</div>
+</div>
+)
+}
+
+})}
+
+</div>
+
+<div className="chatInput">
+
+<label>
+📎
+<input type="file" style={{display:"none"}} onChange={e=>setFile(e.target.files[0])}/>
+</label>
+
+<label>
+📸
+<input type="file" accept="image/*" capture="environment" style={{display:"none"}} onChange={e=>setFile(e.target.files[0])}/>
+</label>
+
+<input
+type="text"
+placeholder="Mensagem..."
+value={input}
+onChange={e=>setInput(e.target.value)}
+onKeyDown={e=>{if(e.key==="Enter") sendMessage()}}
+/>
+
+<button onClick={sendMessage}>Enviar</button>
+
+</div>
+
+</div>
+
+)
+
+}
