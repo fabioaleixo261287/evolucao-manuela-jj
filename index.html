@@ -1,77 +1,225 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Alliance Jiu Jitsu - Eagle System</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; margin:0; padding:15px; }
-    .container { max-width:850px; margin:auto; }
-    .card { background:white; padding:20px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); position: relative; }
-    .row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:10px; align-items: center; }
-    button { padding:8px 14px; border:none; border-radius:8px; background:#075e54; color:white; cursor:pointer; font-weight: bold; }
-    button.red { background:#e74c3c; }
-    
-    /* Info Aluno */
-    .avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #075e54; background: #eee; cursor: pointer; }
-    .student-meta { font-size: 12px; color: #666; line-height: 1.4; }
-    .category-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 4px; }
+    <meta charset="UTF-8">
+    <title>Alliance Eagle - Sistema de Graduação</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root { --whatsapp-green: #25D366; --whatsapp-dark: #075E54; --bg-gray: #f0f2f5; }
+        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg-gray); margin: 0; padding: 10px; }
+        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        
+        /* Header Aluno */
+        .header-aluno { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .avatar-circle { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--whatsapp-dark); object-fit: cover; cursor: pointer; }
+        .info-txt h2 { margin: 0; font-size: 18px; color: #333; }
+        .info-txt p { margin: 2px 0; font-size: 13px; color: #666; }
+        
+        /* Metas e Bolinhas */
+        .section-title { font-size: 14px; font-weight: bold; margin: 15px 0 8px; color: #444; }
+        .grid-aulas { display: flex; flex-wrap: wrap; gap: 6px; }
+        .aula-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; background: white; transition: 0.2s; }
+        .aula-btn.done { background: var(--whatsapp-green); color: white; border-color: #128c7e; }
 
-    /* Presença e Graus */
-    .bar-bolinhas { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0; }
-    .bolinha-aula { width:34px; height:34px; border-radius:50%; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:12px; background:#fff; color:#777; cursor: pointer; font-weight: bold; }
-    .bolinha-aula.done { background:#25d366; color:white; border-color:#128c7e; }
-    .degree-bar { display: flex; gap: 4px; margin-bottom: 10px; }
-    .degree { width:26px; height:26px; border:1px solid #333; border-radius:4px; background:#ddd; cursor: pointer; }
-    .beh-row { display: flex; gap: 10px; margin: 15px 0; }
-    .beh-btn { flex:1; padding:10px 5px; border-radius:10px; border:1px solid #ddd; font-size:11px; font-weight:bold; cursor:pointer; text-align:center; }
+        /* Graus Comportamentais conforme Imagem */
+        .beh-container { display: flex; gap: 10px; margin-top: 10px; }
+        .beh-box { flex: 1; text-align: center; cursor: pointer; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; color: white; opacity: 0.3; transition: 0.3s; }
+        .beh-box.active { opacity: 1; transform: scale(1.05); }
+        .rel { background: #f1c40f; } /* Amarelo */
+        .dis { background: #3498db; } /* Azul */
+        .org { background: #e74c3c; } /* Vermelho */
+        .com { background: #2ecc71; } /* Verde */
 
-    /* Chat Estilo WhatsApp */
-    .chat-wrapper { background: #efe7dd; border-radius: 12px; border: 1px solid #ddd; margin-top: 15px; overflow: hidden; display: flex; flex-direction: column; }
-    .chat-messages { height:250px; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
-    .msg { padding:8px 12px; border-radius:8px; font-size:14px; max-width:85%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); position: relative; }
-    .msg.sent { background:#dcf8c6; align-self:flex-end; border-top-right-radius: 0; }
-    .msg.received { background:#fff; align-self:flex-start; border-top-left-radius: 0; }
-    .msg-time { font-size: 10px; color: #999; text-align: right; margin-top: 4px; display: block; }
-    
-    .chat-input-bar { display: flex; align-items: center; gap: 8px; padding: 10px; background: #f0f0f0; }
-    .input-container { flex: 1; background: white; border-radius: 25px; display: flex; align-items: center; padding: 5px 12px; position: relative; }
-    .chat-input { flex: 1; border: none; padding: 8px; outline: none; font-size: 15px; background: transparent; }
-    .chat-icon { color: #54656f; font-size: 20px; cursor: pointer; padding: 0 5px; }
-    .send-btn-circle { background: #00a884; color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
-    
-    .emoji-picker { position: absolute; bottom: 60px; left: 10px; background: white; border: 1px solid #ccc; border-radius: 10px; display: grid; grid-template-columns: repeat(4, 1fr); padding: 5px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .history-section { margin-top: 15px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee; font-size: 11px; }
-</style>
+        /* Chat Estilo Imagem WhatsApp */
+        .chat-box { background: #efe7dd url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        .messages { height: 200px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .msg { max-width: 80%; padding: 8px 12px; border-radius: 8px; font-size: 14px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+        .msg.sent { align-self: flex-end; background: #dcf8c6; }
+        .msg.received { align-self: flex-start; background: white; }
+        
+        .chat-input-area { display: flex; align-items: center; padding: 8px; gap: 8px; background: transparent; }
+        .input-wrapper { flex: 1; background: white; border-radius: 25px; display: flex; align-items: center; padding: 5px 15px; gap: 10px; }
+        .chat-input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 15px; }
+        .icon-btn { color: #54656f; font-size: 20px; cursor: pointer; }
+        .send-circle { background: #00a884; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+
+        /* Histórico */
+        .history-log { font-size: 11px; color: #777; background: #f9f9f9; padding: 8px; border-radius: 5px; margin-top: 10px; max-height: 50px; overflow-y: auto; }
+    </style>
 </head>
 <body>
-<div id="root"></div>
+    <div id="root"></div>
 
-<script type="text/babel">
-const BELTS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
-const BEH_TYPES = [{k:'REL', n:'Relacionamento', c:'#f1c40f'},{k:'DIS', n:'Disciplina', c:'#3498db'},{k:'ORG', n:'Organização', c:'#e74c3c'},{k:'HAB', n:'Bons Hábitos', c:'#2ecc71'}];
+    <script type="text/babel">
+        const PROGRAMS = [
+            { name: "Baby Eagle", minAge: 0, maxAge: 5, meta: 12 },
+            { name: "Little Eagle", minAge: 6, maxAge: 8, meta: 15 },
+            { name: "Eagle Warrior", minAge: 9, maxAge: 12, meta: 15 },
+            { name: "Eagle Youth", minAge: 13, maxAge: 15, meta: 20 }
+        ];
 
-function getAge(nasc) {
-    if(!nasc) return 0;
-    const diff = Date.now() - new Date(nasc).getTime();
-    return Math.abs(new Date(diff).getUTCFullYear() - 1970);
-}
+        function App() {
+            const [mode, setMode] = React.useState(null);
+            const [students, setStudents] = React.useState(() => {
+                const saved = localStorage.getItem("alliance_data_v11");
+                return saved ? JSON.parse(saved) : [];
+            });
 
-function getRules(nasc, faixa) {
-    const idade = getAge(nasc);
-    const isW = faixa.includes("Branca") || faixa.includes("Cinza");
-    const isY = faixa.includes("Amarela") || faixa.includes("Laranja");
-    if (idade <= 5) return { p: "Baby Eagle", m: 12 };
-    if (idade <= 8) return { p: "Little Eagle", m: isW ? 15 : 20 };
-    if (idade <= 12) return { p: "Eagle Warrior", m: isW ? 15 : 20 };
-    if (idade <= 15) return { p: "Eagle Youth", m: isW ? 20 : (isY ? 22 : 25) };
-    return { p: "Infantil", m: 15 };
-}
+            React.useEffect(() => {
+                try {
+                    localStorage.setItem("alliance_data_v11", JSON.stringify(students));
+                } catch (e) {
+                    console.warn("Storage cheio, removendo chats antigos");
+                    const cleaned = students.map(s => ({...s, chat: s.chat.slice(-5)}));
+                    setStudents(cleaned);
+                }
+            }, [students]);
 
-function App() {
-    const [user, setUser] = React.useState("");
-    const [filho, setFilho] = React.useState("");
-    const [showEmoji, setShowEmoji] = React.
+            const calcAge = (birth) => {
+                if (!birth) return 0;
+                const today = new Date();
+                const bday = new Date(birth);
+                let age = today.getFullYear() - bday.getFullYear();
+                return age;
+            };
+
+            const getProg = (age) => PROGRAMS.find(p => age <= p.maxAge) || PROGRAMS[3];
+
+            const addStudent = () => {
+                const nome = prompt("Nome do Aluno:");
+                const nasc = prompt("Data de Nascimento (AAAA-MM-DD):");
+                if (nome && nasc) {
+                    const newStudent = {
+                        id: Date.now(),
+                        nome,
+                        nasc,
+                        avatar: "",
+                        aulas: 0,
+                        graus: 0,
+                        comp: { REL: false, DIS: false, ORG: false, COM: false },
+                        chat: [],
+                        history: [`Matrícula realizada em ${new Date().toLocaleDateString()}`]
+                    };
+                    setStudents([...students, newStudent]);
+                }
+            };
+
+            const updateStudent = (id, field, value) => {
+                setStudents(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
+            };
+
+            const handleMsg = (id, text) => {
+                if (!text.trim()) return;
+                const newMsg = { sender: mode, text, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+                setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...s.chat, newMsg] } : s));
+            };
+
+            const compressImg = (id, file) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 100; canvas.height = 100;
+                        canvas.getContext('2d').drawImage(img, 0,0, 100, 100);
+                        updateStudent(id, 'avatar', canvas.toDataURL('image/jpeg', 0.6));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+
+            if (!mode) return (
+                <div style={{textAlign:'center', marginTop:'100px'}}>
+                    <h1>Alliance Eagle</h1>
+                    <button className="send-circle" style={{width:'200px', borderRadius:'10px', margin:'10px auto'}} onClick={() => setMode('Professor')}>Professor</button>
+                    <button className="send-circle" style={{width:'200px', borderRadius:'10px', margin:'10px auto', background:'#3498db'}} onClick={() => setMode('Pais')}>Pais</button>
+                </div>
+            );
+
+            return (
+                <div className="container">
+                    <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
+                        <button onClick={() => setMode(null)}>⬅ Sair</button>
+                        {mode === 'Professor' && <button onClick={addStudent}>+ Novo Aluno</button>}
+                    </div>
+
+                    {students.map(s => {
+                        const age = calcAge(s.nasc);
+                        const prog = getProg(age);
+
+                        return (
+                            <div key={s.id} className="card">
+                                <div className="header-aluno">
+                                    <label>
+                                        <img src={s.avatar || "https://via.placeholder.com/70"} className="avatar-circle" />
+                                        <input type="file" hidden onChange={e => compressImg(s.id, e.target.files[0])} />
+                                    </label>
+                                    <div className="info-txt">
+                                        <h2>{s.nome}</h2>
+                                        <p>Idade: {age} anos | Programa: <b>{prog.name}</b></p>
+                                        <p>Faixa: Cinza/Preta</p>
+                                    </div>
+                                </div>
+
+                                <div className="section-title">Presença Ciclo Atual (Meta: {prog.meta} aulas):</div>
+                                <div className="grid-aulas">
+                                    {Array.from({length: prog.meta}).map((_, i) => (
+                                        <div key={i} 
+                                            className={`aula-btn ${i < s.aulas ? 'done' : ''}`}
+                                            onClick={() => mode === 'Professor' && updateStudent(s.id, 'aulas', i + 1)}
+                                        >{i + 1}</div>
+                                    ))}
+                                </div>
+
+                                <div className="section-title">Graus Comportamentais:</div>
+                                <div className="beh-container">
+                                    {['REL', 'DIS', 'ORG', 'COM'].map(type => (
+                                        <div key={type} 
+                                            className={`beh-box ${type.toLowerCase()} ${s.comp[type] ? 'active' : ''}`}
+                                            onClick={() => mode === 'Professor' && updateStudent(s.id, 'comp', {...s.comp, [type]: !s.comp[type]})}
+                                        >{type}</div>
+                                    ))}
+                                </div>
+
+                                <div className="history-log">
+                                    {s.history.slice(-2).map((h, i) => <div key={i}>• {h}</div>)}
+                                </div>
+
+                                <div className="chat-box">
+                                    <div className="messages" id={`chat-${s.id}`}>
+                                        {s.chat.map((m, i) => (
+                                            <div key={i} className={`msg ${m.sender === mode ? 'sent' : 'received'}`}>
+                                                {m.text}
+                                                <div style={{fontSize:9, textAlign:'right', opacity:0.5}}>{m.time}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="chat-input-area">
+                                        <div className="input-wrapper">
+                                            <span className="icon-btn">➕</span>
+                                            <span className="icon-btn">😊</span>
+                                            <input className="chat-input" placeholder="Digite uma mensagem" onKeyDown={e => {
+                                                if(e.key === 'Enter'){ handleMsg(s.id, e.target.value); e.target.value = ''; }
+                                            }} />
+                                        </div>
+                                        <button className="send-circle" onClick={() => {
+                                            const inp = document.querySelector(`#chat-${s.id}`).parentElement.querySelector('input');
+                                            handleMsg(s.id, inp.value); inp.value = '';
+                                        }}>➤</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+</body>
+</html>
