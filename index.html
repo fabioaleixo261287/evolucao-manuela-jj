@@ -13,42 +13,31 @@
     .container { max-width:850px; margin:auto; width: 100%; box-sizing: border-box; }
     .card { background:white; padding:15px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); position: relative; }
     .row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items: center; }
-    
     button { padding:8px 14px; border:none; border-radius:8px; background:#075e54; color:white; cursor:pointer; font-weight: bold; }
     .btn-edit { background: #667781; padding: 4px 8px; font-size: 10px; margin-left: 8px; border-radius: 4px; }
-    
     .belt-upgrade { background: linear-gradient(45deg, #FFD700, #DAA520); color: #000; width: 100%; margin-top: 15px; border: 2px solid #000; font-size: 16px; padding: 12px; animation: pulse 2s infinite; }
     @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.02);} 100% {transform: scale(1);} }
-
     .avatar-container { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
     .avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #075e54; background: #eee; }
-    
     .bar-bolinhas { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 8px; margin: 10px 0; }
     .bolinha-aula { aspect-ratio: 1/1; border-radius:50%; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:12px; background:#fff; cursor: pointer; font-weight: bold; color: #777; }
     .bolinha-aula.done { background:#25d366; color:white; border-color:#128c7e; }
-
     .degree-bar { display: flex; gap: 6px; margin-bottom: 15px; }
     .degree { width:24px; height:24px; border:1px solid #333; border-radius:4px; background:#ddd; }
-
     .beh-row { display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
-    .beh-btn { flex: 1; min-width: 70px; padding: 10px 2px; border-radius: 10px; border: 1px solid #ddd; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
-
-    /* WhatsApp Style */
+    .beh-btn { flex: 1; min-width: 70px; padding: 10px 2px; border-radius: 10px; border: 1px solid #ddd; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.3s; }
     .chat-wrapper { background: #efe7dd; border-radius: 12px; border: 1px solid #ddd; margin-top: 15px; overflow: hidden; display: flex; flex-direction: column; }
     .chat-messages { height:250px; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; }
     .msg { padding:8px 12px; border-radius:8px; font-size:13px; max-width:85%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); position: relative; }
     .msg.sent { background:#dcf8c6; align-self:flex-end; border-top-right-radius: 0; }
     .msg.received { background:#fff; align-self:flex-start; border-top-left-radius: 0; }
     .chat-img { max-width: 100%; border-radius: 8px; margin-bottom: 5px; cursor: pointer; }
-
     .chat-input-area { background: #f0f2f5; padding: 8px; display: flex; align-items: center; gap: 8px; }
     .input-container { background: white; flex: 1; border-radius: 25px; display: flex; align-items: center; padding: 2px 15px; border: 1px solid #ddd; }
     .input-container input { flex: 1; border: none; outline: none; padding: 8px; font-size: 14px; background: transparent; }
     .chat-icon { color: #667781; font-size: 18px; cursor: pointer; }
-
     .history-section { margin-top: 15px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
     .history-list { font-size: 11px; color: #555; max-height: 80px; overflow-y: auto; }
-
     .repo-box { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; }
     .doc-card { display: flex; justify-content: space-between; background: #f8f9fa; padding: 8px 10px; border-radius: 6px; margin-bottom: 4px; font-size: 12px; border: 1px solid #eee; align-items: center; }
 </style>
@@ -86,32 +75,27 @@ function App() {
     const [user, setUser] = React.useState("");
     const [filho, setFilho] = React.useState("");
     const [zoomImg, setZoomImg] = React.useState(null);
-    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v8") || "[]"));
+    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v9") || "[]"));
     const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
 
-    React.useEffect(() => { localStorage.setItem("all_eagle_v8", JSON.stringify(students)) }, [students]);
+    React.useEffect(() => { localStorage.setItem("all_eagle_v9", JSON.stringify(students)) }, [students]);
 
-    // FUNÇÃO MELHORADA: Compressão para evitar tela branca
     const handleFileUpload = (id, e, target) => {
         const file = e.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (ev) => {
             const data = ev.target.result;
-
             if (file.type.startsWith('image/')) {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
                     const MAX_WIDTH = 600; 
                     const scale = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scale;
+                    canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     const optimizedData = canvas.toDataURL('image/jpeg', 0.7);
-
                     setStudents(prev => prev.map(s => {
                         if (s.id !== id) return s;
                         if (target === 'avatar') return { ...s, avatar: optimizedData };
@@ -120,12 +104,9 @@ function App() {
                     }));
                 };
                 img.src = data;
-            } else {
-                // Arquivos não-imagem (PDF, etc)
-                if (target === 'repo') {
-                    const n = prompt("Nome do documento:", file.name) || file.name;
-                    setStudents(prev => prev.map(s => s.id === id ? { ...s, docs: [...(s.docs || []), { name: n, data }], history: [{date: new Date().toLocaleDateString(), msg: `Doc: ${n}`}, ...s.history] } : s));
-                }
+            } else if (target === 'repo') {
+                const n = prompt("Nome do documento:", file.name) || file.name;
+                setStudents(prev => prev.map(s => s.id === id ? { ...s, docs: [...(s.docs || []), { name: n, data }], history: [{date: new Date().toLocaleDateString(), msg: `Doc: ${n}`}, ...s.history] } : s));
             }
         };
         reader.readAsDataURL(file);
@@ -135,6 +116,11 @@ function App() {
         if (user !== "professor") return;
         setStudents(prev => prev.map(s => {
             if (s.id !== id) return s;
+            // TRAVA: Se já tem 8 graus, não deixa marcar aula
+            if (s.grausGanhos >= 8) {
+                alert("Limite de graus atingido! Realize a troca de faixa para continuar.");
+                return s;
+            }
             const meta = getRules(s.nascimento, s.faixa).m;
             if (s.aulasNoCiclo === n) return { ...s, aulasNoCiclo: n - 1 };
             if (n === meta) {
@@ -142,6 +128,19 @@ function App() {
                 return { ...s, aulasNoCiclo: 0, grausGanhos: novoGrau, history: [{date: new Date().toLocaleDateString(), msg: `CONQUISTA: ${novoGrau}º Grau`}, ...s.history] };
             }
             return { ...s, aulasNoCiclo: n };
+        }));
+    };
+
+    const toggleBeh = (id, b) => {
+        if (user !== "professor") return;
+        setStudents(prev => prev.map(s => {
+            if (s.id !== id) return s;
+            const currentStatus = !!s.comportamental?.[b.k];
+            return { 
+                ...s, 
+                comportamental: { ...(s.comportamental || {}), [b.k]: !currentStatus },
+                history: [{date: new Date().toLocaleDateString(), msg: `${!currentStatus ? 'Ganhou' : 'Removeu'} Grau: ${b.n}`}, ...s.history]
+            };
         }));
     };
 
@@ -218,7 +217,7 @@ function App() {
                             {BEH_TYPES.map(b => (
                                 <div key={b.k} className="beh-btn" 
                                      style={{ background: s.comportamental?.[b.k] ? b.c : '#eee', color: s.comportamental?.[b.k] ? '#fff' : '#888' }}
-                                     onClick={() => user === "professor" && setStudents(students.map(st => st.id === s.id ? {...st, comportamental: {...st.comportamental, [b.k]: !st.comportamental?.[b.k]}} : st))}>
+                                     onClick={() => toggleBeh(s.id, b)}>
                                     {b.k}
                                 </div>
                             ))}
@@ -227,12 +226,12 @@ function App() {
                         <div className="history-section">
                             <strong>📜 Histórico</strong>
                             <div className="history-list">
-                                {s.history.map((h, i) => <div key={i}>• [{h.date}] {h.msg}</div>)}
+                                {(s.history || []).map((h, i) => <div key={i}>• [{h.date}] {h.msg}</div>)}
                             </div>
                         </div>
 
                         <div className="repo-box">
-                            <strong>📂 Repositório de Documentos</strong>
+                            <strong>📂 Documentos</strong>
                             {user === "professor" && <label style={{marginLeft:10, color:'#25d366', cursor:'pointer', fontSize:11}}> [+ NOVO] <input type="file" hidden onChange={e => handleFileUpload(s.id, e, 'repo')} /></label>}
                             <div style={{marginTop:5}}>
                                 {(s.docs || []).map((d, i) => (
@@ -247,10 +246,7 @@ function App() {
                                     <div key={i} className={`msg ${m.sender === (user === 'professor' ? 'Professor' : 'Pais') ? 'sent' : 'received'}`}>
                                         <small style={{fontSize:9, display:'block', fontWeight:'bold'}}>{m.sender.toUpperCase()}</small>
                                         {m.file && (
-                                            <div>
-                                                <img src={m.file.data} className="chat-img" onClick={() => setZoomImg(m.file.data)} />
-                                                <a href={m.file.data} download={m.file.name} style={{fontSize:10, display:'block', color:'#3498db'}}>Download</a>
-                                            </div>
+                                            <div><img src={m.file.data} className="chat-img" onClick={() => setZoomImg(m.file.data)} /></div>
                                         )}
                                         {m.text}
                                     </div>
@@ -259,9 +255,7 @@ function App() {
                             <div className="chat-input-area">
                                 <i className="fas fa-plus chat-icon" onClick={() => document.getElementById(`chat-f-${s.id}`).click()}></i>
                                 <input type="file" id={`chat-f-${s.id}`} hidden accept="image/*" onChange={e => handleFileUpload(s.id, e, 'chat')}/>
-                                <div className="input-container">
-                                    <input id={`msg-${s.id}`} placeholder="Mensagem" onKeyDown={e => e.key === 'Enter' && document.getElementById(`send-${s.id}`).click()} />
-                                </div>
+                                <div className="input-container"><input id={`msg-${s.id}`} placeholder="Mensagem" onKeyDown={e => e.key === 'Enter' && document.getElementById(`send-${s.id}`).click()} /></div>
                                 <button id={`send-${s.id}`} style={{background:'transparent', padding:0}} onClick={() => {
                                     const t = document.getElementById(`msg-${s.id}`).value;
                                     if(t) setStudents(students.map(st => st.id === s.id ? {...st, chat:[...(st.chat||[]), {sender:user==='professor'?'Professor':'Pais', text:t}]} : st));
