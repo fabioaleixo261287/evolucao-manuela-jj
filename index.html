@@ -14,32 +14,37 @@
     .card { background:white; padding:15px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); position: relative; }
     .row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items: center; }
     button { padding:8px 14px; border:none; border-radius:8px; background:#075e54; color:white; cursor:pointer; font-weight: bold; }
-    .btn-edit { background: #667781; padding: 4px 8px; font-size: 10px; margin-left: 8px; border-radius: 4px; }
-    .belt-upgrade { background: linear-gradient(45deg, #FFD700, #DAA520); color: #000; width: 100%; margin-top: 15px; border: 2px solid #000; font-size: 16px; padding: 12px; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.02);} 100% {transform: scale(1);} }
+    
     .avatar-container { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
     .avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #075e54; background: #eee; }
+    
     .bar-bolinhas { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 8px; margin: 10px 0; }
     .bolinha-aula { aspect-ratio: 1/1; border-radius:50%; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:12px; background:#fff; cursor: pointer; font-weight: bold; color: #777; }
     .bolinha-aula.done { background:#25d366; color:white; border-color:#128c7e; }
+
     .degree-bar { display: flex; gap: 6px; margin-bottom: 15px; }
     .degree { width:24px; height:24px; border:1px solid #333; border-radius:4px; background:#ddd; }
+
+    /* Estilo dos Graus Comportamentais */
     .beh-row { display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
-    .beh-btn { flex: 1; min-width: 70px; padding: 10px 2px; border-radius: 10px; border: 1px solid #ddd; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.3s; }
+    .beh-group { flex: 1; min-width: 80px; display: flex; flex-direction: column; gap: 4px; }
+    .beh-btn { padding: 10px 2px; border-radius: 10px; border: 1px solid #ddd; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.3s; }
+    .beh-info { font-size: 12px; color: #667781; text-align: center; cursor: help; }
+
     .chat-wrapper { background: #efe7dd; border-radius: 12px; border: 1px solid #ddd; margin-top: 15px; overflow: hidden; display: flex; flex-direction: column; }
     .chat-messages { height:250px; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; }
     .msg { padding:8px 12px; border-radius:8px; font-size:13px; max-width:85%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); position: relative; }
     .msg.sent { background:#dcf8c6; align-self:flex-end; border-top-right-radius: 0; }
     .msg.received { background:#fff; align-self:flex-start; border-top-left-radius: 0; }
     .chat-img { max-width: 100%; border-radius: 8px; margin-bottom: 5px; cursor: pointer; }
+
     .chat-input-area { background: #f0f2f5; padding: 8px; display: flex; align-items: center; gap: 8px; }
     .input-container { background: white; flex: 1; border-radius: 25px; display: flex; align-items: center; padding: 2px 15px; border: 1px solid #ddd; }
     .input-container input { flex: 1; border: none; outline: none; padding: 8px; font-size: 14px; background: transparent; }
     .chat-icon { color: #667781; font-size: 18px; cursor: pointer; }
-    .history-section { margin-top: 15px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-    .history-list { font-size: 11px; color: #555; max-height: 80px; overflow-y: auto; }
-    .repo-box { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; }
-    .doc-card { display: flex; justify-content: space-between; background: #f8f9fa; padding: 8px 10px; border-radius: 6px; margin-bottom: 4px; font-size: 12px; border: 1px solid #eee; align-items: center; }
+    
+    .belt-upgrade { background: linear-gradient(45deg, #FFD700, #DAA520); color: #000; width: 100%; margin-top: 15px; border: 2px solid #000; font-size: 16px; padding: 12px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.02);} 100% {transform: scale(1);} }
 </style>
 </head>
 <body>
@@ -47,11 +52,25 @@
 
 <script type="text/babel">
 const BELTS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
-const BEH_TYPES = [
-    { k: 'REL', n: 'Relacionamento', c: '#f1c40f' },
-    { k: 'DIS', n: 'Disciplina', c: '#3498db' },
-    { k: 'ORG', n: 'Organização', c: '#e74c3c' },
-    { k: 'HAB', n: 'Bons Hábitos', c: '#2ecc71' }
+
+// Dados baseados na imagem dos Graus Coloridos
+const BEH_DATA = [
+    { 
+        k: 'REL', n: 'Relacionamento', c: '#f1c40f', 
+        info: "• Respeitar a todos\n• Tratar como gostaria de ser tratado\n• Ser gentil ao pedir as coisas\n• Ser paciente com quem tem dificuldade\n• Respeitar o tempo de aprendizado\n• Receptivo com novos alunos\n• Não fazer bullying"
+    },
+    { 
+        k: 'DIS', n: 'Comportamento e Disciplina', c: '#3498db', 
+        info: "• Faz o que é pedido\n• Presta atenção na aula\n• Tem boa frequência\n• Não sai do tatame sem avisar\n• Não tira o kimono durante a aula\n• Ajudar os colegas no treino\n• Facilitar as técnicas para o parceiro"
+    },
+    { 
+        k: 'ORG', n: 'Organização e Pontualidade', c: '#e74c3c', 
+        info: "• Seguir orientações do professor\n• Ter boas notas escolares\n• Pontualidade nas aulas\n• Usar e cuidar do uniforme\n• Sabe amarrar a própria faixa\n• Saber marcar presença\n• Respeitar regras da escola"
+    },
+    { 
+        k: 'HAB', n: 'Comprometimento (Bons Hábitos)', c: '#2ecc71', 
+        info: "• Boa alimentação\n• Conscientização ambiental\n• Higiene pessoal\n• Atividade física\n• Pensamentos positivos"
+    }
 ];
 
 function getAge(nasc) {
@@ -75,72 +94,62 @@ function App() {
     const [user, setUser] = React.useState("");
     const [filho, setFilho] = React.useState("");
     const [zoomImg, setZoomImg] = React.useState(null);
-    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v9") || "[]"));
+    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v12") || "[]"));
     const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
 
-    React.useEffect(() => { localStorage.setItem("all_eagle_v9", JSON.stringify(students)) }, [students]);
+    React.useEffect(() => { 
+        localStorage.setItem("all_eagle_v12", JSON.stringify(students));
+    }, [students]);
 
     const handleFileUpload = (id, e, target) => {
         const file = e.target.files[0];
-        if (!file) return;
+        if (!file || file.size > 5 * 1024 * 1024) return;
         const reader = new FileReader();
         reader.onload = (ev) => {
-            const data = ev.target.result;
-            if (file.type.startsWith('image/')) {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 600; 
-                    const scale = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const optimizedData = canvas.toDataURL('image/jpeg', 0.7);
-                    setStudents(prev => prev.map(s => {
-                        if (s.id !== id) return s;
-                        if (target === 'avatar') return { ...s, avatar: optimizedData };
-                        if (target === 'chat') return { ...s, chat: [...(s.chat || []), { sender: user === 'professor' ? 'Professor' : 'Pais', text: "", file: { name: file.name, data: optimizedData, type: file.type } }] };
-                        return s;
-                    }));
-                };
-                img.src = data;
-            } else if (target === 'repo') {
-                const n = prompt("Nome do documento:", file.name) || file.name;
-                setStudents(prev => prev.map(s => s.id === id ? { ...s, docs: [...(s.docs || []), { name: n, data }], history: [{date: new Date().toLocaleDateString(), msg: `Doc: ${n}`}, ...s.history] } : s));
-            }
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 500;
+                const scale = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                const optimizedData = canvas.toDataURL('image/jpeg', 0.6);
+                setStudents(prev => prev.map(s => s.id === id ? { ...s, 
+                    avatar: target === 'avatar' ? optimizedData : s.avatar,
+                    chat: target === 'chat' ? [...(s.chat || []), { sender: user === 'professor' ? 'Professor' : 'Pais', file: { data: optimizedData } }] : s.chat 
+                } : s));
+            };
+            img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
+    };
+
+    const toggleBeh = (id, b) => {
+        if (user !== "professor") {
+            alert(b.n + ":\n\n" + b.info);
+            return;
+        }
+        setStudents(prev => prev.map(s => {
+            if (s.id !== id) return s;
+            const status = !s.comportamental?.[b.k];
+            // Ao clicar no botão, ele muda a cor E mostra o que aquele grau significa
+            if (status) alert("Grau Concedido!\nCritérios de " + b.n + ":\n\n" + b.info);
+            return { ...s, 
+                comportamental: { ...(s.comportamental || {}), [b.k]: status },
+                history: [{date: new Date().toLocaleDateString(), msg: `${status ? 'Ganhou' : 'Removeu'} Grau de ${b.n}`}, ...(s.history || [])]
+            };
+        }));
     };
 
     const markClass = (id, n) => {
         if (user !== "professor") return;
         setStudents(prev => prev.map(s => {
             if (s.id !== id) return s;
-            // TRAVA: Se já tem 8 graus, não deixa marcar aula
-            if (s.grausGanhos >= 8) {
-                alert("Limite de graus atingido! Realize a troca de faixa para continuar.");
-                return s;
-            }
+            if (s.grausGanhos >= 8) return s;
             const meta = getRules(s.nascimento, s.faixa).m;
             if (s.aulasNoCiclo === n) return { ...s, aulasNoCiclo: n - 1 };
-            if (n === meta) {
-                const novoGrau = s.grausGanhos + 1;
-                return { ...s, aulasNoCiclo: 0, grausGanhos: novoGrau, history: [{date: new Date().toLocaleDateString(), msg: `CONQUISTA: ${novoGrau}º Grau`}, ...s.history] };
-            }
+            if (n === meta) return { ...s, aulasNoCiclo: 0, grausGanhos: s.grausGanhos + 1, history: [{date: new Date().toLocaleDateString(), msg: `Conquistou ${s.grausGanhos + 1}º Grau`}, ...(s.history || [])] };
             return { ...s, aulasNoCiclo: n };
-        }));
-    };
-
-    const toggleBeh = (id, b) => {
-        if (user !== "professor") return;
-        setStudents(prev => prev.map(s => {
-            if (s.id !== id) return s;
-            const currentStatus = !!s.comportamental?.[b.k];
-            return { 
-                ...s, 
-                comportamental: { ...(s.comportamental || {}), [b.k]: !currentStatus },
-                history: [{date: new Date().toLocaleDateString(), msg: `${!currentStatus ? 'Ganhou' : 'Removeu'} Grau: ${b.n}`}, ...s.history]
-            };
         }));
     };
 
@@ -156,7 +165,7 @@ function App() {
 
     return (
         <div className="container">
-            {zoomImg && <div style={{position:'fixed', top:0, left:0, width:'100%', height:'100%', background:'rgba(0,0,0,0.9)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center'}} onClick={()=>setZoomImg(null)}><img src={zoomImg} style={{maxWidth:'95%', borderRadius:10}}/></div>}
+            {zoomImg && <div style={{position:'fixed', top:0, left:0, width:'100%', height:'100%', background:'rgba(0,0,0,0.9)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center'}} onClick={()=>setZoomImg(null)}><img src={zoomImg} style={{maxWidth:'95%'}}/></div>}
             
             <div className="row" style={{justifyContent:'space-between'}}>
                 <h3 style={{color:'#075e54', margin:0}}>Eagle System</h3>
@@ -169,7 +178,7 @@ function App() {
                         <input placeholder="Nome" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} style={{flex:1, padding:8}} />
                         <input type="date" value={form.nascimento} onChange={e => setForm({ ...form, nascimento: e.target.value })} style={{padding:8}} />
                         <select value={form.faixa} onChange={e => setForm({ ...form, faixa: e.target.value })} style={{padding:8}}>{BELTS.map(b => <option key={b}>{b}</option>)}</select>
-                        <button onClick={() => {if(form.nome) setStudents([...students, { id: Date.now(), ...form, avatar: "", aulasNoCiclo: 0, grausGanhos: 0, history: [], chat: [], docs: [], comportamental: {} }]); setForm({nome:"", nascimento:"", faixa:"Branca"})}}>+ Aluno</button>
+                        <button onClick={() => {if(form.nome) setStudents([...students, { id: Date.now(), ...form, avatar: "", aulasNoCiclo: 0, grausGanhos: 0, history: [], chat: [], comportamental: {} }]); setForm({nome:"", nascimento:"", faixa:"Branca"})}}>+ Aluno</button>
                     </div>
                 </div>
             )}
@@ -186,10 +195,8 @@ function App() {
                                 <input type="file" hidden accept="image/*" onChange={e => handleFileUpload(s.id, e, 'avatar')} />
                             </label>
                             <div style={{flex:1}}>
-                                <h3 style={{margin:0}}>{s.nome} {user === "professor" && <button className="btn-edit" onClick={() => {const n=prompt("Nome:",s.nome); if(n) setStudents(students.map(st=>st.id===s.id?{...st, nome:n}:st))}}>Editar</button>}</h3>
-                                <div style={{fontSize:12, color:'#666'}}>
-                                    <b>Idade:</b> {getAge(s.nascimento)} anos | <b>Faixa:</b> {s.faixa}
-                                </div>
+                                <h3 style={{margin:0}}>{s.nome}</h3>
+                                <div style={{fontSize:12, color:'#666'}}><b>Faixa:</b> {s.faixa} | <b>Idade:</b> {getAge(s.nascimento)} anos</div>
                             </div>
                         </div>
 
@@ -199,7 +206,6 @@ function App() {
                             ))}
                         </div>
 
-                        <div style={{fontSize:12, marginBottom:5}}><b>Graus ({s.grausGanhos}/8):</b></div>
                         <div className="degree-bar">
                             {Array.from({ length: 4 }).map((_, i) => (
                                 <div key={i} className="degree" style={{ background: s.grausGanhos > i ? (s.grausGanhos > i + 4 ? '#e74c3c' : '#fff') : '#ddd' }}></div>
@@ -209,34 +215,29 @@ function App() {
                         {s.grausGanhos >= 8 && user === "professor" && (
                             <button className="belt-upgrade" onClick={() => {
                                 const next = BELTS[BELTS.indexOf(s.faixa)+1];
-                                if(next) setStudents(students.map(st=>st.id===s.id?{...st, faixa:next, grausGanhos:0, history:[{date:new Date().toLocaleDateString(), msg:`GRADUADO: ${next}`},...st.history]}:st));
+                                if(next) setStudents(students.map(st=>st.id===s.id?{...st, faixa:next, grausGanhos:0, history:[{date:new Date().toLocaleDateString(), msg:`Graduado para ${next}`},...(st.history||[])]}:st));
                             }}>🎓 TROCAR DE FAIXA AGORA</button>
                         )}
 
                         <div className="beh-row">
-                            {BEH_TYPES.map(b => (
-                                <div key={b.k} className="beh-btn" 
-                                     style={{ background: s.comportamental?.[b.k] ? b.c : '#eee', color: s.comportamental?.[b.k] ? '#fff' : '#888' }}
-                                     onClick={() => toggleBeh(s.id, b)}>
-                                    {b.k}
+                            {BEH_DATA.map(b => (
+                                <div key={b.k} className="beh-group">
+                                    <div className="beh-btn" 
+                                         style={{ background: s.comportamental?.[b.k] ? b.c : '#eee', color: s.comportamental?.[b.k] ? '#fff' : '#888' }}
+                                         onClick={() => toggleBeh(s.id, b)}>
+                                        {b.k}
+                                    </div>
+                                    <div className="beh-info" onClick={() => alert(b.n + ":\n\n" + b.info)}>
+                                        <i className="fas fa-info-circle"></i> Ver regras
+                                    </div>
                                 </div>
                             ))}
                         </div>
 
                         <div className="history-section">
                             <strong>📜 Histórico</strong>
-                            <div className="history-list">
-                                {(s.history || []).map((h, i) => <div key={i}>• [{h.date}] {h.msg}</div>)}
-                            </div>
-                        </div>
-
-                        <div className="repo-box">
-                            <strong>📂 Documentos</strong>
-                            {user === "professor" && <label style={{marginLeft:10, color:'#25d366', cursor:'pointer', fontSize:11}}> [+ NOVO] <input type="file" hidden onChange={e => handleFileUpload(s.id, e, 'repo')} /></label>}
-                            <div style={{marginTop:5}}>
-                                {(s.docs || []).map((d, i) => (
-                                    <div key={i} className="doc-card"><span>{d.name}</span><a href={d.data} download={d.name} style={{color:'#3498db', fontWeight:'bold', textDecoration:'none'}}>BAIXAR</a></div>
-                                ))}
+                            <div className="history-list" style={{fontSize:11, color:'#555'}}>
+                                {(s.history || []).slice(0,5).map((h, i) => <div key={i}>• [{h.date}] {h.msg}</div>)}
                             </div>
                         </div>
 
@@ -244,23 +245,19 @@ function App() {
                             <div className="chat-messages">
                                 {(s.chat || []).map((m, i) => (
                                     <div key={i} className={`msg ${m.sender === (user === 'professor' ? 'Professor' : 'Pais') ? 'sent' : 'received'}`}>
-                                        <small style={{fontSize:9, display:'block', fontWeight:'bold'}}>{m.sender.toUpperCase()}</small>
-                                        {m.file && (
-                                            <div><img src={m.file.data} className="chat-img" onClick={() => setZoomImg(m.file.data)} /></div>
-                                        )}
+                                        {m.file && <img src={m.file.data} className="chat-img" onClick={() => setZoomImg(m.file.data)} />}
                                         {m.text}
                                     </div>
                                 ))}
                             </div>
                             <div className="chat-input-area">
-                                <i className="fas fa-plus chat-icon" onClick={() => document.getElementById(`chat-f-${s.id}`).click()}></i>
-                                <input type="file" id={`chat-f-${s.id}`} hidden accept="image/*" onChange={e => handleFileUpload(s.id, e, 'chat')}/>
-                                <div className="input-container"><input id={`msg-${s.id}`} placeholder="Mensagem" onKeyDown={e => e.key === 'Enter' && document.getElementById(`send-${s.id}`).click()} /></div>
-                                <button id={`send-${s.id}`} style={{background:'transparent', padding:0}} onClick={() => {
-                                    const t = document.getElementById(`msg-${s.id}`).value;
-                                    if(t) setStudents(students.map(st => st.id === s.id ? {...st, chat:[...(st.chat||[]), {sender:user==='professor'?'Professor':'Pais', text:t}]} : st));
-                                    document.getElementById(`msg-${s.id}`).value = "";
-                                }}><i className="fas fa-paper-plane chat-icon" style={{color:'#075e54'}}></i></button>
+                                <i className="fas fa-plus chat-icon" onClick={() => document.getElementById(`f-${s.id}`).click()}></i>
+                                <input type="file" id={`f-${s.id}`} hidden onChange={e => handleFileUpload(s.id, e, 'chat')}/>
+                                <div className="input-container"><input id={`m-${s.id}`} placeholder="Mensagem" onKeyDown={e => {if(e.key==='Enter'){
+                                    const t = e.target.value;
+                                    if(t) setStudents(students.map(st=>st.id===s.id?{...st, chat:[...(st.chat||[]),{sender:user==='professor'?'Professor':'Pais', text:t}]}:st));
+                                    e.target.value = "";
+                                }}} /></div>
                             </div>
                         </div>
                     </div>
