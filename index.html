@@ -8,21 +8,26 @@
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
-    body { font-family: 'Segoe UI', sans-serif; background:#f0f2f5; margin:0; padding:15px; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; margin:0; padding:15px; }
     .container { max-width:850px; margin:auto; }
     .card { background:white; padding:20px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); position: relative; }
     .row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:10px; align-items: center; }
     button { padding:8px 14px; border:none; border-radius:8px; background:#075e54; color:white; cursor:pointer; font-weight: bold; }
     button.red { background:#e74c3c; }
-    .avatar-container { position: relative; width: 80px; height: 80px; cursor: pointer; flex-shrink: 0; }
-    .avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #075e54; background: #eee; }
+    
+    /* Info Aluno */
+    .avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #075e54; background: #eee; cursor: pointer; }
+    .student-meta { font-size: 12px; color: #666; line-height: 1.4; }
+    .category-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 4px; }
+
+    /* Presença e Graus */
     .bar-bolinhas { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0; }
-    .bolinha-aula { width:36px; height:36px; border-radius:50%; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:13px; background:#fff; color:#777; cursor: pointer; font-weight: bold; }
+    .bolinha-aula { width:34px; height:34px; border-radius:50%; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:12px; background:#fff; color:#777; cursor: pointer; font-weight: bold; }
     .bolinha-aula.done { background:#25d366; color:white; border-color:#128c7e; }
     .degree-bar { display: flex; gap: 4px; margin-bottom: 10px; }
-    .degree { width:26px; height:26px; border:1px solid #333; border-radius:4px; background:#ddd; }
+    .degree { width:26px; height:26px; border:1px solid #333; border-radius:4px; background:#ddd; cursor: pointer; }
     .beh-row { display: flex; gap: 10px; margin: 15px 0; }
-    .beh-btn { flex:1; padding:10px 5px; border-radius:10px; border:1px solid #ddd; font-size:11px; font-weight:bold; cursor:pointer; text-align:center; transition: 0.3s; }
+    .beh-btn { flex:1; padding:10px 5px; border-radius:10px; border:1px solid #ddd; font-size:11px; font-weight:bold; cursor:pointer; text-align:center; }
 
     /* Chat Estilo WhatsApp */
     .chat-wrapper { background: #efe7dd; border-radius: 12px; border: 1px solid #ddd; margin-top: 15px; overflow: hidden; display: flex; flex-direction: column; }
@@ -37,12 +42,9 @@
     .chat-input { flex: 1; border: none; padding: 8px; outline: none; font-size: 15px; background: transparent; }
     .chat-icon { color: #54656f; font-size: 20px; cursor: pointer; padding: 0 5px; }
     .send-btn-circle { background: #00a884; color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
-
-    .emoji-picker { position: absolute; bottom: 60px; left: 10px; background: white; border: 1px solid #ccc; border-radius: 10px; display: grid; grid-template-columns: repeat(4, 1fr); padding: 5px; z-index: 100; }
     
-    /* Histórico */
-    .history-section { margin-top: 15px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-    .history-list { font-size: 11px; color: #555; max-height: 80px; overflow-y: auto; }
+    .emoji-picker { position: absolute; bottom: 60px; left: 10px; background: white; border: 1px solid #ccc; border-radius: 10px; display: grid; grid-template-columns: repeat(4, 1fr); padding: 5px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .history-section { margin-top: 15px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee; font-size: 11px; }
 </style>
 </head>
 <body>
@@ -50,138 +52,26 @@
 
 <script type="text/babel">
 const BELTS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
-const BEH_TYPES = [{ k: 'REL', n: 'Relacionamento', c: '#f1c40f' }, { k: 'DIS', n: 'Disciplina', c: '#3498db' }, { k: 'ORG', n: 'Organização', c: '#e74c3c' }, { k: 'HAB', n: 'Bons Hábitos', c: '#2ecc71' }];
+const BEH_TYPES = [{k:'REL', n:'Relacionamento', c:'#f1c40f'},{k:'DIS', n:'Disciplina', c:'#3498db'},{k:'ORG', n:'Organização', c:'#e74c3c'},{k:'HAB', n:'Bons Hábitos', c:'#2ecc71'}];
+
+function getAge(nasc) {
+    if(!nasc) return 0;
+    const diff = Date.now() - new Date(nasc).getTime();
+    return Math.abs(new Date(diff).getUTCFullYear() - 1970);
+}
+
+function getRules(nasc, faixa) {
+    const idade = getAge(nasc);
+    const isW = faixa.includes("Branca") || faixa.includes("Cinza");
+    const isY = faixa.includes("Amarela") || faixa.includes("Laranja");
+    if (idade <= 5) return { p: "Baby Eagle", m: 12 };
+    if (idade <= 8) return { p: "Little Eagle", m: isW ? 15 : 20 };
+    if (idade <= 12) return { p: "Eagle Warrior", m: isW ? 15 : 20 };
+    if (idade <= 15) return { p: "Eagle Youth", m: isW ? 20 : (isY ? 22 : 25) };
+    return { p: "Infantil", m: 15 };
+}
 
 function App() {
     const [user, setUser] = React.useState("");
     const [filho, setFilho] = React.useState("");
-    const [showEmoji, setShowEmoji] = React.useState(null);
-    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v8") || "[]"));
-    const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
-
-    React.useEffect(() => { localStorage.setItem("all_eagle_v8", JSON.stringify(students)) }, [students]);
-
-    // Função de compressão para evitar TELA BRANCA
-    const compressAndSave = (id, file, target) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_W = target === 'avatar' ? 150 : 400;
-                const scale = MAX_W / img.width;
-                canvas.width = MAX_W;
-                canvas.height = img.height * scale;
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                const compressedData = canvas.toDataURL('image/jpeg', 0.6);
-                
-                setStudents(prev => prev.map(s => {
-                    if (s.id !== id) return s;
-                    if (target === 'avatar') return { ...s, avatar: compressedData };
-                    const newMsg = { sender: user==='professor'?'Professor':'Pais', text: "", time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), file: {data: compressedData, type: 'image/jpeg'} };
-                    return { ...s, chat: [...s.chat, newMsg] };
-                }));
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    };
-
-    const sendMessage = (id) => {
-        const input = document.getElementById(`msg-${id}`);
-        if (!input.value.trim()) return;
-        const msg = { sender: user === 'professor' ? 'Professor' : 'Pais', text: input.value, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
-        setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...s.chat, msg] } : s));
-        input.value = "";
-    };
-
-    const addHistory = (id, text) => {
-        const entry = { date: new Date().toLocaleDateString(), msg: text };
-        setStudents(prev => prev.map(s => s.id === id ? { ...s, history: [entry, ...s.history] } : s));
-    };
-
-    if (!user) return (
-        <div className="card" style={{ maxWidth: 350, margin: '100px auto', textAlign: 'center' }}>
-            <h2>Alliance Eagle</h2>
-            <button onClick={() => setUser("professor")} style={{width:'100%', marginBottom:10}}>Professor</button>
-            <button onClick={() => setUser("pais")} style={{width:'100%', background: '#3498db'}}>Pais</button>
-        </div>
-    );
-
-    const lista = user === "pais" ? students.filter(s => s.nome.toLowerCase() === filho.toLowerCase()) : students;
-
-    return (
-        <div className="container">
-            <div className="row" style={{justifyContent:'space-between'}}>
-                <h2>Sistema Alliance</h2>
-                <button onClick={() => {setUser(""); setFilho("")}} className="red">Sair</button>
-            </div>
-
-            {user === "professor" && (
-                <div className="card">
-                    <input placeholder="Nome" onChange={e => setForm({...form, nome: e.target.value})} />
-                    <button onClick={() => {setStudents([...students, {id:Date.now(), ...form, avatar:"", aulasNoCiclo:0, grausGanhos:0, history:[], chat:[], docs:[], comportamental:{}}])}}>Add Aluno</button>
-                </div>
-            )}
-
-            {lista.map(s => (
-                <div key={s.id} className="card">
-                    <div className="row">
-                        <label className="avatar-container">
-                            <img src={s.avatar || "https://via.placeholder.com/80"} className="avatar-img" />
-                            <input type="file" hidden accept="image/*" onChange={e => compressAndSave(s.id, e.target.files[0], 'avatar')} />
-                        </label>
-                        <h3>{s.nome} - {s.faixa}</h3>
-                    </div>
-
-                    <div className="bar-bolinhas">
-                        {Array.from({ length: 15 }).map((_, i) => (
-                            <div key={i} className={`bolinha-aula ${i < s.aulasNoCiclo ? 'done' : ''}`} onClick={() => {
-                                if(user==='professor') {
-                                    setStudents(prev => prev.map(x => x.id===s.id ? {...x, aulasNoCiclo: i+1} : x));
-                                    addHistory(s.id, `Aula ${i+1} marcada`);
-                                }
-                            }}>{i+1}</div>
-                        ))}
-                    </div>
-
-                    <div className="history-section">
-                        <strong>📜 Histórico</strong>
-                        <div className="history-list">
-                            {s.history.map((h, i) => <div key={i}>• [{h.date}] {h.msg}</div>)}
-                        </div>
-                    </div>
-
-                    <div className="chat-wrapper">
-                        <div className="chat-messages">
-                            {s.chat.map((m, i) => (
-                                <div key={i} className={`msg ${m.sender === (user === 'professor' ? 'Professor' : 'Pais') ? 'sent' : 'received'}`}>
-                                    {m.file && <img src={m.file.data} style={{maxWidth:'100%', borderRadius:5}} />}
-                                    {m.text}
-                                    <span className="msg-time">{m.time}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="chat-input-bar">
-                            <div className="input-container">
-                                <span className="chat-icon" onClick={() => setShowEmoji(showEmoji === s.id ? null : s.id)}>😊</span>
-                                {showEmoji === s.id && (
-                                    <div className="emoji-picker">
-                                        {['🥋','OSS','👊','🔥'].map(e => <span key={e} onClick={() => {document.getElementById(`msg-${s.id}`).value += e; setShowEmoji(null);}} style={{cursor:'pointer', padding:5}}>{e}</span>)}
-                                    </div>
-                                )}
-                                <input id={`msg-${s.id}`} className="chat-input" placeholder="Mensagem" onKeyDown={e => e.key === 'Enter' && sendMessage(s.id)} />
-                                <label className="chat-icon">📎<input type="file" hidden accept="image/*" onChange={e => compressAndSave(s.id, e.target.files[0], 'chat')} /></label>
-                            </div>
-                            <button className="send-btn-circle" onClick={() => sendMessage(s.id)}>➤</button>
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-</script>
-</body>
-</html>
+    const [showEmoji, setShowEmoji] = React.
