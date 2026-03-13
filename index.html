@@ -23,7 +23,6 @@
     .bolinha-aula { aspect-ratio: 1/1; border-radius:50%; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:11px; background:#fff; cursor: pointer; font-weight: bold; color: #777; position: relative; }
     .bolinha-aula.done { background:#25d366; color:white; border-color:#128c7e; }
     
-    /* Tooltip para mostrar a data da aula */
     .bolinha-aula.done:hover::after {
         content: attr(data-date);
         position: absolute;
@@ -112,16 +111,21 @@ function App() {
                 const scale = MAX_WIDTH / img.width;
                 canvas.width = MAX_WIDTH;
                 canvas.height = img.height * scale;
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 const optimizedData = canvas.toDataURL('image/jpeg', 0.7);
 
-                setStudents(prev => prev.map(s => {
+                setStudents(prevStudents => prevStudents.map(s => {
                     if (s.id !== id) return s;
                     if (target === 'avatar') return { ...s, avatar: optimizedData };
-                    if (target === 'chat') return { ...s, chat: [...(s.chat || []), { 
-                        sender: user === 'professor' ? 'Professor' : 'Pais', 
-                        file: { data: optimizedData } 
-                    }] };
+                    if (target === 'chat') {
+                        const newMsg = { 
+                            sender: user === 'professor' ? 'Professor' : 'Pais', 
+                            file: { data: optimizedData },
+                            text: "" 
+                        };
+                        return { ...s, chat: [...(s.chat || []), newMsg] };
+                    }
                     return s;
                 }));
             };
@@ -140,7 +144,7 @@ function App() {
             }
             
             const meta = getRules(s.nascimento, s.faixa).m;
-            let currentDates = s.aulasDates || {};
+            let currentDates = {...(s.aulasDates || {})};
 
             if (s.aulasNoCiclo === n) {
                 delete currentDates[n];
@@ -152,7 +156,7 @@ function App() {
 
             if (n === meta) {
                 const novoGrau = s.grausGanhos + 1;
-                return { ...s, aulasNoCiclo: 0, aulasDates: {}, grausGanhos: novoGrau, history: [{date: new Date().toLocaleDateString(), msg: `CONQUISTA: ${novoGrau}º Grau`}, ...s.history] };
+                return { ...s, aulasNoCiclo: 0, aulasDates: {}, grausGanhos: novoGrau, history: [{date: new Date().toLocaleDateString(), msg: `CONQUISTA: ${novoGrau}º Grau`}, ...(s.history || [])] };
             }
             return { ...s, aulasNoCiclo: n, aulasDates: currentDates };
         }));
@@ -168,7 +172,7 @@ function App() {
             const status = !s.comportamental?.[b.k];
             return { ...s, 
                 comportamental: { ...(s.comportamental || {}), [b.k]: status },
-                history: [{date: new Date().toLocaleDateString(), msg: `${status ? 'Ganhou' : 'Removeu'} Grau ${b.n}`}, ...s.history]
+                history: [{date: new Date().toLocaleDateString(), msg: `${status ? 'Ganhou' : 'Removeu'} Grau ${b.n}`}, ...(s.history || [])]
             };
         }));
     };
@@ -247,7 +251,7 @@ function App() {
                         {canUpgradeBelt && user === "professor" && (
                             <button className="belt-upgrade" onClick={() => {
                                 const next = BELTS[BELTS.indexOf(s.faixa)+1];
-                                if(next) setStudents(students.map(st=>st.id===s.id?{...st, faixa:next, grausGanhos:0, comportamental:{}, history:[{date:new Date().toLocaleDateString(), msg:`GRADUADO: ${next}`},...st.history]}:st));
+                                if(next) setStudents(students.map(st=>st.id===s.id?{...st, faixa:next, grausGanhos:0, comportamental:{}, history:[{date:new Date().toLocaleDateString(), msg:`GRADUADO: ${next}`},...(st.history||[])]}:st));
                             }}>🎓 TROCAR DE FAIXA AGORA</button>
                         )}
 
