@@ -2,197 +2,220 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Alliance Mooca - Alliance Mooca KIDS </title>
+<title>Acompanhamento Jiu Jitsu Alliance</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <style>
-    body { font-family: 'Segoe UI', sans-serif; background:#f0f2f5; margin:0; padding:15px; }
-    .container { max-width:600px; margin:auto; }
-    .card { background:white; padding:20px; border-radius:15px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); border: 1px solid #ddd; }
-    
-    /* Graus: 1-4 Branco / 5-8 Vermelho */
-    .degree-bar { display: flex; gap: 6px; margin: 10px 0; }
-    .degree { width:24px; height:24px; border:2px solid #333; border-radius:4px; transition: 0.3s; }
-    .degree.white { background: #fff; box-shadow: inset 0 0 4px rgba(0,0,0,0.1); }
-    .degree.red { background: #e74c3c; box-shadow: inset 0 0 4px rgba(0,0,0,0.2); }
-    .degree.empty { background: #eee; border-color: #bbb; }
+body{ font-family:Arial; background:#f4f6f8; margin:0; padding:20px }
+.container{ max-width:1000px; margin:auto }
+.card{ background:white; padding:16px; border-radius:10px; margin-bottom:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1) }
+.row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px }
+button{ padding:6px 12px; border:none; border-radius:6px; background:#3498db; color:white; cursor:pointer }
+button.red{background:#e74c3c}
+button.green{background:#2ecc71}
+input,select{ padding:6px; border-radius:6px; border:1px solid #ccc }
+.bar{ display:flex; gap:3px }
+.box{ width:14px; height:14px; border:1px solid #999; background:#eee }
+.done{ background:#2ecc71 }
+.degree{ width:20px; height:20px; border:1px solid #555; border-radius:3px; background:#ddd }
+.beh{ width:22px; height:22px; border-radius:22px; background:#eee }
+.avatar{ width:60px; height:60px; border-radius:50%; object-fit:cover; border:3px solid #ddd; }
+.studentHeader{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.login{ max-width:400px; margin:auto }
 
-    /* Bolinhas de Aula (1 a 12/15) */
-    .bar-bolinhas { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
-    .bolinha { width:42px; height:42px; border-radius:50%; border:1px solid #ccc; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px; background:#fff; cursor: pointer; font-weight: bold; }
-    .bolinha.done { background:#25d366; color:white; border-color:#128c7e; }
-    .bolinha span { font-size: 8px; font-weight: normal; margin-top: 1px; }
-
-    /* Comportamental: REL, COM, ESC, HAB */
-    .beh-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
-    .beh-item { padding: 10px 2px; border-radius: 10px; text-align: center; cursor: pointer; border: 1px solid #ddd; font-size: 10px; font-weight: bold; transition: 0.2s; }
-
-    /* Chat INTEGRADO (Fixado no Card) */
-    .chat-integrado { background: #e5ddd5; border-radius: 12px; margin-top: 20px; border: 1px solid #d1d1d1; }
-    .chat-header-simples { background: #075e54; color: white; padding: 8px 15px; font-size: 12px; border-radius: 11px 11px 0 0; font-weight: bold; }
-    .chat-msgs { height: 220px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .msg-balao { padding: 7px 12px; border-radius: 10px; font-size: 13px; max-width: 85%; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-    .msg-balao.Professor { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 2px; }
-    .msg-balao.Pais { align-self: flex-start; background: #fff; border-top-left-radius: 2px; }
-    .chat-input-area { padding: 10px; background: #f0f2f5; display: flex; gap: 8px; border-radius: 0 0 11px 11px; }
-    .chat-input-area input { flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 20px; outline: none; }
-
-    /* Botão de Troca de Faixa */
-    .btn-upgrade { background: linear-gradient(to bottom, #FFD700, #DAA520); color: #000; width: 100%; border: 2px solid #000; padding: 12px; font-weight: 800; border-radius: 8px; margin-top: 15px; cursor: pointer; }
-    .btn-upgrade.bloqueado { background: #bdc3c7; color: #7f8c8d; border-color: #95a5a6; cursor: not-allowed; opacity: 0.7; }
-
-    button.primario { background: #075e54; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+/* --- CHAT WHATSAPP REAL --- */
+.chatBox { border-radius: 12px; margin-top: 20px; background: #e5ddd5; border: 1px solid #ccc; overflow: hidden; display: flex; flex-direction: column; }
+.chatHeader { background: #075e54; color: white; padding: 10px 15px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+.messages { height: 300px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
+.message { padding: 8px 12px; border-radius: 8px; font-size: 14px; position: relative; max-width: 80%; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+.message.self { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 0; }
+.message.other { align-self: flex-start; background: #fff; border-top-left-radius: 0; }
+.chatInputArea { background: #f0f2f5; padding: 10px; display: flex; align-items: center; gap: 10px; }
+.chatInputArea input[type=text] { flex: 1; border: none; padding: 10px; border-radius: 20px; outline: none; }
+.preview { max-width: 150px; border-radius: 5px; display: block; margin-top: 5px; border: 1px solid #ddd; }
+.download-link { font-size: 11px; color: #075e54; text-decoration: underline; display: block; margin-top: 5px; font-weight: bold; }
 </style>
 </head>
+
 <body>
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState, useEffect } = React;
-const FAIXAS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta"];
 
-function App() {
-    const [view, setView] = useState("");
-    const [busca, setBusca] = useState("");
-    const [alunos, setAlunos] = useState(() => JSON.parse(localStorage.getItem("alliance_db_final") || "[]"));
+const beltOrder=["Branca","Cinza/Branca","Cinza","Cinza/Preta","Amarela/Branca","Amarela","Amarela/Preta","Laranja/Branca","Laranja","Laranja/Preta","Verde/Branca","Verde","Verde/Preta"]
+const trainingDays=[1,3,5,6]
 
-    useEffect(() => { localStorage.setItem("alliance_db_final", JSON.stringify(alunos)) }, [alunos]);
-
-    const handleAula = (id, n) => {
-        if (view !== "professor") return;
-        const hoje = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-        setAlunos(prev => prev.map(a => {
-            if (a.id !== id || n !== a.aulas.length + 1) return a;
-            if (n === 12) return { ...a, aulas: [], graus: a.graus + 1 };
-            return { ...a, aulas: [...a.aulas, hoje] };
-        }));
-    };
-
-    const toggleComportamento = (id, tipo) => {
-        if (view !== "professor") return;
-        setAlunos(prev => prev.map(a => a.id === id ? { ...a, comp: { ...a.comp, [tipo]: !a.comp[tipo] } } : a));
-    };
-
-    const enviarMsg = (id, texto) => {
-        if (!texto.trim()) return;
-        setAlunos(prev => prev.map(a => a.id === id ? { ...a, chat: [...a.chat, { autor: view === 'professor' ? 'Professor' : 'Pais', texto }] } : a));
-    };
-
-    if (!view) return (
-        <div style={{display:'flex', flexDirection:'column', gap:15, maxWidth:300, margin:'100px auto'}}>
-            <h1 style={{textAlign:'center', color:'#075e54'}}>ALLIANCE EAGLE</h1>
-            <button className="primario" onClick={() => setView("professor")}>Acesso Professor</button>
-            <button className="primario" style={{background:'#3498db'}} onClick={() => setView("pais")}>Acesso Pais</button>
-        </div>
-    );
-
-    const filtrados = view === "pais" ? alunos.filter(a => a.nome.toLowerCase() === busca.toLowerCase()) : alunos;
-
-    return (
-        <div className="container">
-            <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
-                <button onClick={() => {setView(""); setBusca("")}} style={{background:'#e74c3c', color:'white', border:'none', padding:8, borderRadius:5}}>Sair</button>
-                <b style={{color:'#075e54'}}>{view.toUpperCase()}</b>
-            </div>
-
-            {view === "professor" && (
-                <button className="primario" style={{width:'100%', marginBottom:20}} onClick={() => {
-                    const n = prompt("Nome do Aluno:");
-                    if(n) setAlunos([...alunos, { id: Date.now(), nome: n, faixa: "Branca", aulas: [], graus: 0, comp: {}, chat: [] }]);
-                }}>+ Cadastrar Aluno</button>
-            )}
-
-            {view === "pais" && !busca && (
-                <div className="card">
-                    <input placeholder="Digite o nome do seu filho..." style={{width:'100%', padding:12, borderRadius:8, border:'1px solid #ccc'}} onKeyDown={e => e.key==='Enter' && setBusca(e.target.value)} />
-                </div>
-            )}
-
-            {filtrados.map(a => {
-                const totalComp = Object.values(a.comp).filter(v => v).length;
-                const prontoPraGraduar = a.graus >= 8 && totalComp >= 4;
-
-                return (
-                    <div key={a.id} className="card">
-                        <h2 style={{margin:'0 0 5px 0'}}>{a.nome}</h2>
-                        <div style={{color:'#666', marginBottom:15}}>Faixa atual: <b>{a.faixa}</b></div>
-
-                        <div><b>Graus de Faixa:</b></div>
-                        <div className="degree-bar">
-                            {[...Array(8)].map((_, i) => (
-                                <div key={i} className={`degree ${i < a.graus ? (i < 4 ? 'white' : 'red') : 'empty'}`}></div>
-                            ))}
-                        </div>
-
-                        <div style={{marginTop:15}}><b>Presenças (Ciclo de 12):</b></div>
-                        <div className="bar-bolinhas">
-                            {[...Array(12)].map((_, i) => (
-                                <div key={i} className={`bolinha ${i < a.aulas.length ? 'done' : ''}`} onClick={() => handleAula(a.id, i+1)}>
-                                    {i+1}
-                                    {a.aulas[i] && <span>{a.aulas[i]}</span>}
-                                </div>
-                            ))}
-                        </div>
-
-                        <div style={{marginTop:15}}><b>Graus Comportamentais (Faltam {4 - totalComp}):</b></div>
-                        <div className="beh-grid">
-                            {['REL', 'COM', 'ESC', 'HAB'].map(k => (
-                                <div key={k} className="beh-item" 
-                                     style={{background: a.comp[k] ? '#2ecc71' : '#eee', color: a.comp[k] ? '#fff' : '#888', borderColor: a.comp[k] ? '#27ae60' : '#ddd'}}
-                                     onClick={() => toggleComportamento(a.id, k)}>
-                                    {k === 'REL' && '🤝 REL'}
-                                    {k === 'COM' && '🥋 COM'}
-                                    {k === 'ESC' && '📚 ESC'}
-                                    {k === 'HAB' && '🍎 HAB'}
-                                </div>
-                            ))}
-                        </div>
-
-                        {a.graus >= 8 && (
-                            <button className={`btn-upgrade ${!prontoPraGraduar ? 'bloqueado' : ''}`} onClick={() => {
-                                if(!prontoPraGraduar) return alert("Necessário os 4 graus comportamentais para graduar!");
-                                const nextIdx = FAIXAS.indexOf(a.faixa) + 1;
-                                setAlunos(alunos.map(it => it.id === a.id ? {...it, faixa: FAIXAS[nextIdx] || a.faixa, graus: 0, comp: {}} : it));
-                            }}>
-                                {prontoPraGraduar ? "🎓 GRADUAÇÃO DISPONÍVEL: TROCAR FAIXA" : "🔒 BLOQUEADO: COMPLETE O COMPORTAMENTAL"}
-                            </button>
-                        )}
-
-                        {/* CHAT FIXO NO CARD */}
-                        <div className="chat-integrado">
-                            <div className="chat-header-simples">MENSAGENS / FALE CONOSCO</div>
-                            <div className="chat-msgs">
-                                {a.chat.map((m, i) => (
-                                    <div key={i} className={`msg-balao ${m.autor}`}>
-                                        <b style={{fontSize:9, display:'block'}}>{m.autor.toUpperCase()}</b>
-                                        {m.texto}
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="chat-input-area">
-                                <input id={`input-${a.id}`} placeholder="Escreva aqui..." onKeyDown={e => {
-                                    if(e.key === 'Enter') {
-                                        enviarMsg(a.id, e.target.value);
-                                        e.target.value = "";
-                                    }
-                                }} />
-                                <button className="primario" onClick={() => {
-                                    const input = document.getElementById(`input-${a.id}`);
-                                    enviarMsg(a.id, input.value);
-                                    input.value = "";
-                                }}><i className="fas fa-paper-plane"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                );
-            })}
-        </div>
-    );
+function getAge(date){
+  const hoje=new Date(); const nasc=new Date(date);
+  let idade=hoje.getFullYear()-nasc.getFullYear();
+  const m=hoje.getMonth()-nasc.getMonth();
+  if(m<0 || (m===0 && hoje.getDate()<nasc.getDate())) idade--;
+  return idade;
 }
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+function getCategory(idade){
+  if(idade>=3 && idade<=4) return "BABY EAGLE"
+  if(idade>=5 && idade<=8) return "LITTLE EAGLE"
+  if(idade>=9 && idade<=12) return "EAGLE WARRIOR"
+  if(idade>=13 && idade<=15) return "EAGLE YOUTH"
+  return "FORA CATEGORIA"
+}
+
+function ClassesBar({aulas}){
+  return(
+    <div className="bar">
+      {Array.from({length:15}).map((_,i)=>{
+        const done=i<(aulas%15)
+        return(<div key={i} className={"box "+(done?"done":"")}></div>)
+      })}
+    </div>
+  )
+}
+
+function PresenceBar({graus}){
+  const brancos=Math.min(graus,4); const vermelhos=Math.max(graus-4,0);
+  return(
+    <div className="bar">
+      {Array.from({length:4}).map((_,i)=>{
+        let color="#ddd"; if(i<vermelhos) color="#e74c3c"; else if(i<brancos) color="#fff";
+        return(<div key={i} className="degree" style={{background:color}}></div>)
+      })}
+    </div>
+  )
+}
+
+function Chat({ studentId, messages, user, onSendMessage }) {
+  const [text, setText] = React.useState("");
+  
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      onSendMessage(studentId, { text: "📎 Arquivo/Foto", file: ev.target.result, fileName: file.name });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div className="chatBox">
+      <div className="chatHeader"><i className="fab fa-whatsapp"></i> Fale Conosco</div>
+      <div className="messages">
+        {messages.map((m, i) => (
+          <div key={i} className={"message " + (m.sender === user ? "self" : "other")}>
+            <small style={{display:"block", fontSize:"9px", opacity:0.6}}>{m.sender.toUpperCase()}</small>
+            {m.text}
+            {m.file && (
+              <div>
+                {m.file.startsWith("data:image") ? 
+                   <img src={m.file} className="preview" /> : 
+                   <i className="fas fa-file-alt" style={{fontSize:"30px", padding:"10px"}}></i>
+                }
+                <a href={m.file} download={m.fileName} className="download-link">Baixar Arquivo</a>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="chatInputArea">
+        <label style={{cursor:"pointer", fontSize:"20px", color:"#555"}}>
+           <i className="fas fa-paperclip"></i>
+           <input type="file" style={{display:"none"}} onChange={handleFile} />
+        </label>
+        <input type="text" placeholder="Mensagem..." value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter' && (onSendMessage(studentId, {text}), setText(""))} />
+        <button style={{background:"none", color:"#075e54", fontSize:"20px"}} onClick={() => {onSendMessage(studentId, {text}); setText("")}}>
+           <i className="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function App(){
+  const [user,setUser]=React.useState("")
+  const [filho,setFilho]=React.useState("")
+  const [students,setStudents]=React.useState(()=>{
+    const saved=localStorage.getItem("academia_alliance_final_v2");
+    return saved?JSON.parse(saved):[]
+  })
+  const [form,setForm]=React.useState({nome:"",nascimento:"",faixa:"Branca"})
+
+  React.useEffect(()=>{localStorage.setItem("academia_alliance_final_v2",JSON.stringify(students))},[students])
+
+  const addStudent = () => {
+    if(!form.nome) return;
+    const idade=getAge(form.nascimento);
+    setStudents([...students,{
+      id:Date.now(), nome:form.nome, nascimento:form.nascimento, idade, categoria:getCategory(idade),
+      faixa:form.faixa, avatar:"avatar.png", aulas:0, chat:[], comportamental:{},
+      historicoAulas:[], historicoGraus:[], historicoComportamental:[], historicoFaixas:[]
+    }]);
+    setForm({nome:"",nascimento:"",faixa:"Branca"});
+  };
+
+  const handleMsg = (id, msgObj) => {
+    setStudents(prev => prev.map(s => s.id === id ? {...s, chat: [...(s.chat || []), { ...msgObj, sender: user, time: new Date().toLocaleTimeString() }]} : s));
+  };
+
+  // Funções de login simplificadas para o exemplo
+  if(user==="") return (
+    <div className="login card">
+      <h2>Login Alliance</h2>
+      <button onClick={()=>setUser("professor")} style={{width:"100%", marginBottom:"10px"}}>Sou Professor (Admin)</button>
+      <button onClick={()=>{const n=prompt("Nome do Aluno:"); if(n){setFilho(n); setUser("pais")}}} style={{width:"100%", background:"#3498db"}}>Sou Pai/Mãe</button>
+    </div>
+  );
+
+  let lista = user === "pais" ? students.filter(s => s.nome === filho) : students;
+
+  return(
+    <div className="container">
+      <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+         <h1>Alliance Jiu Jitsu</h1>
+         <button className="red" onClick={()=>setUser("")}>Sair</button>
+      </div>
+
+      {user==="professor" &&
+        <div className="card">
+          <div className="row">
+            <input placeholder="Nome" value={form.nome} onChange={e=>setForm({...form,nome:e.target.value})}/>
+            <input type="date" value={form.nascimento} onChange={e=>setForm({...form,nascimento:e.target.value})}/>
+            <select value={form.faixa} onChange={e=>setForm({...form,faixa:e.target.value})}>
+              {beltOrder.map(b=><option key={b}>{b}</option>)}
+            </select>
+            <button className="green" onClick={addStudent}>Adicionar aluno</button>
+          </div>
+        </div>
+      }
+
+      {lista.map(s=>(
+        <div key={s.id} className="card">
+          <div className="studentHeader">
+            <img src={s.avatar} className="avatar"/>
+            <div><b>{s.nome}</b> - {s.faixa}<br/>{s.categoria}</div>
+          </div>
+          <ClassesBar aulas={s.aulas}/>
+          <PresenceBar graus={Math.floor(s.aulas/15)}/>
+          
+          {user==="professor" && (
+            <div style={{marginTop:"10px"}}>
+               <button onClick={() => setStudents(students.map(st => st.id===s.id ? {...st, aulas: st.aulas+1} : st))}>+ Aula</button>
+            </div>
+          )}
+
+          <Chat studentId={s.id} messages={s.chat || []} user={user} onSendMessage={handleMsg} />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
 </script>
 </body>
 </html>
