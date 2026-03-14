@@ -14,48 +14,51 @@
     .header-main { text-align: center; color: #075e54; margin-bottom: 20px; }
     .card { background:white; padding:15px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
     
+    /* Formulário de Cadastro Direto */
     .form-direto { background: #fff; padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #075e54; }
     .form-direto input, .form-direto select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin: 5px; flex: 1; min-width: 150px; outline: none; }
     
     .row { display:flex; gap:10px; flex-wrap:wrap; align-items: center; }
-    button { padding:10px 16px; border:none; border-radius:8px; background:#075e54; color:white; cursor:pointer; font-weight: bold; }
+    button { padding:12px 20px; border:none; border-radius:8px; background:#075e54; color:white; cursor:pointer; font-weight: bold; }
     button.red { background: #e74c3c; }
+    button.blue { background: #3498db; }
 
-    /* Faixa de Graduação */
+    /* Faixa de Graduação Estilo Imagem */
     .belt-display { 
-        background: #111; height: 65px; border-radius: 6px; display: flex; 
-        align-items: center; justify-content: space-between; padding: 0 20px; 
+        background: #111; height: 60px; border-radius: 4px; display: flex; 
+        align-items: center; justify-content: space-between; padding: 0 15px; 
         margin: 15px 0; border: 2px solid #000;
     }
-    .presence-side { display: flex; gap: 5px; }
-    .degree-presence { width: 14px; height: 45px; border-radius: 1px; }
+    .presence-side { display: flex; gap: 4px; }
+    .degree-presence { width: 12px; height: 40px; border-radius: 1px; }
     .degree-presence.white { background: #fff; }
     .degree-presence.red { background: #e74c3c; }
     .degree-presence.empty { border: 1px solid #333; }
 
-    .behavior-side { display: flex; gap: 12px; align-items: center; }
-    .behavior-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .degree-behavior { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #333; }
-    .behavior-label { color: #aaa; font-size: 8px; text-transform: uppercase; font-weight: bold; }
+    .behavior-side { display: flex; gap: 10px; align-items: center; }
+    .behavior-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .degree-behavior { width: 20px; height: 20px; border-radius: 3px; border: 1px solid #333; }
+    .behavior-label { color: #888; font-size: 7px; text-transform: uppercase; font-weight: bold; }
 
     /* Histórico */
-    .historico-section { margin-top: 15px; background: #f8f9fa; border-radius: 8px; padding: 10px; border: 1px solid #eee; }
-    .historico-list { max-height: 100px; overflow-y: auto; font-size: 11px; color: #666; list-style: none; padding: 0; margin: 0; }
-    .historico-item { padding: 4px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+    .hist-box { margin-top: 10px; background: #fafafa; border-radius: 8px; padding: 8px; border: 1px solid #eee; font-size: 11px; }
+    .hist-item { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f0f0; padding: 3px 0; color: #555; }
 
     /* WhatsApp Style */
     .wa-chat { background: #efe7dd; border-radius: 12px; border: 1px solid #ddd; margin-top: 15px; overflow: hidden; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
-    .wa-messages { height: 150px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .wa-msg { background: #fff; padding: 8px 14px; border-radius: 8px; font-size: 13px; align-self: flex-start; box-shadow: 0 1px 1px rgba(0,0,0,0.1); max-width: 80%; }
+    .wa-messages { height: 140px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .wa-msg { background: #fff; padding: 7px 12px; border-radius: 8px; font-size: 13px; align-self: flex-start; box-shadow: 0 1px 1px rgba(0,0,0,0.1); max-width: 80%; }
     .wa-msg.me { background: #dcf8c6; align-self: flex-end; }
-    .wa-input-bar { background: #f0f0f0; padding: 10px; display: flex; align-items: center; gap: 10px; }
-    .wa-input-container { flex: 1; background: #fff; border-radius: 25px; display: flex; align-items: center; padding: 0 15px; }
-    .wa-input-container input { flex: 1; border: none; padding: 10px; outline: none; }
-    .wa-mic { background: #075e54; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+    
+    .wa-input-bar { background: #f0f0f0; padding: 8px 10px; display: flex; align-items: center; gap: 8px; }
+    .wa-input-container { flex: 1; background: #fff; border-radius: 25px; display: flex; align-items: center; padding: 0 12px; }
+    .wa-input-container input { flex: 1; border: none; padding: 10px; outline: none; font-size: 14px; }
+    .wa-input-container i { color: #8696a0; font-size: 18px; margin-right: 10px; cursor: pointer; }
+    .wa-mic { background: #075e54; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
 
     .repo-section { margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
     .repo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; }
-    .repo-item { aspect-ratio: 1/1; border-radius: 8px; border: 1px solid #ddd; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; text-align: center; font-size: 10px; }
+    .repo-item { aspect-ratio: 1/1; border-radius: 8px; border: 1px solid #ddd; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -66,11 +69,12 @@ const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Br
 const behaviorTags = ["Relacionamento", "Comportamento", "Escola", "Hábitos"];
 const behaviorColors = ['#f1c40f', '#3498db', '#e74c3c', '#2ecc71'];
 
+// Regras baseadas na imagem do sistema de graduação
 function getRules(category, belt) {
-    const isYO = belt.includes("Amarela") || belt.includes("Laranja");
+    const isYellowOrange = belt.includes("Amarela") || belt.includes("Laranja");
     if (category === "BABY EAGLE") return 12;
-    if (category === "LITTLE EAGLE" || category === "EAGLE WARRIOR") return isYO ? 20 : 15;
-    if (category === "EAGLE YOUTH") return belt.includes("Verde") ? 25 : (isYO ? 22 : 20);
+    if (category === "LITTLE EAGLE" || category === "EAGLE WARRIOR") return isYellowOrange ? 20 : 15;
+    if (category === "EAGLE YOUTH") return belt.includes("Verde") ? 25 : (isYellowOrange ? 22 : 20);
     return 15;
 }
 
@@ -91,41 +95,53 @@ function getCategory(idade) {
 }
 
 function App() {
-    const [user, setUser] = React.useState("");
-    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_mooca_v7") || "[]"));
-    const [regForm, setRegForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
+    const [user, setUser] = React.useState(""); // "professor" ou "pais"
+    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_final_v1") || "[]"));
+    const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
 
-    React.useEffect(() => { localStorage.setItem("alliance_mooca_v7", JSON.stringify(students)); }, [students]);
+    React.useEffect(() => { localStorage.setItem("alliance_final_v1", JSON.stringify(students)); }, [students]);
 
-    const logActivity = (studentId, msg) => {
-        const timestamp = new Date().toLocaleString('pt-BR');
-        return students.map(s => s.id === studentId ? { ...s, historico: [{ date: timestamp, act: msg }, ...(s.historico || [])] } : s);
+    const addLog = (id, text) => {
+        const time = new Date().toLocaleString('pt-BR');
+        setStudents(prev => prev.map(s => s.id === id ? { ...s, logs: [{ time, text }, ...(s.logs || [])] } : s));
     };
 
     const handleAdd = () => {
-        if(!regForm.nome || !regForm.nascimento) return alert("Dados incompletos");
-        const newStudent = { id: Date.now(), ...regForm, aulas: 0, chat: [], docs: [], comportamental: [false, false, false, false], historico: [{date: new Date().toLocaleString(), act: "Matrícula realizada"}] };
+        if(!form.nome || !form.nascimento) return alert("Preencha nome e nascimento");
+        const newStudent = { id: Date.now(), ...form, aulas: 0, chat: [], docs: [], logs: [], comportamental: [false, false, false, false] };
         setStudents([...students, newStudent]);
-        setRegForm({ nome: "", nascimento: "", faixa: "Branca" });
+        setForm({ nome: "", nascimento: "", faixa: "Branca" });
     };
+
+    // TELA DE LOGIN INICIAL
+    if (!user) return (
+        <div style={{ textAlign: 'center', padding: "100px 20px" }}>
+            <h1 style={{color: '#075e54'}}>Alliance Jiu Jitsu KIDS Mooca</h1>
+            <p>Selecione seu perfil de acesso:</p>
+            <div className="row" style={{justifyContent: 'center', marginTop: 20}}>
+                <button onClick={() => setUser("professor")}>Acesso Professor</button>
+                <button className="blue" onClick={() => setUser("pais")}>Acesso Pais</button>
+            </div>
+        </div>
+    );
 
     return (
         <div className="container">
             <header className="header-main">
                 <h2>Alliance Jiu Jitsu KIDS Mooca</h2>
-                <button className="red" onClick={() => setUser("")}>Sair</button>
+                <button className="red" onClick={() => setUser("")}>Sair do Sistema</button>
             </header>
 
             {user === "professor" && (
                 <div className="form-direto">
-                    <strong>Novo Aluno:</strong>
+                    <strong>Cadastrar Aluno:</strong>
                     <div className="row">
-                        <input placeholder="Nome" value={regForm.nome} onChange={e => setRegForm({...regForm, nome: e.target.value})} />
-                        <input type="date" value={regForm.nascimento} onChange={e => setRegForm({...regForm, nascimento: e.target.value})} />
-                        <select value={regForm.faixa} onChange={e => setRegForm({...regForm, faixa: e.target.value})}>
+                        <input placeholder="Nome" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
+                        <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
+                        <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>
                             {beltOrder.map(b => <option key={b} value={b}>{b}</option>)}
                         </select>
-                        <button onClick={handleAdd}>Cadastrar</button>
+                        <button onClick={handleAdd}>Confirmar</button>
                     </div>
                 </div>
             )}
@@ -140,10 +156,11 @@ function App() {
                 return (
                     <div key={s.id} className="card">
                         <div className="row" style={{justifyContent: 'space-between'}}>
-                            <strong>{s.nome}</strong>
+                            <strong style={{fontSize: 18}}>{s.nome}</strong>
                             <small>{s.faixa} | {categoria}</small>
                         </div>
 
+                        {/* Faixa com Graus de Presença e Comportamento */}
                         <div className="belt-display">
                             <div className="presence-side">
                                 {[0,1,2,3,4,5,6,7].map(i => {
@@ -155,11 +172,13 @@ function App() {
                             <div className="behavior-side">
                                 {behaviorColors.map((color, i) => (
                                     <div key={i} className="behavior-item">
-                                        <div className="degree-behavior" style={{ background: s.comportamental[i] ? color : 'transparent' }} onClick={() => { if(user === "professor") {
-                                            const nb = [...s.comportamental]; nb[i] = !nb[i];
-                                            let updated = students.map(st => st.id === s.id ? {...st, comportamental: nb} : st);
-                                            setStudents(logActivity(s.id, `Grau ${behaviorTags[i]} alterado`));
-                                        }}}></div>
+                                        <div className="degree-behavior" 
+                                             style={{ background: s.comportamental[i] ? color : 'transparent' }}
+                                             onClick={() => { if(user === "professor") {
+                                                 const nb = [...s.comportamental]; nb[i] = !nb[i];
+                                                 setStudents(students.map(st => st.id === s.id ? {...st, comportamental: nb} : st));
+                                                 addLog(s.id, `Grau ${behaviorTags[i]} alterado`);
+                                             }}}></div>
                                         <span className="behavior-label">{behaviorTags[i].substring(0,3)}</span>
                                     </div>
                                 ))}
@@ -169,31 +188,30 @@ function App() {
                         {user === "professor" && (
                             <div className="row" style={{marginBottom: 10}}>
                                 <button onClick={() => {
-                                    let up = students.map(st => st.id === s.id ? {...st, aulas: st.aulas + 1} : st);
-                                    setStudents(logActivity(s.id, "Presença confirmada"));
+                                    setStudents(students.map(st => st.id === s.id ? {...st, aulas: st.aulas + 1} : st));
+                                    addLog(s.id, "Presença marcada");
                                 }}>+ Presença</button>
                                 <button className="red" onClick={() => setStudents(students.filter(st => st.id !== s.id))}>Excluir</button>
                             </div>
                         )}
 
-                        <div className="historico-section">
-                            <div style={{fontSize: 10, fontWeight: 'bold', marginBottom: 5}}>HISTÓRICO RECENTE:</div>
-                            <ul className="historico-list">
-                                {(s.historico || []).map((h, i) => (
-                                    <li key={i} className="historico-item">
-                                        <span>{h.act}</span>
-                                        <span style={{color: '#999'}}>{h.date}</span>
-                                    </li>
-                                ))}
-                            </ul>
+                        <div className="hist-box">
+                            <strong>Histórico:</strong>
+                            {(s.logs || []).slice(0, 5).map((l, i) => (
+                                <div key={i} className="hist-item"><span>{l.text}</span><span>{l.time}</span></div>
+                            ))}
                         </div>
 
+                        {/* WhatsApp Chat Style */}
                         <div className="wa-chat">
-                            <div className="wa-messages">{s.chat.map((m, i) => <div key={i} className={`wa-msg ${m.from === 'Prof' ? 'me' : ''}`}>{m.txt}</div>)}</div>
+                            <div className="wa-messages">
+                                {s.chat.map((m, i) => <div key={i} className={`wa-msg ${m.from === 'Prof' ? 'me' : ''}`}>{m.txt}</div>)}
+                            </div>
                             <div className="wa-input-bar">
                                 <div className="wa-input-container">
-                                    <i className="fas fa-plus"></i><i className="far fa-face-smile" style={{marginLeft: 10}}></i>
-                                    <input placeholder="Mensagem" onKeyDown={e => {
+                                    <i className="fas fa-plus"></i>
+                                    <i className="far fa-face-smile"></i>
+                                    <input placeholder="Digite uma mensagem" onKeyDown={e => {
                                         if(e.key === 'Enter' && e.target.value){
                                             const msg = { from: user === 'professor' ? 'Prof' : 'Pais', txt: e.target.value };
                                             setStudents(students.map(st => st.id === s.id ? {...st, chat: [...st.chat, msg]} : st));
