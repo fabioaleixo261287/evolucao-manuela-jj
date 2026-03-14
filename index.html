@@ -1,259 +1,242 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Alliance Jiu Jitsu - Evolução Jiu Jitsu</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<style>
-    body { font-family: 'Segoe UI', sans-serif; background:#f0f2f5; margin:0; padding:10px; }
-    .container { max-width:850px; margin:auto; width: 100%; box-sizing: border-box; }
-    .card { background:white; padding:15px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); position: relative; }
-    .row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items: center; }
-    button { padding:8px 14px; border:none; border-radius:8px; background:#075e54; color:white; cursor:pointer; font-weight: bold; }
-    .btn-edit { background: #667781; padding: 4px 8px; font-size: 10px; margin-left: 8px; border-radius: 4px; }
-    .belt-upgrade { background: linear-gradient(45deg, #FFD700, #DAA520); color: #000; width: 100%; margin-top: 15px; border: 2px solid #000; font-size: 16px; padding: 12px; animation: pulse 2s infinite; font-weight: bold; }
-    @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.02);} 100% {transform: scale(1);} }
-    .avatar-container { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
-    .avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #075e54; background: #eee; }
-    .bar-bolinhas { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 8px; margin: 10px 0; }
-    .bolinha-aula { aspect-ratio: 1/1; border-radius:50%; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:11px; background:#fff; cursor: pointer; font-weight: bold; color: #777; position: relative; }
-    .bolinha-aula.done { background:#25d366; color:white; border-color:#128c7e; }
-    .bolinha-aula.done:hover::after { content: attr(data-date); position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 10px; white-space: nowrap; z-index: 10; }
-    .degree-bar { display: flex; gap: 6px; margin-bottom: 15px; }
-    .degree { width:24px; height:24px; border:1px solid #333; border-radius:4px; background:#ddd; }
-    .beh-row { display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
-    .beh-btn { flex: 1; min-width: 70px; padding: 10px 2px; border-radius: 10px; border: 1px solid #ddd; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
-    .chat-wrapper { background: #efe7dd; border-radius: 12px; border: 1px solid #ddd; margin-top: 15px; overflow: hidden; display: flex; flex-direction: column; }
-    .chat-messages { height:250px; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; }
-    .msg { padding:8px 12px; border-radius:8px; font-size:13px; max-width:85%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); position: relative; }
-    .msg.sent { background:#dcf8c6; align-self:flex-end; border-top-right-radius: 0; }
-    .msg.received { background:#fff; align-self:flex-start; border-top-left-radius: 0; }
-    .chat-img { max-width: 100%; border-radius: 8px; margin-bottom: 5px; cursor: pointer; }
-    .chat-input-area { background: #f0f2f5; padding: 8px; display: flex; align-items: center; gap: 8px; }
-    .input-container { background: white; flex: 1; border-radius: 25px; display: flex; align-items: center; padding: 2px 15px; border: 1px solid #ddd; }
-    .input-container input { flex: 1; border: none; outline: none; padding: 8px; font-size: 14px; background: transparent; }
-    .chat-icon { color: #667781; font-size: 18px; cursor: pointer; }
-    .history-section { margin-top: 15px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-    .history-list { font-size: 11px; color: #555; max-height: 80px; overflow-y: auto; }
-    .class-counter { background: #075e54; color: white; padding: 2px 8px; border-radius: 10px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 4px; }
-</style>
+    <meta charset="UTF-8">
+    <title>Alliance Jiu Jitsu Mooca - Alliance Jiu Jitsu Mooca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --wa-bg: #efe7dd; --wa-green: #25d366; --wa-dark: #075e54; --wa-light: #dcf8c6; }
+        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background:#f0f2f5; margin:0; padding:10px; }
+        .container { max-width:850px; margin:auto; width: 100%; box-sizing: border-box; }
+        .card { background:white; padding:15px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* Cabeçalho e Identidade */
+        .header-app { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background: var(--wa-dark); color: white; padding: 10px 15px; border-radius: 10px; }
+        
+        /* Avatar e Info */
+        .avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--wa-dark); cursor: pointer; }
+        .class-counter { background: var(--wa-dark); color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; margin-top: 5px; display: inline-block; }
+
+        /* Grade de Aulas */
+        .bar-bolinhas { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 8px; margin: 15px 0; }
+        .bolinha-aula { aspect-ratio: 1/1; border-radius:50%; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:12px; background:#fff; cursor: pointer; font-weight: bold; color: #666; transition: 0.2s; }
+        .bolinha-aula.done { background: var(--wa-green); color:white; border-color:#128c7e; }
+
+        /* Graus de Presença */
+        .degree-label { font-size: 11px; font-weight: bold; margin-bottom: 5px; color: #444; }
+        .degree-bar { display: flex; gap: 4px; background: #222; padding: 6px; border-radius: 4px; width: fit-content; margin-bottom: 15px; }
+        .degree-slot { width: 14px; height: 28px; border: 1px solid #000; border-radius: 2px; }
+        .degree-white { background: #fff; }
+        .degree-red { background: #e74c3c; }
+
+        /* Comportamentais */
+        .beh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
+        .beh-btn { padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; color: #666; background: #f9f9f9; }
+
+        /* WhatsApp Style Chat */
+        .wa-chat-container { background: var(--wa-bg); border-radius: 12px; border: 1px solid #ddd; margin-top: 15px; overflow: hidden; display: flex; flex-direction: column; }
+        .wa-messages { height:220px; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:10px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; }
+        .wa-msg { padding:8px 12px; border-radius:8px; font-size:14px; max-width:80%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); line-height: 1.4; }
+        .wa-msg.sent { background: var(--wa-light); align-self: flex-end; border-top-right-radius: 0; }
+        .wa-msg.received { background: white; align-self: flex-start; border-top-left-radius: 0; }
+        .wa-input-area { background: #f0f2f5; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .wa-input-wrapper { background: white; flex: 1; border-radius: 25px; display: flex; align-items: center; padding: 5px 15px; gap: 10px; }
+        .wa-input-wrapper input { flex: 1; border: none; outline: none; font-size: 15px; padding: 8px 0; }
+        .wa-icon { color: #667781; font-size: 20px; cursor: pointer; }
+        .btn-send { background: #00a884; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+
+        /* Histórico */
+        .history-box { background: #f8f9fa; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-top: 15px; font-size: 11px; }
+        .history-item { padding: 4px 0; border-bottom: 1px solid #eee; color: #555; }
+        
+        button:hover { opacity: 0.9; }
+        .promotion-banner { background: linear-gradient(45deg, #FFD700, #DAA520); color: black; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin: 10px 0; animation: pulse 2s infinite; cursor: pointer; border: 2px solid black; }
+        @keyframes pulse { 0% {transform:scale(1)} 50% {transform:scale(1.02)} 100% {transform:scale(1)} }
+    </style>
 </head>
 <body>
-<div id="root"></div>
+    <div id="root"></div>
 
-<script type="text/babel">
-const BELTS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
+    <script type="text/babel">
+        const BELTS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
+        
+        const BEHAVIORS = [
+            { id: 'rel', label: 'RELACIONAMENTO', color: '#f1c40f', icon: '🤝' },
+            { id: 'dis', label: 'COMPORTAMENTO', color: '#3498db', icon: '🧠' },
+            { id: 'org', label: 'ORGANIZAÇÃO', color: '#e74c3c', icon: '📅' },
+            { id: 'hab', label: 'BONS HÁBITOS', color: '#2ecc71', icon: '🥗' }
+        ];
 
-const BEH_TYPES = [
-    { k: 'REL', n: 'Relacionamento', c: '#f1c40f', info: "Relacionamento com o próximo:\n• Respeitar a todos\n• Não fazer bullying" },
-    { k: 'DIS', n: 'Comportamento', c: '#3498db', info: "Comportamento no Tatame:\n• Presta atenção na aula\n• Boa frequência" },
-    { k: 'ORG', n: 'Notas e Org.', c: '#e74c3c', info: "Organização e Pontualidade:\n• Ter boas notas escolares\n• Pontualidade nas aulas" },
-    { k: 'HAB', n: 'Bons Hábitos', c: '#2ecc71', info: "Comprometimento:\n• Boa alimentação\n• Higiene pessoal" }
-];
+        function App() {
+            const [role, setRole] = React.useState(null);
+            const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_eagle_v2") || "[]"));
 
-function getAge(nasc) {
-    if(!nasc) return 0;
-    const diff = Date.now() - new Date(nasc).getTime();
-    return Math.abs(new Date(diff).getUTCFullYear() - 1970);
-}
+            React.useEffect(() => { localStorage.setItem("alliance_eagle_v2", JSON.stringify(students)); }, [students]);
 
-function getRules(nasc, faixa) {
-    const idade = getAge(nasc);
-    const isGray = faixa.includes("Branca") || faixa.includes("Cinza");
-    const isYellowOrange = faixa.includes("Amarela") || faixa.includes("Laranja");
-    const isGreen = faixa.includes("Verde");
+            const getStudentRules = (birth, belt) => {
+                const age = Math.abs(new Date(Date.now() - new Date(birth).getTime()).getUTCFullYear() - 1970);
+                const isGray = belt.includes("Branca") || belt.includes("Cinza");
+                const isGreen = belt.includes("Verde");
+                
+                if (age <= 5) return { name: "Baby Eagle", max: 12 };
+                if (age <= 12) return { name: age <= 8 ? "Little Eagle" : "Eagle Warrior", max: isGray ? 15 : 20 };
+                if (age <= 15) return { name: "Eagle Youth", max: isGreen ? 25 : (belt.includes("Laranja") ? 22 : 20) };
+                return { name: "Infantil", max: 15 };
+            };
 
-    if (idade <= 5) return { p: "Baby Eagle", m: 12 };
-    if (idade <= 8) return { p: "Little Eagle", m: isGray ? 15 : 20 };
-    if (idade <= 12) return { p: "Eagle Warrior", m: isGray ? 15 : 20 };
-    if (idade <= 15) {
-        if (isGreen) return { p: "Eagle Youth", m: 25 };
-        return { p: "Eagle Youth", m: isGray ? 20 : 22 };
-    }
-    return { p: "Infantil", m: 15 };
-}
-
-function App() {
-    const [user, setUser] = React.useState("");
-    const [filho, setFilho] = React.useState("");
-    const [zoomImg, setZoomImg] = React.useState(null);
-    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v14") || "[]"));
-    const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
-
-    React.useEffect(() => { localStorage.setItem("all_eagle_v14", JSON.stringify(students)); }, [students]);
-
-    const handleFileUpload = (id, e, target) => {
-        const file = e.target.files[0];
-        if (!file || file.size > 5 * 1024 * 1024) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 600;
-                const scale = MAX_WIDTH / img.width;
-                canvas.width = MAX_WIDTH;
-                canvas.height = img.height * scale;
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                const optimizedData = canvas.toDataURL('image/jpeg', 0.7);
-
+            const addClass = (id, num) => {
+                if (role !== 'prof') return;
                 setStudents(prev => prev.map(s => {
                     if (s.id !== id) return s;
-                    if (target === 'avatar') return { ...s, avatar: optimizedData };
-                    if (target === 'chat') return { ...s, chat: [...(s.chat || []), { sender: user === 'professor' ? 'Professor' : 'Pais', file: { data: optimizedData } }] };
-                    return s;
+                    const rule = getStudentRules(s.nascimento, s.faixa);
+                    
+                    if (s.currentClasses === num) {
+                        return { ...s, currentClasses: num - 1, totalHistory: Math.max(0, s.totalHistory - 1) };
+                    }
+
+                    if (num === rule.max) {
+                        const newDegrees = (s.degrees || 0) + 1;
+                        const log = { date: new Date().toLocaleDateString(), type: 'Grau', val: `${newDegrees}º Grau` };
+                        return { ...s, currentClasses: 0, degrees: newDegrees, totalHistory: s.totalHistory + 1, 
+                                 history: [log, ...(s.history || [])] };
+                    }
+                    return { ...s, currentClasses: num, totalHistory: s.totalHistory + 1 };
                 }));
             };
-            img.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-    };
 
-    const markClass = (id, n) => {
-        if (user !== "professor") return;
-        setStudents(prev => prev.map(s => {
-            if (s.id !== id) return s;
-            const meta = getRules(s.nascimento, s.faixa).m;
-            let currentDates = {...(s.aulasDates || {})};
-            let totalAulas = s.totalAulasHistorico || 0;
+            const toggleBeh = (id, bid) => {
+                if (role !== 'prof') return;
+                setStudents(prev => prev.map(s => {
+                    if (s.id !== id) return s;
+                    const status = !s.behaviors?.[bid];
+                    const log = { date: new Date().toLocaleDateString(), type: 'Comport.', val: `${bid.toUpperCase()} ${status ? '✅' : '❌'}` };
+                    return { ...s, behaviors: { ...(s.behaviors || {}), [bid]: status }, history: [log, ...(s.history || [])] };
+                }));
+            };
 
-            if (s.aulasNoCiclo === n) {
-                delete currentDates[n];
-                return { ...s, aulasNoCiclo: n - 1, aulasDates: currentDates, totalAulasHistorico: Math.max(0, totalAulas - 1) };
-            }
+            const sendMessage = (id, text) => {
+                if (!text.trim()) return;
+                setStudents(prev => prev.map(s => {
+                    if (s.id !== id) return s;
+                    const msg = { text, sender: role === 'prof' ? 'P' : 'U', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
+                    return { ...s, chat: [...(s.chat || []), msg] };
+                }));
+            };
 
-            const today = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-            currentDates[n] = today;
-            
-            if (n === meta) {
-                const novoGrau = (s.grausGanhos || 0) + 1;
-                return { ...s, aulasNoCiclo: 0, aulasDates: {}, grausGanhos: novoGrau, totalAulasHistorico: totalAulas + 1, history: [{date: new Date().toLocaleDateString(), msg: `CONQUISTA: ${novoGrau}º Grau`}, ...(s.history || [])] };
-            }
-            return { ...s, aulasNoCiclo: n, aulasDates: currentDates, totalAulasHistorico: totalAulas + 1 };
-        }));
-    };
-
-    const toggleBeh = (id, b) => {
-        if (user !== "professor") { alert(b.n + ":\n\n" + b.info); return; }
-        setStudents(prev => prev.map(s => {
-            if (s.id !== id) return s;
-            const status = !s.comportamental?.[b.k];
-            return { ...s, comportamental: { ...(s.comportamental || {}), [b.k]: status }, history: [{date: new Date().toLocaleDateString(), msg: `${status ? 'Ganhou' : 'Removeu'} ${b.n}`}, ...(s.history || [])] };
-        }));
-    };
-
-    if (!user) return (
-        <div className="card" style={{ maxWidth: 350, margin: '100px auto', textAlign: 'center' }}>
-            <h2 style={{color: '#075e54'}}>Alliance Eagle</h2>
-            <button onClick={() => setUser("professor")} style={{width:'100%', marginBottom:10}}>Professor</button>
-            <button onClick={() => setUser("pais")} style={{width:'100%', background: '#3498db'}}>Pais</button>
-        </div>
-    );
-
-    const lista = user === "pais" ? students.filter(s => s.nome.toLowerCase() === filho.toLowerCase()) : students;
-
-    return (
-        <div className="container">
-            {zoomImg && <div style={{position:'fixed', top:0, left:0, width:'100%', height:'100%', background:'rgba(0,0,0,0.9)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center'}} onClick={()=>setZoomImg(null)}><img src={zoomImg} style={{maxWidth:'95%'}}/></div>}
-            <div className="row" style={{justifyContent:'space-between'}}>
-                <h3 style={{color:'#075e54', margin:0}}>Eagle System</h3>
-                <button onClick={() => {setUser(""); setFilho("")}} style={{background:'#e74c3c'}}>Sair</button>
-            </div>
-
-            {user === "professor" && (
-                <div className="card">
-                    <div className="row">
-                        <input placeholder="Nome" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} style={{flex:1, padding:8}} />
-                        <input type="date" value={form.nascimento} onChange={e => setForm({ ...form, nascimento: e.target.value })} style={{padding:8}} />
-                        <select value={form.faixa} onChange={e => setForm({ ...form, faixa: e.target.value })} style={{padding:8}}>{BELTS.map(b => <option key={b}>{b}</option>)}</select>
-                        <button onClick={() => {if(form.nome) setStudents([...students, { id: Date.now(), ...form, avatar: "", aulasNoCiclo: 0, aulasDates: {}, grausGanhos: 0, totalAulasHistorico: 0, history: [], chat: [], comportamental: {} }]); setForm({nome:"", nascimento:"", faixa:"Branca"})}}>+ Aluno</button>
-                    </div>
+            if (!role) return (
+                <div style={{textAlign:'center', marginTop: '20vh'}}>
+                    <h2 style={{color: '#075e54'}}>Alliance Eagle System</h2>
+                    <button onClick={() => setRole('prof')} style={{width: 250, padding: 15, marginBottom: 10, background: '#075e54', border:'none', color:'white', borderRadius: 8, fontWeight:'bold'}}>PROFESSOR</button><br/>
+                    <button onClick={() => setRole('user')} style={{width: 250, padding: 15, background: '#3498db', border:'none', color:'white', borderRadius: 8, fontWeight:'bold'}}>PAIS / ALUNO</button>
                 </div>
-            )}
+            );
 
-            {user === "pais" && !filho && <div className="card"><input placeholder="Nome do aluno..." style={{width:'100%', padding:10}} onKeyDown={e => e.key==='Enter' && setFilho(e.target.value)} /></div>}
-
-            {lista.map(s => {
-                const rules = getRules(s.nascimento, s.faixa);
-                const isAllBehChecked = BEH_TYPES.every(b => s.comportamental?.[b.k]);
-                const canUpgradeBelt = (s.grausGanhos || 0) >= 8 && isAllBehChecked;
-
-                return (
-                    <div key={s.id} className="card">
-                        <div className="row">
-                            <label className="avatar-container">
-                                <img src={s.avatar || "https://via.placeholder.com/80?text=FOTO"} className="avatar-img" />
-                                <input type="file" hidden accept="image/*" onChange={e => handleFileUpload(s.id, e, 'avatar')} />
-                            </label>
-                            <div style={{flex:1}}>
-                                <h3 style={{margin:0}}>{s.nome} {user === "professor" && <button className="btn-edit" onClick={() => {const n=prompt("Nome:",s.nome); if(n) setStudents(students.map(st=>st.id===s.id?{...st, nome:n}:st))}}>Editar</button>}</h3>
-                                <div style={{fontSize:12, color:'#666'}}><b>Faixa:</b> {s.faixa} | <b>Idade:</b> {getAge(s.nascimento)} anos</div>
-                                <div className="class-counter">Total de Aulas: {s.totalAulasHistorico || 0}</div>
-                            </div>
-                        </div>
-
-                        <div className="bar-bolinhas">
-                            {Array.from({ length: rules.m }).map((_, i) => {
-                                const n = i + 1;
-                                const isDone = n <= s.aulasNoCiclo;
-                                return <div key={i} className={`bolinha-aula ${isDone ? 'done' : ''}`} data-date={isDone ? (s.aulasDates?.[n] || "") : ""} onClick={() => markClass(s.id, n)}>{n}</div>;
-                            })}
-                        </div>
-
-                        <div className="degree-bar">
-                            {Array.from({ length: 4 }).map((_, i) => (
-                                <div key={i} className="degree" style={{ background: (s.grausGanhos || 0) > i ? ((s.grausGanhos || 0) > i + 4 ? '#e74c3c' : '#fff') : '#ddd' }}></div>
-                            ))}
-                        </div>
-
-                        {canUpgradeBelt && user === "professor" && (
-                            <button className="belt-upgrade" onClick={() => {
-                                const next = BELTS[BELTS.indexOf(s.faixa)+1];
-                                if(next) setStudents(students.map(st=>st.id===s.id?{...st, faixa:next, grausGanhos:0, aulasNoCiclo:0, comportamental:{}, history:[{date:new Date().toLocaleDateString(), msg:`GRADUADO: ${next}`},...(st.history||[])]}:st));
-                            }}>🎓 TROCAR DE FAIXA AGORA</button>
-                        )}
-
-                        <div className="beh-row">
-                            {BEH_TYPES.map(b => (
-                                <div key={b.k} className="beh-btn" style={{ background: s.comportamental?.[b.k] ? b.c : '#eee', color: s.comportamental?.[b.k] ? '#fff' : '#888' }} onClick={() => toggleBeh(s.id, b)}>{b.n}</div>
-                            ))}
-                        </div>
-
-                        <div className="history-section">
-                            <strong>📜 Histórico</strong>
-                            <div className="history-list">{(s.history || []).map((h, i) => <div key={i}>• [{h.date}] {h.msg}</div>)}</div>
-                        </div>
-
-                        <div className="chat-wrapper">
-                            <div className="chat-messages">
-                                {(s.chat || []).map((m, i) => (
-                                    <div key={i} className={`msg ${m.sender === (user === 'professor' ? 'Professor' : 'Pais') ? 'sent' : 'received'}`}>
-                                        <small style={{fontSize:9, display:'block', fontWeight:'bold'}}>{m.sender?.toUpperCase()}</small>
-                                        {m.file && <img src={m.file.data} className="chat-img" onClick={() => setZoomImg(m.file.data)} />}
-                                        {m.text}
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="chat-input-area">
-                                <i className="fas fa-plus chat-icon" onClick={() => document.getElementById(`f-${s.id}`).click()}></i>
-                                <input type="file" id={`f-${s.id}`} hidden accept="image/*" onChange={e => handleFileUpload(s.id, e, 'chat')}/>
-                                <div className="input-container"><input id={`msg-${s.id}`} placeholder="Mensagem" onKeyDown={e => {if(e.key==='Enter' && e.target.value){
-                                    setStudents(students.map(st=>st.id===s.id?{...st, chat:[...(st.chat||[]),{sender:user==='professor'?'Professor':'Pais', text:e.target.value}]}:st));
-                                    e.target.value = "";
-                                }}} /></div>
-                            </div>
-                        </div>
+            return (
+                <div className="container">
+                    <div className="header-app">
+                        <span>Alliance Eagle</span>
+                        <button onClick={() => setRole(null)} style={{background:'transparent', border:'none', color:'white'}}><i className="fas fa-sign-out-alt"></i></button>
                     </div>
-                );
-            })}
-        </div>
-    );
-}
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-</script>
+
+                    {role === 'prof' && (
+                        <div className="card">
+                            <button onClick={() => {
+                                const n = prompt("Nome:");
+                                const d = prompt("Nascimento (AAAA-MM-DD):");
+                                if(n && d) setStudents([...students, { id: Date.now(), nome: n, nascimento: d, faixa: "Branca", currentClasses: 0, degrees: 0, totalHistory: 0, history: [], chat: [], behaviors: {} }]);
+                            }}>+ Novo Aluno</button>
+                        </div>
+                    )}
+
+                    {students.map(s => {
+                        const rule = getStudentRules(s.nascimento, s.faixa);
+                        const canUpgrade = s.degrees >= 8 && BEHAVIORS.every(b => s.behaviors?.[b.id]);
+
+                        return (
+                            <div key={s.id} className="card">
+                                <div style={{display:'flex', gap:15, alignItems:'center'}}>
+                                    <img src={`https://ui-avatars.com/api/?name=${s.nome}&background=random`} className="avatar-img" />
+                                    <div style={{flex:1}}>
+                                        <h3 style={{margin:0}}>{s.nome}</h3>
+                                        <div style={{fontSize:12, color:'#666'}}>{s.faixa} | {rule.name}</div>
+                                        <div className="class-counter">Total: {s.totalHistory} aulas</div>
+                                    </div>
+                                </div>
+
+                                <div className="bar-bolinhas">
+                                    {Array.from({ length: rule.max }).map((_, i) => (
+                                        <div key={i} className={`bolinha-aula ${i+1 <= s.currentClasses ? 'done' : ''}`} onClick={() => addClass(s.id, i+1)}>{i+1}</div>
+                                    ))}
+                                </div>
+
+                                <div className="degree-label">GRAUS DE PRESENÇA (BRANCOS E VERMELHOS)</div>
+                                <div className="degree-bar">
+                                    {Array.from({ length: 8 }).map((_, i) => (
+                                        <div key={i} className={`degree-slot ${s.degrees > i ? (i < 4 ? 'degree-white' : 'degree-red') : ''}`}></div>
+                                    ))}
+                                </div>
+
+                                <div className="beh-grid">
+                                    {BEHAVIORS.map(b => (
+                                        <div key={b.id} className="beh-btn" style={{ 
+                                            background: s.behaviors?.[b.id] ? b.color : '#f9f9f9',
+                                            color: s.behaviors?.[b.id] ? 'white' : '#666'
+                                        }} onClick={() => toggleBeh(s.id, b.id)}>
+                                            {b.icon} {b.label}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {canUpgrade && role === 'prof' && (
+                                    <div className="promotion-banner" onClick={() => {
+                                        const next = BELTS[BELTS.indexOf(s.faixa)+1];
+                                        if(next) setStudents(students.map(st => st.id === s.id ? {...st, faixa: next, degrees: 0, behaviors: {}} : st));
+                                    }}>🎓 PROMOVER PARA {BELTS[BELTS.indexOf(s.faixa)+1]?.toUpperCase()}</div>
+                                )}
+
+                                <div className="history-box">
+                                    <strong>📜 HISTÓRICO RECENTE</strong>
+                                    {(s.history || []).slice(0,3).map((h, i) => (
+                                        <div key={i} className="history-item">• {h.date} - {h.type}: {h.val}</div>
+                                    ))}
+                                </div>
+
+                                <div className="wa-chat-container">
+                                    <div className="wa-messages">
+                                        {(s.chat || []).map((m, i) => (
+                                            <div key={i} className={`wa-msg ${m.sender === 'P' ? 'sent' : 'received'}`}>
+                                                {m.text}
+                                                <div style={{fontSize:9, textAlign:'right', marginTop:4, opacity:0.6}}>{m.time}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="wa-input-area">
+                                        <i className="far fa-smile wa-icon"></i>
+                                        <div className="wa-input-wrapper">
+                                            <input placeholder="Digite uma mensagem" id={`input-${s.id}`} onKeyDown={e => e.key === 'Enter' && (sendMessage(s.id, e.target.value), e.target.value='')} />
+                                            <i className="fas fa-paperclip wa-icon"></i>
+                                        </div>
+                                        <button className="btn-send" onClick={() => {
+                                            const inp = document.getElementById(`input-${s.id}`);
+                                            sendMessage(s.id, inp.value);
+                                            inp.value = '';
+                                        }}>
+                                            <i className="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
 </body>
 </html>
