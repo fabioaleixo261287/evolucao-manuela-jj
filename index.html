@@ -2,43 +2,47 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Alliance Jiu Jitsu - Eagle System Expert</title>
+<title>Alliance Jiu Jitsu - Eagle System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-    :root { --whatsapp-green: #075e54; --whatsapp-light: #25d366; --bg-gray: #f0f2f5; }
-    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-gray); margin:0; padding:15px; }
-    .container { max-width:850px; margin:auto; }
-    .card { background:white; padding:20px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); position: relative; }
+    body { font-family: 'Segoe UI', sans-serif; background:#f0f2f5; margin:0; padding:15px; }
+    .container { max-width:800px; margin:auto; }
+    .card { background:white; padding:20px; border-radius:15px; margin-bottom:20px; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
     
-    /* Graus Estilizados */
-    .degree-bar { display: flex; gap: 6px; margin-bottom: 10px; }
-    .degree { width:28px; height:28px; border:2px solid #333; border-radius:4px; transition: 0.3s; }
-    .degree.white { background: #fff; box-shadow: inset 0 0 5px rgba(0,0,0,0.2); }
-    .degree.red { background: #e74c3c; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); }
-    .degree.empty { background: #ddd; border-color: #bbb; }
+    /* Graus: 1-4 Branco, 5-8 Vermelho */
+    .degree-bar { display: flex; gap: 5px; margin: 10px 0; }
+    .degree { width:25px; height:25px; border:2px solid #333; border-radius:4px; }
+    .degree.white { background: #fff; }
+    .degree.red { background: #e74c3c; }
+    .degree.empty { background: #eee; border-color: #ccc; }
 
-    /* Bolinhas de Aula */
+    /* Bolinhas de Aula com Data */
     .bar-bolinhas { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
-    .bolinha-aula { width:35px; height:35px; border-radius:50%; border:1px solid #ddd; display:flex; flex-direction: column; align-items:center; justify-content:center; font-size:10px; background:#fff; cursor: pointer; font-weight: bold; }
-    .bolinha-aula.done { background: var(--whatsapp-light); color:white; border-color:#128c7e; }
-    .bolinha-aula small { font-size: 7px; margin-top: 1px; }
+    .bolinha-aula { width:38px; height:38px; border-radius:50%; border:1px solid #ddd; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:10px; background:#fff; cursor: pointer; font-weight: bold; }
+    .bolinha-aula.done { background:#25d366; color:white; border-color:#128c7e; }
+    .bolinha-aula span { font-size: 7px; margin-top: 2px; }
 
-    /* Modal de Chat */
-    .chat-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; display: flex; flex-direction: column; }
-    .chat-header { background: var(--whatsapp-green); color: white; padding: 15px; display: flex; align-items: center; gap: 15px; }
-    .chat-body { flex: 1; background: #efe7dd url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-    .bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; position: relative; line-height: 1.4; }
-    .bubble.sent { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 2px; }
-    .bubble.received { align-self: flex-start; background: #fff; border-top-left-radius: 2px; }
-    .chat-footer { padding: 10px; background: #f0f2f5; display: flex; align-items: center; gap: 10px; }
-    
-    button { padding:10px 15px; border:none; border-radius:8px; background: var(--whatsapp-green); color:white; cursor:pointer; font-weight: bold; }
-    .btn-locked { background: #95a5a6 !important; cursor: not-allowed; opacity: 0.7; }
-    .belt-upgrade { background: linear-gradient(45deg, #FFD700, #DAA520); color: black; width: 100%; animation: pulse 2s infinite; border: 2px solid black; }
+    /* Comportamental */
+    .beh-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+    .beh-item { padding: 8px; border-radius: 10px; text-align: center; cursor: pointer; border: 1px solid #ddd; font-size: 10px; font-weight: bold; transition: 0.3s; }
+    .beh-item.active { color: white; border-color: transparent; }
+
+    /* Chat Integrado (Sem Pop-up) */
+    .chat-section { background: #efe7dd; border-radius: 12px; margin-top: 20px; border: 1px solid #ddd; overflow: hidden; }
+    .chat-messages { height: 250px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
+    .msg { padding: 8px 12px; border-radius: 8px; font-size: 13px; max-width: 80%; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+    .msg.Professor { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 0; }
+    .msg.Pais { align-self: flex-start; background: #fff; border-top-left-radius: 0; }
+    .chat-input { padding: 10px; background: #f0f2f5; display: flex; gap: 10px; align-items: center; }
+    .chat-input input { flex: 1; border: none; padding: 10px; border-radius: 20px; outline: none; }
+
+    button { padding:10px; border:none; border-radius:8px; background:#075e54; color:white; cursor:pointer; font-weight:bold; }
+    .belt-upgrade { background: linear-gradient(45deg, #FFD700, #DAA520); color: black; width: 100%; border: 2px solid black; }
+    .locked { background: #95a5a6; cursor: not-allowed; opacity: 0.6; }
 </style>
 </head>
 <body>
@@ -46,199 +50,134 @@
 
 <script type="text/babel">
 const BELTS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
-const BEH_TYPES = [
-    { k: 'REL', n: 'Relacionamento', emoji: '🤝' },
-    { k: 'COM', n: 'Comportamento', emoji: '🥋' },
-    { k: 'ESC', n: 'Escola', emoji: '📚' },
-    { k: 'HAB', n: 'Hábitos', emoji: '🍎' }
+const BEH = [
+    { k: 'REL', n: 'Relacionamento', c: '#f1c40f' },
+    { k: 'COM', n: 'Comportamento', c: '#3498db' },
+    { k: 'ESC', n: 'Escola', c: '#e74c3c' },
+    { k: 'HAB', n: 'Hábitos', c: '#2ecc71' }
 ];
 
 function App() {
-    const [user, setUser] = React.useState("");
+    const [view, setView] = React.useState("");
     const [filho, setFilho] = React.useState("");
-    const [activeChat, setActiveChat] = React.useState(null);
-    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_v2_db") || "[]"));
+    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("eagle_v3") || "[]"));
 
-    React.useEffect(() => { localStorage.setItem("alliance_v2_db", JSON.stringify(students)) }, [students]);
+    React.useEffect(() => { localStorage.setItem("eagle_v3", JSON.stringify(students)) }, [students]);
 
-    const getRules = (nasc, faixa) => {
-        const idade = Math.abs(new Date(Date.now() - new Date(nasc).getTime()).getUTCFullYear() - 1970);
-        const isW = faixa.includes("Branca") || faixa.includes("Cinza");
-        if (idade <= 4) return { m: 12 };
-        if (idade <= 12) return { m: isW ? 15 : 20 };
-        return { m: 22 };
-    };
-
-    const addHistory = (id, msg) => {
-        const date = new Date().toLocaleDateString('pt-BR');
-        setStudents(prev => prev.map(s => s.id === id ? { ...s, history: [{ date, msg }, ...s.history] } : s));
-    };
-
-    const markClass = (id, n) => {
-        if (user !== 'professor') return;
-        const now = new Date().toLocaleDateString('pt-BR');
+    const markAttendance = (id, n) => {
+        if (view !== "professor") return;
+        const today = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         setStudents(prev => prev.map(s => {
             if (s.id !== id) return s;
-            const rules = getRules(s.nascimento, s.faixa);
-            if (n === s.aulasNoCiclo + 1) {
-                if (n === rules.m) {
-                    addHistory(id, `CONQUISTA: Ganhou o ${s.grausGanhos + 1}º Grau em ${now}`);
-                    return { ...s, aulasNoCiclo: 0, grausGanhos: s.grausGanhos + 1, datasAulas: [] };
-                }
-                return { ...s, aulasNoCiclo: n, datasAulas: [...(s.datasAulas || []), now] };
-            }
-            return s;
+            if (n !== s.aulas.length + 1) return s;
+            const limit = s.faixa.includes("Branca") ? 12 : 15;
+            if (n === limit) return { ...s, aulas: [], graus: s.graus + 1 };
+            return { ...s, aulas: [...s.aulas, today] };
         }));
     };
 
-    const toggleBeh = (id, k) => {
-        if (user !== 'professor') return;
-        setStudents(prev => prev.map(s => s.id === id ? { ...s, comportamental: { ...s.comportamental, [k]: !s.comportamental[k] } } : s));
-    };
-
-    const canUpgrade = (s) => {
-        const behCount = Object.values(s.comportamental || {}).filter(v => v).length;
-        return s.grausGanhos >= 8 && behCount >= 4;
-    };
-
-    if (!user) return (
-        <div className="card" style={{ maxWidth: 350, margin: '100px auto', textAlign: 'center' }}>
-            <h2 style={{color: '#075e54'}}>Alliance Eagle V2</h2>
-            <button onClick={() => setUser("professor")} style={{width:'100%', marginBottom:10}}>Professor</button>
-            <button onClick={() => setUser("pais")} style={{width:'100%', background: '#3498db'}}>Pais</button>
+    if (!view) return (
+        <div style={{textAlign:'center', marginTop:100}}>
+            <button onClick={() => setView("professor")} style={{marginRight:10}}>Professor</button>
+            <button onClick={() => setView("pais")}>Pais</button>
         </div>
     );
 
-    const lista = user === "pais" ? students.filter(s => s.nome.toLowerCase() === filho.toLowerCase()) : students;
+    const lista = view === "pais" ? students.filter(s => s.nome.toLowerCase() === filho.toLowerCase()) : students;
 
     return (
         <div className="container">
-            <div className="row" style={{justifyContent:'space-between', marginBottom: 20}}>
-                <h3 style={{margin:0}}>Alliance Mooca Kids</h3>
-                <button onClick={() => {setUser(""); setFilho("")}} className="red">Sair</button>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                <h2>Alliance Eagle</h2>
+                <button onClick={() => {setView(""); setFilho("")}} style={{background:'#e74c3c'}}>Sair</button>
             </div>
 
-            {user === "professor" && (
-                <button style={{width:'100%', marginBottom:15}} onClick={() => {
-                    const nome = prompt("Nome do Aluno:");
-                    const nasc = prompt("Data Nasc (AAAA-MM-DD):");
-                    if(nome && nasc) setStudents([...students, { id: Date.now(), nome, nascimento: nasc, faixa: "Branca", aulasNoCiclo: 0, grausGanhos: 0, history: [], chat: [], comportamental: {}, datasAulas: [] }]);
-                }}>+ Cadastrar Novo Aluno</button>
+            {view === "professor" && (
+                <button style={{width:'100%', marginBottom:20}} onClick={() => {
+                    const n = prompt("Nome:");
+                    if(n) setStudents([...students, { id: Date.now(), nome: n, faixa: "Branca", aulas: [], graus: 0, chat: [], beh: {} }]);
+                }}>+ Novo Aluno</button>
             )}
 
-            {user === "pais" && !filho && (
-                <div className="card"><input placeholder="Nome do Aluno..." style={{width:'100%', padding:10}} onKeyDown={e => e.key==='Enter' && setFilho(e.target.value)} /></div>
+            {view === "pais" && !filho && (
+                <input placeholder="Nome do Aluno..." style={{width:'100%', padding:15, borderRadius:10, border:'1px solid #ccc'}} onKeyDown={e => e.key==='Enter' && setFilho(e.target.value)} />
             )}
 
             {lista.map(s => {
-                const rules = getRules(s.nascimento, s.faixa);
-                const canPromote = canUpgrade(s);
+                const limit = s.faixa.includes("Branca") ? 12 : 15;
+                const behCount = Object.values(s.beh).filter(v => v).length;
+                const canPromote = s.graus >= 8 && behCount >= 4;
 
                 return (
                     <div key={s.id} className="card">
-                        <div style={{display:'flex', gap:15}}>
-                            <img src={`https://ui-avatars.com/api/?name=${s.nome}&background=075e54&color=fff`} style={{width:60, borderRadius: '50%'}} />
-                            <div style={{flex:1}}>
-                                <h4 style={{margin:0}}>{s.nome}</h4>
-                                <small>{s.faixa} | {s.nascimento}</small>
-                            </div>
-                            <button onClick={() => setActiveChat(s)} style={{background:'#25d366'}}><i className="fas fa-comment"></i> Falar Conosco</button>
+                        <h3>{s.nome} <small style={{fontSize:12, color:'#666'}}>({s.faixa})</small></h3>
+
+                        <strong>Graus de Faixa:</strong>
+                        <div className="degree-bar">
+                            {[...Array(8)].map((_, i) => (
+                                <div key={i} className={`degree ${i < s.graus ? (i < 4 ? 'white' : 'red') : 'empty'}`}></div>
+                            ))}
                         </div>
 
-                        <div style={{marginTop:15}}>
-                            <strong>Graus de Faixa:</strong>
-                            <div className="degree-bar">
-                                {[...Array(8)].map((_, i) => {
-                                    const isFilled = i < s.grausGanhos;
-                                    const type = i < 4 ? 'white' : 'red';
-                                    return <div key={i} className={`degree ${isFilled ? type : 'empty'}`}></div>
-                                })}
-                            </div>
+                        <strong>Aulas Ciclo:</strong>
+                        <div className="bar-bolinhas">
+                            {[...Array(limit)].map((_, i) => (
+                                <div key={i} className={`bolinha-aula ${i < s.aulas.length ? 'done' : ''}`} onClick={() => markAttendance(s.id, i+1)}>
+                                    {i+1}
+                                    {s.aulas[i] && <span>{s.aulas[i]}</span>}
+                                </div>
+                            ))}
                         </div>
 
-                        <div>
-                            <strong>Presença Ciclo:</strong>
-                            <div className="bar-bolinhas">
-                                {[...Array(rules.m)].map((_, i) => (
-                                    <div key={i} className={`bolinha-aula ${i < s.aulasNoCiclo ? 'done' : ''}`} onClick={() => markClass(s.id, i+1)}>
-                                        {i+1}
-                                        {s.datasAulas?.[i] && <small>{s.datasAulas[i].split('/')[0]}/{s.datasAulas[i].split('/')[1]}</small>}
-                                    </div>
-                                ))}
-                            </div>
+                        <strong>Graus Comportamentais:</strong>
+                        <div className="beh-grid">
+                            {BEH.map(b => (
+                                <div key={b.k} className={`beh-item ${s.beh[b.k] ? 'active' : ''}`} 
+                                     style={{background: s.beh[b.k] ? b.c : '#eee'}}
+                                     onClick={() => view === "professor" && setStudents(students.map(st => st.id === s.id ? {...st, beh: {...st.beh, [b.k]: !st.beh[b.k]}} : st))}>
+                                    {b.n}
+                                </div>
+                            ))}
                         </div>
 
-                        <div style={{marginTop:15}}>
-                            <strong>Graus Comportamentais (Necessário 4):</strong>
-                            <div style={{display:'flex', gap:10, marginTop:5}}>
-                                {BEH_TYPES.map(b => (
-                                    <div key={b.k} onClick={() => toggleBeh(s.id, b.k)} style={{
-                                        flex:1, textAlign:'center', padding:10, borderRadius:10, cursor:'pointer',
-                                        background: s.comportamental[b.k] ? '#2ecc71' : '#eee',
-                                        color: s.comportamental[b.k] ? '#fff' : '#888'
-                                    }}>
-                                        <div style={{fontSize:20}}>{b.emoji}</div>
-                                        <div style={{fontSize:9, fontWeight:'bold'}}>{b.n}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {s.grausGanhos >= 8 && (
-                            <div style={{marginTop:15}}>
-                                <button className={canPromote ? "belt-upgrade" : "btn-locked"} onClick={() => {
-                                    if(!canPromote) return alert("Faltam os graus comportamentais!");
-                                    const idx = BELTS.indexOf(s.faixa);
-                                    setStudents(prev => prev.map(st => st.id === s.id ? {...st, faixa: BELTS[idx+1], grausGanhos:0, comportamental:{}} : st));
-                                    addHistory(s.id, `GRADUAÇÃO: Nova Faixa ${BELTS[idx+1]}`);
-                                }}>
-                                    {canPromote ? "🎓 TROCAR DE FAIXA AGORA" : "🔒 BLOQUEADO: COMPLETE O COMPORTAMENTAL"}
-                                </button>
-                            </div>
+                        {s.graus >= 8 && (
+                            <button className={canPromote ? "belt-upgrade" : "locked"} onClick={() => {
+                                if(!canPromote) return alert("Faltam os 4 graus comportamentais!");
+                                const idx = BELTS.indexOf(s.faixa);
+                                setStudents(students.map(st => st.id === s.id ? {...st, faixa: BELTS[idx+1], graus:0, beh:{}} : st));
+                            }}>
+                                {canPromote ? "🎓 TROCAR DE FAIXA AGORA" : "🔒 BLOQUEADO: COMPLETE O COMPORTAMENTAL"}
+                            </button>
                         )}
+
+                        <div className="chat-section">
+                            <div className="chat-messages">
+                                {s.chat.map((m, i) => (
+                                    <div key={i} className={`msg ${m.user}`}>
+                                        <small style={{display:'block', fontSize:9, fontWeight:'bold'}}>{m.user.toUpperCase()}</small>
+                                        {m.text}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="chat-input">
+                                <input id={`in-${s.id}`} placeholder="Fale conosco..." onKeyDown={e => {
+                                    if(e.key === 'Enter' && e.target.value) {
+                                        setStudents(students.map(st => st.id === s.id ? {...st, chat: [...st.chat, {user: view === 'professor' ? 'Professor' : 'Pais', text: e.target.value}]} : st));
+                                        e.target.value = "";
+                                    }
+                                }} />
+                                <button onClick={() => {
+                                    const input = document.getElementById(`in-${s.id}`);
+                                    if(input.value) {
+                                        setStudents(students.map(st => st.id === s.id ? {...st, chat: [...st.chat, {user: view === 'professor' ? 'Professor' : 'Pais', text: input.value}]} : st));
+                                        input.value = "";
+                                    }
+                                }}><i className="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
                     </div>
                 );
             })}
-
-            {/* MODAL DE CHAT TELA CHEIA */}
-            {activeChat && (
-                <div className="chat-modal">
-                    <div className="chat-header">
-                        <i className="fas fa-arrow-left" onClick={() => setActiveChat(null)} style={{cursor:'pointer'}}></i>
-                        <img src={`https://ui-avatars.com/api/?name=${activeChat.nome}`} style={{width:40, borderRadius:'50%'}} />
-                        <div>
-                            <strong>{activeChat.nome}</strong>
-                            <div style={{fontSize:10}}>Online</div>
-                        </div>
-                    </div>
-                    <div className="chat-body">
-                        {activeChat.chat.map((m, i) => (
-                            <div key={i} className={`bubble ${m.from === user ? 'sent' : 'received'}`}>
-                                <small style={{fontSize:9, display:'block', color: '#666'}}>{m.from.toUpperCase()}</small>
-                                {m.text}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="chat-footer">
-                        <i className="far fa-laugh chat-icon"></i>
-                        <input id="chatInput" placeholder="Digite uma mensagem..." style={{flex:1, padding:10, borderRadius:20, border:'none'}} onKeyDown={e => {
-                            if(e.key === 'Enter') {
-                                const val = e.target.value;
-                                if(!val) return;
-                                setStudents(prev => prev.map(st => st.id === activeChat.id ? {...st, chat: [...st.chat, {from: user, text: val}]} : st));
-                                e.target.value = "";
-                            }
-                        }} />
-                        <i className="fas fa-paper-plane" style={{color: '#075e54'}} onClick={() => {
-                            const input = document.getElementById("chatInput");
-                            if(input.value) {
-                                setStudents(prev => prev.map(st => st.id === activeChat.id ? {...st, chat: [...st.chat, {from: user, text: input.value}]} : st));
-                                input.value = "";
-                            }
-                        }}></i>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
