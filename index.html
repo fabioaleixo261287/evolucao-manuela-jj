@@ -2,277 +2,246 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Alliance Jiu Jitsu - Gestão Kids</title>
+<title>Alliance Jiu Jitsu - Eagle System Expert</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 15px; }
-    .container { max-width: 900px; margin: auto; }
-    .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
-    .header-main { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    :root { --whatsapp-green: #075e54; --whatsapp-light: #25d366; --bg-gray: #f0f2f5; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-gray); margin:0; padding:15px; }
+    .container { max-width:850px; margin:auto; }
+    .card { background:white; padding:20px; border-radius:15px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); position: relative; }
     
-    /* Perfil e Edição */
-    .studentHeader { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; position: relative; }
-    .avatar-wrapper { position: relative; width: 70px; height: 70px; }
-    .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #eee; }
-    .edit-icon { position: absolute; bottom: 0; right: 0; background: #3498db; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; border: 2px solid white; }
+    /* Graus Estilizados */
+    .degree-bar { display: flex; gap: 6px; margin-bottom: 10px; }
+    .degree { width:28px; height:28px; border:2px solid #333; border-radius:4px; transition: 0.3s; }
+    .degree.white { background: #fff; box-shadow: inset 0 0 5px rgba(0,0,0,0.2); }
+    .degree.red { background: #e74c3c; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); }
+    .degree.empty { background: #ddd; border-color: #bbb; }
 
-    /* Barras de Progresso */
-    .label-section { font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; margin-top: 10px; display: block; }
-    .bar { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
-    .box { width: 14px; height: 14px; border: 1px solid #ccc; background: #f0f0f0; border-radius: 2px; }
-    .box.done { background: #2ecc71; border-color: #27ae60; }
+    /* Bolinhas de Aula */
+    .bar-bolinhas { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+    .bolinha-aula { width:35px; height:35px; border-radius:50%; border:1px solid #ddd; display:flex; flex-direction: column; align-items:center; justify-content:center; font-size:10px; background:#fff; cursor: pointer; font-weight: bold; }
+    .bolinha-aula.done { background: var(--whatsapp-light); color:white; border-color:#128c7e; }
+    .bolinha-aula small { font-size: 7px; margin-top: 1px; }
+
+    /* Modal de Chat */
+    .chat-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; display: flex; flex-direction: column; }
+    .chat-header { background: var(--whatsapp-green); color: white; padding: 15px; display: flex; align-items: center; gap: 15px; }
+    .chat-body { flex: 1; background: #efe7dd url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; position: relative; line-height: 1.4; }
+    .bubble.sent { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 2px; }
+    .bubble.received { align-self: flex-start; background: #fff; border-top-left-radius: 2px; }
+    .chat-footer { padding: 10px; background: #f0f2f5; display: flex; align-items: center; gap: 10px; }
     
-    /* Graus na Faixa */
-    .belt-strip { background: #222; padding: 10px 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin: 10px 0; border: 2px solid #000; }
-    .degree-presence { display: flex; gap: 5px; }
-    .presence-dot { width: 12px; height: 30px; border-radius: 1px; border: 1px solid #444; }
-    .presence-dot.white { background: #fff; }
-    .presence-dot.red { background: #e74c3c; }
-    
-    .behavior-presence { display: flex; gap: 8px; }
-    .beh-dot { width: 20px; height: 20px; border-radius: 50%; border: 1px solid #444; cursor: pointer; position: relative; }
-    .beh-dot span { position: absolute; bottom: -12px; font-size: 6px; width: 100%; text-align: center; color: #bbb; text-transform: uppercase; }
-
-    /* Chat Estilo WhatsApp */
-    .chat-container { background: #e5ddd5; border-radius: 10px; overflow: hidden; border: 1px solid #ddd; margin-top: 15px; }
-    .chat-messages { height: 150px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
-    .msg { padding: 6px 10px; border-radius: 8px; font-size: 13px; max-width: 80%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-    .msg.sent { background: #dcf8c6; align-self: flex-end; }
-    .msg.received { background: #fff; align-self: flex-start; }
-    .chat-input-area { background: #f0f0f0; padding: 8px; display: flex; gap: 8px; align-items: center; }
-    .chat-input-area input { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid #ccc; outline: none; }
-
-    /* Repositório e Histórico */
-    .history-list { font-size: 11px; background: #f9f9f9; padding: 8px; border-radius: 6px; max-height: 80px; overflow-y: auto; border: 1px solid #eee; }
-    .repo-grid { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; }
-    .repo-file { min-width: 60px; text-align: center; cursor: pointer; }
-    .repo-file i { font-size: 24px; color: #e74c3c; display: block; }
-    .repo-file span { font-size: 9px; display: block; margin-top: 3px; }
-
-    /* Botões e Inputs */
-    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-    button { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
-    .btn-blue { background: #3498db; color: white; }
-    .btn-green { background: #2ecc71; color: white; }
-    .btn-red { background: #e74c3c; color: white; }
-    input, select { padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; }
-
-    .login-screen { max-width: 400px; margin: 100px auto; text-align: center; }
+    button { padding:10px 15px; border:none; border-radius:8px; background: var(--whatsapp-green); color:white; cursor:pointer; font-weight: bold; }
+    .btn-locked { background: #95a5a6 !important; cursor: not-allowed; opacity: 0.7; }
+    .belt-upgrade { background: linear-gradient(45deg, #FFD700, #DAA520); color: black; width: 100%; animation: pulse 2s infinite; border: 2px solid black; }
 </style>
 </head>
 <body>
 <div id="root"></div>
 
 <script type="text/babel">
-
-const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
-const behTypes = [
-    { key: 'rel', color: '#f1c40f', label: 'Relac' },
-    { key: 'comp', color: '#3498db', label: 'Comport' },
-    { key: 'not', color: '#e74c3c', label: 'Escola' },
-    { key: 'hab', color: '#2ecc71', label: 'Hábito' }
+const BELTS = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
+const BEH_TYPES = [
+    { k: 'REL', n: 'Relacionamento', emoji: '🤝' },
+    { k: 'COM', n: 'Comportamento', emoji: '🥋' },
+    { k: 'ESC', n: 'Escola', emoji: '📚' },
+    { k: 'HAB', n: 'Hábitos', emoji: '🍎' }
 ];
 
-function getRules(idade, faixa) {
-    const isYO = faixa.includes("Amarela") || faixa.includes("Laranja");
-    if (idade <= 4) return 12;
-    if (idade >= 5 && idade <= 12) return isYO ? 20 : 15;
-    if (idade >= 13) return faixa.includes("Verde") ? 25 : (isYO ? 22 : 20);
-    return 15;
-}
-
 function App() {
-    const [user, setUser] = React.useState(""); // "prof" ou "pais"
-    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_data_v10") || "[]"));
-    const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
-    const [editingId, setEditingId] = React.useState(null);
+    const [user, setUser] = React.useState("");
+    const [filho, setFilho] = React.useState("");
+    const [activeChat, setActiveChat] = React.useState(null);
+    const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_v2_db") || "[]"));
 
-    React.useEffect(() => { localStorage.setItem("alliance_data_v10", JSON.stringify(students)); }, [students]);
+    React.useEffect(() => { localStorage.setItem("alliance_v2_db", JSON.stringify(students)) }, [students]);
 
-    const addLog = (id, msg) => {
-        const date = new Date().toLocaleString();
-        setStudents(prev => prev.map(s => s.id === id ? { ...s, history: [{ date, msg }, ...(s.history || [])] } : s));
+    const getRules = (nasc, faixa) => {
+        const idade = Math.abs(new Date(Date.now() - new Date(nasc).getTime()).getUTCFullYear() - 1970);
+        const isW = faixa.includes("Branca") || faixa.includes("Cinza");
+        if (idade <= 4) return { m: 12 };
+        if (idade <= 12) return { m: isW ? 15 : 20 };
+        return { m: 22 };
     };
 
-    const handleSave = () => {
-        if (!form.nome || !form.nascimento) return;
-        const idade = new Date().getFullYear() - new Date(form.nascimento).getFullYear();
-        
-        if (editingId) {
-            setStudents(students.map(s => s.id === editingId ? { ...s, ...form, idade } : s));
-            setEditingId(null);
-        } else {
-            setStudents([...students, { 
-                id: Date.now(), ...form, idade, aulas: 0, avatar: "", 
-                chat: [], docs: [], history: [], behavior: {} 
-            }]);
-        }
-        setForm({ nome: "", nascimento: "", faixa: "Branca" });
+    const addHistory = (id, msg) => {
+        const date = new Date().toLocaleDateString('pt-BR');
+        setStudents(prev => prev.map(s => s.id === id ? { ...s, history: [{ date, msg }, ...s.history] } : s));
     };
 
-    const handlePresence = (id) => {
+    const markClass = (id, n) => {
+        if (user !== 'professor') return;
+        const now = new Date().toLocaleDateString('pt-BR');
         setStudents(prev => prev.map(s => {
             if (s.id !== id) return s;
-            const limit = getRules(s.idade, s.faixa) * 8; // Máximo 8 graus
-            if (s.aulas >= limit) return s;
-            return { ...s, aulas: s.aulas + 1 };
+            const rules = getRules(s.nascimento, s.faixa);
+            if (n === s.aulasNoCiclo + 1) {
+                if (n === rules.m) {
+                    addHistory(id, `CONQUISTA: Ganhou o ${s.grausGanhos + 1}º Grau em ${now}`);
+                    return { ...s, aulasNoCiclo: 0, grausGanhos: s.grausGanhos + 1, datasAulas: [] };
+                }
+                return { ...s, aulasNoCiclo: n, datasAulas: [...(s.datasAulas || []), now] };
+            }
+            return s;
         }));
-        addLog(id, "Presença confirmada");
+    };
+
+    const toggleBeh = (id, k) => {
+        if (user !== 'professor') return;
+        setStudents(prev => prev.map(s => s.id === id ? { ...s, comportamental: { ...s.comportamental, [k]: !s.comportamental[k] } } : s));
+    };
+
+    const canUpgrade = (s) => {
+        const behCount = Object.values(s.comportamental || {}).filter(v => v).length;
+        return s.grausGanhos >= 8 && behCount >= 4;
     };
 
     if (!user) return (
-        <div className="login-screen card">
-            <h2>Alliance Jiu Jitsu</h2>
-            <button className="btn-blue" onClick={() => setUser("prof")}>Acesso Professor</button>
-            <button className="btn-green" style={{marginLeft: 10}} onClick={() => {
-                const n = prompt("Nome do Aluno:");
-                if(students.find(s => s.nome === n)) setUser("pais");
-                else alert("Aluno não encontrado");
-            }}>Acesso Pais</button>
+        <div className="card" style={{ maxWidth: 350, margin: '100px auto', textAlign: 'center' }}>
+            <h2 style={{color: '#075e54'}}>Alliance Eagle V2</h2>
+            <button onClick={() => setUser("professor")} style={{width:'100%', marginBottom:10}}>Professor</button>
+            <button onClick={() => setUser("pais")} style={{width:'100%', background: '#3498db'}}>Pais</button>
         </div>
     );
+
+    const lista = user === "pais" ? students.filter(s => s.nome.toLowerCase() === filho.toLowerCase()) : students;
 
     return (
         <div className="container">
-            <div className="header-main">
-                <h2>Alliance Mooca Kids</h2>
-                <button className="btn-red" onClick={() => setUser("")}>Sair</button>
+            <div className="row" style={{justifyContent:'space-between', marginBottom: 20}}>
+                <h3 style={{margin:0}}>Alliance Mooca Kids</h3>
+                <button onClick={() => {setUser(""); setFilho("")}} className="red">Sair</button>
             </div>
 
-            {user === "prof" && (
-                <div className="card">
-                    <h4>{editingId ? "Editar Perfil" : "Cadastrar Aluno"}</h4>
-                    <div className="row">
-                        <input placeholder="Nome" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
-                        <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
-                        <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>
-                            {beltOrder.map(b => <option key={b}>{b}</option>)}
-                        </select>
-                        <button className="btn-green" onClick={handleSave}>{editingId ? "Salvar" : "Adicionar"}</button>
-                    </div>
-                </div>
+            {user === "professor" && (
+                <button style={{width:'100%', marginBottom:15}} onClick={() => {
+                    const nome = prompt("Nome do Aluno:");
+                    const nasc = prompt("Data Nasc (AAAA-MM-DD):");
+                    if(nome && nasc) setStudents([...students, { id: Date.now(), nome, nascimento: nasc, faixa: "Branca", aulasNoCiclo: 0, grausGanhos: 0, history: [], chat: [], comportamental: {}, datasAulas: [] }]);
+                }}>+ Cadastrar Novo Aluno</button>
             )}
 
-            {students.map(s => {
-                const aulasPorGrau = getRules(s.idade, s.faixa);
-                const totalGraus = Math.floor(s.aulas / aulasPorGrau);
-                const aulasNoCiclo = s.aulas % aulasPorGrau;
+            {user === "pais" && !filho && (
+                <div className="card"><input placeholder="Nome do Aluno..." style={{width:'100%', padding:10}} onKeyDown={e => e.key==='Enter' && setFilho(e.target.value)} /></div>
+            )}
+
+            {lista.map(s => {
+                const rules = getRules(s.nascimento, s.faixa);
+                const canPromote = canUpgrade(s);
 
                 return (
                     <div key={s.id} className="card">
-                        <div className="studentHeader">
-                            <div className="avatar-wrapper">
-                                <img src={s.avatar || "https://via.placeholder.com/70"} className="avatar" />
-                                {user === "prof" && (
-                                    <label className="edit-icon">
-                                        <i className="fas fa-camera"></i>
-                                        <input type="file" hidden onChange={e => {
-                                            const reader = new FileReader();
-                                            reader.onload = ev => setStudents(students.map(st => st.id === s.id ? {...st, avatar: ev.target.result} : st));
-                                            reader.readAsDataURL(e.target.files[0]);
-                                        }} />
-                                    </label>
-                                )}
+                        <div style={{display:'flex', gap:15}}>
+                            <img src={`https://ui-avatars.com/api/?name=${s.nome}&background=075e54&color=fff`} style={{width:60, borderRadius: '50%'}} />
+                            <div style={{flex:1}}>
+                                <h4 style={{margin:0}}>{s.nome}</h4>
+                                <small>{s.faixa} | {s.nascimento}</small>
                             </div>
-                            <div>
-                                <b>{s.nome}</b> {user === "prof" && <i className="fas fa-edit" style={{cursor:'pointer', marginLeft: 5}} onClick={() => {setEditingId(s.id); setForm({nome: s.nome, nascimento: s.nascimento, faixa: s.faixa})}}></i>}<br/>
-                                <small>{s.idade} anos | {s.faixa}</small>
+                            <button onClick={() => setActiveChat(s)} style={{background:'#25d366'}}><i className="fas fa-comment"></i> Falar Conosco</button>
+                        </div>
+
+                        <div style={{marginTop:15}}>
+                            <strong>Graus de Faixa:</strong>
+                            <div className="degree-bar">
+                                {[...Array(8)].map((_, i) => {
+                                    const isFilled = i < s.grausGanhos;
+                                    const type = i < 4 ? 'white' : 'red';
+                                    return <div key={i} className={`degree ${isFilled ? type : 'empty'}`}></div>
+                                })}
                             </div>
                         </div>
 
-                        <span className="label-section">Progresso para o Próximo Grau ({aulasNoCiclo}/{aulasPorGrau})</span>
-                        <div className="bar">
-                            {Array.from({ length: aulasPorGrau }).map((_, i) => (
-                                <div key={i} className={`box ${i < aulasNoCiclo ? 'done' : ''}`}></div>
-                            ))}
-                        </div>
-
-                        <div className="belt-strip">
-                            <div className="presence-side">
-                                {Array.from({ length: 8 }).map((_, i) => (
-                                    <div key={i} className={`presence-dot ${totalGraus > i ? (i < 4 ? 'white' : 'red') : ''}`}></div>
-                                ))}
-                            </div>
-                            <div className="behavior-presence">
-                                {behTypes.map(b => (
-                                    <div key={b.key} className="beh-dot" 
-                                        style={{ background: s.behavior[b.key] ? b.color : 'transparent' }}
-                                        onClick={() => {
-                                            if (user !== "prof") return;
-                                            const newBeh = { ...s.behavior, [b.key]: !s.behavior[b.key] };
-                                            setStudents(students.map(st => st.id === s.id ? { ...st, behavior: newBeh } : st));
-                                            addLog(s.id, `Status ${b.label} atualizado`);
-                                        }}
-                                    ><span>{b.label}</span></div>
+                        <div>
+                            <strong>Presença Ciclo:</strong>
+                            <div className="bar-bolinhas">
+                                {[...Array(rules.m)].map((_, i) => (
+                                    <div key={i} className={`bolinha-aula ${i < s.aulasNoCiclo ? 'done' : ''}`} onClick={() => markClass(s.id, i+1)}>
+                                        {i+1}
+                                        {s.datasAulas?.[i] && <small>{s.datasAulas[i].split('/')[0]}/{s.datasAulas[i].split('/')[1]}</small>}
+                                    </div>
                                 ))}
                             </div>
                         </div>
 
-                        {user === "prof" && (
-                            <div className="row">
-                                <button className="btn-blue" onClick={() => handlePresence(s.id)}>Marcar Presença</button>
-                                <button className="btn-red" onClick={() => { if(confirm("Excluir?")) setStudents(students.filter(st => st.id !== s.id)) }}>Excluir</button>
+                        <div style={{marginTop:15}}>
+                            <strong>Graus Comportamentais (Necessário 4):</strong>
+                            <div style={{display:'flex', gap:10, marginTop:5}}>
+                                {BEH_TYPES.map(b => (
+                                    <div key={b.k} onClick={() => toggleBeh(s.id, b.k)} style={{
+                                        flex:1, textAlign:'center', padding:10, borderRadius:10, cursor:'pointer',
+                                        background: s.comportamental[b.k] ? '#2ecc71' : '#eee',
+                                        color: s.comportamental[b.k] ? '#fff' : '#888'
+                                    }}>
+                                        <div style={{fontSize:20}}>{b.emoji}</div>
+                                        <div style={{fontSize:9, fontWeight:'bold'}}>{b.n}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {s.grausGanhos >= 8 && (
+                            <div style={{marginTop:15}}>
+                                <button className={canPromote ? "belt-upgrade" : "btn-locked"} onClick={() => {
+                                    if(!canPromote) return alert("Faltam os graus comportamentais!");
+                                    const idx = BELTS.indexOf(s.faixa);
+                                    setStudents(prev => prev.map(st => st.id === s.id ? {...st, faixa: BELTS[idx+1], grausGanhos:0, comportamental:{}} : st));
+                                    addHistory(s.id, `GRADUAÇÃO: Nova Faixa ${BELTS[idx+1]}`);
+                                }}>
+                                    {canPromote ? "🎓 TROCAR DE FAIXA AGORA" : "🔒 BLOQUEADO: COMPLETE O COMPORTAMENTAL"}
+                                </button>
                             </div>
                         )}
-
-                        <span className="label-section">Repositório de Arquivos</span>
-                        <div className="repo-grid">
-                            {s.docs?.map((d, i) => (
-                                <div key={i} className="repo-file" onClick={() => window.open(d.url)}>
-                                    <i className="fas fa-file-pdf"></i>
-                                    <span>{d.name}</span>
-                                </div>
-                            ))}
-                            {user === "prof" && (
-                                <label className="repo-file">
-                                    <i className="fas fa-plus-circle" style={{color: '#ccc'}}></i>
-                                    <span>Upload</span>
-                                    <input type="file" hidden onChange={e => {
-                                        const file = e.target.files[0];
-                                        const reader = new FileReader();
-                                        reader.onload = ev => setStudents(students.map(st => st.id === s.id ? {...st, docs: [...(st.docs || []), {name: file.name, url: ev.target.result}]} : st));
-                                        reader.readAsDataURL(file);
-                                    }} />
-                                </label>
-                            )}
-                        </div>
-
-                        <span className="label-section">Histórico Completo</span>
-                        <div className="history-list">
-                            {s.history?.map((h, i) => (
-                                <div key={i} style={{marginBottom: 3}}>• {h.date}: {h.msg}</div>
-                            ))}
-                        </div>
-
-                        <div className="chat-container">
-                            <div className="chat-messages">
-                                {s.chat?.map((m, i) => (
-                                    <div key={i} className={`msg ${m.from === user ? 'sent' : 'received'}`}>{m.text}</div>
-                                ))}
-                            </div>
-                            <div className="chat-input-area">
-                                <input placeholder="Mensagem..." onKeyDown={e => {
-                                    if (e.key === 'Enter' && e.target.value) {
-                                        const msg = { from: user, text: e.target.value };
-                                        setStudents(students.map(st => st.id === s.id ? { ...st, chat: [...(st.chat || []), msg] } : st));
-                                        e.target.value = "";
-                                    }
-                                }} />
-                                <i className="fas fa-paper-plane" style={{color: '#075e54'}}></i>
-                            </div>
-                        </div>
                     </div>
                 );
             })}
+
+            {/* MODAL DE CHAT TELA CHEIA */}
+            {activeChat && (
+                <div className="chat-modal">
+                    <div className="chat-header">
+                        <i className="fas fa-arrow-left" onClick={() => setActiveChat(null)} style={{cursor:'pointer'}}></i>
+                        <img src={`https://ui-avatars.com/api/?name=${activeChat.nome}`} style={{width:40, borderRadius:'50%'}} />
+                        <div>
+                            <strong>{activeChat.nome}</strong>
+                            <div style={{fontSize:10}}>Online</div>
+                        </div>
+                    </div>
+                    <div className="chat-body">
+                        {activeChat.chat.map((m, i) => (
+                            <div key={i} className={`bubble ${m.from === user ? 'sent' : 'received'}`}>
+                                <small style={{fontSize:9, display:'block', color: '#666'}}>{m.from.toUpperCase()}</small>
+                                {m.text}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="chat-footer">
+                        <i className="far fa-laugh chat-icon"></i>
+                        <input id="chatInput" placeholder="Digite uma mensagem..." style={{flex:1, padding:10, borderRadius:20, border:'none'}} onKeyDown={e => {
+                            if(e.key === 'Enter') {
+                                const val = e.target.value;
+                                if(!val) return;
+                                setStudents(prev => prev.map(st => st.id === activeChat.id ? {...st, chat: [...st.chat, {from: user, text: val}]} : st));
+                                e.target.value = "";
+                            }
+                        }} />
+                        <i className="fas fa-paper-plane" style={{color: '#075e54'}} onClick={() => {
+                            const input = document.getElementById("chatInput");
+                            if(input.value) {
+                                setStudents(prev => prev.map(st => st.id === activeChat.id ? {...st, chat: [...st.chat, {from: user, text: input.value}]} : st));
+                                input.value = "";
+                            }
+                        }}></i>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
-
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
 </body>
