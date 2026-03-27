@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Alliance Jiu Jitsu - Eagle System PRO</title>
+<title>Alliance Jiu Jitsu Mooca - Alliance Jiu Jitsu Mooca</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -45,6 +45,9 @@
     /* Históricos */
     .history-section { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; font-size: 12px; color: #444; border: 1px dashed #ccc; }
     .history-section h4 { margin: 0 0 8px 0; color: #075e54; text-transform: uppercase; font-size: 11px; border-bottom: 1px solid #ddd; }
+    
+    /* Estilo para minimizar */
+    summary { cursor: pointer; color: #075e54; font-weight: bold; padding: 5px 0; outline: none; }
 
     /* Botões */
     button { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; }
@@ -73,6 +76,14 @@ function getClassesPerDegree(age, belt) {
     }
     if (belt.includes("Amarela") || belt.includes("Laranja")) return 20;
     return 15;
+}
+
+// Definição de Turma conforme idade
+function getTurma(age) {
+    if (age >= 3 && age <= 6) return "Kids";
+    if (age >= 7 && age <= 12) return "Infantojuvenil";
+    if (age >= 13 && age <= 15) return "Juvenil";
+    return "Geral";
 }
 
 function getAge(date) {
@@ -165,9 +176,26 @@ function App() {
 
             {user === "professor" && (
                 <button className="btn-green" style={{ marginBottom: '20px' }} onClick={() => {
-                    const nome = prompt("Nome:");
-                    const nasc = prompt("Nascimento (AAAA-MM-DD):");
-                    if (nome && nasc) setStudents([...students, { id: Date.now(), nome, nascimento: nasc, idade: getAge(nasc), faixa: "Branca", aulas: 0, comp: {}, chat: [], hGraus: [], hComp: [], hFaixas: [] }]);
+                    const nome = prompt("Nome do Aluno:");
+                    if (!nome) return;
+                    const nasc = prompt("Data de Nascimento (formato AAAA-MM-DD):", "2015-01-01");
+                    if (nome && nasc) {
+                        const idadeCalc = getAge(nasc);
+                        setStudents([...students, { 
+                            id: Date.now(), 
+                            nome, 
+                            nascimento: nasc, 
+                            idade: idadeCalc, 
+                            turma: getTurma(idadeCalc),
+                            faixa: "Branca", 
+                            aulas: 0, 
+                            comp: {}, 
+                            chat: [], 
+                            hGraus: [], 
+                            hComp: [], 
+                            hFaixas: [] 
+                        }]);
+                    }
                 }}>+ Cadastrar Aluno</button>
             )}
 
@@ -190,7 +218,11 @@ function App() {
                             </div>
                             <div>
                                 <h3 style={{ margin: 0 }}>{s.nome}</h3>
-                                <small>{s.idade} anos | {s.faixa}</small>
+                                <small>
+                                    <strong>Idade:</strong> {s.idade} anos | 
+                                    <strong> Turma:</strong> {getTurma(s.idade)} | 
+                                    <strong> Faixa:</strong> {s.faixa}
+                                </small>
                             </div>
                         </div>
 
@@ -218,7 +250,7 @@ function App() {
                         {user === "professor" && (
                             <div style={{ display: 'flex', gap: '10px' }}>
                                 <button className="btn-blue" onClick={() => addAttendance(s.id)}>Presença</button>
-                                <button className="btn-red" onClick={() => setStudents(students.filter(x => x.id !== s.id))}>Excluir</button>
+                                <button className="btn-red" onClick={() => { if(confirm("Excluir aluno?")) setStudents(students.filter(x => x.id !== s.id)) }}>Excluir</button>
                             </div>
                         )}
 
@@ -227,12 +259,23 @@ function App() {
                             Previsão: <b>{estimateDate(faltam)}</b>
                         </div>
 
-                        <div className="history-section">
-                            <h4>Histórico de Graus</h4>
-                            {s.hGraus?.map((h, i) => <div key={i}>{h.data} - Grau {h.grau}</div>)}
-                            <h4 style={{ marginTop: 10 }}>Histórico Comportamental</h4>
-                            {s.hComp?.map((h, i) => <div key={i}>{h.data} - {h.tipo}</div>)}
-                        </div>
+                        {/* Histórico: Minimizado para Professor, Aberto para Pais */}
+                        {user === "professor" ? (
+                            <details className="history-section">
+                                <summary>Ver Histórico do Aluno</summary>
+                                <h4>Histórico de Graus</h4>
+                                {s.hGraus?.length > 0 ? s.hGraus.map((h, i) => <div key={i}>{h.data} - Grau {h.grau}</div>) : "Sem registros."}
+                                <h4 style={{ marginTop: 10 }}>Histórico Comportamental</h4>
+                                {s.hComp?.length > 0 ? s.hComp.map((h, i) => <div key={i}>{h.data} - {h.tipo}</div>) : "Sem registros."}
+                            </details>
+                        ) : (
+                            <div className="history-section">
+                                <h4>Histórico de Graus</h4>
+                                {s.hGraus?.map((h, i) => <div key={i}>{h.data} - Grau {h.grau}</div>)}
+                                <h4 style={{ marginTop: 10 }}>Histórico Comportamental</h4>
+                                {s.hComp?.map((h, i) => <div key={i}>{h.data} - {h.tipo}</div>)}
+                            </div>
+                        )}
 
                         <div className="chat-container">
                             <div className="chat-header"><i className="fab fa-whatsapp"></i> Chat com Professor</div>
