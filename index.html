@@ -2,77 +2,98 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Alliance Jiu Jitsu Mooca - Eagle System PRO</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alliance Mooca Kids - Sistema Eagle V20</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        :root { --alliance-red: #e74c3c; --alliance-green: #2ecc71; --bg: #f0f2f5; --whatsapp-green: #075e54; --light-green: #dcf8c6; }
-        body { font-family: 'Segoe UI', Arial; background: var(--bg); color: #333; margin:0; padding:20px; }
-        .container { max-width: 850px; margin: auto; }
-        .card { background: white; padding:25px; border-radius:15px; margin-bottom:20px; box-shadow:0 4px 15px rgba(0,0,0,0.08); border: 1px solid #ddd; position: relative; }
+        :root { --alliance-red: #e74c3c; --alliance-green: #2ecc71; --bg: #f8f9fa; --whatsapp-green: #075e54; --dark: #2c3e50; --light-green: #dcf8c6; }
         
-        /* Header Aluno */
-        .student-top { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; }
-        .avatar-container { position: relative; width: 85px; height: 85px; }
-        .avatar { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #ddd; object-fit: cover; background: #eee; }
-        .edit-badge { position:absolute; bottom:0; right:0; background:#3498db; color:white; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid white; font-size: 11px; }
-        .cat-badge { background: #34495e; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; width: fit-content; margin-top: 5px; }
-        .age-info { font-size: 14px; color: #666; font-weight: bold; }
-
-        /* Aulas e Graus Sobrepostos */
-        .bar { display:flex; gap:8px; flex-wrap:wrap; margin: 15px 0; }
-        .box-class { width:38px; height:38px; border:1px solid #ccc; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold; background:#fff; color:#999; }
-        .box-class.done { background: var(--alliance-green); color:white; border-color: #27ae60; }
-        .degree-row { display: flex; gap: 10px; margin: 15px 0; padding: 10px; background: #f0f0f0; border-radius: 8px; width: fit-content; }
-        .degree-box { width:35px; height:35px; border:3px solid #bbb; border-radius:4px; }
-
-        /* Méritos Comportamentais */
-        .beh-container { display: flex; gap: 15px; margin: 15px 0; }
-        .beh { width:42px; height:42px; border-radius:50%; background:#eee; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; transition: 0.3s; font-size: 18px; }
-
-        /* Alerta de Exame Pulsante */
-        .alert-exame { 
-            background: #fdf2f2; color: #c0392b; padding: 15px; 
-            border-radius: 8px; text-align: center; font-weight: 800; 
-            border: 2px solid #e74c3c; margin: 15px 0;
-            animation: pulse-red 1.5s infinite;
-        }
-        .alert-pending { background: #f8f9fa; color: #7f8c8d; padding: 10px; border-radius: 8px; text-align: center; font-size: 12px; border: 1px dashed #ccc; margin: 10px 0; }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system; 
+            background: var(--bg); 
+            color: #333; 
+            margin:0; 
+            padding: 10px;
+            padding-bottom: 100px; 
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Chat Minimizado */
-        .chat-details { margin-top: 20px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; }
-        .chat-summary { background: var(--whatsapp-green); color: white; padding: 12px 15px; font-weight: bold; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
-        .chat-content { background: #e5ddd5; border-top: 1px solid #ddd; }
-        .chat-msgs { height: 200px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg-bubble { padding: 8px 12px; border-radius: 8px; font-size: 13px; max-width: 75%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .msg-prof { align-self: flex-end; background: var(--light-green); }
-        .msg-pais { align-self: flex-start; background: white; }
-        .msg-file { max-width: 100%; border-radius: 4px; margin: 5px 0; cursor: pointer; display: block; }
-        .chat-input-area { background: #f0f0f0; padding: 10px; display: flex; gap: 10px; align-items: center; }
-        .chat-input-area input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc; outline: none; }
+        .header-main { text-align: center; margin: 20px 0 30px; }
+        .header-main h2 { 
+            color: var(--dark); 
+            font-weight: 800; 
+            text-transform: uppercase;
+            border-bottom: 3px solid var(--alliance-red);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
 
-        /* Botões */
-        .row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px; }
-        button { padding:10px 15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; text-transform: uppercase; font-size: 11px; }
-        .btn-add { background: var(--alliance-green); color: white; }
-        .btn-presenca { background: var(--alliance-green); color: white; }
-        .btn-faixa { background: #f39c12; color: white; }
-        .btn-delete { background: var(--alliance-red); color: white; }
-        button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .container { max-width: 850px; margin: auto; }
+        
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1); 
+            border: 1px solid rgba(0,0,0,0.05); 
+            position: relative; 
+        }
 
-        /* Histórico */
-        details.hist-details { margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
-        .hist-item { font-size: 11px; padding: 4px; border-bottom: 1px solid #f9f9f9; color: #555; }
+        .student-top { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
+        .avatar-container { position: relative; width: 75px; height: 75px; flex-shrink: 0; }
+        .avatar { width: 75px; height: 75px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); object-fit: cover; background: #eee; }
+        .edit-badge { position:absolute; bottom:0; right:0; background:#3498db; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid white; font-size: 10px; }
+        
+        .cat-badge { background: var(--dark); color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 4px; display: inline-block; }
+        
+        .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--dark); margin-bottom: 8px; display: block; border-left: 3px solid var(--alliance-red); padding-left: 8px; }
+
+        .bar { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 8px; margin: 10px 0 20px 0; }
+        .box-class { height:38px; border:1px solid #ddd; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; background:#fff; color:#aaa; cursor: pointer; }
+        .box-class.done { background: var(--alliance-green); color:white; border-color: var(--alliance-green); box-shadow: 0 4px 10px rgba(46,204,113,0.3); }
+        .box-class.locked { background: #f0f0f0; color: #ccc; cursor: not-allowed; border-style: dashed; }
+        
+        .degree-row { display: flex; gap: 8px; margin: 10px 0; padding: 10px; background: #222; border-radius: 12px; width: fit-content; }
+        .degree-box { width:20px; height:35px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.1); }
+
+        .beh-container { display: flex; justify-content: space-between; margin: 10px 0; gap: 10px; }
+        .beh { flex: 1; aspect-ratio: 1; max-width: 50px; border-radius: 12px; background:#eee; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; font-size: 18px; position: relative; }
+        
+        .meaning-box { background: #fdfdfd; border: 1px solid #eee; border-radius: 10px; padding: 10px; margin-bottom: 15px; font-size: 10px; color: #666; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .meaning-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        .hist-details { margin-top: 15px; border: 1px solid #eee; border-radius: 12px; padding: 5px; background: #fafafa; }
+        .hist-summary { cursor: pointer; font-size: 11px; font-weight: bold; color: #3498db; padding: 8px; list-style: none; display: flex; justify-content: space-between; }
+        .hist-content { padding: 10px; font-size: 10px; maxHeight: 120px; overflow-y: auto; border-top: 1px solid #eee; }
+
+        .chat-container { border-radius: 15px; overflow: hidden; margin-top: 15px; border: 1px solid #eee; background: #fdfdfd; }
+        .chat-header { background: #f8f9fa; color: var(--dark); padding: 12px 15px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-bottom: 1px solid #eee; }
+        .chat-msgs { height: 180px; overflow-y: auto; padding: 15px; background: #f0f2f5; display: flex; flex-direction: column; gap: 8px; }
+        .msg-bubble { padding: 10px; border-radius: 12px; font-size: 13px; max-width: 85%; }
+        .msg-bubble.self { background: var(--light-green); align-self: flex-end; border-top-right-radius: 2px; }
+        .msg-bubble.other { background: #fff; align-self: flex-start; border-top-left-radius: 2px; }
+
+        .action-bar { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+            background: var(--dark); padding: 10px 25px; border-radius: 40px; 
+            display: flex; gap: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1000;
+        }
+        .action-item { color: white; text-align: center; cursor: pointer; font-size: 20px; }
+        .action-item span { display: block; font-size: 9px; text-transform: uppercase; margin-top: 3px; font-weight: bold; }
+
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter: blur(4px); display:flex; align-items:center; justify-content:center; z-index: 2000; padding: 20px; }
+        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 450px; }
+
+        .btn-full { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; }
+        .btn-graduar { background: linear-gradient(45deg, #f39c12, #e67e22); color: white; }
+        
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -83,11 +104,10 @@
 
     function calculateAge(birthday) {
         if(!birthday) return 0;
-        const birthDate = new Date(birthday);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) { age--; }
+        const b = new Date(birthday);
+        const t = new Date();
+        let age = t.getFullYear() - b.getFullYear();
+        if (t.getMonth() < b.getMonth() || (t.getMonth() === b.getMonth() && t.getDate() < b.getDate())) age--;
         return age;
     }
 
@@ -104,187 +124,220 @@
         const cat = getAutoCategory(nascimento);
         const f = faixa.toLowerCase();
         if (cat === "Baby Eagle") return 12;
-        if (cat === "Little Eagle" || cat === "Eagle Warrior") return (f.includes("branca") || f.includes("cinza")) ? 15 : 20;
-        if (cat === "Eagle Youth") {
-            if (f.includes("branca") || f.includes("cinza")) return 20;
-            if (f.includes("amarela") || f.includes("laranja")) return 22;
-            return 25;
+        if (cat === "Little Eagle" || cat === "Eagle Warrior") {
+             return (f.includes("branca") || f.includes("cinza")) ? 15 : 20;
         }
         return 15;
     }
 
     function App() {
         const [mode, setMode] = React.useState("Professor");
-        const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("alliance_mooca_v13") || "[]"));
+        const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v20_s") || "[]"));
+        const [repo, setRepo] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v20_r") || "[]"));
         const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
+        const [chatInputs, setChatInputs] = React.useState({});
+        const [openChats, setOpenChats] = React.useState({});
+        const [modalOpen, setModalOpen] = React.useState(null);
 
-        React.useEffect(() => { localStorage.setItem("alliance_mooca_v13", JSON.stringify(students)) }, [students]);
+        React.useEffect(() => { 
+            localStorage.setItem("all_eagle_v20_s", JSON.stringify(students));
+            localStorage.setItem("all_eagle_v20_r", JSON.stringify(repo));
+        }, [students, repo]);
 
-        const sendChat = (id, text, fileData = null) => {
-            setStudents(prev => prev.map(s => {
-                if (s.id !== id) return s;
-                const newMsg = { id: Date.now(), sender: mode, text, file: fileData?.url, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
-                return { ...s, chat: [...(s.chat || []), newMsg] };
-            }));
-        };
-
-        const handleUpload = (id, file, type) => {
+        const handleFile = (file, type, id = null) => {
+            if(!file) return;
             const reader = new FileReader();
             reader.onload = e => {
-                if (type === 'avatar') setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: e.target.result } : s));
-                else sendChat(id, "", { url: e.target.result, name: file.name });
+                if (type === 'avatar') {
+                    setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: e.target.result } : s));
+                } else if (type === 'repo') {
+                    setRepo([...repo, { id: Date.now(), name: file.name, data: e.target.result }]);
+                } else if (type === 'chat') {
+                    const agora = new Date();
+                    const msgAnexo = { id: Date.now(), sender: mode, text: `📎 Arquivo: ${file.name}`, fileData: e.target.result, fileName: file.name, date: agora.toLocaleDateString('pt-BR'), time: agora.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
+                    setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
+                }
             };
             reader.readAsDataURL(file);
         };
 
+        const graduarAluno = (sid) => {
+            setStudents(prev => prev.map(s => {
+                if (s.id === sid) {
+                    const idx = beltOrder.indexOf(s.faixa);
+                    const novaFaixa = beltOrder[idx + 1] || s.faixa;
+                    return { ...s, faixa: novaFaixa, aulas: 0, comp: {}, historico: [...(s.historico || []), `🎓 PROMOÇÃO: ${s.faixa} ➔ ${novaFaixa} | ${new Date().toLocaleDateString('pt-BR')}`] };
+                }
+                return s;
+            }));
+        };
+
+        const addPresenca = (sid) => {
+            if(mode !== "Professor") return;
+            setStudents(prev => prev.map(s => {
+                if (s.id === sid) {
+                    const rules = getRules(s.nascimento, s.faixa);
+                    if (s.aulas >= rules * 9) return s;
+                    const novaAula = s.aulas + 1;
+                    const dataAtual = new Date().toLocaleDateString('pt-BR');
+                    let log = [`Presença aula ${novaAula} | ${dataAtual}`];
+                    if (novaAula % rules === 0) {
+                        const n = novaAula / rules;
+                        if(n <= 4) log.push(`🎓 GRAU BRANCO (${n}º) | ${dataAtual}`);
+                        else if(n <= 8) log.push(`🔴 GRAU VERMELHO (${n-4}º) | ${dataAtual}`);
+                    }
+                    return { ...s, aulas: novaAula, historico: [...(s.historico || []), ...log] };
+                }
+                return s;
+            }));
+        };
+
+        const toggleMerito = (sid, key, label) => {
+            if(mode !== "Professor") return;
+            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'✅':'❌'} ${label} | ${new Date().toLocaleDateString()}`] } : s));
+        };
+
+        const sendMessage = (sid) => {
+            const currentInput = chatInputs[sid] || "";
+            if(!currentInput.trim()) return;
+            const agora = new Date();
+            setStudents(prev => prev.map(s => s.id === sid ? { ...s, chat: [...(s.chat || []), { id: Date.now(), sender: mode, text: currentInput, date: agora.toLocaleDateString('pt-BR'), time: agora.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) }] } : s));
+            setChatInputs({ ...chatInputs, [sid]: "" });
+        };
+
         return (
             <div className="container">
-                <div className="header-mooca">
-                    <button onClick={() => setMode(mode === "Professor" ? "Pais" : "Professor")} style={{float:'left'}}>Modo: {mode}</button>
-                    <h1 style={{textAlign:'center'}}>Alliance Mooca</h1>
-                </div>
-
-                {mode === "Professor" && (
-                    <div className="card">
-                        <h3>Cadastrar Novo Aluno</h3>
-                        <div className="row">
-                            <input placeholder="Nome" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
-                            <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
-                            <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>
-                                {beltOrder.map(b => <option key={b}>{b}</option>)}
-                            </select>
-                            <button className="btn-add" onClick={() => {
-                                if(!form.nome || !form.nascimento) return;
-                                setStudents([...students, { ...form, id: Date.now(), aulas: 0, historico: [], chat: [], comp: {}, avatar: "" }]);
-                                setForm({ nome: "", nascimento: "", faixa: "Branca" });
-                            }}>Cadastrar</button>
-                        </div>
-                    </div>
-                )}
+                <header className="header-main">
+                    <h2>Alliance Mooca Kids</h2>
+                </header>
 
                 {students.map(s => {
                     const rules = getRules(s.nascimento, s.faixa);
-                    const totalGraus = Math.floor(s.aulas / rules);
-                    const aulasParaExame = s.aulas >= (rules * 9);
-                    
-                    // NOVA REGRA: Verifica se os 4 méritos comportamentais estão marcados
-                    const meritosValidados = s.comp?.Relacionamento && s.comp?.Comportamento && s.comp?.Notas && s.comp?.Hábitos;
-                    
-                    const isExame = aulasParaExame && meritosValidados;
+                    const totalG = Math.floor(s.aulas / rules);
+                    const limiteAtingido = s.aulas >= rules * 9;
+                    const meritoCompleto = s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
 
                     return (
                         <div key={s.id} className="card">
                             <div className="student-top">
                                 <div className="avatar-container">
-                                    <img src={s.avatar || 'https://via.placeholder.com/85'} className="avatar" />
-                                    {mode === "Professor" && (
-                                        <label className="edit-badge"><i className="fas fa-pencil-alt"></i>
-                                            <input type="file" style={{display:'none'}} onChange={e => handleUpload(s.id, e.target.files[0], 'avatar')} />
-                                        </label>
-                                    )}
+                                    <img src={s.avatar || 'https://via.placeholder.com/90'} className="avatar" />
+                                    <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>
                                 </div>
-                                <div className="name-row">
-                                    <h2 style={{margin:0}}>{s.nome}</h2>
-                                    <span className="age-info">{calculateAge(s.nascimento)} Anos | Faixa {s.faixa}</span>
-                                    <div className="cat-badge">{getAutoCategory(s.nascimento)}</div>
+                                <div style={{flex:1}}>
+                                    <h3 style={{margin:0, fontSize:'18px'}}>{s.nome}</h3>
+                                    <div className="cat-badge">{s.faixa}</div><br/>
+                                    <small style={{color:'#777'}}>{calculateAge(s.nascimento)} anos • {getAutoCategory(s.nascimento)}</small>
                                 </div>
+                                {mode === "Professor" && <i className="fas fa-trash" style={{color:'#eee'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
 
-                            <div className="bar">
-                                {Array.from({ length: rules }).map((_, i) => (
-                                    <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''}`}>{i+1}</div>
-                                ))}
-                            </div>
-
-                            <div className="degree-row">
-                                {Array.from({ length: 4 }).map((_, i) => {
-                                    let cor = "#ccc";
-                                    if (totalGraus > i + 4) cor = "var(--alliance-red)";
-                                    else if (totalGraus > i) cor = "#fff";
-                                    return <div key={i} className="degree-box" style={{ background: cor, borderColor: cor==="#ccc"?"#bbb":cor }}></div>;
-                                })}
-                            </div>
-
-                            <div className="beh-container">
-                                {[
-                                    {l:'Relacionamento', i:'fa-users', c:'#f1c40f'},
-                                    {l:'Comportamento', i:'fa-brain', c:'#3498db'},
-                                    {l:'Notas', i:'fa-graduation-cap', c:'#e74c3c'},
-                                    {l:'Hábitos', i:'fa-apple-alt', c:'#2ecc71'}
-                                ].map(item => (
-                                    <div key={item.l} className="beh" 
-                                         style={{background: s.comp?.[item.l] ? item.c : '#ddd'}}
-                                         onClick={() => {
-                                             if(mode !== "Professor") return;
-                                             setStudents(prev => prev.map(x => x.id === s.id ? {...x, comp: {...x.comp, [item.l]: !x.comp?.[item.l]}, historico: [...(x.historico||[]), `[Mérito] ${item.l} em ${new Date().toLocaleDateString()}`]} : x));
-                                         }}><i className={`fas ${item.i}`}></i></div>
-                                ))}
-                            </div>
-
-                            {/* ALERTAS LOGICOS */}
-                            {isExame ? (
-                                <div className="alert-exame">🎓 APTO AO EXAME DE FAIXA!</div>
-                            ) : aulasParaExame ? (
-                                <div className="alert-pending">⚠️ Aulas concluídas, mas faltam méritos comportamentais para o exame.</div>
-                            ) : null}
-
-                            {mode === "Professor" && (
-                                <div className="row">
-                                    <button className="btn-presenca" disabled={aulasParaExame} onClick={() => {
-                                        const nA = (s.aulas || 0) + 1;
-                                        setStudents(prev => prev.map(x => x.id === s.id ? {...x, aulas: nA, historico: [...(x.historico||[]), `Aula ${nA} em ${new Date().toLocaleDateString()}`]} : x));
-                                    }}>+ Presença</button>
-                                    
-                                    <button className="btn-faixa" onClick={() => {
-                                        const next = beltOrder[beltOrder.indexOf(s.faixa)+1];
-                                        if(next && confirm(`Promover para ${next}?`)) {
-                                            setStudents(prev => prev.map(x => x.id === s.id ? {...x, faixa: next, aulas: 0, comp: {}, historico: [...(x.historico||[]), `PROMOCAO: ${next} em ${new Date().toLocaleDateString()}`]} : x));
-                                        }
-                                    }}>Trocar Faixa</button>
-                                    
-                                    <button className="btn-delete" onClick={() => { if(confirm("Excluir?")) setStudents(students.filter(x => x.id !== s.id)); }}>Excluir</button>
+                            {limiteAtingido && (
+                                <div className="alert-status" style={{background: meritoCompleto ? '#d4edda' : '#f8d7da', color: meritoCompleto ? '#155724' : '#721c24', padding: '15px', borderRadius: '15px', textAlign: 'center', fontWeight: 'bold', marginBottom: '15px'}}>
+                                    {meritoCompleto ? "✅ APTO PARA EXAME!" : "⚠️ LIMITE DE AULAS ATINGIDO. FALTAM MEDALHÕES."}
+                                    {meritoCompleto && mode === "Professor" && <button className="btn-full btn-graduar" onClick={() => graduarAluno(s.id)}>REALIZAR TROCA DE FAIXA AGORA</button>}
                                 </div>
                             )}
 
-                            <details className="chat-details">
-                                <summary className="chat-summary">
-                                    <span><i className="fab fa-whatsapp"></i> Chat Alliance</span>
-                                    <i className="fas fa-chevron-down"></i>
-                                </summary>
-                                <div className="chat-content">
-                                    <div className="chat-msgs">
-                                        {s.chat?.map(m => (
-                                            <div key={m.id} className={`msg-bubble ${m.sender === mode ? 'msg-prof' : 'msg-pais'}`}>
-                                                {m.text && <div>{m.text}</div>}
-                                                {m.file && <img src={m.file} className="msg-file" onClick={() => window.open(m.file)} />}
-                                                <div style={{fontSize:'9px', textAlign:'right', marginTop:'4px'}}>{m.time}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="chat-input-area">
-                                        <label style={{cursor:'pointer'}}><i className="fas fa-paperclip"></i>
-                                            <input type="file" style={{display:'none'}} onChange={e => handleUpload(s.id, e.target.files[0], 'chat')} />
-                                        </label>
-                                        <input type="text" placeholder="Mensagem..." id={`in-${s.id}`} onKeyPress={e => {
-                                            if(e.key==='Enter' && e.target.value){ sendChat(s.id, e.target.value); e.target.value=""; }
-                                        }}/>
-                                        <i className="fas fa-paper-plane" style={{color:'var(--whatsapp-green)', cursor:'pointer'}} onClick={() => {
-                                            const el = document.getElementById(`in-${s.id}`);
-                                            if(el.value){ sendChat(s.id, el.value); el.value=""; }
-                                        }}></i>
-                                    </div>
+                            <span className="section-label">Aulas</span>
+                            <div className="bar">
+                                {Array.from({length:rules}).map((_, i) => (
+                                    <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''} ${limiteAtingido ? 'locked' : ''}`} onClick={() => addPresenca(s.id)}>{i+1}</div>
+                                ))}
+                            </div>
+
+                            <div className="meaning-box">
+                                <div className="meaning-item"><div className="dot" style={{background:'#fff', border:'1px solid #ccc'}}></div> Grau Branco: Presença</div>
+                                <div className="meaning-item"><div className="dot" style={{background:'var(--alliance-red)'}}></div> Grau Vermelho: Acima de 4 Graus</div>
+                            </div>
+
+                            <span className="section-label">Graus de Presença</span>
+                            <div className="degree-row">
+                                {Array.from({length:4}).map((_, i) => {
+                                    let cor = "#444";
+                                    if (totalG > i + 4) cor = "var(--alliance-red)";
+                                    else if (totalG > i) cor = "#fff";
+                                    return <div key={i} className="degree-box" style={{background: cor, flex: 1}}></div>;
+                                })}
+                            </div>
+
+                            <div className="meaning-box">
+                                <div className="meaning-item"><div className="dot" style={{background:'#f1c40f'}}></div> Relacionamento</div>
+                                <div className="meaning-item"><div className="dot" style={{background:'#3498db'}}></div> Comportamento</div>
+                                <div className="meaning-item"><div className="dot" style={{background:'#e74c3c'}}></div> Organização</div>
+                                <div className="meaning-item"><div className="dot" style={{background:'#2ecc71'}}></div> Comprometimento</div>
+                            </div>
+
+                            <span className="section-label">Graus Comportamentais</span>
+                            <div className="beh-container">
+                                {[{k:'Rel', i:'fa-users', c:'#f1c40f', l:'Relac.'}, {k:'Comp', i:'fa-brain', c:'#3498db', l:'Comp.'}, {k:'Notas', i:'fa-graduation-cap', c:'#e74c3c', l:'Notas'}, {k:'Hab', i:'fa-apple-alt', c:'#2ecc71', l:'Hab.'}].map(m => (
+                                    <div key={m.k} className="beh" style={{background: s.comp?.[m.k] ? m.c : '#eee'}} onClick={() => toggleMerito(s.id, m.k, m.l)}><i className={`fas ${m.i}`}></i></div>
+                                ))}
+                            </div>
+
+                            <details className="hist-details" open>
+                                <summary className="hist-summary"><span><i className="fas fa-history"></i> Histórico de Evolução</span><i className="fas fa-chevron-down"></i></summary>
+                                <div className="hist-content">
+                                    {s.historico?.slice().reverse().map((h, i) => <div key={i} style={{padding:'4px 0', borderBottom:'1px solid #f0f0f0'}}>{h}</div>)}
                                 </div>
                             </details>
 
-                            <details className="hist-details">
-                                <summary style={{color:'#3498db', fontWeight:'bold', cursor:'pointer'}}>Histórico</summary>
-                                <div style={{paddingTop:'10px'}}>
-                                    {s.historico?.map((h, i) => <div key={i} className="hist-item">{h}</div>)}
+                            <div className="chat-container">
+                                <div className="chat-header" onClick={() => setOpenChats({...openChats, [s.id]: !openChats[s.id]})}>
+                                    <span style={{fontSize:'12px'}}><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> Canal de Comunicação</span>
+                                    <i className={`fas fa-chevron-${openChats[s.id] ? 'up' : 'down'}`} style={{fontSize:'10px'}}></i>
                                 </div>
-                            </details>
+                                {openChats[s.id] && (
+                                    <>
+                                        <div className="chat-msgs">
+                                            {s.chat?.map(m => (
+                                                <div key={m.id} className={`msg-bubble ${m.sender === mode ? 'self' : 'other'}`}>
+                                                    <div style={{fontSize:'9px', fontWeight:'bold', marginBottom:'3px', opacity:0.6}}>{m.sender}</div>
+                                                    {m.text}
+                                                    {m.fileData && <a href={m.fileData} download={m.fileName} style={{display:'block', marginTop:5, fontSize:'10px'}}>📎 {m.fileName}</a>}
+                                                    <div style={{fontSize:'8px', textAlign:'right', marginTop:'4px', opacity:0.5}}>{m.time}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div style={{display:'flex', padding:'10px', background:'#fff', gap:'8px', alignItems:'center', borderTop:'1px solid #eee'}}>
+                                            <label><i className="fas fa-paperclip" style={{color:'#aaa'}}></i><input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'chat', s.id)} /></label>
+                                            <input style={{flex:1, border:'none', background:'#f0f2f5', padding:'10px 15px', borderRadius:'20px', fontSize:'14px'}} placeholder="Conversar..." value={chatInputs[s.id] || ""} onChange={e => setChatInputs({...chatInputs, [s.id]: e.target.value})} onKeyDown={e => e.key === 'Enter' && sendMessage(s.id)}/>
+                                            <i className="fas fa-paper-plane" style={{color: 'var(--alliance-green)', fontSize:'20px'}} onClick={() => sendMessage(s.id)}></i>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     );
                 })}
+
+                <div className="action-bar">
+                    <div className="action-item" onClick={() => setModalOpen('cadastro')}><i className="fas fa-user-plus"></i><span>Novo</span></div>
+                    <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>Docs</span></div>
+                    <div className="action-item" onClick={() => setMode(mode === "Professor" ? "Pais" : "Professor")}><i className={`fas fa-${mode === "Professor" ? 'graduation-cap' : 'home'}`}></i><span>{mode}</span></div>
+                </div>
+
+                {modalOpen === 'cadastro' && (
+                    <div className="modal-overlay" onClick={() => setModalOpen(null)}>
+                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                            <h3 style={{marginTop:0}}>Novo Aluno</h3>
+                            <input placeholder="Nome" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
+                            <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
+                            <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>{beltOrder.map(b => <option key={b} value={b}>{b}</option>)}</select>
+                            <button className="btn-full btn-graduar" style={{background: 'var(--alliance-green)'}} onClick={() => { if(form.nome && form.nascimento) { setStudents([...students, {...form, id:Date.now(), aulas:0, historico:[], chat:[], comp:{}}]); setForm({nome:"", nascimento:"", faixa:"Branca"}); setModalOpen(null); } }}>Salvar</button>
+                        </div>
+                    </div>
+                )}
+
+                {modalOpen === 'repo' && (
+                    <div className="modal-overlay" onClick={() => setModalOpen(null)}>
+                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                            <h3 style={{marginTop:0}}>Docs</h3>
+                            {repo.map(d => <div key={d.id} style={{display:'flex', justifyContent:'space-between', padding:'12px', borderBottom:'1px solid #eee'}}><span>{d.name}</span><i className="fas fa-download" style={{color:'var(--alliance-green)'}} onClick={() => { const a = document.createElement('a'); a.href=d.data; a.download=d.name; a.click(); }}></i></div>)}
+                            {mode === "Professor" && <div style={{marginTop:15}}><label className="btn-full" style={{background:'#eee', display:'block', textAlign:'center', cursor:'pointer'}}>+ Subir Arquivo <input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'repo')} /></label></div>}
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
