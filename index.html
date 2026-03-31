@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Alliance Mooca Kids - Sistema Eagle V20</title>
+    <title>Alliance Mooca Kids - Sistema Eagle V22</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -10,97 +10,144 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        :root { --alliance-red: #e74c3c; --alliance-green: #2ecc71; --bg: #f8f9fa; --whatsapp-green: #075e54; --dark: #2c3e50; --light-green: #dcf8c6; }
+        :root { 
+            --alliance-red: #e74c3c; 
+            --alliance-green: #2ecc71; 
+            --bg: #121212; 
+            --whatsapp-green: #075e54; 
+            --dark: #000000; 
+            --light-green: #054d44; 
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #333;
+        }
         
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+
         body { 
             font-family: 'Segoe UI', system-ui, -apple-system; 
             background: var(--bg); 
-            color: #333; 
+            color: var(--text-color); 
             margin:0; 
-            padding: 10px;
-            padding-bottom: 100px; 
-            -webkit-tap-highlight-color: transparent;
+            padding: 10px; 
+            padding-bottom: 120px; 
         }
 
-        .header-main { text-align: center; margin: 20px 0 30px; }
-        .header-main h2 { 
-            color: var(--dark); 
-            font-weight: 800; 
-            text-transform: uppercase;
-            border-bottom: 3px solid var(--alliance-red);
-            display: inline-block;
-            padding-bottom: 5px;
-        }
+        .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; background: #000; flex-direction: column; gap: 20px; }
+        .login-box { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid var(--border-color); }
+        .selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 20px; background: var(--bg); }
+        .btn-select { width: 85%; max-width: 320px; padding: 22px; border-radius: 20px; border: none; background: #222; color: white; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: 0.3s; }
+
+        .header-main { text-align: center; margin: 20px 0 15px; }
+        .header-main h2 { color: white; font-weight: 800; text-transform: uppercase; border-bottom: 3px solid var(--alliance-red); display: inline-block; padding-bottom: 8px; letter-spacing: 1px; }
+
+        .search-container { max-width: 850px; margin: 0 auto 15px; position: relative; }
+        .search-input { width: 100%; padding: 16px 20px 16px 50px; border-radius: 30px; border: 1px solid var(--border-color); background: #2a2a2a; color: white; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); outline: none; }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #666; font-size: 18px; }
+        
+        .filter-bar { display: flex; gap: 10px; overflow-x: auto; padding: 5px 2px 15px; max-width: 850px; margin: 0 auto; scrollbar-width: none; }
+        .filter-bar::-webkit-scrollbar { display: none; }
+        .filter-btn { padding: 10px 18px; border-radius: 20px; border: 1px solid var(--border-color); background: #1a1a1a; font-size: 12px; font-weight: bold; white-space: nowrap; cursor: pointer; color: #777; transition: 0.3s; }
+        .filter-btn.active { background: var(--alliance-red); color: white; border-color: var(--alliance-red); box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         .container { max-width: 850px; margin: auto; }
+        .card { background: var(--card-bg); padding: 22px; border-radius: 24px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid var(--border-color); position: relative; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 20px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1); 
-            border: 1px solid rgba(0,0,0,0.05); 
-            position: relative; 
-        }
-
-        .student-top { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
-        .avatar-container { position: relative; width: 75px; height: 75px; flex-shrink: 0; }
-        .avatar { width: 75px; height: 75px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); object-fit: cover; background: #eee; }
-        .edit-badge { position:absolute; bottom:0; right:0; background:#3498db; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid white; font-size: 10px; }
+        .student-top { display: flex; gap: 18px; align-items: center; margin-bottom: 20px; }
+        .avatar-container { position: relative; width: 85px; height: 85px; flex-shrink: 0; }
+        .avatar { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: cover; background: #222; }
+        .edit-badge { position:absolute; bottom:2px; right:2px; background:#3498db; color:white; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid #1e1e1e; font-size: 11px; z-index: 2; }
         
-        .cat-badge { background: var(--dark); color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 4px; display: inline-block; }
+        .cat-badge { background: #333; color: #fff; padding: 5px 12px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: 6px; display: inline-block; border: 1px solid #444; }
+        .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #777; margin-bottom: 10px; display: block; border-left: 3px solid var(--alliance-red); padding-left: 10px; letter-spacing: 0.5px; }
+
+        .bar { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 10px; margin: 10px 0 25px 0; }
+        .box-class { height:42px; border:1px solid var(--border-color); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:bold; background:#252525; color:#444; cursor: pointer; transition: 0.2s; }
+        .box-class.done { background: var(--alliance-green); color:white; border-color: var(--alliance-green); box-shadow: 0 4px 12px rgba(46,204,113,0.3); }
+        .box-class.locked { background: #151515; color: #222; cursor: not-allowed; border-style: dashed; }
         
-        .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--dark); margin-bottom: 8px; display: block; border-left: 3px solid var(--alliance-red); padding-left: 8px; }
+        .degree-row { display: flex; gap: 10px; margin: 10px 0 20px; padding: 12px; background: #151515; border: 1px solid var(--border-color); border-radius: 15px; width: 100%; }
+        .degree-box { height:38px; border-radius: 8px; border: 1px solid #333; flex: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #252525; transition: 0.3s; }
 
-        .bar { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 8px; margin: 10px 0 20px 0; }
-        .box-class { height:38px; border:1px solid #ddd; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; background:#fff; color:#aaa; cursor: pointer; }
-        .box-class.done { background: var(--alliance-green); color:white; border-color: var(--alliance-green); box-shadow: 0 4px 10px rgba(46,204,113,0.3); }
-        .box-class.locked { background: #f0f0f0; color: #ccc; cursor: not-allowed; border-style: dashed; }
+        .bg-white { background: #ffffff !important; border: 2px solid #999 !important; } 
+        .bg-red { background: var(--alliance-red) !important; border-color: var(--alliance-red) !important; }
+        .bg-yellow { background: #f1c40f !important; border-color: #f1c40f !important; }
+        .bg-blue { background: #3498db !important; border-color: #3498db !important; }
+        .bg-green { background: #2ecc71 !important; border-color: #2ecc71 !important; }
+
+        .hist-details { margin-top: 15px; border: 1px solid var(--border-color); border-radius: 15px; background: #181818; overflow: hidden; }
+        .hist-summary { cursor: pointer; font-size: 12px; font-weight: bold; color: #3498db; padding: 12px; display: flex; justify-content: space-between; align-items: center; list-style: none; }
+        .hist-content { padding: 12px; font-size: 11px; max-height: 150px; overflow-y: auto; border-top: 1px solid var(--border-color); color: #777; line-height: 1.6; }
         
-        .degree-row { display: flex; gap: 8px; margin: 10px 0; padding: 10px; background: #222; border-radius: 12px; width: fit-content; }
-        .degree-box { width:20px; height:35px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.1); }
-
-        .beh-container { display: flex; justify-content: space-between; margin: 10px 0; gap: 10px; }
-        .beh { flex: 1; aspect-ratio: 1; max-width: 50px; border-radius: 12px; background:#eee; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; font-size: 18px; position: relative; }
+        .chat-container { border-radius: 18px; overflow: hidden; margin-top: 20px; border: 1px solid var(--border-color); background: #181818; }
+        .chat-header { background: #222; color: white; padding: 15px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-bottom: 1px solid var(--border-color); }
+        .chat-msgs { height: 300px; overflow-y: auto; padding: 15px; background: #0b0b0b; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
         
-        .meaning-box { background: #fdfdfd; border: 1px solid #eee; border-radius: 10px; padding: 10px; margin-bottom: 15px; font-size: 10px; color: #666; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-        .meaning-item { display: flex; align-items: center; gap: 5px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .msg-wrapper { display: flex; flex-direction: column; max-width: 85%; }
+        .msg-wrapper.self { align-self: flex-end; }
+        .msg-wrapper.other { align-self: flex-start; }
+        
+        .msg-author { font-size: 9px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; color: #555; padding: 0 5px; }
+        .msg-wrapper.self .msg-author { text-align: right; color: var(--alliance-green); }
 
-        .hist-details { margin-top: 15px; border: 1px solid #eee; border-radius: 12px; padding: 5px; background: #fafafa; }
-        .hist-summary { cursor: pointer; font-size: 11px; font-weight: bold; color: #3498db; padding: 8px; list-style: none; display: flex; justify-content: space-between; }
-        .hist-content { padding: 10px; font-size: 10px; maxHeight: 120px; overflow-y: auto; border-top: 1px solid #eee; }
+        .msg-bubble { padding: 12px; border-radius: 15px; font-size: 13px; position: relative; line-height: 1.4; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .msg-wrapper.self .msg-bubble { background: var(--light-green); border-bottom-right-radius: 2px; color: #fff; }
+        .msg-wrapper.other .msg-bubble { background: #2a2a2a; border-bottom-left-radius: 2px; color: #fff; }
+        .msg-meta { font-size: 8px; text-align: right; margin-top: 5px; opacity: 0.5; font-weight: bold; }
 
-        .chat-container { border-radius: 15px; overflow: hidden; margin-top: 15px; border: 1px solid #eee; background: #fdfdfd; }
-        .chat-header { background: #f8f9fa; color: var(--dark); padding: 12px 15px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-bottom: 1px solid #eee; }
-        .chat-msgs { height: 180px; overflow-y: auto; padding: 15px; background: #f0f2f5; display: flex; flex-direction: column; gap: 8px; }
-        .msg-bubble { padding: 10px; border-radius: 12px; font-size: 13px; max-width: 85%; }
-        .msg-bubble.self { background: var(--light-green); align-self: flex-end; border-top-right-radius: 2px; }
-        .msg-bubble.other { background: #fff; align-self: flex-start; border-top-left-radius: 2px; }
+        .chat-img-preview { width: 100%; max-width: 200px; border-radius: 10px; margin-top: 5px; display: block; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
 
-        .action-bar { 
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            background: var(--dark); padding: 10px 25px; border-radius: 40px; 
-            display: flex; gap: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1000;
-        }
-        .action-item { color: white; text-align: center; cursor: pointer; font-size: 20px; }
-        .action-item span { display: block; font-size: 9px; text-transform: uppercase; margin-top: 3px; font-weight: bold; }
+        .action-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(34, 34, 34, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 40px; display: flex; gap: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 1000; border: 1px solid #444; align-items: center; }
+        .action-item { color: #fff; text-align: center; cursor: pointer; font-size: 22px; transition: 0.3s; opacity: 0.8; }
+        .action-item span { display: block; font-size: 9px; text-transform: uppercase; margin-top: 4px; font-weight: 800; color: #888; }
 
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter: blur(4px); display:flex; align-items:center; justify-content:center; z-index: 2000; padding: 20px; }
-        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 450px; }
-
-        .btn-full { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; }
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); backdrop-filter: blur(6px); display:flex; align-items:center; justify-content:center; z-index: 2000; padding: 20px; }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 28px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; border: 1px solid #444; }
+        
+        .btn-full { width: 100%; padding: 16px; border-radius: 16px; border: none; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 12px; transition: 0.3s; }
         .btn-graduar { background: linear-gradient(45deg, #f39c12, #e67e22); color: white; }
+        .alert-parents { background: linear-gradient(45deg, #27ae60, #2ecc71); color: white; padding: 18px; border-radius: 18px; text-align: center; font-weight: 800; font-size: 14px; margin: 15px 0; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #333; background: #1a1a1a; color: white; border-radius: 14px; font-size: 16px; outline: none; }
+        .chat-notification-badge { background: var(--alliance-red); color: white; padding: 2px 6px; border-radius: 10px; font-size: 9px; margin-left: 5px; }
         
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+        #compress-loader { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.9); color:white; padding:20px; border-radius:15px; z-index:5000; text-align:center; }
     </style>
 </head>
 <body>
+<div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando foto...</div>
 <div id="root"></div>
 
 <script type="text/babel">
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
+    const groups = ["Todos", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth"];
+
+    const AVATAR_BOY = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
+    const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
+
+    const compressImage = (base64Str, maxWidth = 800, quality = 0.6) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.src = base64Str;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                if (width > maxWidth) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+        });
+    };
 
     function calculateAge(birthday) {
         if(!birthday) return 0;
@@ -116,8 +163,7 @@
         if (idade >= 4 && idade <= 6) return "Baby Eagle";
         if (idade >= 7 && idade <= 10) return "Little Eagle";
         if (idade >= 11 && idade <= 12) return "Eagle Warrior";
-        if (idade >= 13 && idade <= 15) return "Eagle Youth";
-        return "Adulto";
+        return "Eagle Youth";
     }
 
     function getRules(nascimento, faixa) {
@@ -131,45 +177,78 @@
     }
 
     function App() {
-        const [mode, setMode] = React.useState("Professor");
-        const [students, setStudents] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v20_s") || "[]"));
-        const [repo, setRepo] = React.useState(() => JSON.parse(localStorage.getItem("all_eagle_v20_r") || "[]"));
-        const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca" });
+        const [mode, setMode] = React.useState(null); 
+        const [subMode, setSubMode] = React.useState(null);
+        const [auth, setAuth] = React.useState({ user: '', pass: '' });
+        
+        const [students, setStudents] = React.useState(() => {
+            try { return JSON.parse(localStorage.getItem("all_eagle_v22_s") || "[]"); } 
+            catch(e) { return []; }
+        });
+        const [repo, setRepo] = React.useState(() => {
+            try { return JSON.parse(localStorage.getItem("all_eagle_v22_r") || "[]"); }
+            catch(e) { return []; }
+        });
+
+        const [searchTerm, setSearchTerm] = React.useState("");
+        const [filterGroup, setFilterGroup] = React.useState("Todos");
+        const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca", sexo: "M" });
         const [chatInputs, setChatInputs] = React.useState({});
         const [openChats, setOpenChats] = React.useState({});
         const [modalOpen, setModalOpen] = React.useState(null);
+        const [viewImage, setViewImage] = React.useState(null);
 
         React.useEffect(() => { 
-            localStorage.setItem("all_eagle_v20_s", JSON.stringify(students));
-            localStorage.setItem("all_eagle_v20_r", JSON.stringify(repo));
+            try {
+                localStorage.setItem("all_eagle_v22_s", JSON.stringify(students));
+                localStorage.setItem("all_eagle_v22_r", JSON.stringify(repo));
+            } catch(e) { console.error("Storage Full"); }
         }, [students, repo]);
 
-        const handleFile = (file, type, id = null) => {
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                if (type === 'avatar') {
-                    setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: e.target.result } : s));
-                } else if (type === 'repo') {
-                    setRepo([...repo, { id: Date.now(), name: file.name, data: e.target.result }]);
-                } else if (type === 'chat') {
-                    const agora = new Date();
-                    const msgAnexo = { id: Date.now(), sender: mode, text: `📎 Arquivo: ${file.name}`, fileData: e.target.result, fileName: file.name, date: agora.toLocaleDateString('pt-BR'), time: agora.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
-                    setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
-                }
-            };
-            reader.readAsDataURL(file);
+        const handleLogin = () => {
+            if (subMode === 'Professor') {
+                if (auth.user === 'admin' && auth.pass === 'admin') setMode('Professor');
+                else alert('Senha incorreta.');
+            } else {
+                const aluno = students.find(s => {
+                    const nomeMatch = s.nome.toLowerCase().trim() === auth.user.toLowerCase().trim();
+                    const senhaLimpa = auth.pass.replace(/\D/g,'');
+                    let dn = s.nascimento.replace(/\D/g,'');
+                    if (s.nascimento.includes('-')) {
+                        const [y, m, d] = s.nascimento.split('-');
+                        dn = d + m + y;
+                    }
+                    return nomeMatch && (dn === senhaLimpa);
+                });
+                if (aluno) { setMode('Pais'); setSearchTerm(aluno.nome); }
+                else alert('Dados incorretos.');
+            }
         };
 
-        const graduarAluno = (sid) => {
-            setStudents(prev => prev.map(s => {
-                if (s.id === sid) {
-                    const idx = beltOrder.indexOf(s.faixa);
-                    const novaFaixa = beltOrder[idx + 1] || s.faixa;
-                    return { ...s, faixa: novaFaixa, aulas: 0, comp: {}, historico: [...(s.historico || []), `🎓 PROMOÇÃO: ${s.faixa} ➔ ${novaFaixa} | ${new Date().toLocaleDateString('pt-BR')}`] };
+        const handleFile = async (file, type, id = null) => {
+            if(!file) return;
+            const isImage = file.type.startsWith('image/');
+            const reader = new FileReader();
+            document.getElementById('compress-loader').style.display = 'block';
+            reader.onload = async (e) => {
+                let finalData = e.target.result;
+                if (isImage) finalData = await compressImage(finalData);
+                if (type === 'avatar') {
+                    setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: finalData } : s));
+                } else if (type === 'chat') {
+                    const msgAnexo = { 
+                        id: Date.now(), 
+                        sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
+                        text: isImage ? "" : `📎 Arquivo: ${file.name}`, fileData: finalData, 
+                        fileName: file.name, isImage: isImage,
+                        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), 
+                        readBy: [mode] 
+                    };
+                    setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
                 }
-                return s;
-            }));
+                document.getElementById('compress-loader').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
         };
 
         const addPresenca = (sid) => {
@@ -179,12 +258,10 @@
                     const rules = getRules(s.nascimento, s.faixa);
                     if (s.aulas >= rules * 9) return s;
                     const novaAula = s.aulas + 1;
-                    const dataAtual = new Date().toLocaleDateString('pt-BR');
-                    let log = [`Presença aula ${novaAula} | ${dataAtual}`];
+                    const log = [`Aula ${novaAula} | ${new Date().toLocaleDateString('pt-BR')}`];
                     if (novaAula % rules === 0) {
                         const n = novaAula / rules;
-                        if(n <= 4) log.push(`🎓 GRAU BRANCO (${n}º) | ${dataAtual}`);
-                        else if(n <= 8) log.push(`🔴 GRAU VERMELHO (${n-4}º) | ${dataAtual}`);
+                        log.push(n <= 4 ? `🎓 GRAU BRANCO (${n}º)` : `🔴 GRAU VERMELHO (${n-4}º)`);
                     }
                     return { ...s, aulas: novaAula, historico: [...(s.historico || []), ...log] };
                 }
@@ -194,115 +271,177 @@
 
         const toggleMerito = (sid, key, label) => {
             if(mode !== "Professor") return;
-            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'✅':'❌'} ${label} | ${new Date().toLocaleDateString()}`] } : s));
+            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'✅':'❌'} ${label}`] } : s));
+        };
+
+        const graduarAluno = (sid) => {
+            if(mode !== "Professor") return;
+            setStudents(prev => prev.map(s => {
+                if (s.id === sid) {
+                    const cur = beltOrder.indexOf(s.faixa);
+                    const prox = beltOrder[cur + 1] || s.faixa;
+                    return { ...s, faixa: prox, aulas: 0, comp: {}, historico: [...(s.historico || []), `🎓 GRADUADO: ${prox}`] };
+                }
+                return s;
+            }));
         };
 
         const sendMessage = (sid) => {
-            const currentInput = chatInputs[sid] || "";
-            if(!currentInput.trim()) return;
-            const agora = new Date();
-            setStudents(prev => prev.map(s => s.id === sid ? { ...s, chat: [...(s.chat || []), { id: Date.now(), sender: mode, text: currentInput, date: agora.toLocaleDateString('pt-BR'), time: agora.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) }] } : s));
+            const txt = chatInputs[sid] || "";
+            if(!txt.trim()) return;
+            const novaMsg = { 
+                id: Date.now(), sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
+                text: txt, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), readBy: [mode] 
+            };
+            setStudents(prev => prev.map(s => s.id === sid ? { ...s, chat: [...(s.chat || []), novaMsg] } : s));
             setChatInputs({ ...chatInputs, [sid]: "" });
         };
 
+        const markAsRead = (sid) => {
+            setStudents(prev => prev.map(s => s.id === sid ? { ...s, chat: (s.chat || []).map(m => !m.readBy.includes(mode) ? { ...m, readBy: [...m.readBy, mode] } : m) } : s));
+        };
+
+        const downloadBackup = () => {
+            const data = { alunos: students, dataBackup: new Date().toLocaleString() };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `backup_eagle_v22.json`;
+            a.click();
+        };
+
+        const filtered = students.filter(s => {
+            const matchesName = s.nome.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesGroup = filterGroup === "Todos" || getAutoCategory(s.nascimento) === filterGroup;
+            return matchesName && matchesGroup;
+        });
+
+        if (!mode) {
+            if (!subMode) return (
+                <div className="selection-screen">
+                    <img src="https://alliance.com.br/wp-content/uploads/2021/04/logo-alliance.png" width="160" style={{filter: 'brightness(0) invert(1)', marginBottom:'10px'}} />
+                    <button className="btn-select" onClick={() => setSubMode("Professor")}><i className="fas fa-graduation-cap"></i> PROFESSOR</button>
+                    <button className="btn-select" onClick={() => setSubMode("Pais")}><i className="fas fa-home"></i> ÁREA DOS PAIS</button>
+                </div>
+            );
+            return (
+                <div className="auth-container">
+                    <div className="login-box">
+                        <h3 style={{textTransform:'uppercase', fontSize:'14px', color:'#777'}}>Acesso {subMode === "Pais" ? "PAIS" : "PROFESSOR"}</h3>
+                        <input placeholder={subMode === 'Professor' ? "Usuário" : "Nome do Aluno"} value={auth.user} onChange={e => setAuth({...auth, user: e.target.value})} />
+                        <input type="password" placeholder={subMode === 'Professor' ? "Senha" : "Nascimento (DDMMAAAA)"} value={auth.pass} onChange={e => setAuth({...auth, pass: e.target.value})} />
+                        <button className="btn-full" style={{background: 'var(--alliance-red)', color:'white'}} onClick={handleLogin}>ENTRAR</button>
+                        <p onClick={() => { setSubMode(null); setAuth({user:'', pass:''}); }} style={{fontSize:'11px', marginTop:'20px', cursor:'pointer', color: '#555'}}>Voltar à seleção</p>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className="container">
-                <header className="header-main">
-                    <h2>Alliance Mooca Kids</h2>
-                </header>
+                <header className="header-main"><h2>Alliance Mooca Kids</h2></header>
 
-                {students.map(s => {
+                {mode === "Professor" && (
+                    <div className="search-container">
+                        <i className="fas fa-search search-icon"></i>
+                        <input className="search-input" placeholder="Buscar por nome..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+                        <div className="filter-bar">
+                            {groups.map(g => (
+                                <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => setFilterGroup(g)}>{g}</button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {filtered.map(s => {
                     const rules = getRules(s.nascimento, s.faixa);
-                    const totalG = Math.floor(s.aulas / rules);
-                    const limiteAtingido = s.aulas >= rules * 9;
-                    const meritoCompleto = s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
+                    const tg = Math.floor(s.aulas / rules);
+                    const pronto = (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
+                    const unread = s.chat?.filter(m => !m.readBy.includes(mode)).length || 0;
+                    const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
 
                     return (
                         <div key={s.id} className="card">
                             <div className="student-top">
                                 <div className="avatar-container">
-                                    <img src={s.avatar || 'https://via.placeholder.com/90'} className="avatar" />
+                                    <img src={s.avatar || defaultAvatar} className="avatar" />
+                                    {/* Alterado para que pais também vejam o botão de editar foto */}
                                     <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>
                                 </div>
                                 <div style={{flex:1}}>
-                                    <h3 style={{margin:0, fontSize:'18px'}}>{s.nome}</h3>
+                                    <h3 style={{margin:0, fontSize:'19px', color: 'white'}}>{s.nome}</h3>
                                     <div className="cat-badge">{s.faixa}</div><br/>
-                                    <small style={{color:'#777'}}>{calculateAge(s.nascimento)} anos • {getAutoCategory(s.nascimento)}</small>
+                                    <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento)}</small>
                                 </div>
-                                {mode === "Professor" && <i className="fas fa-trash" style={{color:'#eee'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
+                                {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover aluno?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
 
-                            {limiteAtingido && (
-                                <div className="alert-status" style={{background: meritoCompleto ? '#d4edda' : '#f8d7da', color: meritoCompleto ? '#155724' : '#721c24', padding: '15px', borderRadius: '15px', textAlign: 'center', fontWeight: 'bold', marginBottom: '15px'}}>
-                                    {meritoCompleto ? "✅ APTO PARA EXAME!" : "⚠️ LIMITE DE AULAS ATINGIDO. FALTAM MEDALHÕES."}
-                                    {meritoCompleto && mode === "Professor" && <button className="btn-full btn-graduar" onClick={() => graduarAluno(s.id)}>REALIZAR TROCA DE FAIXA AGORA</button>}
+                            <span className="section-label">Aulas de Presença</span>
+                            {mode === "Pais" && pronto ? (
+                                <div className="alert-parents"><i className="fas fa-star"></i> AGENDAR EXAME DE FAIXA</div>
+                            ) : (
+                                <div className="bar">
+                                    {Array.from({length:rules}).map((_, i) => (
+                                        <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''} ${s.aulas >= rules * 9 ? 'locked' : ''}`} onClick={() => addPresenca(s.id)}>{i+1}</div>
+                                    ))}
                                 </div>
                             )}
 
-                            <span className="section-label">Aulas</span>
-                            <div className="bar">
-                                {Array.from({length:rules}).map((_, i) => (
-                                    <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''} ${limiteAtingido ? 'locked' : ''}`} onClick={() => addPresenca(s.id)}>{i+1}</div>
-                                ))}
-                            </div>
-
-                            <div className="meaning-box">
-                                <div className="meaning-item"><div className="dot" style={{background:'#fff', border:'1px solid #ccc'}}></div> Grau Branco: Presença</div>
-                                <div className="meaning-item"><div className="dot" style={{background:'var(--alliance-red)'}}></div> Grau Vermelho: Acima de 4 Graus</div>
-                            </div>
-
-                            <span className="section-label">Graus de Presença</span>
+                            <span className="section-label">Graus Conquistados</span>
                             <div className="degree-row">
                                 {Array.from({length:4}).map((_, i) => {
-                                    let cor = "#444";
-                                    if (totalG > i + 4) cor = "var(--alliance-red)";
-                                    else if (totalG > i) cor = "#fff";
-                                    return <div key={i} className="degree-box" style={{background: cor, flex: 1}}></div>;
+                                    let c = "";
+                                    if (tg > i + 4) c = "bg-red"; else if (tg > i) c = "bg-white";
+                                    return <div key={i} className={`degree-box ${c}`}></div>;
                                 })}
                             </div>
 
-                            <div className="meaning-box">
-                                <div className="meaning-item"><div className="dot" style={{background:'#f1c40f'}}></div> Relacionamento</div>
-                                <div className="meaning-item"><div className="dot" style={{background:'#3498db'}}></div> Comportamento</div>
-                                <div className="meaning-item"><div className="dot" style={{background:'#e74c3c'}}></div> Organização</div>
-                                <div className="meaning-item"><div className="dot" style={{background:'#2ecc71'}}></div> Comprometimento</div>
-                            </div>
-
-                            <span className="section-label">Graus Comportamentais</span>
-                            <div className="beh-container">
-                                {[{k:'Rel', i:'fa-users', c:'#f1c40f', l:'Relac.'}, {k:'Comp', i:'fa-brain', c:'#3498db', l:'Comp.'}, {k:'Notas', i:'fa-graduation-cap', c:'#e74c3c', l:'Notas'}, {k:'Hab', i:'fa-apple-alt', c:'#2ecc71', l:'Hab.'}].map(m => (
-                                    <div key={m.k} className="beh" style={{background: s.comp?.[m.k] ? m.c : '#eee'}} onClick={() => toggleMerito(s.id, m.k, m.l)}><i className={`fas ${m.i}`}></i></div>
+                            <span className="section-label">Méritos Comportamentais</span>
+                            <div className="degree-row">
+                                {[
+                                    {k:'Rel', i:'fa-users', c:'bg-yellow', l:'Relac.'}, {k:'Comp', i:'fa-brain', c:'bg-blue', l:'Comp.'}, 
+                                    {k:'Notas', i:'fa-graduation-cap', c:'bg-red', l:'Notas'}, {k:'Hab', i:'fa-apple-alt', c:'bg-green', l:'Hab.'}
+                                ].map(m => (
+                                    <div key={m.k} className={`degree-box ${s.comp?.[m.k] ? m.c : ''}`} onClick={() => toggleMerito(s.id, m.k, m.l)}>
+                                        <i className={`fas ${m.i}`} style={{color: s.comp?.[m.k] ? '#000' : '#444', fontSize: '13px'}}></i>
+                                    </div>
                                 ))}
                             </div>
 
-                            <details className="hist-details" open>
-                                <summary className="hist-summary"><span><i className="fas fa-history"></i> Histórico de Evolução</span><i className="fas fa-chevron-down"></i></summary>
-                                <div className="hist-content">
-                                    {s.historico?.slice().reverse().map((h, i) => <div key={i} style={{padding:'4px 0', borderBottom:'1px solid #f0f0f0'}}>{h}</div>)}
-                                </div>
+                            {mode === "Professor" && pronto && (
+                                <button className="btn-full btn-graduar" onClick={() => graduarAluno(s.id)}><i className="fas fa-medal"></i> GRADUAR PARA {beltOrder[beltOrder.indexOf(s.faixa)+1]}</button>
+                            )}
+
+                            <details className="hist-details">
+                                <summary className="hist-summary"><span><i className="fas fa-history"></i> Histórico Recente</span><i className="fas fa-chevron-down"></i></summary>
+                                <div className="hist-content">{s.historico?.slice().reverse().map((h, i) => <div key={i} style={{padding:'6px 0', borderBottom:'1px solid #222'}}>{h}</div>)}</div>
                             </details>
 
                             <div className="chat-container">
-                                <div className="chat-header" onClick={() => setOpenChats({...openChats, [s.id]: !openChats[s.id]})}>
-                                    <span style={{fontSize:'12px'}}><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> Canal de Comunicação</span>
+                                <div className="chat-header" onClick={() => { setOpenChats({...openChats, [s.id]: !openChats[s.id]}); if(!openChats[s.id]) markAsRead(s.id); }}>
+                                    <span style={{fontSize:'12px'}}><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> CONVERSA {unread > 0 && <span className="chat-notification-badge">{unread}</span>}</span>
                                     <i className={`fas fa-chevron-${openChats[s.id] ? 'up' : 'down'}`} style={{fontSize:'10px'}}></i>
                                 </div>
                                 {openChats[s.id] && (
                                     <>
-                                        <div className="chat-msgs">
+                                        <div className="chat-msgs" id={`chat-${s.id}`}>
                                             {s.chat?.map(m => (
-                                                <div key={m.id} className={`msg-bubble ${m.sender === mode ? 'self' : 'other'}`}>
-                                                    <div style={{fontSize:'9px', fontWeight:'bold', marginBottom:'3px', opacity:0.6}}>{m.sender}</div>
-                                                    {m.text}
-                                                    {m.fileData && <a href={m.fileData} download={m.fileName} style={{display:'block', marginTop:5, fontSize:'10px'}}>📎 {m.fileName}</a>}
-                                                    <div style={{fontSize:'8px', textAlign:'right', marginTop:'4px', opacity:0.5}}>{m.time}</div>
+                                                <div key={m.id} className={`msg-wrapper ${m.sender === mode ? 'self' : 'other'}`}>
+                                                    <span className="msg-author">{m.author}</span>
+                                                    <div className="msg-bubble">
+                                                        {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
+                                                        {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
+                                                        {m.text && <div>{m.text}</div>}
+                                                        <div className="msg-meta">{m.time}</div>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
-                                        <div style={{display:'flex', padding:'10px', background:'#fff', gap:'8px', alignItems:'center', borderTop:'1px solid #eee'}}>
-                                            <label><i className="fas fa-paperclip" style={{color:'#aaa'}}></i><input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'chat', s.id)} /></label>
-                                            <input style={{flex:1, border:'none', background:'#f0f2f5', padding:'10px 15px', borderRadius:'20px', fontSize:'14px'}} placeholder="Conversar..." value={chatInputs[s.id] || ""} onChange={e => setChatInputs({...chatInputs, [s.id]: e.target.value})} onKeyDown={e => e.key === 'Enter' && sendMessage(s.id)}/>
-                                            <i className="fas fa-paper-plane" style={{color: 'var(--alliance-green)', fontSize:'20px'}} onClick={() => sendMessage(s.id)}></i>
+                                        <div style={{display:'flex', padding:'12px', background:'#1a1a1a', gap:'10px', alignItems:'center'}}>
+                                            <label style={{cursor:'pointer'}}><i className="fas fa-camera" style={{color:'#555'}}></i><input type="file" style={{display:'none'}} accept="image/*" onChange={e => handleFile(e.target.files[0], 'chat', s.id)}/></label>
+                                            <input style={{flex:1, border:'none', background:'#000', color:'white', padding:'12px 18px', borderRadius:'25px', fontSize:'14px', margin:0}} placeholder="Mensagem..." value={chatInputs[s.id] || ""} onChange={e => setChatInputs({...chatInputs, [s.id]: e.target.value})} onKeyDown={e => e.key === 'Enter' && sendMessage(s.id)}/>
+                                            <i className="fas fa-paper-plane" style={{color: 'var(--alliance-green)', cursor:'pointer'}} onClick={() => sendMessage(s.id)}></i>
                                         </div>
                                     </>
                                 )}
@@ -311,37 +450,88 @@
                     );
                 })}
 
-                <div className="action-bar">
-                    <div className="action-item" onClick={() => setModalOpen('cadastro')}><i className="fas fa-user-plus"></i><span>Novo</span></div>
-                    <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>Docs</span></div>
-                    <div className="action-item" onClick={() => setMode(mode === "Professor" ? "Pais" : "Professor")}><i className={`fas fa-${mode === "Professor" ? 'graduation-cap' : 'home'}`}></i><span>{mode}</span></div>
-                </div>
-
-                {modalOpen === 'cadastro' && (
-                    <div className="modal-overlay" onClick={() => setModalOpen(null)}>
-                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                            <h3 style={{marginTop:0}}>Novo Aluno</h3>
-                            <input placeholder="Nome" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
-                            <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
-                            <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>{beltOrder.map(b => <option key={b} value={b}>{b}</option>)}</select>
-                            <button className="btn-full btn-graduar" style={{background: 'var(--alliance-green)'}} onClick={() => { if(form.nome && form.nascimento) { setStudents([...students, {...form, id:Date.now(), aulas:0, historico:[], chat:[], comp:{}}]); setForm({nome:"", nascimento:"", faixa:"Branca"}); setModalOpen(null); } }}>Salvar</button>
+                {viewImage && (
+                    <div className="modal-overlay" onClick={() => setViewImage(null)}>
+                        <div className="modal-content" style={{textAlign:'center', background:'transparent', border:'none'}} onClick={e => e.stopPropagation()}>
+                            <img src={viewImage.fileData} style={{maxWidth:'100%', borderRadius:'15px', boxShadow:'0 0 40px #000'}} />
+                            <div style={{marginTop:'20px', display:'flex', gap:'10px', justifyContent:'center'}}>
+                                <a href={viewImage.fileData} download={viewImage.fileName || "imagem.jpg"} className="btn-full" style={{background: 'var(--alliance-green)', color:'white', textDecoration:'none', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', width:'auto', padding:'12px 25px'}}>
+                                    <i className="fas fa-download"></i> BAIXAR
+                                </a>
+                                <button className="btn-full" onClick={() => setViewImage(null)} style={{background: '#333', color:'white', width:'auto', padding:'12px 25px'}}>FECHAR</button>
+                            </div>
                         </div>
                     </div>
                 )}
 
-                {modalOpen === 'repo' && (
+                {mode === "Professor" && (
+                    <div className="action-bar">
+                        <div className="action-item" onClick={() => setModalOpen("add")}><i className="fas fa-plus-circle"></i><span>Novo</span></div>
+                        <div className="action-item" onClick={downloadBackup}><i className="fas fa-cloud-download-alt"></i><span>Backup</span></div>
+                        <div className="action-item" onClick={() => setModalOpen("import")}><i className="fas fa-upload"></i><span>Importar</span></div>
+                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); }}><i className="fas fa-sign-out-alt"></i><span>Sair</span></div>
+                    </div>
+                )}
+                
+                {mode === "Pais" && (
+                     <div className="action-bar">
+                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); }}><i className="fas fa-sign-out-alt"></i><span>Sair da Área Pais</span></div>
+                    </div>
+                )}
+
+                {modalOpen === "add" && (
                     <div className="modal-overlay" onClick={() => setModalOpen(null)}>
                         <div className="modal-content" onClick={e => e.stopPropagation()}>
-                            <h3 style={{marginTop:0}}>Docs</h3>
-                            {repo.map(d => <div key={d.id} style={{display:'flex', justifyContent:'space-between', padding:'12px', borderBottom:'1px solid #eee'}}><span>{d.name}</span><i className="fas fa-download" style={{color:'var(--alliance-green)'}} onClick={() => { const a = document.createElement('a'); a.href=d.data; a.download=d.name; a.click(); }}></i></div>)}
-                            {mode === "Professor" && <div style={{marginTop:15}}><label className="btn-full" style={{background:'#eee', display:'block', textAlign:'center', cursor:'pointer'}}>+ Subir Arquivo <input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'repo')} /></label></div>}
+                            <h3>Novo Aluno</h3>
+                            <input placeholder="Nome Completo" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
+                            <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
+                            <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>
+                                {beltOrder.map(b => <option key={b} value={b}>{b}</option>)}
+                            </select>
+                            <select value={form.sexo} onChange={e => setForm({...form, sexo: e.target.value})}>
+                                <option value="M">Masculino</option>
+                                <option value="F">Feminino</option>
+                            </select>
+                            <button className="btn-full" style={{background: 'var(--alliance-red)', color:'white'}} onClick={() => {
+                                if(!form.nome || !form.nascimento) return alert("Preencha tudo");
+                                setStudents([...students, { ...form, id: Date.now(), aulas: 0, historico: ["Matrícula realizada"], chat: [], comp: {} }]);
+                                setModalOpen(null);
+                                setForm({ nome: "", nascimento: "", faixa: "Branca", sexo: "M" });
+                            }}>SALVAR ALUNO</button>
+                        </div>
+                    </div>
+                )}
+                
+                {modalOpen === "import" && (
+                    <div className="modal-overlay" onClick={() => setModalOpen(null)}>
+                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                            <h3>Importar Backup</h3>
+                            <input type="file" accept=".json" onChange={e => {
+                                const file = e.target.files[0];
+                                if(!file) return;
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                    try {
+                                        const imported = JSON.parse(event.target.result);
+                                        if(imported.alunos) {
+                                            setStudents(imported.alunos);
+                                            alert("Backup restaurado!");
+                                            setModalOpen(null);
+                                        }
+                                    } catch(err) { alert("Erro ao ler arquivo"); }
+                                };
+                                reader.readAsText(file);
+                            }} />
+                            <p style={{fontSize:'11px', color:'#777'}}>Atenção: Isso substituirá todos os dados atuais.</p>
                         </div>
                     </div>
                 )}
             </div>
         );
     }
-    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
 </script>
 </body>
 </html>
