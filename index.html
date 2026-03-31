@@ -124,6 +124,7 @@
 <script type="text/babel">
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
     const groups = ["Todos", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth"];
+    const LOGO_URL = "https://alliance.com.br/wp-content/uploads/2021/04/logo-alliance.png";
 
     const AVATAR_BOY = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
     const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
@@ -185,10 +186,6 @@
             try { return JSON.parse(localStorage.getItem("all_eagle_v22_s") || "[]"); } 
             catch(e) { return []; }
         });
-        const [repo, setRepo] = React.useState(() => {
-            try { return JSON.parse(localStorage.getItem("all_eagle_v22_r") || "[]"); }
-            catch(e) { return []; }
-        });
 
         const [searchTerm, setSearchTerm] = React.useState("");
         const [filterGroup, setFilterGroup] = React.useState("Todos");
@@ -201,9 +198,8 @@
         React.useEffect(() => { 
             try {
                 localStorage.setItem("all_eagle_v22_s", JSON.stringify(students));
-                localStorage.setItem("all_eagle_v22_r", JSON.stringify(repo));
             } catch(e) { console.error("Storage Full"); }
-        }, [students, repo]);
+        }, [students]);
 
         const handleLogin = () => {
             if (subMode === 'Professor') {
@@ -249,6 +245,21 @@
                 document.getElementById('compress-loader').style.display = 'none';
             };
             reader.readAsDataURL(file);
+        };
+
+        const handleAddStudent = () => {
+            if(!form.nome || !form.nascimento) return alert("Preencha todos os campos");
+            const novo = {
+                id: Date.now(),
+                ...form,
+                aulas: 0,
+                historico: [`Matrícula: ${new Date().toLocaleDateString()}`],
+                comp: {},
+                chat: []
+            };
+            setStudents([...students, novo]);
+            setModalOpen(null);
+            setForm({ nome: "", nascimento: "", faixa: "Branca", sexo: "M" });
         };
 
         const addPresenca = (sid) => {
@@ -301,16 +312,6 @@
             setStudents(prev => prev.map(s => s.id === sid ? { ...s, chat: (s.chat || []).map(m => !m.readBy.includes(mode) ? { ...m, readBy: [...m.readBy, mode] } : m) } : s));
         };
 
-        const downloadBackup = () => {
-            const data = { alunos: students, dataBackup: new Date().toLocaleString() };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `backup_eagle_v22.json`;
-            a.click();
-        };
-
         const filtered = students.filter(s => {
             const matchesName = s.nome.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesGroup = filterGroup === "Todos" || getAutoCategory(s.nascimento) === filterGroup;
@@ -320,13 +321,14 @@
         if (!mode) {
             if (!subMode) return (
                 <div className="selection-screen">
-                    <img src="https://alliance.com.br/wp-content/uploads/2021/04/logo-alliance.png" width="160" style={{filter: 'brightness(0) invert(1)', marginBottom:'10px'}} />
+                    <img src={LOGO_URL} width="160" style={{filter: 'brightness(0) invert(1)', marginBottom:'10px'}} />
                     <button className="btn-select" onClick={() => setSubMode("Professor")}><i className="fas fa-graduation-cap"></i> PROFESSOR</button>
                     <button className="btn-select" onClick={() => setSubMode("Pais")}><i className="fas fa-home"></i> ÁREA DOS PAIS</button>
                 </div>
             );
             return (
                 <div className="auth-container">
+                    <img src={LOGO_URL} width="140" style={{filter: 'brightness(0) invert(1)'}} />
                     <div className="login-box">
                         <h3 style={{textTransform:'uppercase', fontSize:'14px', color:'#777'}}>Acesso {subMode === "Pais" ? "PAIS" : "PROFESSOR"}</h3>
                         <input placeholder={subMode === 'Professor' ? "Usuário" : "Nome do Aluno"} value={auth.user} onChange={e => setAuth({...auth, user: e.target.value})} />
@@ -366,7 +368,6 @@
                             <div className="student-top">
                                 <div className="avatar-container">
                                     <img src={s.avatar || defaultAvatar} className="avatar" />
-                                    {/* Alterado para que pais também vejam o botão de editar foto */}
                                     <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>
                                 </div>
                                 <div style={{flex:1}}>
@@ -414,7 +415,7 @@
                             )}
 
                             <details className="hist-details">
-                                <summary className="hist-summary"><span><i className="fas fa-history"></i> Histórico Recente</span><i className="fas fa-chevron-down"></i></summary>
+                                <summary className="hist-summary"><span><i className="fas fa-history"></i> Histórico</span><i className="fas fa-chevron-down"></i></summary>
                                 <div className="hist-content">{s.historico?.slice().reverse().map((h, i) => <div key={i} style={{padding:'6px 0', borderBottom:'1px solid #222'}}>{h}</div>)}</div>
                             </details>
 
@@ -450,79 +451,37 @@
                     );
                 })}
 
-                {viewImage && (
-                    <div className="modal-overlay" onClick={() => setViewImage(null)}>
-                        <div className="modal-content" style={{textAlign:'center', background:'transparent', border:'none'}} onClick={e => e.stopPropagation()}>
-                            <img src={viewImage.fileData} style={{maxWidth:'100%', borderRadius:'15px', boxShadow:'0 0 40px #000'}} />
-                            <div style={{marginTop:'20px', display:'flex', gap:'10px', justifyContent:'center'}}>
-                                <a href={viewImage.fileData} download={viewImage.fileName || "imagem.jpg"} className="btn-full" style={{background: 'var(--alliance-green)', color:'white', textDecoration:'none', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', width:'auto', padding:'12px 25px'}}>
-                                    <i className="fas fa-download"></i> BAIXAR
-                                </a>
-                                <button className="btn-full" onClick={() => setViewImage(null)} style={{background: '#333', color:'white', width:'auto', padding:'12px 25px'}}>FECHAR</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
                 {mode === "Professor" && (
                     <div className="action-bar">
-                        <div className="action-item" onClick={() => setModalOpen("add")}><i className="fas fa-plus-circle"></i><span>Novo</span></div>
-                        <div className="action-item" onClick={downloadBackup}><i className="fas fa-cloud-download-alt"></i><span>Backup</span></div>
-                        <div className="action-item" onClick={() => setModalOpen("import")}><i className="fas fa-upload"></i><span>Importar</span></div>
-                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); }}><i className="fas fa-sign-out-alt"></i><span>Sair</span></div>
-                    </div>
-                )}
-                
-                {mode === "Pais" && (
-                     <div className="action-bar">
-                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); }}><i className="fas fa-sign-out-alt"></i><span>Sair da Área Pais</span></div>
+                        <div className="action-item" onClick={() => setModalOpen('add')}><i className="fas fa-plus-circle"></i><span>NOVO</span></div>
+                        <div className="action-item" onClick={() => setMode(null)}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                     </div>
                 )}
 
-                {modalOpen === "add" && (
-                    <div className="modal-overlay" onClick={() => setModalOpen(null)}>
-                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                            <h3>Novo Aluno</h3>
-                            <input placeholder="Nome Completo" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
-                            <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
-                            <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>
+                {modalOpen === 'add' && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Cadastrar Aluno</h3>
+                            <input placeholder="Nome Completo" onChange={e => setForm({...form, nome: e.target.value})} />
+                            <input type="date" onChange={e => setForm({...form, nascimento: e.target.value})} />
+                            <select onChange={e => setForm({...form, faixa: e.target.value})}>
                                 {beltOrder.map(b => <option key={b} value={b}>{b}</option>)}
                             </select>
-                            <select value={form.sexo} onChange={e => setForm({...form, sexo: e.target.value})}>
+                            <select onChange={e => setForm({...form, sexo: e.target.value})}>
                                 <option value="M">Masculino</option>
                                 <option value="F">Feminino</option>
                             </select>
-                            <button className="btn-full" style={{background: 'var(--alliance-red)', color:'white'}} onClick={() => {
-                                if(!form.nome || !form.nascimento) return alert("Preencha tudo");
-                                setStudents([...students, { ...form, id: Date.now(), aulas: 0, historico: ["Matrícula realizada"], chat: [], comp: {} }]);
-                                setModalOpen(null);
-                                setForm({ nome: "", nascimento: "", faixa: "Branca", sexo: "M" });
-                            }}>SALVAR ALUNO</button>
+                            <button className="btn-full" style={{background:'var(--alliance-green)', color:'white'}} onClick={handleAddStudent}>SALVAR</button>
+                            <button className="btn-full" onClick={() => setModalOpen(null)}>CANCELAR</button>
                         </div>
                     </div>
                 )}
-                
-                {modalOpen === "import" && (
-                    <div className="modal-overlay" onClick={() => setModalOpen(null)}>
-                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                            <h3>Importar Backup</h3>
-                            <input type="file" accept=".json" onChange={e => {
-                                const file = e.target.files[0];
-                                if(!file) return;
-                                const reader = new FileReader();
-                                reader.onload = (event) => {
-                                    try {
-                                        const imported = JSON.parse(event.target.result);
-                                        if(imported.alunos) {
-                                            setStudents(imported.alunos);
-                                            alert("Backup restaurado!");
-                                            setModalOpen(null);
-                                        }
-                                    } catch(err) { alert("Erro ao ler arquivo"); }
-                                };
-                                reader.readAsText(file);
-                            }} />
-                            <p style={{fontSize:'11px', color:'#777'}}>Atenção: Isso substituirá todos os dados atuais.</p>
+
+                {viewImage && (
+                    <div className="modal-overlay" onClick={() => setViewImage(null)}>
+                        <div className="modal-content" style={{textAlign:'center', background:'transparent', border:'none'}} onClick={e => e.stopPropagation()}>
+                            <img src={viewImage.fileData} style={{maxWidth:'100%', borderRadius:'15px'}} />
+                            <button className="btn-full" onClick={() => setViewImage(null)}>FECHAR</button>
                         </div>
                     </div>
                 )}
