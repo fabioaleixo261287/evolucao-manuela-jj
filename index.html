@@ -39,8 +39,22 @@
         .selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 20px; background: var(--bg); }
         .btn-select { width: 85%; max-width: 320px; padding: 22px; border-radius: 20px; border: none; background: #222; color: white; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: 0.3s; }
 
-        .header-main { text-align: center; margin: 20px 0 15px; }
-        .header-main h2 { color: white; font-weight: 800; text-transform: uppercase; border-bottom: 3px solid var(--alliance-red); display: inline-block; padding-bottom: 8px; letter-spacing: 1px; }
+        .header-main { text-align: center; margin: 20px 0 15px; position: relative; display: flex; justify-content: center; align-items: center; }
+        .header-main h2 { color: white; font-weight: 800; text-transform: uppercase; border-bottom: 3px solid var(--alliance-red); display: inline-block; padding-bottom: 8px; letter-spacing: 1px; margin: 0; }
+        
+        /* Botão de Engrenagem (Backup) */
+        .btn-settings-hidden { 
+            position: absolute; 
+            right: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: #444; /* Cor suave para não destacar tanto, mas visível */
+            font-size: 18px; 
+            cursor: pointer; 
+            padding: 10px;
+            transition: 0.3s;
+        }
+        .btn-settings-hidden:hover { color: var(--alliance-red); }
 
         .search-container { max-width: 850px; margin: 0 auto 15px; position: relative; }
         .search-input { width: 100%; padding: 16px 20px 16px 50px; border-radius: 30px; border: 1px solid var(--border-color); background: #2a2a2a; color: white; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); outline: none; }
@@ -108,13 +122,48 @@
         
         .btn-full { width: 100%; padding: 16px; border-radius: 16px; border: none; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 12px; transition: 0.3s; }
         .btn-graduar { background: linear-gradient(45deg, #f39c12, #e67e22); color: white; }
-        .alert-parents { background: linear-gradient(45deg, #27ae60, #2ecc71); color: white; padding: 18px; border-radius: 18px; text-align: center; font-weight: 800; font-size: 14px; margin: 15px 0; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        
+        .alert-parents { 
+            background: linear-gradient(45deg, #27ae60, #2ecc71); 
+            color: white; 
+            padding: 18px; 
+            border-radius: 18px; 
+            text-align: center; 
+            font-weight: 800; 
+            font-size: 14px; 
+            margin: 15px 0; 
+            animation: pulse 2s infinite; 
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            display: block;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .prediction-badge {
+            background: #222;
+            color: #f1c40f;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            border: 1px solid #444;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
 
         input, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #333; background: #1a1a1a; color: white; border-radius: 14px; font-size: 16px; outline: none; }
-        .chat-notification-badge { background: var(--alliance-red); color: white; padding: 2px 6px; border-radius: 10px; font-size: 9px; margin-left: 5px; }
         
         #compress-loader { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.9); color:white; padding:20px; border-radius:15px; z-index:5000; text-align:center; }
+
+        .repo-item { display: flex; align-items: center; justify-content: space-between; background: #252525; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #333; }
+        .btn-edit-info { color: #3498db; cursor: pointer; margin-left: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -124,7 +173,6 @@
 <script type="text/babel">
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
     const groups = ["Todos", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth"];
-
     const AVATAR_BOY = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
     const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
 
@@ -176,6 +224,20 @@
         return 15;
     }
 
+    function getPrevisaoGraduacao(aulasAtuais, nascimento, faixa) {
+        const rules = getRules(nascimento, faixa);
+        const totalAulasNecessarias = rules * 9;
+        const aulasFaltantes = totalAulasNecessarias - aulasAtuais;
+        
+        if (aulasFaltantes <= 0) return "Pronto para exame!";
+        
+        const semanasFaltantes = Math.ceil(aulasFaltantes / 4);
+        const dataPrevisa = new Date();
+        dataPrevisa.setDate(dataPrevisa.getDate() + (semanasFaltantes * 7));
+        
+        return dataPrevisa.toLocaleDateString('pt-BR');
+    }
+
     function App() {
         const [mode, setMode] = React.useState(null); 
         const [subMode, setSubMode] = React.useState(null);
@@ -197,6 +259,7 @@
         const [openChats, setOpenChats] = React.useState({});
         const [modalOpen, setModalOpen] = React.useState(null);
         const [viewImage, setViewImage] = React.useState(null);
+        const [editingStudent, setEditingStudent] = React.useState(null);
 
         React.useEffect(() => { 
             try {
@@ -233,37 +296,46 @@
             reader.onload = async (e) => {
                 let finalData = e.target.result;
                 if (isImage) finalData = await compressImage(finalData);
+                
                 if (type === 'avatar') {
                     setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: finalData } : s));
                 } else if (type === 'chat') {
                     const msgAnexo = { 
-                        id: Date.now(), 
-                        sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
+                        id: Date.now(), sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
                         text: isImage ? "" : `📎 Arquivo: ${file.name}`, fileData: finalData, 
                         fileName: file.name, isImage: isImage,
                         time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), 
                         readBy: [mode] 
                     };
                     setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
+                } else if (type === 'repo') {
+                    const newItem = { id: Date.now(), name: file.name, data: finalData, date: new Date().toLocaleDateString() };
+                    setRepo(prev => [...prev, newItem]);
                 }
                 document.getElementById('compress-loader').style.display = 'none';
             };
             reader.readAsDataURL(file);
         };
 
-        const addPresenca = (sid) => {
+        const togglePresenca = (sid, boxIndex) => {
             if(mode !== "Professor") return;
             setStudents(prev => prev.map(s => {
                 if (s.id === sid) {
                     const rules = getRules(s.nascimento, s.faixa);
-                    if (s.aulas >= rules * 9) return s;
-                    const novaAula = s.aulas + 1;
-                    const log = [`Aula ${novaAula} | ${new Date().toLocaleDateString('pt-BR')}`];
-                    if (novaAula % rules === 0) {
-                        const n = novaAula / rules;
-                        log.push(n <= 4 ? `🎓 GRAU BRANCO (${n}º)` : `🔴 GRAU VERMELHO (${n-4}º)`);
+                    const currentRemainder = s.aulas % rules;
+                    if (boxIndex < currentRemainder) {
+                        const novaAula = s.aulas - 1;
+                        return { ...s, aulas: Math.max(0, novaAula), historico: [...(s.historico || []), `❌ Remoção de Presença | Aula ${s.aulas} | ${new Date().toLocaleDateString('pt-BR')}`] };
+                    } else {
+                        if (s.aulas >= rules * 9) return s;
+                        const novaAula = s.aulas + 1;
+                        const log = [`Aula ${novaAula} | ${new Date().toLocaleDateString('pt-BR')}`];
+                        if (novaAula % rules === 0) {
+                            const n = novaAula / rules;
+                            log.push(n <= 4 ? `🎓 GRAU DE PRESENÇA BRANCO (${n}º)` : `🔴 GRAU DE PRESENÇA VERMELHO (${n-4}º)`);
+                        }
+                        return { ...s, aulas: novaAula, historico: [...(s.historico || []), ...log] };
                     }
-                    return { ...s, aulas: novaAula, historico: [...(s.historico || []), ...log] };
                 }
                 return s;
             }));
@@ -286,6 +358,38 @@
             }));
         };
 
+        const downloadBackup = () => {
+            const data = { students, repo, timestamp: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_eagle_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+            a.click();
+        };
+
+        const importBackup = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if (data.students) {
+                        setStudents(data.students);
+                        setRepo(data.repo || []);
+                        alert("Backup restaurado com sucesso!");
+                        setModalOpen(null);
+                    } else {
+                        alert("Arquivo de backup inválido.");
+                    }
+                } catch (err) {
+                    alert("Erro ao ler o arquivo.");
+                }
+            };
+            reader.readAsText(file);
+        };
+
         const sendMessage = (sid) => {
             const txt = chatInputs[sid] || "";
             if(!txt.trim()) return;
@@ -297,18 +401,13 @@
             setChatInputs({ ...chatInputs, [sid]: "" });
         };
 
-        const markAsRead = (sid) => {
-            setStudents(prev => prev.map(s => s.id === sid ? { ...s, chat: (s.chat || []).map(m => !m.readBy.includes(mode) ? { ...m, readBy: [...m.readBy, mode] } : m) } : s));
-        };
-
-        const downloadBackup = () => {
-            const data = { alunos: students, dataBackup: new Date().toLocaleString() };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `backup_eagle_v22.json`;
-            a.click();
+        const agendarExamePeloAlerta = (sid) => {
+            if (mode !== "Pais") return;
+            setChatInputs({ ...chatInputs, [sid]: "AGENDAR EXAME DE FAIXA" });
+            setOpenChats({ ...openChats, [sid]: true });
+            setTimeout(() => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 100);
         };
 
         const filtered = students.filter(s => {
@@ -340,7 +439,15 @@
 
         return (
             <div className="container">
-                <header className="header-main"><h2>Alliance Mooca Kids</h2></header>
+                <header className="header-main">
+                    <h2>Alliance Mooca Kids</h2>
+                    {/* Botão de Engrenagem para Backup */}
+                    {mode === "Professor" && (
+                        <div className="btn-settings-hidden" onClick={() => setModalOpen('backup')}>
+                            <i className="fas fa-cog"></i>
+                        </div>
+                    )}
+                </header>
 
                 {mode === "Professor" && (
                     <div className="search-container">
@@ -360,6 +467,7 @@
                     const pronto = (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
                     const unread = s.chat?.filter(m => !m.readBy.includes(mode)).length || 0;
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
+                    const previsao = getPrevisaoGraduacao(s.aulas, s.nascimento, s.faixa);
 
                     return (
                         <div key={s.id} className="card">
@@ -369,25 +477,31 @@
                                     <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>
                                 </div>
                                 <div style={{flex:1}}>
-                                    <h3 style={{margin:0, fontSize:'19px', color: 'white'}}>{s.nome}</h3>
+                                    <h3 style={{margin:0, fontSize:'19px', color: 'white'}}>
+                                        {s.nome} 
+                                        {mode === "Professor" && <i className="fas fa-edit btn-edit-info" onClick={() => { setEditingStudent({...s}); setModalOpen('edit'); }}></i>}
+                                    </h3>
                                     <div className="cat-badge">{s.faixa}</div><br/>
-                                    <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento)}</small>
+                                    <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento)}</small><br/>
+                                    <div className="prediction-badge"><i className="fas fa-calendar-alt"></i> Exame Previsto: {previsao}</div>
                                 </div>
-                                {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover aluno?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
+                                {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
 
                             <span className="section-label">Aulas de Presença</span>
                             {mode === "Pais" && pronto ? (
-                                <div className="alert-parents"><i className="fas fa-star"></i> AGENDAR EXAME DE FAIXA</div>
+                                <button className="alert-parents" onClick={() => agendarExamePeloAlerta(s.id)}>
+                                    <i className="fas fa-star"></i> AGENDAR EXAME DE FAIXA (CLIQUE AQUI)
+                                </button>
                             ) : (
                                 <div className="bar">
                                     {Array.from({length:rules}).map((_, i) => (
-                                        <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''} ${s.aulas >= rules * 9 ? 'locked' : ''}`} onClick={() => addPresenca(s.id)}>{i+1}</div>
+                                        <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''} ${s.aulas >= rules * 9 ? 'locked' : ''}`} onClick={() => togglePresenca(s.id, i)}>{i+1}</div>
                                     ))}
                                 </div>
                             )}
 
-                            <span className="section-label">Graus Conquistados</span>
+                            <span className="section-label">Graus de Presença</span>
                             <div className="degree-row">
                                 {Array.from({length:4}).map((_, i) => {
                                     let c = "";
@@ -396,14 +510,23 @@
                                 })}
                             </div>
 
-                            <span className="section-label">Méritos Comportamentais</span>
-                            <div className="degree-row">
+                            <span className="section-label">Graus Comportamentais</span>
+                            <div className="degree-row" style={{ alignItems: 'flex-end', padding: '15px 12px' }}>
                                 {[
-                                    {k:'Rel', i:'fa-users', c:'bg-yellow', l:'Relac.'}, {k:'Comp', i:'fa-brain', c:'bg-blue', l:'Comp.'}, 
-                                    {k:'Notas', i:'fa-graduation-cap', c:'bg-red', l:'Notas'}, {k:'Hab', i:'fa-apple-alt', c:'bg-green', l:'Hab.'}
+                                    {k:'Rel', i:'fa-users', c:'bg-yellow', l:'Relac.'}, 
+                                    {k:'Comp', i:'fa-brain', c:'bg-blue', l:'Comp.'}, 
+                                    {k:'Notas', i:'fa-graduation-cap', c:'bg-red', l:'Notas'}, 
+                                    {k:'Hab', i:'fa-apple-alt', c:'bg-green', l:'Hab.'}
                                 ].map(m => (
-                                    <div key={m.k} className={`degree-box ${s.comp?.[m.k] ? m.c : ''}`} onClick={() => toggleMerito(s.id, m.k, m.l)}>
-                                        <i className={`fas ${m.i}`} style={{color: s.comp?.[m.k] ? '#000' : '#444', fontSize: '13px'}}></i>
+                                    <div key={m.k} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                                        <span style={{ fontSize: '9px', fontWeight: '800', color: '#888', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{m.l}</span>
+                                        <div 
+                                            className={`degree-box ${s.comp?.[m.k] ? m.c : ''}`} 
+                                            onClick={() => toggleMerito(s.id, m.k, m.l)}
+                                            style={{ width: '100%', margin: 0, height: '42px' }}
+                                        >
+                                            <i className={`fas ${m.i}`} style={{ color: s.comp?.[m.k] ? '#000' : '#444', fontSize: '15px' }}></i>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -413,18 +536,18 @@
                             )}
 
                             <details className="hist-details">
-                                <summary className="hist-summary"><span><i className="fas fa-history"></i> Histórico Recente</span><i className="fas fa-chevron-down"></i></summary>
+                                <summary className="hist-summary"><span><i className="fas fa-history"></i> Histórico</span><i className="fas fa-chevron-down"></i></summary>
                                 <div className="hist-content">{s.historico?.slice().reverse().map((h, i) => <div key={i} style={{padding:'6px 0', borderBottom:'1px solid #222'}}>{h}</div>)}</div>
                             </details>
 
-                            <div className="chat-container">
-                                <div className="chat-header" onClick={() => { setOpenChats({...openChats, [s.id]: !openChats[s.id]}); if(!openChats[s.id]) markAsRead(s.id); }}>
-                                    <span style={{fontSize:'12px'}}><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> CONVERSA {unread > 0 && <span className="chat-notification-badge">{unread}</span>}</span>
+                            <div className="chat-container" id={`chat-${s.id}`}>
+                                <div className="chat-header" onClick={() => { setOpenChats({...openChats, [s.id]: !openChats[s.id]}); if(!openChats[s.id]) setStudents(prev => prev.map(x => x.id === s.id ? {...x, chat: (x.chat||[]).map(m => !m.readBy.includes(mode) ? {...m, readBy: [...m.readBy, mode]} : m)} : x)); }}>
+                                    <span style={{fontSize:'12px'}}><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> CONVERSA {unread > 0 && <span style={{background: 'var(--alliance-red)', padding:'2px 6px', borderRadius:'10px', fontSize:'9px', marginLeft:'5px'}}>{unread}</span>}</span>
                                     <i className={`fas fa-chevron-${openChats[s.id] ? 'up' : 'down'}`} style={{fontSize:'10px'}}></i>
                                 </div>
                                 {openChats[s.id] && (
                                     <>
-                                        <div className="chat-msgs" id={`chat-${s.id}`}>
+                                        <div className="chat-msgs">
                                             {s.chat?.map(m => (
                                                 <div key={m.id} className={`msg-wrapper ${m.sender === mode ? 'self' : 'other'}`}>
                                                     <span className="msg-author">{m.author}</span>
@@ -449,59 +572,119 @@
                     );
                 })}
 
-                {viewImage && (
-                    <div className="modal-overlay" onClick={() => setViewImage(null)}>
-                        <div className="modal-content" style={{textAlign:'center', background:'transparent', border:'none'}} onClick={e => e.stopPropagation()}>
-                            <img src={viewImage.fileData} style={{maxWidth:'100%', borderRadius:'15px', boxShadow:'0 0 40px #000'}} />
-                            <div style={{marginTop:'20px', display:'flex', gap:'10px', justifyContent:'center'}}>
-                                <a href={viewImage.fileData} download={viewImage.fileName || "imagem.jpg"} className="btn-full" style={{background: 'var(--alliance-green)', color:'white', textDecoration:'none', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', width:'auto', padding:'12px 25px'}}>
-                                    <i className="fas fa-download"></i> BAIXAR
-                                </a>
-                                <button className="btn-full" style={{width:'auto', padding:'12px 25px'}} onClick={() => setViewImage(null)}>FECHAR</button>
-                            </div>
+                <div className="action-bar">
+                    {mode === "Professor" ? (
+                        <>
+                            <div className="action-item" onClick={() => setModalOpen('add')}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
+                            <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
+                            <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="action-item" onClick={() => window.open('https://alliancemoooca.com.br', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
+                            <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
+                            <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
+                        </>
+                    )}
+                </div>
+
+                {/* MODAL BACKUP */}
+                {modalOpen === 'backup' && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Gestão de Dados</h3>
+                            <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={downloadBackup}>
+                                <i className="fas fa-download"></i> GERAR BACKUP (.JSON)
+                            </button>
+                            <label className="btn-full" style={{background: 'var(--alliance-red)', color:'white', display:'block', textAlign:'center', cursor:'pointer', marginTop:'15px'}}>
+                                <i className="fas fa-upload"></i> IMPORTAR BACKUP
+                                <input type="file" style={{display:'none'}} accept=".json" onChange={importBackup} />
+                            </label>
+                            <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
                         </div>
                     </div>
                 )}
 
-                <div className="action-bar">
-                    <div className="action-item" onClick={() => setModalOpen("add")}><i className="fas fa-plus-circle" style={{color: 'var(--alliance-red)'}}></i><span>Novo</span></div>
-                    <div className="action-item" onClick={downloadBackup}><i className="fas fa-cloud-download-alt"></i><span>Backup</span></div>
-                    <label className="action-item"><i className="fas fa-cloud-upload-alt"></i><span>Restaurar</span><input type="file" style={{display:'none'}} onChange={e => {
-                        const reader = new FileReader();
-                        reader.onload = (ev) => {
-                            try {
-                                const data = JSON.parse(ev.target.result);
-                                if (data.alunos) { setStudents(data.alunos); alert("Backup restaurado!"); }
-                            } catch(err) { alert("Erro ao ler arquivo."); }
-                        };
-                        reader.readAsText(e.target.files[0]);
-                    }} /></label>
-                    <div className="action-item" onClick={() => window.location.reload()}><i className="fas fa-sign-out-alt"></i><span>Sair</span></div>
-                </div>
-
-                {modalOpen === "add" && (
+                {/* MODAL ADICIONAR ALUNO */}
+                {modalOpen === 'add' && (
                     <div className="modal-overlay">
                         <div className="modal-content">
-                            <h2 style={{color:'white', textAlign:'center'}}>Novo Aluno</h2>
+                            <h3>Novo Aluno</h3>
                             <input placeholder="Nome Completo" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
-                            <label style={{fontSize:'12px', color:'#777'}}>Data de Nascimento:</label>
                             <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
                             <select value={form.sexo} onChange={e => setForm({...form, sexo: e.target.value})}>
                                 <option value="M">Masculino</option>
                                 <option value="F">Feminino</option>
                             </select>
                             <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>
-                                {beltOrder.map(b => <option key={b} value={b}>{b}</option>)}
+                                {beltOrder.map(f => <option key={f} value={f}>{f}</option>)}
                             </select>
-                            <button className="btn-full" style={{background: 'var(--alliance-red)', color:'white'}} onClick={() => {
+                            <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
                                 if(!form.nome || !form.nascimento) return alert("Preencha tudo!");
-                                const novo = { ...form, id: Date.now(), aulas: 0, chat: [], historico: ["Aluno cadastrado"] };
-                                setStudents([...students, novo]);
+                                setStudents([...students, { ...form, id: Date.now(), aulas: 0, historico: [`Matrícula realizada em ${new Date().toLocaleDateString()}`] }]);
                                 setModalOpen(null);
                                 setForm({ nome: "", nascimento: "", faixa: "Branca", sexo: "M" });
-                            }}>SALVAR ALUNO</button>
-                            <button className="btn-full" style={{background: 'transparent', color:'#777'}} onClick={() => setModalOpen(null)}>CANCELAR</button>
+                            }}>SALVAR</button>
+                            <button className="btn-full" onClick={() => setModalOpen(null)}>CANCELAR</button>
                         </div>
+                    </div>
+                )}
+
+                {/* MODAL REPOSITÓRIO */}
+                {modalOpen === 'repo' && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Arquivos e Materiais</h3>
+                            {mode === "Professor" && (
+                                <div style={{marginBottom:'20px'}}>
+                                    <label className="btn-full" style={{background: 'var(--alliance-red)', color:'white', display:'block', textAlign:'center', cursor:'pointer'}}>
+                                        <i className="fas fa-upload"></i> UPLOAD ARQUIVO
+                                        <input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'repo')} />
+                                    </label>
+                                </div>
+                            )}
+                            <div style={{marginTop:'15px'}}>
+                                {repo.length === 0 && <p style={{textAlign:'center', color:'#555'}}>Nenhum arquivo disponível.</p>}
+                                {repo.map(r => (
+                                    <div key={r.id} className="repo-item">
+                                        <div style={{flex:1, overflow:'hidden', marginRight:'10px'}}>
+                                            <div style={{fontSize:'13px', fontWeight:'bold', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{r.name}</div>
+                                            <div style={{fontSize:'10px', color:'#555'}}>{r.date}</div>
+                                        </div>
+                                        <div style={{display:'flex', gap:'15px'}}>
+                                            <a href={r.data} download={r.name} style={{color:'#3498db'}}><i className="fas fa-download"></i></a>
+                                            {mode === "Professor" && <i className="fas fa-trash" style={{color:'#e74c3c', cursor:'pointer'}} onClick={() => confirm("Excluir arquivo?") && setRepo(repo.filter(x => x.id !== r.id))}></i>}
+                                        </div>
+                                    </div>
+                                ))}
+                                <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* MODAL EDITAR ALUNO */}
+                {modalOpen === 'edit' && editingStudent && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Editar Aluno</h3>
+                            <input placeholder="Nome" value={editingStudent.nome} onChange={e => setEditingStudent({...editingStudent, nome: e.target.value})} />
+                            <input type="date" value={editingStudent.nascimento} onChange={e => setEditingStudent({...editingStudent, nascimento: e.target.value})} />
+                            <select value={editingStudent.faixa} onChange={e => setEditingStudent({...editingStudent, faixa: e.target.value})}>
+                                {beltOrder.map(f => <option key={f} value={f}>{f}</option>)}
+                            </select>
+                            <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
+                                setStudents(students.map(s => s.id === editingStudent.id ? editingStudent : s));
+                                setModalOpen(null);
+                            }}>ATUALIZAR</button>
+                            <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
+                        </div>
+                    </div>
+                )}
+
+                {viewImage && (
+                    <div className="modal-overlay" onClick={() => setViewImage(null)}>
+                        <img src={viewImage.fileData} style={{maxWidth:'100%', maxHeight:'90vh', borderRadius:'10px'}} />
                     </div>
                 )}
             </div>
