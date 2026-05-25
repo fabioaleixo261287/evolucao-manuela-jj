@@ -616,29 +616,6 @@
             const rules = getRules(s.nascimento, s.faixa);
             return s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
         }).length;
-        const dashboard = React.useMemo(() => {
-            const beltCounts = beltOrder
-                .map(faixa => ({
-                    faixa,
-                    total: students.filter(s => s.faixa === faixa).length
-                }))
-                .filter(item => item.total > 0);
-            const maxBeltCount = Math.max(1, ...beltCounts.map(item => item.total));
-            const progresses = students.map(s => {
-                const progress = getGraduationProgress(s.aulas || 0, s.nascimento, s.faixa, s.comp);
-                return { ...s, progress };
-            });
-            const averageProgress = progresses.length
-                ? Math.round(progresses.reduce((sum, s) => sum + s.progress.percentual, 0) / progresses.length)
-                : 0;
-            const topStudents = progresses
-                .slice()
-                .sort((a, b) => b.progress.percentual - a.progress.percentual)
-                .slice(0, 3);
-
-            return { beltCounts, maxBeltCount, averageProgress, topStudents };
-        }, [students]);
-
         if (!mode) {
             if (!subMode) return (
                 <div className="selection-screen">
@@ -685,43 +662,6 @@
                             <div className="summary-item"><strong>{readyStudents}</strong><span>prontos</span></div>
                             <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
                         </div>
-                        {students.length > 0 && (
-                            <section className="dashboard-panel">
-                                <div className="dashboard-head">
-                                    <div>
-                                        <h3 className="dashboard-title">Evolução da turma</h3>
-                                        <div className="dashboard-subtitle">Progresso calculado pelas regras de aulas e graduação</div>
-                                    </div>
-                                    <div className="score-ring" style={{"--score": dashboard.averageProgress}}>
-                                        <div>
-                                            <strong>{dashboard.averageProgress}%</strong>
-                                            <span>média</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="belt-chart">
-                                    {dashboard.beltCounts.map(item => (
-                                        <div key={item.faixa} className="belt-chart-row">
-                                            <div className="belt-name">{item.faixa}</div>
-                                            <div className="belt-bar">
-                                                <div className="belt-bar-fill" style={{width: `${Math.max(8, Math.round((item.total / dashboard.maxBeltCount) * 100))}%`}}></div>
-                                            </div>
-                                            <div className="belt-count">{item.total}</div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="top-progress">
-                                    {dashboard.topStudents.map(s => (
-                                        <div key={s.id} className="top-card">
-                                            <strong>{s.nome}</strong>
-                                            <span>{s.progress.percentual}% • faltam {s.progress.faltantes} aulas</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
                         <div className="search-container">
                             <i className="fas fa-search search-icon"></i>
                             <input className="search-input" placeholder="Buscar por nome..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
