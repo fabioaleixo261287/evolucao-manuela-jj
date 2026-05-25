@@ -344,6 +344,8 @@
                 }
 
                 try {
+                    const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
+                    const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
                     const { data, error } = await supabaseClient
                         .from("app_state")
                         .select("students, repo")
@@ -353,12 +355,27 @@
                     if (error) throw error;
 
                     if (data) {
-                        setStudents(Array.isArray(data.students) ? data.students : []);
-                        setRepo(Array.isArray(data.repo) ? data.repo : []);
-                        setDbStatus("Sincronizado com Supabase");
+                        const remoteStudents = Array.isArray(data.students) ? data.students : [];
+                        const remoteRepo = Array.isArray(data.repo) ? data.repo : [];
+                        const remoteIsEmpty = remoteStudents.length === 0 && remoteRepo.length === 0;
+                        const localHasData = localStudents.length > 0 || localRepo.length > 0;
+
+                        if (remoteIsEmpty && localHasData) {
+                            await supabaseClient.from("app_state").upsert({
+                                id: SUPABASE_STATE_ID,
+                                students: localStudents,
+                                repo: localRepo,
+                                updated_at: new Date().toISOString()
+                            });
+                            setStudents(localStudents);
+                            setRepo(localRepo);
+                            setDbStatus("Base local enviada ao Supabase");
+                        } else {
+                            setStudents(remoteStudents);
+                            setRepo(remoteRepo);
+                            setDbStatus("Sincronizado com Supabase");
+                        }
                     } else {
-                        const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
-                        const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
                         await supabaseClient.from("app_state").insert({
                             id: SUPABASE_STATE_ID,
                             students: localStudents,
