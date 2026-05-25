@@ -7,6 +7,7 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -42,7 +43,7 @@
         .header-main { text-align: center; margin: 20px 0 15px; position: relative; display: flex; justify-content: center; align-items: center; }
         .header-main h2 { color: white; font-weight: 800; text-transform: uppercase; border-bottom: 3px solid var(--alliance-red); display: inline-block; padding-bottom: 8px; letter-spacing: 1px; margin: 0; }
         
-        /* Botão de Engrenagem (Backup) */
+        /* Botão de backup */
         .btn-settings-hidden { 
             position: absolute; 
             right: 15px; 
@@ -140,17 +141,15 @@
             box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
         }
 
-        .prediction-badge {
-            background: #222;
-            color: #f1c40f;
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: bold;
-            border: 1px solid #444;
-            display: inline-block;
-            margin-top: 5px;
-        }
+        .graduation-panel { margin: 14px 0 18px; padding: 14px; background: #151515; border: 1px solid var(--border-color); border-radius: 16px; }
+        .graduation-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+        .graduation-title { color: #ddd; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .graduation-date { color: #f1c40f; font-size: 13px; font-weight: 900; white-space: nowrap; }
+        .progress-track { height: 9px; background: #090909; border-radius: 999px; overflow: hidden; border: 1px solid #2a2a2a; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--alliance-green), #f1c40f); border-radius: inherit; }
+        .graduation-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+        .graduation-meta span { background: #202020; color: #aaa; border: 1px solid #303030; border-radius: 10px; padding: 8px; font-size: 10px; font-weight: 800; text-align: center; text-transform: uppercase; }
+        .graduation-meta strong { display: block; color: #fff; font-size: 14px; margin-bottom: 3px; text-transform: none; }
 
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -159,11 +158,42 @@
         }
 
         input, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #333; background: #1a1a1a; color: white; border-radius: 14px; font-size: 16px; outline: none; }
+        input:focus, select:focus { border-color: var(--alliance-red); box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.18); }
+        button, .action-item, .box-class, .degree-box, .btn-settings-hidden, .btn-edit-info { touch-action: manipulation; }
         
         #compress-loader { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.9); color:white; padding:20px; border-radius:15px; z-index:5000; text-align:center; }
 
         .repo-item { display: flex; align-items: center; justify-content: space-between; background: #252525; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #333; }
         .btn-edit-info { color: #3498db; cursor: pointer; margin-left: 10px; font-size: 14px; }
+        .summary-grid { max-width: 850px; margin: 0 auto 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .summary-item { background: #181818; border: 1px solid var(--border-color); border-radius: 16px; padding: 14px; text-align: center; }
+        .summary-item strong { display: block; color: white; font-size: 24px; line-height: 1; }
+        .summary-item span { display: block; color: #888; font-size: 10px; font-weight: 800; margin-top: 6px; text-transform: uppercase; }
+        .warning-banner { max-width: 850px; margin: 0 auto 15px; background: #3a2410; color: #f8c471; border: 1px solid #8a5a20; padding: 12px 16px; border-radius: 14px; font-size: 13px; font-weight: 700; }
+        .sync-banner { max-width: 850px; margin: 0 auto 15px; background: #11251d; color: #7ee0ad; border: 1px solid #245c43; padding: 12px 16px; border-radius: 14px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-transform: uppercase; }
+        .sync-banner.offline { background: #2a1f12; color: #f5c16c; border-color: #6b4b1f; }
+        .sync-banner.error { background: #321818; color: #ff9d9d; border-color: #743333; }
+        .empty-state { max-width: 850px; margin: 25px auto; min-height: 220px; border: 1px dashed #444; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; color: #777; padding: 28px; }
+        .empty-state i { font-size: 34px; color: #444; }
+        .empty-state strong { color: #ddd; font-size: 18px; }
+        .empty-state span { max-width: 320px; font-size: 13px; line-height: 1.5; }
+
+        @media (max-width: 560px) {
+            body { padding: 8px; padding-bottom: 110px; }
+            .header-main h2 { font-size: 19px; max-width: calc(100% - 70px); }
+            .card { padding: 16px; border-radius: 18px; }
+            .student-top { align-items: flex-start; gap: 12px; }
+            .avatar-container, .avatar { width: 68px; height: 68px; }
+            .bar { grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); gap: 8px; }
+            .box-class { height: 38px; border-radius: 10px; }
+            .action-bar { width: calc(100% - 24px); bottom: 14px; justify-content: space-around; gap: 10px; padding: 10px 14px; }
+            .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .summary-item { padding: 12px 8px; }
+            .summary-item strong { font-size: 20px; }
+            .graduation-head { align-items: flex-start; flex-direction: column; gap: 5px; }
+            .graduation-meta { grid-template-columns: 1fr; }
+            .modal-content { padding: 22px; border-radius: 22px; }
+        }
     </style>
 </head>
 <body>
@@ -173,13 +203,36 @@
 <script type="text/babel">
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
     const groups = ["Todos", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth"];
+    const classDays = [1, 3, 5, 6]; // Segunda, quarta, sexta e sábado.
     const AVATAR_BOY = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
     const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
+    const LOCAL_STUDENTS_KEY = "all_eagle_v22_s";
+    const LOCAL_REPO_KEY = "all_eagle_v22_r";
+    const SUPABASE_STATE_ID = "alliance_mooca_kids_v22";
+
+    // Preencha aqui se quiser deixar fixo no arquivo, ou defina window.SUPABASE_CONFIG antes deste script.
+    const SUPABASE_URL = "https://oozzhujtyqsaxhkluxer.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_aKMcW5XwbBUj95uciZlO4w_YVOdz13J";
+
+    const getSupabaseConfig = () => {
+        const externalConfig = window.SUPABASE_CONFIG || {};
+        return {
+            url: externalConfig.url || SUPABASE_URL,
+            anonKey: externalConfig.anonKey || SUPABASE_ANON_KEY
+        };
+    };
+
+    const createSupabaseClient = () => {
+        const { url, anonKey } = getSupabaseConfig();
+        if (!url || !anonKey || !window.supabase?.createClient) return null;
+        return window.supabase.createClient(url, anonKey);
+    };
 
     const compressImage = (base64Str, maxWidth = 800, quality = 0.6) => {
         return new Promise((resolve) => {
             const img = new Image();
             img.src = base64Str;
+            img.onerror = () => resolve(base64Str);
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 let width = img.width;
@@ -231,24 +284,43 @@
         
         if (aulasFaltantes <= 0) return "Pronto para exame!";
         
-        const semanasFaltantes = Math.ceil(aulasFaltantes / 4);
         const dataPrevisa = new Date();
-        dataPrevisa.setDate(dataPrevisa.getDate() + (semanasFaltantes * 7));
+        let aulasContadas = 0;
+        while (aulasContadas < aulasFaltantes) {
+            dataPrevisa.setDate(dataPrevisa.getDate() + 1);
+            if (classDays.includes(dataPrevisa.getDay())) aulasContadas++;
+        }
         
         return dataPrevisa.toLocaleDateString('pt-BR');
+    }
+
+    function getGraduationProgress(aulasAtuais, nascimento, faixa) {
+        const rules = getRules(nascimento, faixa);
+        const total = rules * 9;
+        const feitas = Math.min(aulasAtuais, total);
+        const faltantes = Math.max(0, total - aulasAtuais);
+        const percentual = Math.min(100, Math.round((feitas / total) * 100));
+        return {
+            total,
+            feitas,
+            faltantes,
+            percentual,
+            previsao: getPrevisaoGraduacao(aulasAtuais, nascimento, faixa)
+        };
     }
 
     function App() {
         const [mode, setMode] = React.useState(null); 
         const [subMode, setSubMode] = React.useState(null);
         const [auth, setAuth] = React.useState({ user: '', pass: '' });
+        const supabaseClient = React.useMemo(() => createSupabaseClient(), []);
         
         const [students, setStudents] = React.useState(() => {
-            try { return JSON.parse(localStorage.getItem("all_eagle_v22_s") || "[]"); } 
+            try { return JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]"); } 
             catch(e) { return []; }
         });
         const [repo, setRepo] = React.useState(() => {
-            try { return JSON.parse(localStorage.getItem("all_eagle_v22_r") || "[]"); }
+            try { return JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]"); }
             catch(e) { return []; }
         });
 
@@ -260,13 +332,81 @@
         const [modalOpen, setModalOpen] = React.useState(null);
         const [viewImage, setViewImage] = React.useState(null);
         const [editingStudent, setEditingStudent] = React.useState(null);
+        const [storageWarning, setStorageWarning] = React.useState("");
+        const [isHydrated, setIsHydrated] = React.useState(false);
+        const [dbStatus, setDbStatus] = React.useState(supabaseClient ? "Conectando ao Supabase..." : "Supabase não configurado");
+
+        React.useEffect(() => {
+            const loadRemoteData = async () => {
+                if (!supabaseClient) {
+                    setIsHydrated(true);
+                    return;
+                }
+
+                try {
+                    const { data, error } = await supabaseClient
+                        .from("app_state")
+                        .select("students, repo")
+                        .eq("id", SUPABASE_STATE_ID)
+                        .maybeSingle();
+
+                    if (error) throw error;
+
+                    if (data) {
+                        setStudents(Array.isArray(data.students) ? data.students : []);
+                        setRepo(Array.isArray(data.repo) ? data.repo : []);
+                        setDbStatus("Sincronizado com Supabase");
+                    } else {
+                        const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
+                        const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
+                        await supabaseClient.from("app_state").insert({
+                            id: SUPABASE_STATE_ID,
+                            students: localStudents,
+                            repo: localRepo,
+                            updated_at: new Date().toISOString()
+                        });
+                        setDbStatus("Dados locais enviados ao Supabase");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    setDbStatus("Erro ao conectar Supabase. Usando dados locais.");
+                } finally {
+                    setIsHydrated(true);
+                }
+            };
+
+            loadRemoteData();
+        }, [supabaseClient]);
 
         React.useEffect(() => { 
+            if (!isHydrated) return;
             try {
-                localStorage.setItem("all_eagle_v22_s", JSON.stringify(students));
-                localStorage.setItem("all_eagle_v22_r", JSON.stringify(repo));
-            } catch(e) { console.error("Storage Full"); }
-        }, [students, repo]);
+                localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(students));
+                localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(repo));
+                setStorageWarning("");
+            } catch(e) {
+                setStorageWarning("O armazenamento do navegador está cheio. Gere um backup e remova arquivos grandes.");
+            }
+
+            if (!supabaseClient) return;
+            const syncTimer = setTimeout(async () => {
+                try {
+                    const { error } = await supabaseClient.from("app_state").upsert({
+                        id: SUPABASE_STATE_ID,
+                        students,
+                        repo,
+                        updated_at: new Date().toISOString()
+                    });
+                    if (error) throw error;
+                    setDbStatus("Sincronizado com Supabase");
+                } catch (err) {
+                    console.error(err);
+                    setDbStatus("Erro ao salvar no Supabase");
+                }
+            }, 600);
+
+            return () => clearTimeout(syncTimer);
+        }, [students, repo, isHydrated, supabaseClient]);
 
         const handleLogin = () => {
             if (subMode === 'Professor') {
@@ -294,25 +434,34 @@
             const reader = new FileReader();
             document.getElementById('compress-loader').style.display = 'block';
             reader.onload = async (e) => {
-                let finalData = e.target.result;
-                if (isImage) finalData = await compressImage(finalData);
-                
-                if (type === 'avatar') {
-                    setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: finalData } : s));
-                } else if (type === 'chat') {
-                    const msgAnexo = { 
-                        id: Date.now(), sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
-                        text: isImage ? "" : `📎 Arquivo: ${file.name}`, fileData: finalData, 
-                        fileName: file.name, isImage: isImage,
-                        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), 
-                        readBy: [mode] 
-                    };
-                    setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
-                } else if (type === 'repo') {
-                    const newItem = { id: Date.now(), name: file.name, data: finalData, date: new Date().toLocaleDateString() };
-                    setRepo(prev => [...prev, newItem]);
+                try {
+                    let finalData = e.target.result;
+                    if (isImage) finalData = await compressImage(finalData);
+                    
+                    if (type === 'avatar') {
+                        setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: finalData } : s));
+                    } else if (type === 'chat') {
+                        const msgAnexo = { 
+                            id: Date.now(), sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
+                            text: isImage ? "" : `📎 Arquivo: ${file.name}`, fileData: finalData, 
+                            fileName: file.name, isImage: isImage,
+                            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), 
+                            readBy: [mode] 
+                        };
+                        setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
+                    } else if (type === 'repo') {
+                        const newItem = { id: Date.now(), name: file.name, data: finalData, date: new Date().toLocaleDateString('pt-BR') };
+                        setRepo(prev => [...prev, newItem]);
+                    }
+                } catch (err) {
+                    alert("Não foi possível carregar o arquivo.");
+                } finally {
+                    document.getElementById('compress-loader').style.display = 'none';
                 }
+            };
+            reader.onerror = () => {
                 document.getElementById('compress-loader').style.display = 'none';
+                alert("Não foi possível ler o arquivo.");
             };
             reader.readAsDataURL(file);
         };
@@ -360,12 +509,13 @@
 
         const downloadBackup = () => {
             const data = { students, repo, timestamp: new Date().toISOString() };
-            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `backup_eagle_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
             a.click();
+            URL.revokeObjectURL(url);
         };
 
         const importBackup = (e) => {
@@ -375,9 +525,9 @@
             reader.onload = (event) => {
                 try {
                     const data = JSON.parse(event.target.result);
-                    if (data.students) {
+                    if (Array.isArray(data.students)) {
                         setStudents(data.students);
-                        setRepo(data.repo || []);
+                        setRepo(Array.isArray(data.repo) ? data.repo : []);
                         alert("Backup restaurado com sucesso!");
                         setModalOpen(null);
                     } else {
@@ -415,6 +565,10 @@
             const matchesGroup = filterGroup === "Todos" || getAutoCategory(s.nascimento) === filterGroup;
             return matchesName && matchesGroup;
         });
+        const readyStudents = students.filter(s => {
+            const rules = getRules(s.nascimento, s.faixa);
+            return s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
+        }).length;
 
         if (!mode) {
             if (!subMode) return (
@@ -441,7 +595,7 @@
             <div className="container">
                 <header className="header-main">
                     <h2>Alliance Mooca Kids</h2>
-                    {/* Botão de Engrenagem para Backup */}
+                    {/* Botão de backup */}
                     {mode === "Professor" && (
                         <div className="btn-settings-hidden" onClick={() => setModalOpen('backup')}>
                             <i className="fas fa-cog"></i>
@@ -449,15 +603,36 @@
                     )}
                 </header>
 
+                {storageWarning && <div className="warning-banner">{storageWarning}</div>}
+                <div className={`sync-banner ${supabaseClient ? (dbStatus.includes("Erro") ? "error" : "") : "offline"}`}>
+                    <span><i className={`fas ${supabaseClient && !dbStatus.includes("Erro") ? "fa-database" : "fa-exclamation-triangle"}`}></i> {dbStatus}</span>
+                    {!isHydrated && <span>Carregando...</span>}
+                </div>
+
                 {mode === "Professor" && (
-                    <div className="search-container">
-                        <i className="fas fa-search search-icon"></i>
-                        <input className="search-input" placeholder="Buscar por nome..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-                        <div className="filter-bar">
-                            {groups.map(g => (
-                                <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => setFilterGroup(g)}>{g}</button>
-                            ))}
+                    <>
+                        <div className="summary-grid">
+                            <div className="summary-item"><strong>{students.length}</strong><span>alunos</span></div>
+                            <div className="summary-item"><strong>{readyStudents}</strong><span>prontos</span></div>
+                            <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
                         </div>
+                        <div className="search-container">
+                            <i className="fas fa-search search-icon"></i>
+                            <input className="search-input" placeholder="Buscar por nome..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+                            <div className="filter-bar">
+                                {groups.map(g => (
+                                    <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => setFilterGroup(g)}>{g}</button>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {filtered.length === 0 && (
+                    <div className="empty-state">
+                        <i className="fas fa-user-graduate"></i>
+                        <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : "Nenhum aluno encontrado"}</strong>
+                        <span>{mode === "Professor" ? "Use o botão ALUNO para cadastrar ou ajuste a busca." : "Confira o nome e a data de nascimento usados no acesso."}</span>
                     </div>
                 )}
 
@@ -465,16 +640,16 @@
                     const rules = getRules(s.nascimento, s.faixa);
                     const tg = Math.floor(s.aulas / rules);
                     const pronto = (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
-                    const unread = s.chat?.filter(m => !m.readBy.includes(mode)).length || 0;
+                    const unread = s.chat?.filter(m => !(m.readBy || []).includes(mode)).length || 0;
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
-                    const previsao = getPrevisaoGraduacao(s.aulas, s.nascimento, s.faixa);
+                    const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa);
 
                     return (
                         <div key={s.id} className="card">
                             <div className="student-top">
                                 <div className="avatar-container">
                                     <img src={s.avatar || defaultAvatar} className="avatar" />
-                                    <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>
+                                    {mode === "Professor" && <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} accept="image/*" onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>}
                                 </div>
                                 <div style={{flex:1}}>
                                     <h3 style={{margin:0, fontSize:'19px', color: 'white'}}>
@@ -483,9 +658,23 @@
                                     </h3>
                                     <div className="cat-badge">{s.faixa}</div><br/>
                                     <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento)}</small><br/>
-                                    <div className="prediction-badge"><i className="fas fa-calendar-alt"></i> Exame Previsto: {previsao}</div>
                                 </div>
                                 {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
+                            </div>
+
+                            <div className="graduation-panel">
+                                <div className="graduation-head">
+                                    <div className="graduation-title"><i className="fas fa-route"></i> Caminho até a próxima faixa</div>
+                                    <div className="graduation-date"><i className="fas fa-calendar-alt"></i> {progresso.previsao}</div>
+                                </div>
+                                <div className="progress-track">
+                                    <div className="progress-fill" style={{width: `${progresso.percentual}%`}}></div>
+                                </div>
+                                <div className="graduation-meta">
+                                    <span><strong>{progresso.faltantes}</strong>aulas faltam</span>
+                                    <span><strong>{progresso.feitas}/{progresso.total}</strong>aulas feitas</span>
+                                    <span><strong>Seg Qua Sex Sáb</strong>dias de aula</span>
+                                </div>
                             </div>
 
                             <span className="section-label">Aulas de Presença</span>
@@ -541,7 +730,7 @@
                             </details>
 
                             <div className="chat-container" id={`chat-${s.id}`}>
-                                <div className="chat-header" onClick={() => { setOpenChats({...openChats, [s.id]: !openChats[s.id]}); if(!openChats[s.id]) setStudents(prev => prev.map(x => x.id === s.id ? {...x, chat: (x.chat||[]).map(m => !m.readBy.includes(mode) ? {...m, readBy: [...m.readBy, mode]} : m)} : x)); }}>
+                                <div className="chat-header" onClick={() => { setOpenChats({...openChats, [s.id]: !openChats[s.id]}); if(!openChats[s.id]) setStudents(prev => prev.map(x => x.id === s.id ? {...x, chat: (x.chat||[]).map(m => !(m.readBy || []).includes(mode) ? {...m, readBy: [...(m.readBy || []), mode]} : m)} : x)); }}>
                                     <span style={{fontSize:'12px'}}><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> CONVERSA {unread > 0 && <span style={{background: 'var(--alliance-red)', padding:'2px 6px', borderRadius:'10px', fontSize:'9px', marginLeft:'5px'}}>{unread}</span>}</span>
                                     <i className={`fas fa-chevron-${openChats[s.id] ? 'up' : 'down'}`} style={{fontSize:'10px'}}></i>
                                 </div>
@@ -577,11 +766,12 @@
                         <>
                             <div className="action-item" onClick={() => setModalOpen('add')}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
+                            <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
                             <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
                     ) : (
                         <>
-                            <div className="action-item" onClick={() => window.open('https://alliancemoooca.com.br', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
+                            <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
                             <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
@@ -621,7 +811,10 @@
                             </select>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
                                 if(!form.nome || !form.nascimento) return alert("Preencha tudo!");
-                                setStudents([...students, { ...form, id: Date.now(), aulas: 0, historico: [`Matrícula realizada em ${new Date().toLocaleDateString()}`] }]);
+                                const nome = form.nome.trim();
+                                const exists = students.some(s => s.nome.toLowerCase().trim() === nome.toLowerCase() && s.nascimento === form.nascimento);
+                                if (exists) return alert("Este aluno já está cadastrado.");
+                                setStudents([...students, { ...form, nome, id: Date.now(), aulas: 0, historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`] }]);
                                 setModalOpen(null);
                                 setForm({ nome: "", nascimento: "", faixa: "Branca", sexo: "M" });
                             }}>SALVAR</button>
@@ -670,11 +863,17 @@
                             <h3>Editar Aluno</h3>
                             <input placeholder="Nome" value={editingStudent.nome} onChange={e => setEditingStudent({...editingStudent, nome: e.target.value})} />
                             <input type="date" value={editingStudent.nascimento} onChange={e => setEditingStudent({...editingStudent, nascimento: e.target.value})} />
+                            <select value={editingStudent.sexo || "M"} onChange={e => setEditingStudent({...editingStudent, sexo: e.target.value})}>
+                                <option value="M">Masculino</option>
+                                <option value="F">Feminino</option>
+                            </select>
                             <select value={editingStudent.faixa} onChange={e => setEditingStudent({...editingStudent, faixa: e.target.value})}>
                                 {beltOrder.map(f => <option key={f} value={f}>{f}</option>)}
                             </select>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
-                                setStudents(students.map(s => s.id === editingStudent.id ? editingStudent : s));
+                                if(!editingStudent.nome.trim() || !editingStudent.nascimento) return alert("Preencha tudo!");
+                                const alunoAtualizado = { ...editingStudent, nome: editingStudent.nome.trim() };
+                                setStudents(students.map(s => s.id === editingStudent.id ? alunoAtualizado : s));
                                 setModalOpen(null);
                             }}>ATUALIZAR</button>
                             <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
