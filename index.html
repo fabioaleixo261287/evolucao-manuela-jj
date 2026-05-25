@@ -174,6 +174,24 @@
         .summary-item { background: #181818; border: 1px solid var(--border-color); border-radius: 16px; padding: 14px; text-align: center; }
         .summary-item strong { display: block; color: white; font-size: 24px; line-height: 1; }
         .summary-item span { display: block; color: #888; font-size: 10px; font-weight: 800; margin-top: 6px; text-transform: uppercase; }
+        .dashboard-panel { max-width: 850px; margin: 0 auto 18px; background: linear-gradient(135deg, #181818, #101010); border: 1px solid var(--border-color); border-radius: 20px; padding: 18px; box-shadow: 0 12px 28px rgba(0,0,0,0.35); }
+        .dashboard-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 16px; }
+        .dashboard-title { margin: 0; color: white; font-size: 18px; line-height: 1.2; }
+        .dashboard-subtitle { color: #888; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-top: 5px; }
+        .score-ring { width: 92px; height: 92px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--alliance-green) calc(var(--score) * 1%), #272727 0); position: relative; }
+        .score-ring::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: #151515; border: 1px solid #2a2a2a; }
+        .score-ring strong { position: relative; z-index: 1; color: white; font-size: 20px; line-height: 1; }
+        .score-ring span { position: relative; z-index: 1; color: #888; font-size: 9px; font-weight: 800; text-transform: uppercase; margin-top: 3px; display: block; text-align: center; }
+        .belt-chart { display: flex; flex-direction: column; gap: 9px; }
+        .belt-chart-row { display: grid; grid-template-columns: minmax(90px, 150px) 1fr 36px; gap: 10px; align-items: center; }
+        .belt-name { color: #ccc; font-size: 12px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .belt-bar { height: 11px; background: #0b0b0b; border: 1px solid #2b2b2b; border-radius: 999px; overflow: hidden; }
+        .belt-bar-fill { height: 100%; background: linear-gradient(90deg, var(--alliance-red), #f1c40f); border-radius: inherit; }
+        .belt-count { color: #999; font-size: 11px; font-weight: 900; text-align: right; }
+        .top-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+        .top-card { background: #202020; border: 1px solid #303030; border-radius: 14px; padding: 11px; min-width: 0; }
+        .top-card strong { color: white; display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .top-card span { color: #aaa; display: block; font-size: 10px; font-weight: 800; margin-top: 5px; text-transform: uppercase; }
         .warning-banner { max-width: 850px; margin: 0 auto 15px; background: #3a2410; color: #f8c471; border: 1px solid #8a5a20; padding: 12px 16px; border-radius: 14px; font-size: 13px; font-weight: 700; }
         .sync-banner { max-width: 850px; margin: 0 auto 15px; background: #11251d; color: #7ee0ad; border: 1px solid #245c43; padding: 12px 16px; border-radius: 14px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-transform: uppercase; }
         .sync-banner.offline { background: #2a1f12; color: #f5c16c; border-color: #6b4b1f; }
@@ -195,6 +213,10 @@
             .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .summary-item { padding: 12px 8px; }
             .summary-item strong { font-size: 20px; }
+            .dashboard-head { flex-direction: column; }
+            .score-ring { width: 84px; height: 84px; }
+            .belt-chart-row { grid-template-columns: 86px 1fr 30px; }
+            .top-progress { grid-template-columns: 1fr; }
             .graduation-head { align-items: flex-start; flex-direction: column; gap: 5px; }
             .graduation-meta { grid-template-columns: 1fr; }
             .modal-content { padding: 22px; border-radius: 22px; }
@@ -591,6 +613,28 @@
             const rules = getRules(s.nascimento, s.faixa);
             return s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
         }).length;
+        const dashboard = React.useMemo(() => {
+            const beltCounts = beltOrder
+                .map(faixa => ({
+                    faixa,
+                    total: students.filter(s => s.faixa === faixa).length
+                }))
+                .filter(item => item.total > 0);
+            const maxBeltCount = Math.max(1, ...beltCounts.map(item => item.total));
+            const progresses = students.map(s => {
+                const progress = getGraduationProgress(s.aulas || 0, s.nascimento, s.faixa);
+                return { ...s, progress };
+            });
+            const averageProgress = progresses.length
+                ? Math.round(progresses.reduce((sum, s) => sum + s.progress.percentual, 0) / progresses.length)
+                : 0;
+            const topStudents = progresses
+                .slice()
+                .sort((a, b) => b.progress.percentual - a.progress.percentual)
+                .slice(0, 3);
+
+            return { beltCounts, maxBeltCount, averageProgress, topStudents };
+        }, [students]);
 
         if (!mode) {
             if (!subMode) return (
@@ -638,6 +682,43 @@
                             <div className="summary-item"><strong>{readyStudents}</strong><span>prontos</span></div>
                             <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
                         </div>
+                        {students.length > 0 && (
+                            <section className="dashboard-panel">
+                                <div className="dashboard-head">
+                                    <div>
+                                        <h3 className="dashboard-title">Evolução da turma</h3>
+                                        <div className="dashboard-subtitle">Progresso calculado pelas regras de aulas e graduação</div>
+                                    </div>
+                                    <div className="score-ring" style={{"--score": dashboard.averageProgress}}>
+                                        <div>
+                                            <strong>{dashboard.averageProgress}%</strong>
+                                            <span>média</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="belt-chart">
+                                    {dashboard.beltCounts.map(item => (
+                                        <div key={item.faixa} className="belt-chart-row">
+                                            <div className="belt-name">{item.faixa}</div>
+                                            <div className="belt-bar">
+                                                <div className="belt-bar-fill" style={{width: `${Math.max(8, Math.round((item.total / dashboard.maxBeltCount) * 100))}%`}}></div>
+                                            </div>
+                                            <div className="belt-count">{item.total}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="top-progress">
+                                    {dashboard.topStudents.map(s => (
+                                        <div key={s.id} className="top-card">
+                                            <strong>{s.nome}</strong>
+                                            <span>{s.progress.percentual}% • faltam {s.progress.faltantes} aulas</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
                         <div className="search-container">
                             <i className="fas fa-search search-icon"></i>
                             <input className="search-input" placeholder="Buscar por nome..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
