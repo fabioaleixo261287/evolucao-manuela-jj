@@ -321,12 +321,15 @@
         return dataPrevisa.toLocaleDateString('pt-BR');
     }
 
-    function getGraduationProgress(aulasAtuais, nascimento, faixa) {
+    function getGraduationProgress(aulasAtuais, nascimento, faixa, comp = {}) {
         const rules = getRules(nascimento, faixa);
         const total = rules * 9;
         const feitas = Math.min(aulasAtuais, total);
         const faltantes = Math.max(0, total - aulasAtuais);
-        const percentual = Math.min(100, Math.round((feitas / total) * 100));
+        const aulasPercentual = total ? (feitas / total) * 100 : 0;
+        const meritos = ["Rel", "Comp", "Notas", "Hab"];
+        const meritosFeitos = meritos.filter(k => comp?.[k]).length;
+        const percentual = Math.min(100, Math.round((aulasPercentual * 0.75) + ((meritosFeitos / meritos.length) * 25)));
         return {
             total,
             feitas,
@@ -622,7 +625,7 @@
                 .filter(item => item.total > 0);
             const maxBeltCount = Math.max(1, ...beltCounts.map(item => item.total));
             const progresses = students.map(s => {
-                const progress = getGraduationProgress(s.aulas || 0, s.nascimento, s.faixa);
+                const progress = getGraduationProgress(s.aulas || 0, s.nascimento, s.faixa, s.comp);
                 return { ...s, progress };
             });
             const averageProgress = progresses.length
@@ -745,7 +748,7 @@
                     const pronto = (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
                     const unread = s.chat?.filter(m => !(m.readBy || []).includes(mode)).length || 0;
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
-                    const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa);
+                    const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp);
 
                     return (
                         <div key={s.id} className="card">
@@ -776,7 +779,7 @@
                                 <div className="graduation-meta">
                                     <span><strong>{progresso.faltantes}</strong>aulas faltam</span>
                                     <span><strong>{progresso.feitas}/{progresso.total}</strong>aulas feitas</span>
-                                    <span><strong>Seg Qua Sex Sáb</strong>dias de aula</span>
+                                    <span><strong>{progresso.percentual}%</strong>concluído</span>
                                 </div>
                             </div>
 
