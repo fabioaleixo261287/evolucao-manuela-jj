@@ -40,10 +40,20 @@
             padding-bottom: 120px; 
         }
 
-        .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; background: #000; flex-direction: column; gap: 20px; }
-        .login-box { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid var(--border-color); }
-        .selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 20px; background: var(--bg); }
-        .btn-select { width: 85%; max-width: 320px; padding: 22px; border-radius: 20px; border: none; background: #222; color: white; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: 0.3s; }
+        .auth-container, .selection-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 0%, #2a2a2a 0, #111 46%, #050505 100%); padding: 24px 12px; }
+        .auth-shell { width: min(430px, 100%); display: flex; flex-direction: column; align-items: center; gap: 18px; }
+        .brand-card { width: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.12); border-radius: 26px; padding: 26px 24px; text-align: center; box-shadow: 0 20px 55px rgba(0,0,0,0.45); backdrop-filter: blur(14px); }
+        .auth-logo { width: 150px; height: 118px; object-fit: cover; border-radius: 20px; border: 1px solid #2f2f2f; box-shadow: 0 14px 35px rgba(0,0,0,0.35); margin-bottom: 18px; }
+        .auth-title { margin: 0; color: #fff; font-size: 24px; line-height: 1.1; letter-spacing: 0; }
+        .auth-subtitle { margin: 8px 0 0; color: #9b9b9b; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+        .role-grid { width: 100%; display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .btn-select { width: 100%; padding: 18px; border-radius: 18px; border: 1px solid #343434; background: #191919; color: white; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: flex-start; gap: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); transition: 0.2s; text-align: left; }
+        .btn-select:hover { transform: translateY(-1px); border-color: #555; background: #202020; }
+        .btn-select i { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: #262626; color: var(--alliance-red); font-size: 18px; }
+        .btn-select small { display: block; margin-top: 4px; color: #888; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .login-box { background: var(--card-bg); padding: 28px; border-radius: 24px; width: 100%; text-align: center; box-shadow: 0 18px 45px rgba(0,0,0,0.45); border: 1px solid var(--border-color); }
+        .login-heading { margin: 0 0 18px; color: #fff; font-size: 18px; }
+        .back-link { font-size: 11px; margin-top: 18px; cursor: pointer; color: #777; font-weight: 800; text-transform: uppercase; }
 
         .header-main { text-align: center; margin: 20px 0 15px; position: relative; display: flex; justify-content: center; align-items: center; }
         .header-main h2 { color: white; font-weight: 800; text-transform: uppercase; border-bottom: 3px solid var(--alliance-red); display: inline-block; padding-bottom: 8px; letter-spacing: 1px; margin: 0; }
@@ -619,19 +629,36 @@
         if (!mode) {
             if (!subMode) return (
                 <div className="selection-screen">
-                    <img src="logo.jpg" width="160" style={{marginBottom:'10px', borderRadius: '15px'}} />
-                    <button className="btn-select" onClick={() => setSubMode("Professor")}><i className="fas fa-graduation-cap"></i> PROFESSOR</button>
-                    <button className="btn-select" onClick={() => setSubMode("Pais")}><i className="fas fa-home"></i> ÁREA DOS PAIS</button>
+                    <div className="auth-shell">
+                        <div className="brand-card">
+                            <img src="logo.jpg" className="auth-logo" />
+                            <h1 className="auth-title">Alliance Mooca Kids</h1>
+                            <p className="auth-subtitle">Sistema de evolução e graduação</p>
+                        </div>
+                        <div className="role-grid">
+                            <button className="btn-select" onClick={() => setSubMode("Professor")}>
+                                <i className="fas fa-graduation-cap"></i>
+                                <span>Professor<small>Gestão da turma</small></span>
+                            </button>
+                            <button className="btn-select" onClick={() => setSubMode("Pais")}>
+                                <i className="fas fa-home"></i>
+                                <span>Área dos Pais<small>Acompanhar evolução</small></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             );
             return (
                 <div className="auth-container">
-                    <div className="login-box">
-                        <h3 style={{textTransform:'uppercase', fontSize:'14px', color:'#777'}}>Acesso {subMode === "Pais" ? "PAIS" : "PROFESSOR"}</h3>
-                        <input placeholder={subMode === 'Professor' ? "Usuário" : "Nome do Aluno"} value={auth.user} onChange={e => setAuth({...auth, user: e.target.value})} />
-                        <input type="password" placeholder={subMode === 'Professor' ? "Senha" : "Nascimento (DDMMAAAA)"} value={auth.pass} onChange={e => setAuth({...auth, pass: e.target.value})} />
-                        <button className="btn-full" style={{background: 'var(--alliance-red)', color:'white'}} onClick={handleLogin}>ENTRAR</button>
-                        <p onClick={() => { setSubMode(null); setAuth({user:'', pass:''}); }} style={{fontSize:'11px', marginTop:'20px', cursor:'pointer', color: '#555'}}>Voltar à seleção</p>
+                    <div className="auth-shell">
+                        <div className="login-box">
+                            <img src="logo.jpg" className="auth-logo" />
+                            <h3 className="login-heading">Acesso {subMode === "Pais" ? "dos Pais" : "do Professor"}</h3>
+                            <input placeholder={subMode === 'Professor' ? "Usuário" : "Nome do Aluno"} value={auth.user} onChange={e => setAuth({...auth, user: e.target.value})} />
+                            <input type="password" placeholder={subMode === 'Professor' ? "Senha" : "Nascimento (DDMMAAAA)"} value={auth.pass} onChange={e => setAuth({...auth, pass: e.target.value})} />
+                            <button className="btn-full" style={{background: 'var(--alliance-red)', color:'white'}} onClick={handleLogin}>ENTRAR</button>
+                            <p className="back-link" onClick={() => { setSubMode(null); setAuth({user:'', pass:''}); }}>Voltar à seleção</p>
+                        </div>
                     </div>
                 </div>
             );
