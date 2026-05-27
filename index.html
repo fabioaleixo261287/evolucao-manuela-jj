@@ -40,11 +40,9 @@
             padding-bottom: 120px; 
         }
 
-        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top, #222 0, #050505 55%); flex-direction: column; gap: 20px; padding: 24px 12px; }
+        .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; background: #000; flex-direction: column; gap: 20px; }
         .login-box { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid var(--border-color); }
-        .login-logo, .selection-logo { width: min(220px, 72vw); background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 16px 35px rgba(0,0,0,0.45); object-fit: contain; }
-        .login-logo { width: min(170px, 60vw); margin-bottom: 8px; }
-        .selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 20px; background: radial-gradient(circle at top, #222 0, var(--bg) 58%); padding: 24px 12px; }
+        .selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 20px; background: var(--bg); }
         .btn-select { width: 85%; max-width: 320px; padding: 22px; border-radius: 20px; border: none; background: #222; color: white; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: 0.3s; }
 
         .header-main { text-align: center; margin: 20px 0 15px; position: relative; display: flex; justify-content: center; align-items: center; }
@@ -621,14 +619,13 @@
         if (!mode) {
             if (!subMode) return (
                 <div className="selection-screen">
-                    <img src="logo-kids.svg" className="selection-logo" onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = "logo.jpg"; }} />
+                    <img src="logo.jpg" width="160" style={{marginBottom:'10px', borderRadius: '15px'}} />
                     <button className="btn-select" onClick={() => setSubMode("Professor")}><i className="fas fa-graduation-cap"></i> PROFESSOR</button>
                     <button className="btn-select" onClick={() => setSubMode("Pais")}><i className="fas fa-home"></i> ÁREA DOS PAIS</button>
                 </div>
             );
             return (
                 <div className="auth-container">
-                    <img src="logo-kids.svg" className="login-logo" onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = "logo.jpg"; }} />
                     <div className="login-box">
                         <h3 style={{textTransform:'uppercase', fontSize:'14px', color:'#777'}}>Acesso {subMode === "Pais" ? "PAIS" : "PROFESSOR"}</h3>
                         <input placeholder={subMode === 'Professor' ? "Usuário" : "Nome do Aluno"} value={auth.user} onChange={e => setAuth({...auth, user: e.target.value})} />
