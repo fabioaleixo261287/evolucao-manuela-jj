@@ -1095,7 +1095,7 @@
                                 </div>
                                 {mode === "Pais" && (
                                     <div className="parent-nav-inline">
-                                        <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
+                                        <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/blog/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
                                         <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
                                         <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                                     </div>
@@ -1295,12 +1295,12 @@
                                 {totalUnreadProfessor > 0 && <b className="nav-badge">{totalUnreadProfessor > 99 ? "99+" : totalUnreadProfessor}</b>}
                                 <i className="fab fa-whatsapp"></i><span>CONVERSAS</span>
                             </div>
-                            <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
+                            <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/blog/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
                             <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
                     ) : (
                         <>
-                            <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
+                            <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/blog/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
                             <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
