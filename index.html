@@ -924,7 +924,16 @@
                         {professorView === "alunos" && (
                             <div className="search-container">
                                 <i className="fas fa-search search-icon"></i>
-                                <input className="search-input" placeholder="Buscar por nome..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+                                <input
+                                    className="search-input"
+                                    placeholder="Buscar por nome..."
+                                    value={searchTerm}
+                                    onFocus={() => setFilterGroup("Todos")}
+                                    onChange={e => {
+                                        setFilterGroup("Todos");
+                                        setSearchTerm(e.target.value);
+                                    }}
+                                />
                                 <div className="filter-bar">
                                     {groups.map(g => (
                                         <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => setFilterGroup(g)}>{g}</button>
