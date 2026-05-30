@@ -41,8 +41,10 @@
             padding: 14px; 
             padding-bottom: 120px; 
         }
+        body.auth-mode { padding: 0; overflow: hidden; }
 
         .auth-container, .selection-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 0%, #2a2a2a 0, #111 46%, #050505 100%); padding: 24px 12px; }
+        body.auth-mode .auth-container, body.auth-mode .selection-screen { height: 100dvh; min-height: 100dvh; overflow: hidden; }
         .auth-shell { width: min(430px, 100%); display: flex; flex-direction: column; align-items: center; gap: 18px; }
         .brand-card { width: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.12); border-radius: 26px; padding: 26px 24px; text-align: center; box-shadow: 0 20px 55px rgba(0,0,0,0.45); backdrop-filter: blur(14px); }
         .auth-logo { width: 150px; height: 118px; object-fit: cover; border-radius: 20px; border: 1px solid #2f2f2f; box-shadow: 0 14px 35px rgba(0,0,0,0.35); margin-bottom: 18px; }
@@ -166,11 +168,14 @@
         .conversation-empty { padding: 28px; text-align: center; color: #777; font-weight: 800; }
 
         .action-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(34, 34, 34, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 40px; display: flex; gap: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 1000; border: 1px solid #444; align-items: center; }
-        .action-item { color: #fff; text-align: center; cursor: pointer; font-size: 22px; transition: 0.3s; opacity: 0.8; }
+        .action-item { color: #fff; text-align: center; cursor: pointer; font-size: 22px; transition: 0.3s; opacity: 0.8; position: relative; min-width: 48px; }
         .action-item span { display: block; font-size: 9px; text-transform: uppercase; margin-top: 4px; font-weight: 800; color: #888; }
+        .nav-badge { position: absolute; top: -7px; right: 3px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; display: grid; place-items: center; background: var(--whatsapp-green); color: #fff; border: 2px solid #222; font-size: 10px; font-weight: 900; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.16); }
 
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); backdrop-filter: blur(6px); display:flex; align-items:center; justify-content:center; z-index: 2000; padding: 20px; }
         .modal-content { background: var(--card-bg); padding: 30px; border-radius: 28px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; border: 1px solid #444; }
+        .data-status-card { background: #151515; border: 1px solid #333; border-radius: 16px; padding: 14px; margin: 10px 0 15px; color: #aaa; font-size: 12px; font-weight: 800; text-transform: uppercase; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+        .data-status-card strong { color: #fff; text-transform: none; text-align: right; }
         
         .btn-full { width: 100%; padding: 16px; border-radius: 16px; border: none; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 12px; transition: 0.3s; }
         .btn-graduar { background: linear-gradient(45deg, #f39c12, #e67e22); color: white; }
@@ -495,6 +500,11 @@
         const [isHydrated, setIsHydrated] = React.useState(false);
         const [dbStatus, setDbStatus] = React.useState(supabaseClient ? "Conectando ao Supabase..." : "Supabase não configurado");
         const applyingRemoteRef = React.useRef(false);
+
+        React.useEffect(() => {
+            document.body.classList.toggle("auth-mode", !mode);
+            return () => document.body.classList.remove("auth-mode");
+        }, [mode]);
 
         React.useEffect(() => {
             const loadRemoteData = async () => {
@@ -850,6 +860,7 @@
             .sort((a, b) => (b.unread - a.unread) || ((b.lastMessage?.id || 0) - (a.lastMessage?.id || 0)) || a.nome.localeCompare(b.nome));
         const conversationStudents = allConversationStudents.filter(s => s.nome.toLowerCase().includes(conversationSearch.toLowerCase()));
         const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || null;
+        const totalUnreadProfessor = allConversationStudents.reduce((total, s) => total + s.unread, 0);
 
         React.useEffect(() => {
             if (mode === "Professor" && professorView === "conversas" && selectedConversation && selectedConversation.unread > 0) {
@@ -911,10 +922,6 @@
                 </header>
 
                 {storageWarning && <div className="warning-banner">{storageWarning}</div>}
-                <div className={`sync-banner ${supabaseClient ? (dbStatus.includes("Erro") ? "error" : "") : "offline"}`}>
-                    <span><i className={`fas ${supabaseClient && !dbStatus.includes("Erro") ? "fa-database" : "fa-exclamation-triangle"}`}></i> {dbStatus}</span>
-                    {!isHydrated && <span>Carregando...</span>}
-                </div>
 
                 {mode === "Professor" && (
                     <>
@@ -1166,7 +1173,10 @@
                         <>
                             <div className="action-item" onClick={() => setModalOpen('add')}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
-                            <div className="action-item" onClick={() => setProfessorView("conversas")}><i className="fab fa-whatsapp"></i><span>CONVERSAS</span></div>
+                            <div className="action-item" onClick={() => setProfessorView("conversas")}>
+                                {totalUnreadProfessor > 0 && <b className="nav-badge">{totalUnreadProfessor > 99 ? "99+" : totalUnreadProfessor}</b>}
+                                <i className="fab fa-whatsapp"></i><span>CONVERSAS</span>
+                            </div>
                             <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
                             <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
@@ -1184,6 +1194,10 @@
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <h3>Gestão de Dados</h3>
+                            <div className="data-status-card">
+                                <span><i className={`fas ${supabaseClient && !dbStatus.includes("Erro") ? "fa-database" : "fa-exclamation-triangle"}`}></i> Banco</span>
+                                <strong>{dbStatus}{!isHydrated ? "..." : ""}</strong>
+                            </div>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={downloadBackup}>
                                 <i className="fas fa-download"></i> GERAR BACKUP (.JSON)
                             </button>
