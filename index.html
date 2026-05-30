@@ -41,7 +41,7 @@
             padding: 14px; 
             padding-bottom: 120px; 
         }
-        body.auth-mode { padding: 0; overflow: hidden; }
+        body.auth-mode, body.parent-mode { padding: 0; overflow: hidden; }
 
         .auth-container, .selection-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 0%, #2a2a2a 0, #111 46%, #050505 100%); padding: 24px 12px; }
         body.auth-mode .auth-container, body.auth-mode .selection-screen { height: 100dvh; min-height: 100dvh; overflow: hidden; }
@@ -138,16 +138,21 @@
         .msg-meta { font-size: 8px; text-align: right; margin-top: 5px; opacity: 0.5; font-weight: bold; }
 
         .chat-img-preview { width: 100%; max-width: 200px; border-radius: 10px; margin-top: 5px; display: block; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .parent-card { max-width: 1060px; margin-left: auto; margin-right: auto; }
-        .parent-card .student-top { padding-bottom: 18px; border-bottom: 1px solid #303030; }
-        .parent-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 18px; align-items: start; }
+        .parent-card { max-width: 1060px; margin: 0 auto; height: calc(100dvh - 116px); overflow: hidden; display: flex; flex-direction: column; padding: 18px; }
+        .parent-card .student-top { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #303030; flex-shrink: 0; }
+        .parent-card .graduation-panel { flex-shrink: 0; margin: 8px 0 12px; }
+        .parent-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 18px; align-items: stretch; min-height: 0; flex: 1; }
+        .parent-side { min-height: 0; overflow-y: auto; padding-right: 2px; }
         .parent-panel { background: #151515; border: 1px solid #303030; border-radius: 18px; overflow: hidden; }
         .parent-panel-title { padding: 14px 16px; color: #fff; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #303030; }
+        .parent-alert { background: rgba(37,211,102,0.12); color: #b8ffd5; border-bottom: 1px solid rgba(37,211,102,0.25); padding: 10px 14px; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .parent-alert button { width: auto; margin: 0; padding: 7px 10px; border-radius: 999px; background: var(--whatsapp-green); color: #fff; border: 0; font-size: 10px; font-weight: 900; cursor: pointer; }
         .parent-detail { background: #151515; border: 1px solid #303030; border-radius: 18px; overflow: hidden; margin-bottom: 12px; }
         .parent-detail summary { cursor: pointer; padding: 14px 16px; color: #ddd; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; list-style: none; }
         .parent-detail summary::-webkit-details-marker { display: none; }
         .parent-detail-body { padding: 0 16px 16px; }
-        .parent-chat .chat-msgs { height: 420px; border-bottom: 1px solid #303030; }
+        .parent-chat { height: 100%; display: flex; flex-direction: column; min-height: 0; }
+        .parent-chat .chat-msgs { height: auto; flex: 1; min-height: 0; border-bottom: 1px solid #303030; }
         .parent-composer { display: flex; padding: 14px; background: #1a1a1a; gap: 10px; align-items: center; }
         .parent-composer input { flex: 1; border: none; background: #000; color: white; padding: 13px 18px; border-radius: 25px; font-size: 14px; margin: 0; outline: none; }
         .conversation-page { max-width: 1100px; margin: 0 auto 110px; }
@@ -285,7 +290,8 @@
             .conversation-panel { min-height: 520px; }
             .conversation-panel .chat-msgs { min-height: 320px; }
             .parent-grid { grid-template-columns: 1fr; }
-            .parent-chat .chat-msgs { height: 320px; }
+            .parent-card { height: calc(100dvh - 96px); padding: 14px; }
+            .parent-chat { min-height: 330px; }
             .graduation-head { align-items: flex-start; flex-direction: column; gap: 5px; }
             .graduation-meta { grid-template-columns: 1fr; }
             .modal-content { padding: 22px; border-radius: 22px; }
@@ -517,7 +523,11 @@
 
         React.useEffect(() => {
             document.body.classList.toggle("auth-mode", !mode);
-            return () => document.body.classList.remove("auth-mode");
+            document.body.classList.toggle("parent-mode", mode === "Pais");
+            return () => {
+                document.body.classList.remove("auth-mode");
+                document.body.classList.remove("parent-mode");
+            };
         }, [mode]);
 
         React.useEffect(() => {
@@ -848,6 +858,13 @@
             } : s));
         };
 
+        const markChatAsRead = (sid, reader) => {
+            setStudents(prev => prev.map(s => s.id === sid ? {
+                ...s,
+                chat: (s.chat || []).map(m => !(m.readBy || []).includes(reader) ? { ...m, readBy: [...(m.readBy || []), reader] } : m)
+            } : s));
+        };
+
         const agendarExamePeloAlerta = (sid) => {
             if (mode !== "Pais") return;
             setChatInputs({ ...chatInputs, [sid]: "AGENDAR EXAME DE FAIXA" });
@@ -1061,7 +1078,7 @@
                             <div className="student-top">
                                 <div className="avatar-container">
                                     <img src={s.avatar || defaultAvatar} className="avatar" />
-                                    {mode === "Professor" && <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} accept="image/*" onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>}
+                                    {(mode === "Professor" || mode === "Pais") && <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} accept="image/*" onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>}
                                 </div>
                                 <div style={{flex:1}}>
                                     <h3 style={{margin:0, fontSize:'19px', color: 'white'}}>
@@ -1097,7 +1114,7 @@
 
                             {mode === "Pais" && (
                                 <div className="parent-grid">
-                                    <div>
+                                    <div className="parent-side">
                                         <details className="parent-detail">
                                             <summary><span><i className="fas fa-medal"></i> Detalhes da graduação</span><i className="fas fa-chevron-down"></i></summary>
                                             <div className="parent-detail-body">
@@ -1138,6 +1155,12 @@
                                             <span><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> Conversa com o professor</span>
                                             {unread > 0 && <b className="unread-dot">{unread}</b>}
                                         </div>
+                                        {unread > 0 && (
+                                            <div className="parent-alert">
+                                                <span><i className="fas fa-bell"></i> {unread} mensagem{unread > 1 ? "s" : ""} nova{unread > 1 ? "s" : ""}</span>
+                                                <button onClick={() => markChatAsRead(s.id, "Pais")}>Marcar como lida</button>
+                                            </div>
+                                        )}
                                         <div className="chat-msgs">
                                             {s.chat?.map(m => (
                                                 <div key={m.id} className={`msg-wrapper ${m.sender === mode ? 'self' : 'other'}`}>
