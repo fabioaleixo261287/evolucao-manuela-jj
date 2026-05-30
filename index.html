@@ -410,7 +410,10 @@
         };
     }
 
-    function getPresenceDegreeStates(aulas = 0, rules = 1) {
+    function getPresenceDegreeStates(aulas = 0, rules = 1, savedStates = null) {
+        if (Array.isArray(savedStates) && savedStates.length === 4) {
+            return savedStates.map(state => Math.max(0, Math.min(2, Number(state) || 0)));
+        }
         const graus = rules > 0 ? Math.floor(aulas / rules) : 0;
         return Array.from({length: 4}).map((_, i) => {
             if (graus > i + 4) return 2; // Vermelho sobreposto.
@@ -612,7 +615,8 @@
                     const currentRemainder = s.aulas % rules;
                     if (boxIndex < currentRemainder) {
                         const novaAula = s.aulas - 1;
-                        return { ...s, aulas: Math.max(0, novaAula), historico: [...(s.historico || []), `❌ Remoção de Presença | Aula ${s.aulas} | ${new Date().toLocaleDateString('pt-BR')}`] };
+                        const { presenceDegrees, ...rest } = s;
+                        return { ...rest, aulas: Math.max(0, novaAula), historico: [...(s.historico || []), `❌ Remoção de Presença | Aula ${s.aulas} | ${new Date().toLocaleDateString('pt-BR')}`] };
                     } else {
                         if (s.aulas >= rules * 9) return s;
                         const novaAula = s.aulas + 1;
@@ -621,7 +625,8 @@
                             const n = novaAula / rules;
                             log.push(n <= 4 ? `🎓 GRAU DE PRESENÇA BRANCO (${n}º)` : `🔴 GRAU DE PRESENÇA VERMELHO (${n-4}º)`);
                         }
-                        return { ...s, aulas: novaAula, historico: [...(s.historico || []), ...log] };
+                        const { presenceDegrees, ...rest } = s;
+                        return { ...rest, aulas: novaAula, historico: [...(s.historico || []), ...log] };
                     }
                 }
                 return s;
@@ -647,7 +652,7 @@
             setStudents(prev => prev.map(s => {
                 if (s.id !== sid) return s;
                 const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
-                const states = getPresenceDegreeStates(s.aulas || 0, rules);
+                const states = getPresenceDegreeStates(s.aulas || 0, rules, s.presenceDegrees);
                 const currentState = states[degreeIndex];
                 const direction = degreeDirections[directionKey] || "up";
                 let nextState = currentState;
@@ -676,7 +681,7 @@
 
                 const nextStates = states.map((state, i) => i === degreeIndex ? nextState : state);
                 const novaAula = Math.min(rules * 9, getClassesFromDegreeStates(nextStates, rules));
-                return { ...s, aulas: novaAula, historico: [...(s.historico || []), log] };
+                return { ...s, aulas: novaAula, presenceDegrees: nextStates, historico: [...(s.historico || []), log] };
             }));
             setDegreeDirections(prev => ({ ...prev, [directionKey]: nextDirection || "up" }));
         };
@@ -687,7 +692,8 @@
                 if (s.id === sid) {
                     const cur = beltOrder.indexOf(s.faixa);
                     const prox = beltOrder[cur + 1] || s.faixa;
-                    return { ...s, faixa: prox, aulas: 0, comp: {}, historico: [...(s.historico || []), `🎓 GRADUADO: ${prox}`] };
+                    const { presenceDegrees, ...rest } = s;
+                    return { ...rest, faixa: prox, aulas: 0, comp: {}, historico: [...(s.historico || []), `🎓 GRADUADO: ${prox}`] };
                 }
                 return s;
             }));
@@ -841,7 +847,7 @@
                 {filtered.map(s => {
                     const ruleInfo = getRuleInfo(s.nascimento, s.faixa, s.categoriaOverride);
                     const rules = ruleInfo.aulasPorGrau;
-                    const presenceDegreeStates = rules > 0 ? getPresenceDegreeStates(s.aulas, rules) : [0, 0, 0, 0];
+                    const presenceDegreeStates = rules > 0 ? getPresenceDegreeStates(s.aulas, rules, s.presenceDegrees) : [0, 0, 0, 0];
                     const pronto = rules > 0 && (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
                     const unread = s.chat?.filter(m => !(m.readBy || []).includes(mode)).length || 0;
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
@@ -1102,7 +1108,8 @@
 
                                 if (alunoOriginal && alunoOriginal.faixa !== alunoAtualizado.faixa) {
                                     logs.push(`🎓 FAIXA ALTERADA MANUALMENTE: ${alunoOriginal.faixa} → ${alunoAtualizado.faixa} | ${hoje}`);
-                                    alunoAtualizado = { ...alunoAtualizado, aulas: 0, comp: {} };
+                                    const { presenceDegrees, ...semGrausPresenca } = alunoAtualizado;
+                                    alunoAtualizado = { ...semGrausPresenca, aulas: 0, comp: {} };
                                 }
 
                                 const categoriaAnterior = alunoOriginal?.categoriaOverride || "Auto";
