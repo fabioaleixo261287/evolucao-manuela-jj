@@ -141,6 +141,9 @@
         .parent-card { max-width: 1060px; margin: 0 auto; height: calc(100dvh - 116px); overflow: hidden; display: flex; flex-direction: column; padding: 18px; }
         .parent-card .student-top { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #303030; flex-shrink: 0; }
         .parent-card .graduation-panel { flex-shrink: 0; margin: 8px 0 12px; }
+        .parent-nav-inline { margin-left: auto; display: flex; align-items: center; gap: 10px; background: rgba(18,18,18,0.82); border: 1px solid #343434; border-radius: 22px; padding: 8px 12px; box-shadow: 0 10px 28px rgba(0,0,0,0.26); }
+        .parent-nav-inline .action-item { min-width: 54px; font-size: 20px; }
+        .parent-nav-inline .action-item span { font-size: 8px; }
         .parent-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 18px; align-items: stretch; min-height: 0; flex: 1; }
         .parent-side { min-height: 0; overflow-y: auto; padding-right: 2px; }
         .parent-panel { background: #151515; border: 1px solid #303030; border-radius: 18px; overflow: hidden; }
@@ -291,6 +294,8 @@
             .conversation-panel .chat-msgs { min-height: 320px; }
             .parent-grid { grid-template-columns: 1fr; }
             .parent-card { height: calc(100dvh - 96px); padding: 14px; }
+            .parent-card .student-top { flex-wrap: wrap; }
+            .parent-nav-inline { width: 100%; justify-content: space-around; margin-left: 0; }
             .parent-chat { min-height: 330px; }
             .graduation-head { align-items: flex-start; flex-direction: column; gap: 5px; }
             .graduation-meta { grid-template-columns: 1fr; }
@@ -1088,6 +1093,13 @@
                                     <div className="cat-badge">{s.faixa}</div><br/>
                                     <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento, s.categoriaOverride)}{s.categoriaOverride && s.categoriaOverride !== "Auto" ? " (MANUAL)" : ""}{ruleInfo.elegivel ? ` • ${rules} AULAS/GRAU` : ''}</small><br/>
                                 </div>
+                                {mode === "Pais" && (
+                                    <div className="parent-nav-inline">
+                                        <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
+                                        <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
+                                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
+                                    </div>
+                                )}
                                 {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
 
@@ -1274,7 +1286,7 @@
                     );
                 })}
 
-                <div className="action-bar">
+                {mode !== "Pais" && <div className="action-bar">
                     {mode === "Professor" ? (
                         <>
                             <div className="action-item" onClick={() => setModalOpen('add')}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
@@ -1293,7 +1305,7 @@
                             <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
                     )}
-                </div>
+                </div>}
 
                 {/* MODAL BACKUP */}
                 {modalOpen === 'backup' && (
