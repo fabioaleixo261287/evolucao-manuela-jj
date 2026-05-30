@@ -146,11 +146,14 @@
         .conversation-item { padding: 14px; border-bottom: 1px solid #282828; cursor: pointer; display: flex; gap: 10px; align-items: center; }
         .conversation-item:hover { background: #202020; }
         .conversation-item.active { background: #242424; border-left: 3px solid var(--alliance-red); }
+        .conversation-item.unread { background: #102016; }
+        .conversation-item.unread .conversation-name { color: #fff; }
+        .conversation-item.unread .conversation-last { color: #dfffe9; font-weight: 800; }
         .conversation-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #222; border: 1px solid #333; flex-shrink: 0; }
         .conversation-main { min-width: 0; flex: 1; }
         .conversation-name { color: #fff; font-size: 13px; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .conversation-last { color: #777; font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .unread-dot { background: var(--alliance-red); color: #fff; border-radius: 999px; min-width: 20px; height: 20px; display: grid; place-items: center; font-size: 10px; font-weight: 900; }
+        .unread-dot { background: var(--whatsapp-green); color: #fff; border-radius: 999px; min-width: 22px; height: 22px; display: grid; place-items: center; font-size: 10px; font-weight: 900; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.14); }
         .conversation-panel { display: flex; flex-direction: column; min-height: 660px; }
         .conversation-panel .chat-header { min-height: 70px; cursor: default; }
         .conversation-panel .chat-msgs { height: auto; flex: 1; min-height: 480px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
@@ -841,7 +844,7 @@
             })
             .sort((a, b) => (b.unread - a.unread) || ((b.lastMessage?.id || 0) - (a.lastMessage?.id || 0)) || a.nome.localeCompare(b.nome));
         const conversationStudents = allConversationStudents.filter(s => s.nome.toLowerCase().includes(conversationSearch.toLowerCase()));
-        const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || conversationStudents[0];
+        const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || null;
 
         React.useEffect(() => {
             if (mode === "Professor" && professorView === "conversas" && selectedConversation && selectedConversation.unread > 0) {
@@ -964,7 +967,7 @@
                                 const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
                                 const lastText = s.lastMessage?.isImage ? "Imagem recebida" : (s.lastMessage?.text || (s.lastMessage?.fileName ? `Arquivo: ${s.lastMessage.fileName}` : "Sem mensagens"));
                                 return (
-                                    <div key={s.id} className={`conversation-item ${selectedConversation?.id === s.id ? "active" : ""}`} onClick={() => openProfessorConversation(s.id)}>
+                                    <div key={s.id} className={`conversation-item ${selectedConversation?.id === s.id ? "active" : ""} ${s.unread > 0 ? "unread" : ""}`} onClick={() => openProfessorConversation(s.id)}>
                                         <img src={s.avatar || defaultAvatar} className="conversation-avatar" />
                                         <div className="conversation-main">
                                             <div className="conversation-name">{s.nome}</div>
@@ -1005,8 +1008,8 @@
                                     </div>
                                 </>
                             ) : (
-                                <div className="conversation-empty">Nenhuma conversa disponível.</div>
-                            )}
+                                    <div className="conversation-empty">Selecione uma conversa para abrir as mensagens.</div>
+                                )}
                         </div>
                     </div>
                     </section>
