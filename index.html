@@ -80,6 +80,9 @@
         .filter-bar::-webkit-scrollbar { display: none; }
         .filter-btn { padding: 10px 18px; border-radius: 20px; border: 1px solid var(--border-color); background: #1a1a1a; font-size: 12px; font-weight: bold; white-space: nowrap; cursor: pointer; color: #777; transition: 0.3s; }
         .filter-btn.active { background: var(--alliance-red); color: white; border-color: var(--alliance-red); box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
+        .view-tabs { max-width: 850px; margin: 0 auto 14px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .view-tab { border: 1px solid var(--border-color); background: #171717; color: #888; border-radius: 16px; padding: 12px; font-size: 12px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .view-tab.active { background: #242424; color: #fff; border-color: var(--alliance-red); }
 
         .container { max-width: 850px; margin: auto; }
         .card { background: var(--card-bg); padding: 22px; border-radius: 24px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid var(--border-color); position: relative; animation: slideUp 0.4s ease-out; }
@@ -128,6 +131,18 @@
         .msg-meta { font-size: 8px; text-align: right; margin-top: 5px; opacity: 0.5; font-weight: bold; }
 
         .chat-img-preview { width: 100%; max-width: 200px; border-radius: 10px; margin-top: 5px; display: block; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .conversation-view { max-width: 850px; margin: 0 auto 110px; display: grid; grid-template-columns: 280px 1fr; gap: 12px; }
+        .conversation-list, .conversation-panel { background: #181818; border: 1px solid var(--border-color); border-radius: 18px; overflow: hidden; }
+        .conversation-list { max-height: 640px; overflow-y: auto; }
+        .conversation-item { padding: 14px; border-bottom: 1px solid #282828; cursor: pointer; display: flex; gap: 10px; align-items: center; }
+        .conversation-item.active { background: #242424; }
+        .conversation-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #222; border: 1px solid #333; flex-shrink: 0; }
+        .conversation-main { min-width: 0; flex: 1; }
+        .conversation-name { color: #fff; font-size: 13px; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .conversation-last { color: #777; font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .unread-dot { background: var(--alliance-red); color: #fff; border-radius: 999px; min-width: 20px; height: 20px; display: grid; place-items: center; font-size: 10px; font-weight: 900; }
+        .conversation-panel .chat-msgs { height: 470px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .conversation-empty { padding: 28px; text-align: center; color: #777; font-weight: 800; }
 
         .action-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(34, 34, 34, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 40px; display: flex; gap: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 1000; border: 1px solid #444; align-items: center; }
         .action-item { color: #fff; text-align: center; cursor: pointer; font-size: 22px; transition: 0.3s; opacity: 0.8; }
@@ -225,10 +240,8 @@
             .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .summary-item { padding: 12px 8px; }
             .summary-item strong { font-size: 20px; }
-            .dashboard-head { flex-direction: column; }
-            .score-ring { width: 84px; height: 84px; }
-            .belt-chart-row { grid-template-columns: 86px 1fr 30px; }
-            .top-progress { grid-template-columns: 1fr; }
+            .conversation-view { grid-template-columns: 1fr; }
+            .conversation-list { max-height: 220px; }
             .graduation-head { align-items: flex-start; flex-direction: column; gap: 5px; }
             .graduation-meta { grid-template-columns: 1fr; }
             .modal-content { padding: 22px; border-radius: 22px; }
@@ -443,6 +456,8 @@
 
         const [searchTerm, setSearchTerm] = React.useState("");
         const [filterGroup, setFilterGroup] = React.useState("Todos");
+        const [professorView, setProfessorView] = React.useState("alunos");
+        const [selectedChatId, setSelectedChatId] = React.useState(null);
         const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca", sexo: "M", categoriaOverride: "Auto" });
         const [chatInputs, setChatInputs] = React.useState({});
         const [openChats, setOpenChats] = React.useState({});
@@ -743,6 +758,14 @@
             setChatInputs({ ...chatInputs, [sid]: "" });
         };
 
+        const openProfessorConversation = (sid) => {
+            setSelectedChatId(sid);
+            setStudents(prev => prev.map(s => s.id === sid ? {
+                ...s,
+                chat: (s.chat || []).map(m => !(m.readBy || []).includes("Professor") ? { ...m, readBy: [...(m.readBy || []), "Professor"] } : m)
+            } : s));
+        };
+
         const agendarExamePeloAlerta = (sid) => {
             if (mode !== "Pais") return;
             setChatInputs({ ...chatInputs, [sid]: "AGENDAR EXAME DE FAIXA" });
@@ -757,6 +780,17 @@
             const matchesGroup = filterGroup === "Todos" || getAutoCategory(s.nascimento, s.categoriaOverride) === filterGroup;
             return matchesName && matchesGroup;
         });
+        const professorHasQuery = searchTerm.trim().length > 0 || filterGroup !== "Todos";
+        const displayedStudents = mode === "Professor" ? (professorHasQuery ? filtered : []) : filtered;
+        const conversationStudents = students
+            .map(s => {
+                const chat = s.chat || [];
+                const lastMessage = chat[chat.length - 1];
+                const unread = chat.filter(m => !(m.readBy || []).includes("Professor")).length;
+                return { ...s, lastMessage, unread };
+            })
+            .sort((a, b) => (b.unread - a.unread) || ((b.lastMessage?.id || 0) - (a.lastMessage?.id || 0)) || a.nome.localeCompare(b.nome));
+        const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || conversationStudents[0];
         const readyStudents = students.filter(s => {
             const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
             return rules > 0 && s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
@@ -824,27 +858,83 @@
                             <div className="summary-item"><strong>{readyStudents}</strong><span>prontos</span></div>
                             <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
                         </div>
-                        <div className="search-container">
-                            <i className="fas fa-search search-icon"></i>
-                            <input className="search-input" placeholder="Buscar por nome..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-                            <div className="filter-bar">
-                                {groups.map(g => (
-                                    <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => setFilterGroup(g)}>{g}</button>
-                                ))}
-                            </div>
+                        <div className="view-tabs">
+                            <button className={`view-tab ${professorView === "alunos" ? "active" : ""}`} onClick={() => setProfessorView("alunos")}><i className="fas fa-user-graduate"></i> Alunos</button>
+                            <button className={`view-tab ${professorView === "conversas" ? "active" : ""}`} onClick={() => setProfessorView("conversas")}><i className="fab fa-whatsapp"></i> Conversas</button>
                         </div>
+                        {professorView === "alunos" && (
+                            <div className="search-container">
+                                <i className="fas fa-search search-icon"></i>
+                                <input className="search-input" placeholder="Buscar por nome..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+                                <div className="filter-bar">
+                                    {groups.map(g => (
+                                        <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => setFilterGroup(g)}>{g}</button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </>
                 )}
 
-                {filtered.length === 0 && (
-                    <div className="empty-state">
-                        <i className="fas fa-user-graduate"></i>
-                        <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : "Nenhum aluno encontrado"}</strong>
-                        <span>{mode === "Professor" ? "Use o botão ALUNO para cadastrar ou ajuste a busca." : "Confira o nome e a data de nascimento usados no acesso."}</span>
+                {mode === "Professor" && professorView === "conversas" && (
+                    <div className="conversation-view">
+                        <div className="conversation-list">
+                            {conversationStudents.map(s => {
+                                const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
+                                const lastText = s.lastMessage?.isImage ? "Imagem recebida" : (s.lastMessage?.text || (s.lastMessage?.fileName ? `Arquivo: ${s.lastMessage.fileName}` : "Sem mensagens"));
+                                return (
+                                    <div key={s.id} className={`conversation-item ${selectedConversation?.id === s.id ? "active" : ""}`} onClick={() => openProfessorConversation(s.id)}>
+                                        <img src={s.avatar || defaultAvatar} className="conversation-avatar" />
+                                        <div className="conversation-main">
+                                            <div className="conversation-name">{s.nome}</div>
+                                            <div className="conversation-last">{lastText}</div>
+                                        </div>
+                                        {s.unread > 0 && <div className="unread-dot">{s.unread}</div>}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <div className="conversation-panel">
+                            {selectedConversation ? (
+                                <>
+                                    <div className="chat-header">
+                                        <span><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> {selectedConversation.nome}</span>
+                                    </div>
+                                    <div className="chat-msgs">
+                                        {(selectedConversation.chat || []).map(m => (
+                                            <div key={m.id} className={`msg-wrapper ${m.sender === "Professor" ? 'self' : 'other'}`}>
+                                                <span className="msg-author">{m.author}</span>
+                                                <div className="msg-bubble">
+                                                    {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
+                                                    {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
+                                                    {m.text && <div>{m.text}</div>}
+                                                    <div className="msg-meta">{m.time}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div style={{display:'flex', padding:'12px', background:'#1a1a1a', gap:'10px', alignItems:'center'}}>
+                                        <label style={{cursor:'pointer'}}><i className="fas fa-camera" style={{color:'#555'}}></i><input type="file" style={{display:'none'}} accept="image/*" onChange={e => handleFile(e.target.files[0], 'chat', selectedConversation.id)}/></label>
+                                        <input style={{flex:1, border:'none', background:'#000', color:'white', padding:'12px 18px', borderRadius:'25px', fontSize:'14px', margin:0}} placeholder="Mensagem..." value={chatInputs[selectedConversation.id] || ""} onChange={e => setChatInputs({...chatInputs, [selectedConversation.id]: e.target.value})} onKeyDown={e => e.key === 'Enter' && sendMessage(selectedConversation.id)}/>
+                                        <i className="fas fa-paper-plane" style={{color: 'var(--alliance-green)', cursor:'pointer'}} onClick={() => sendMessage(selectedConversation.id)}></i>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="conversation-empty">Nenhuma conversa disponível.</div>
+                            )}
+                        </div>
                     </div>
                 )}
 
-                {filtered.map(s => {
+                {!(mode === "Professor" && professorView === "conversas") && displayedStudents.length === 0 && (
+                    <div className="empty-state">
+                        <i className="fas fa-user-graduate"></i>
+                        <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : (mode === "Professor" && !professorHasQuery ? "Faça uma consulta" : "Nenhum aluno encontrado")}</strong>
+                        <span>{mode === "Professor" ? "Digite um nome ou escolha uma categoria para exibir os alunos." : "Confira o nome e a data de nascimento usados no acesso."}</span>
+                    </div>
+                )}
+
+                {!(mode === "Professor" && professorView === "conversas") && displayedStudents.map(s => {
                     const ruleInfo = getRuleInfo(s.nascimento, s.faixa, s.categoriaOverride);
                     const rules = ruleInfo.aulasPorGrau;
                     const presenceDegreeStates = rules > 0 ? getPresenceDegreeStates(s.aulas, rules, s.presenceDegrees) : [0, 0, 0, 0];
@@ -984,6 +1074,7 @@
                         <>
                             <div className="action-item" onClick={() => setModalOpen('add')}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
+                            <div className="action-item" onClick={() => setProfessorView("conversas")}><i className="fab fa-whatsapp"></i><span>CONVERSAS</span></div>
                             <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
                             <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
