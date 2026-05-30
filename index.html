@@ -920,10 +920,6 @@
                                 <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
                             </div>
                         )}
-                        <div className="view-tabs">
-                            <button className={`view-tab ${professorView === "alunos" ? "active" : ""}`} onClick={() => setProfessorView("alunos")}><i className="fas fa-user-graduate"></i> Alunos</button>
-                            <button className={`view-tab ${professorView === "conversas" ? "active" : ""}`} onClick={() => setProfessorView("conversas")}><i className="fab fa-whatsapp"></i> Conversas</button>
-                        </div>
                         {professorView === "alunos" && (
                             <div className="search-container">
                                 <i className="fas fa-search search-icon"></i>
