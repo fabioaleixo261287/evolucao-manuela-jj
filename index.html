@@ -174,6 +174,7 @@
 
         input, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #333; background: #1a1a1a; color: white; border-radius: 14px; font-size: 16px; outline: none; }
         input:focus, select:focus { border-color: var(--alliance-red); box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.18); }
+        .field-label { display: block; color: #888; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: left; margin: 12px 0 -4px; }
         button, .action-item, .box-class, .degree-box, .btn-settings-hidden, .btn-edit-info { touch-action: manipulation; }
         
         #compress-loader { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.9); color:white; padding:20px; border-radius:15px; z-index:5000; text-align:center; }
@@ -954,11 +955,13 @@
                                 <option value="M">Masculino</option>
                                 <option value="F">Feminino</option>
                             </select>
+                            <label className="field-label">Turma</label>
+                            <select value={form.categoriaOverride} onChange={e => setForm({...form, categoriaOverride: e.target.value})}>
+                                {categoryOptions.map(c => <option key={c} value={c}>{c === "Auto" ? `Automática: ${form.nascimento ? getAutoCategory(form.nascimento) : "pela idade"}` : c}</option>)}
+                            </select>
+                            <label className="field-label">Faixa</label>
                             <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>
                                 {beltOrder.map(f => <option key={f} value={f}>{f}</option>)}
-                            </select>
-                            <select value={form.categoriaOverride} onChange={e => setForm({...form, categoriaOverride: e.target.value})}>
-                                {categoryOptions.map(c => <option key={c} value={c}>{c === "Auto" ? "Turma automática" : c}</option>)}
                             </select>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
                                 if(!form.nome || !form.nascimento) return alert("Preencha tudo!");
@@ -1019,11 +1022,13 @@
                                 <option value="M">Masculino</option>
                                 <option value="F">Feminino</option>
                             </select>
+                            <label className="field-label">Turma</label>
+                            <select value={editingStudent.categoriaOverride || "Auto"} onChange={e => setEditingStudent({...editingStudent, categoriaOverride: e.target.value})}>
+                                {categoryOptions.map(c => <option key={c} value={c}>{c === "Auto" ? `Automática: ${getAutoCategory(editingStudent.nascimento)}` : c}</option>)}
+                            </select>
+                            <label className="field-label">Faixa</label>
                             <select value={editingStudent.faixa} onChange={e => setEditingStudent({...editingStudent, faixa: e.target.value})}>
                                 {beltOrder.map(f => <option key={f} value={f}>{f}</option>)}
-                            </select>
-                            <select value={editingStudent.categoriaOverride || "Auto"} onChange={e => setEditingStudent({...editingStudent, categoriaOverride: e.target.value})}>
-                                {categoryOptions.map(c => <option key={c} value={c}>{c === "Auto" ? "Turma automática" : c}</option>)}
                             </select>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
                                 if(!editingStudent.nome.trim() || !editingStudent.nascimento) return alert("Preencha tudo!");
