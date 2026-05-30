@@ -80,11 +80,12 @@
         .filter-bar::-webkit-scrollbar { display: none; }
         .filter-btn { padding: 10px 18px; border-radius: 20px; border: 1px solid var(--border-color); background: #1a1a1a; font-size: 12px; font-weight: bold; white-space: nowrap; cursor: pointer; color: #777; transition: 0.3s; }
         .filter-btn.active { background: var(--alliance-red); color: white; border-color: var(--alliance-red); box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
-        .view-tabs { max-width: 850px; margin: 0 auto 14px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .view-tab { border: 1px solid var(--border-color); background: #171717; color: #888; border-radius: 16px; padding: 12px; font-size: 12px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
-        .view-tab.active { background: #242424; color: #fff; border-color: var(--alliance-red); }
+        .view-tabs { max-width: 850px; margin: 0 auto 18px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .view-tab { border: 1px solid var(--border-color); background: #171717; color: #888; border-radius: 18px; padding: 14px 12px; font-size: 12px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .view-tab.active { background: #242424; color: #fff; border-color: var(--alliance-red); box-shadow: 0 8px 20px rgba(231, 76, 60, 0.18); }
 
         .container { max-width: 850px; margin: auto; }
+        .wide-container { max-width: 1100px; }
         .card { background: var(--card-bg); padding: 22px; border-radius: 24px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid var(--border-color); position: relative; animation: slideUp 0.4s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -131,17 +132,30 @@
         .msg-meta { font-size: 8px; text-align: right; margin-top: 5px; opacity: 0.5; font-weight: bold; }
 
         .chat-img-preview { width: 100%; max-width: 200px; border-radius: 10px; margin-top: 5px; display: block; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .conversation-view { max-width: 850px; margin: 0 auto 110px; display: grid; grid-template-columns: 280px 1fr; gap: 12px; }
-        .conversation-list, .conversation-panel { background: #181818; border: 1px solid var(--border-color); border-radius: 18px; overflow: hidden; }
-        .conversation-list { max-height: 640px; overflow-y: auto; }
+        .conversation-page { max-width: 1100px; margin: 0 auto 110px; }
+        .conversation-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 8px 0 18px; }
+        .conversation-title h3 { margin: 0; color: #fff; font-size: 22px; text-transform: uppercase; letter-spacing: 0; }
+        .conversation-title span { color: #888; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+        .conversation-view { display: grid; grid-template-columns: minmax(280px, 340px) 1fr; gap: 14px; align-items: stretch; }
+        .conversation-list, .conversation-panel { background: #181818; border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+        .conversation-list { height: 660px; display: flex; flex-direction: column; }
+        .conversation-search { padding: 14px; border-bottom: 1px solid #282828; background: #151515; }
+        .conversation-search input { width: 100%; border: 1px solid #303030; background: #0e0e0e; color: #fff; border-radius: 14px; padding: 12px 14px 12px 38px; font-size: 13px; outline: none; }
+        .conversation-search i { position: absolute; margin: 13px 0 0 14px; color: #666; font-size: 13px; }
+        .conversation-scroll { overflow-y: auto; flex: 1; }
         .conversation-item { padding: 14px; border-bottom: 1px solid #282828; cursor: pointer; display: flex; gap: 10px; align-items: center; }
-        .conversation-item.active { background: #242424; }
+        .conversation-item:hover { background: #202020; }
+        .conversation-item.active { background: #242424; border-left: 3px solid var(--alliance-red); }
         .conversation-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #222; border: 1px solid #333; flex-shrink: 0; }
         .conversation-main { min-width: 0; flex: 1; }
         .conversation-name { color: #fff; font-size: 13px; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .conversation-last { color: #777; font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .unread-dot { background: var(--alliance-red); color: #fff; border-radius: 999px; min-width: 20px; height: 20px; display: grid; place-items: center; font-size: 10px; font-weight: 900; }
-        .conversation-panel .chat-msgs { height: 470px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .conversation-panel { display: flex; flex-direction: column; min-height: 660px; }
+        .conversation-panel .chat-header { min-height: 70px; cursor: default; }
+        .conversation-panel .chat-msgs { height: auto; flex: 1; min-height: 480px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .conversation-composer { display: flex; padding: 14px; background: #1a1a1a; gap: 10px; align-items: center; }
+        .conversation-composer input { flex: 1; border: none; background: #000; color: white; padding: 13px 18px; border-radius: 25px; font-size: 14px; margin: 0; outline: none; }
         .conversation-empty { padding: 28px; text-align: center; color: #777; font-weight: 800; }
 
         .action-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(34, 34, 34, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 40px; display: flex; gap: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 1000; border: 1px solid #444; align-items: center; }
@@ -240,8 +254,11 @@
             .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .summary-item { padding: 12px 8px; }
             .summary-item strong { font-size: 20px; }
+            .conversation-title { align-items: flex-start; flex-direction: column; }
             .conversation-view { grid-template-columns: 1fr; }
-            .conversation-list { max-height: 220px; }
+            .conversation-list { height: 300px; }
+            .conversation-panel { min-height: 520px; }
+            .conversation-panel .chat-msgs { min-height: 320px; }
             .graduation-head { align-items: flex-start; flex-direction: column; gap: 5px; }
             .graduation-meta { grid-template-columns: 1fr; }
             .modal-content { padding: 22px; border-radius: 22px; }
@@ -458,6 +475,7 @@
         const [filterGroup, setFilterGroup] = React.useState("Todos");
         const [professorView, setProfessorView] = React.useState("alunos");
         const [selectedChatId, setSelectedChatId] = React.useState(null);
+        const [conversationSearch, setConversationSearch] = React.useState("");
         const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca", sexo: "M", categoriaOverride: "Auto" });
         const [chatInputs, setChatInputs] = React.useState({});
         const [openChats, setOpenChats] = React.useState({});
@@ -814,7 +832,7 @@
         });
         const professorHasQuery = searchTerm.trim().length > 0 || filterGroup !== "Todos";
         const displayedStudents = mode === "Professor" ? (professorHasQuery ? filtered : []) : filtered;
-        const conversationStudents = students
+        const allConversationStudents = students
             .map(s => {
                 const chat = s.chat || [];
                 const lastMessage = chat[chat.length - 1];
@@ -822,6 +840,7 @@
                 return { ...s, lastMessage, unread };
             })
             .sort((a, b) => (b.unread - a.unread) || ((b.lastMessage?.id || 0) - (a.lastMessage?.id || 0)) || a.nome.localeCompare(b.nome));
+        const conversationStudents = allConversationStudents.filter(s => s.nome.toLowerCase().includes(conversationSearch.toLowerCase()));
         const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || conversationStudents[0];
 
         React.useEffect(() => {
@@ -872,7 +891,7 @@
         }
 
         return (
-            <div className="container">
+            <div className={`container ${mode === "Professor" && professorView === "conversas" ? "wide-container" : ""}`}>
                 <header className="header-main">
                     <h2>Alliance Mooca Kids</h2>
                     {/* Botão de backup */}
@@ -891,11 +910,13 @@
 
                 {mode === "Professor" && (
                     <>
-                        <div className="summary-grid">
-                            <div className="summary-item"><strong>{students.length}</strong><span>alunos</span></div>
-                            <div className="summary-item"><strong>{readyStudents}</strong><span>prontos</span></div>
-                            <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
-                        </div>
+                        {professorView === "alunos" && (
+                            <div className="summary-grid">
+                                <div className="summary-item"><strong>{students.length}</strong><span>alunos</span></div>
+                                <div className="summary-item"><strong>{readyStudents}</strong><span>prontos</span></div>
+                                <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
+                            </div>
+                        )}
                         <div className="view-tabs">
                             <button className={`view-tab ${professorView === "alunos" ? "active" : ""}`} onClick={() => setProfessorView("alunos")}><i className="fas fa-user-graduate"></i> Alunos</button>
                             <button className={`view-tab ${professorView === "conversas" ? "active" : ""}`} onClick={() => setProfessorView("conversas")}><i className="fab fa-whatsapp"></i> Conversas</button>
@@ -915,9 +936,22 @@
                 )}
 
                 {mode === "Professor" && professorView === "conversas" && (
+                    <section className="conversation-page">
+                        <div className="conversation-title">
+                            <div>
+                                <h3>Conversas</h3>
+                                <span>{allConversationStudents.length} alunos cadastrados</span>
+                            </div>
+                            <button className="filter-btn" onClick={() => setProfessorView("alunos")}><i className="fas fa-arrow-left"></i> Voltar para alunos</button>
+                        </div>
                     <div className="conversation-view">
-                        <div className="conversation-list">
-                            {conversationStudents.map(s => {
+                        <aside className="conversation-list">
+                            <div className="conversation-search">
+                                <i className="fas fa-search"></i>
+                                <input placeholder="Buscar conversa..." value={conversationSearch} onChange={e => setConversationSearch(e.target.value)} />
+                            </div>
+                            <div className="conversation-scroll">
+                            {conversationStudents.length > 0 ? conversationStudents.map(s => {
                                 const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
                                 const lastText = s.lastMessage?.isImage ? "Imagem recebida" : (s.lastMessage?.text || (s.lastMessage?.fileName ? `Arquivo: ${s.lastMessage.fileName}` : "Sem mensagens"));
                                 return (
@@ -930,13 +964,17 @@
                                         {s.unread > 0 && <div className="unread-dot">{s.unread}</div>}
                                     </div>
                                 );
-                            })}
-                        </div>
+                            }) : (
+                                <div className="conversation-empty">Nenhuma conversa encontrada.</div>
+                            )}
+                            </div>
+                        </aside>
                         <div className="conversation-panel">
                             {selectedConversation ? (
                                 <>
                                     <div className="chat-header">
                                         <span><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> {selectedConversation.nome}</span>
+                                        <small style={{color:'#888', fontWeight:800}}>{selectedConversation.chat?.length || 0} mensagens</small>
                                     </div>
                                     <div className="chat-msgs">
                                         {(selectedConversation.chat || []).map(m => (
@@ -951,9 +989,9 @@
                                             </div>
                                         ))}
                                     </div>
-                                    <div style={{display:'flex', padding:'12px', background:'#1a1a1a', gap:'10px', alignItems:'center'}}>
+                                    <div className="conversation-composer">
                                         <label style={{cursor:'pointer'}}><i className="fas fa-camera" style={{color:'#555'}}></i><input type="file" style={{display:'none'}} accept="image/*" onChange={e => handleFile(e.target.files[0], 'chat', selectedConversation.id)}/></label>
-                                        <input style={{flex:1, border:'none', background:'#000', color:'white', padding:'12px 18px', borderRadius:'25px', fontSize:'14px', margin:0}} placeholder="Mensagem..." value={chatInputs[selectedConversation.id] || ""} onChange={e => setChatInputs({...chatInputs, [selectedConversation.id]: e.target.value})} onKeyDown={e => e.key === 'Enter' && sendMessage(selectedConversation.id)}/>
+                                        <input placeholder="Mensagem..." value={chatInputs[selectedConversation.id] || ""} onChange={e => setChatInputs({...chatInputs, [selectedConversation.id]: e.target.value})} onKeyDown={e => e.key === 'Enter' && sendMessage(selectedConversation.id)}/>
                                         <i className="fas fa-paper-plane" style={{color: 'var(--alliance-green)', cursor:'pointer'}} onClick={() => sendMessage(selectedConversation.id)}></i>
                                     </div>
                                 </>
@@ -962,6 +1000,7 @@
                             )}
                         </div>
                     </div>
+                    </section>
                 )}
 
                 {!(mode === "Professor" && professorView === "conversas") && displayedStudents.length === 0 && (
