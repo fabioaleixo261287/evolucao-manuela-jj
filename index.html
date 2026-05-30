@@ -254,7 +254,7 @@
 
 <script type="text/babel">
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
-    const groups = ["Todos", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth", "Fora da regra"];
+    const groups = ["Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth"];
     const categoryOptions = ["Auto", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth"];
     const classDays = [1, 3, 5, 6]; // Segunda, quarta, sexta e sábado.
     const AVATAR_BOY = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
@@ -468,6 +468,7 @@
         const [storageWarning, setStorageWarning] = React.useState("");
         const [isHydrated, setIsHydrated] = React.useState(false);
         const [dbStatus, setDbStatus] = React.useState(supabaseClient ? "Conectando ao Supabase..." : "Supabase não configurado");
+        const applyingRemoteRef = React.useRef(false);
 
         React.useEffect(() => {
             const loadRemoteData = async () => {
@@ -500,10 +501,12 @@
                                 repo: localRepo,
                                 updated_at: new Date().toISOString()
                             });
+                            applyingRemoteRef.current = true;
                             setStudents(localStudents);
                             setRepo(localRepo);
                             setDbStatus("Base local enviada ao Supabase");
                         } else {
+                            applyingRemoteRef.current = true;
                             setStudents(remoteStudents);
                             setRepo(remoteRepo);
                             setDbStatus("Sincronizado com Supabase");
@@ -538,6 +541,11 @@
                 setStorageWarning("O armazenamento do navegador está cheio. Gere um backup e remova arquivos grandes.");
             }
 
+            if (applyingRemoteRef.current) {
+                applyingRemoteRef.current = false;
+                return;
+            }
+
             if (!supabaseClient) return;
             const syncTimer = setTimeout(async () => {
                 try {
@@ -557,6 +565,30 @@
 
             return () => clearTimeout(syncTimer);
         }, [students, repo, isHydrated, supabaseClient]);
+
+        React.useEffect(() => {
+            if (!supabaseClient || !isHydrated) return;
+            const refreshTimer = setInterval(async () => {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from("app_state")
+                        .select("students, repo")
+                        .eq("id", SUPABASE_STATE_ID)
+                        .maybeSingle();
+                    if (error) throw error;
+                    if (!data) return;
+                    applyingRemoteRef.current = true;
+                    setStudents(Array.isArray(data.students) ? data.students : []);
+                    setRepo(Array.isArray(data.repo) ? data.repo : []);
+                    setDbStatus("Sincronizado com Supabase");
+                } catch (err) {
+                    console.error(err);
+                    setDbStatus("Erro ao atualizar Supabase");
+                }
+            }, 4000);
+
+            return () => clearInterval(refreshTimer);
+        }, [supabaseClient, isHydrated]);
 
         const handleLogin = () => {
             if (subMode === 'Professor') {
@@ -791,6 +823,12 @@
             })
             .sort((a, b) => (b.unread - a.unread) || ((b.lastMessage?.id || 0) - (a.lastMessage?.id || 0)) || a.nome.localeCompare(b.nome));
         const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || conversationStudents[0];
+
+        React.useEffect(() => {
+            if (mode === "Professor" && professorView === "conversas" && selectedConversation && selectedConversation.unread > 0) {
+                openProfessorConversation(selectedConversation.id);
+            }
+        }, [mode, professorView, selectedConversation?.id, selectedConversation?.unread]);
         const readyStudents = students.filter(s => {
             const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
             return rules > 0 && s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
@@ -1037,7 +1075,7 @@
                                 <div className="hist-content">{s.historico?.slice().reverse().map((h, i) => <div key={i} style={{padding:'6px 0', borderBottom:'1px solid #222'}}>{h}</div>)}</div>
                             </details>
 
-                            <div className="chat-container" id={`chat-${s.id}`}>
+                            {mode !== "Professor" && <div className="chat-container" id={`chat-${s.id}`}>
                                 <div className="chat-header" onClick={() => { setOpenChats({...openChats, [s.id]: !openChats[s.id]}); if(!openChats[s.id]) setStudents(prev => prev.map(x => x.id === s.id ? {...x, chat: (x.chat||[]).map(m => !(m.readBy || []).includes(mode) ? {...m, readBy: [...(m.readBy || []), mode]} : m)} : x)); }}>
                                     <span style={{fontSize:'12px'}}><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> CONVERSA {unread > 0 && <span style={{background: 'var(--alliance-red)', padding:'2px 6px', borderRadius:'10px', fontSize:'9px', marginLeft:'5px'}}>{unread}</span>}</span>
                                     <i className={`fas fa-chevron-${openChats[s.id] ? 'up' : 'down'}`} style={{fontSize:'10px'}}></i>
@@ -1064,7 +1102,7 @@
                                         </div>
                                     </>
                                 )}
-                            </div>
+                            </div>}
                         </div>
                     );
                 })}
