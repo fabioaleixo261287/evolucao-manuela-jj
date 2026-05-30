@@ -138,6 +138,18 @@
         .msg-meta { font-size: 8px; text-align: right; margin-top: 5px; opacity: 0.5; font-weight: bold; }
 
         .chat-img-preview { width: 100%; max-width: 200px; border-radius: 10px; margin-top: 5px; display: block; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .parent-card { max-width: 1060px; margin-left: auto; margin-right: auto; }
+        .parent-card .student-top { padding-bottom: 18px; border-bottom: 1px solid #303030; }
+        .parent-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 18px; align-items: start; }
+        .parent-panel { background: #151515; border: 1px solid #303030; border-radius: 18px; overflow: hidden; }
+        .parent-panel-title { padding: 14px 16px; color: #fff; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #303030; }
+        .parent-detail { background: #151515; border: 1px solid #303030; border-radius: 18px; overflow: hidden; margin-bottom: 12px; }
+        .parent-detail summary { cursor: pointer; padding: 14px 16px; color: #ddd; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; list-style: none; }
+        .parent-detail summary::-webkit-details-marker { display: none; }
+        .parent-detail-body { padding: 0 16px 16px; }
+        .parent-chat .chat-msgs { height: 420px; border-bottom: 1px solid #303030; }
+        .parent-composer { display: flex; padding: 14px; background: #1a1a1a; gap: 10px; align-items: center; }
+        .parent-composer input { flex: 1; border: none; background: #000; color: white; padding: 13px 18px; border-radius: 25px; font-size: 14px; margin: 0; outline: none; }
         .conversation-page { max-width: 1100px; margin: 0 auto 110px; }
         .conversation-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 8px 0 18px; }
         .conversation-title h3 { margin: 0; color: #fff; font-size: 22px; text-transform: uppercase; letter-spacing: 0; }
@@ -272,6 +284,8 @@
             .conversation-list { height: 300px; }
             .conversation-panel { min-height: 520px; }
             .conversation-panel .chat-msgs { min-height: 320px; }
+            .parent-grid { grid-template-columns: 1fr; }
+            .parent-chat .chat-msgs { height: 320px; }
             .graduation-head { align-items: flex-start; flex-direction: column; gap: 5px; }
             .graduation-meta { grid-template-columns: 1fr; }
             .modal-content { padding: 22px; border-radius: 22px; }
@@ -1043,7 +1057,7 @@
                     const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
 
                     return (
-                        <div key={s.id} className="card">
+                        <div key={s.id} className={`card ${mode === "Pais" ? "parent-card" : ""}`}>
                             <div className="student-top">
                                 <div className="avatar-container">
                                     <img src={s.avatar || defaultAvatar} className="avatar" />
@@ -1081,6 +1095,73 @@
                                 </div>
                             </div>
 
+                            {mode === "Pais" && (
+                                <div className="parent-grid">
+                                    <div>
+                                        <details className="parent-detail">
+                                            <summary><span><i className="fas fa-medal"></i> Detalhes da graduação</span><i className="fas fa-chevron-down"></i></summary>
+                                            <div className="parent-detail-body">
+                                                <span className="section-label">Aulas de Presença</span>
+                                                {!ruleInfo.elegivel ? (
+                                                    <div className="rule-warning"><i className="fas fa-exclamation-triangle"></i> {ruleInfo.aviso}</div>
+                                                ) : pronto ? (
+                                                    <button className="alert-parents" onClick={() => agendarExamePeloAlerta(s.id)}>
+                                                        <i className="fas fa-star"></i> AGENDAR EXAME DE FAIXA (CLIQUE AQUI)
+                                                    </button>
+                                                ) : (
+                                                    <div className="bar">
+                                                        {Array.from({length:rules}).map((_, i) => (
+                                                            <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''} ${s.aulas >= rules * 9 ? 'locked' : ''}`}>{i+1}</div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                <span className="section-label">Graus de Presença</span>
+                                                <div className="degree-row">
+                                                    {Array.from({length:4}).map((_, i) => {
+                                                        let c = "";
+                                                        if (presenceDegreeStates[i] === 2) c = "bg-red";
+                                                        else if (presenceDegreeStates[i] === 1) c = "bg-white";
+                                                        return <div key={i} className={`degree-box ${c}`} style={{cursor:'default'}}></div>;
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </details>
+                                        <details className="parent-detail">
+                                            <summary><span><i className="fas fa-history"></i> Histórico de evolução</span><i className="fas fa-chevron-down"></i></summary>
+                                            <div className="parent-detail-body">
+                                                <div className="hist-content" style={{maxHeight:'220px'}}>{s.historico?.slice().reverse().map((h, i) => <div key={i} style={{padding:'6px 0', borderBottom:'1px solid #222'}}>{h}</div>)}</div>
+                                            </div>
+                                        </details>
+                                    </div>
+                                    <div className="parent-panel parent-chat">
+                                        <div className="parent-panel-title">
+                                            <span><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> Conversa com o professor</span>
+                                            {unread > 0 && <b className="unread-dot">{unread}</b>}
+                                        </div>
+                                        <div className="chat-msgs">
+                                            {s.chat?.map(m => (
+                                                <div key={m.id} className={`msg-wrapper ${m.sender === mode ? 'self' : 'other'}`}>
+                                                    <span className="msg-author">{m.author}</span>
+                                                    <div className="msg-bubble">
+                                                        {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
+                                                        {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
+                                                        {m.text && <div>{m.text}</div>}
+                                                        <div className="msg-meta">{m.time}</div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="parent-composer">
+                                            <label style={{cursor:'pointer'}}><i className="fas fa-camera" style={{color:'#555'}}></i><input type="file" style={{display:'none'}} accept="image/*" onChange={e => handleFile(e.target.files[0], 'chat', s.id)}/></label>
+                                            <input placeholder="Mensagem..." value={chatInputs[s.id] || ""} onChange={e => setChatInputs({...chatInputs, [s.id]: e.target.value})} onKeyDown={e => e.key === 'Enter' && sendMessage(s.id)}/>
+                                            <i className="fas fa-paper-plane" style={{color: 'var(--alliance-green)', cursor:'pointer'}} onClick={() => sendMessage(s.id)}></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {mode !== "Pais" && (
+                            <>
                             <span className="section-label">Aulas de Presença</span>
                             {!ruleInfo.elegivel ? (
                                 <div className="rule-warning"><i className="fas fa-exclamation-triangle"></i> {ruleInfo.aviso}</div>
@@ -1164,6 +1245,8 @@
                                     </>
                                 )}
                             </div>}
+                            </>
+                            )}
                         </div>
                     );
                 })}
