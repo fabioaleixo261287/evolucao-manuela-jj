@@ -241,6 +241,7 @@
 <script type="text/babel">
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
     const groups = ["Todos", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth", "Fora da regra"];
+    const categoryOptions = ["Auto", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth"];
     const classDays = [1, 3, 5, 6]; // Segunda, quarta, sexta e sábado.
     const AVATAR_BOY = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
     const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
@@ -297,10 +298,11 @@
         return age;
     }
 
-    function getAutoCategory(nascimento) {
+    function getAutoCategory(nascimento, categoriaOverride = "Auto") {
+        if (categoriaOverride && categoriaOverride !== "Auto") return categoriaOverride;
         const idade = calculateAge(nascimento);
-        if (idade < 4 || idade > 15) return "Fora da regra";
-        if (idade >= 4 && idade <= 6) return "Baby Eagle";
+        if (idade < 3 || idade > 15) return "Fora da regra";
+        if (idade >= 3 && idade <= 6) return "Baby Eagle";
         if (idade >= 7 && idade <= 10) return "Little Eagle";
         if (idade >= 11 && idade <= 12) return "Eagle Warrior";
         if (idade >= 13 && idade <= 15) return "Eagle Youth";
@@ -315,9 +317,9 @@
         return "desconhecida";
     }
 
-    function getRuleInfo(nascimento, faixa) {
+    function getRuleInfo(nascimento, faixa, categoriaOverride = "Auto") {
         const idade = calculateAge(nascimento);
-        const categoria = getAutoCategory(nascimento);
+        const categoria = getAutoCategory(nascimento, categoriaOverride);
         const familia = getBeltFamily(faixa);
         const foraDaIdade = categoria === "Fora da regra";
 
@@ -326,7 +328,7 @@
                 categoria,
                 aulasPorGrau: 0,
                 elegivel: false,
-                aviso: idade < 4 ? "Idade mínima: 4 anos" : "Programa Kids até 15 anos"
+                aviso: idade < 3 ? "Idade mínima: 3 anos" : "Programa Kids até 15 anos"
             };
         }
 
@@ -350,12 +352,12 @@
         return { categoria: "Fora da regra", aulasPorGrau: 0, elegivel: false, aviso: "Faixa fora da regra" };
     }
 
-    function getRules(nascimento, faixa) {
-        return getRuleInfo(nascimento, faixa).aulasPorGrau;
+    function getRules(nascimento, faixa, categoriaOverride = "Auto") {
+        return getRuleInfo(nascimento, faixa, categoriaOverride).aulasPorGrau;
     }
 
-    function getPrevisaoGraduacao(aulasAtuais, nascimento, faixa) {
-        const ruleInfo = getRuleInfo(nascimento, faixa);
+    function getPrevisaoGraduacao(aulasAtuais, nascimento, faixa, categoriaOverride = "Auto") {
+        const ruleInfo = getRuleInfo(nascimento, faixa, categoriaOverride);
         const rules = ruleInfo.aulasPorGrau;
         if (!ruleInfo.elegivel || rules <= 0) return ruleInfo.aviso;
         const totalAulasNecessarias = rules * 9;
@@ -373,8 +375,8 @@
         return dataPrevisa.toLocaleDateString('pt-BR');
     }
 
-    function getGraduationProgress(aulasAtuais, nascimento, faixa, comp = {}) {
-        const ruleInfo = getRuleInfo(nascimento, faixa);
+    function getGraduationProgress(aulasAtuais, nascimento, faixa, comp = {}, categoriaOverride = "Auto") {
+        const ruleInfo = getRuleInfo(nascimento, faixa, categoriaOverride);
         const rules = ruleInfo.aulasPorGrau;
         if (!ruleInfo.elegivel || rules <= 0) {
             return {
@@ -403,7 +405,7 @@
             elegivel: ruleInfo.elegivel,
             aviso: ruleInfo.aviso,
             aulasPorGrau: rules,
-            previsao: getPrevisaoGraduacao(aulasAtuais, nascimento, faixa)
+            previsao: getPrevisaoGraduacao(aulasAtuais, nascimento, faixa, categoriaOverride)
         };
     }
 
@@ -424,7 +426,7 @@
 
         const [searchTerm, setSearchTerm] = React.useState("");
         const [filterGroup, setFilterGroup] = React.useState("Todos");
-        const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca", sexo: "M" });
+        const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca", sexo: "M", categoriaOverride: "Auto" });
         const [chatInputs, setChatInputs] = React.useState({});
         const [openChats, setOpenChats] = React.useState({});
         const [modalOpen, setModalOpen] = React.useState(null);
@@ -584,14 +586,14 @@
         const togglePresenca = (sid, boxIndex) => {
             if(mode !== "Professor") return;
             const aluno = students.find(s => s.id === sid);
-            const ruleInfo = aluno ? getRuleInfo(aluno.nascimento, aluno.faixa) : null;
+            const ruleInfo = aluno ? getRuleInfo(aluno.nascimento, aluno.faixa, aluno.categoriaOverride) : null;
             if (!ruleInfo?.elegivel) {
                 alert(ruleInfo?.aviso || "Aluno fora da regra de graduação.");
                 return;
             }
             setStudents(prev => prev.map(s => {
                 if (s.id === sid) {
-                    const rules = getRules(s.nascimento, s.faixa);
+                    const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
                     const currentRemainder = s.aulas % rules;
                     if (boxIndex < currentRemainder) {
                         const novaAula = s.aulas - 1;
@@ -683,11 +685,11 @@
 
         const filtered = students.filter(s => {
             const matchesName = s.nome.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesGroup = filterGroup === "Todos" || getAutoCategory(s.nascimento) === filterGroup;
+            const matchesGroup = filterGroup === "Todos" || getAutoCategory(s.nascimento, s.categoriaOverride) === filterGroup;
             return matchesName && matchesGroup;
         });
         const readyStudents = students.filter(s => {
-            const rules = getRules(s.nascimento, s.faixa);
+            const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
             return rules > 0 && s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
         }).length;
         if (!mode) {
@@ -774,13 +776,13 @@
                 )}
 
                 {filtered.map(s => {
-                    const ruleInfo = getRuleInfo(s.nascimento, s.faixa);
+                    const ruleInfo = getRuleInfo(s.nascimento, s.faixa, s.categoriaOverride);
                     const rules = ruleInfo.aulasPorGrau;
                     const tg = rules > 0 ? Math.floor(s.aulas / rules) : 0;
                     const pronto = rules > 0 && (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
                     const unread = s.chat?.filter(m => !(m.readBy || []).includes(mode)).length || 0;
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
-                    const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp);
+                    const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
 
                     return (
                         <div key={s.id} className="card">
@@ -795,7 +797,7 @@
                                         {mode === "Professor" && <i className="fas fa-edit btn-edit-info" onClick={() => { setEditingStudent({...s}); setModalOpen('edit'); }}></i>}
                                     </h3>
                                     <div className="cat-badge">{s.faixa}</div><br/>
-                                    <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento)}{ruleInfo.elegivel ? ` • ${rules} AULAS/GRAU` : ''}</small><br/>
+                                    <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento, s.categoriaOverride)}{s.categoriaOverride && s.categoriaOverride !== "Auto" ? " (MANUAL)" : ""}{ruleInfo.elegivel ? ` • ${rules} AULAS/GRAU` : ''}</small><br/>
                                 </div>
                                 {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
@@ -955,14 +957,18 @@
                             <select value={form.faixa} onChange={e => setForm({...form, faixa: e.target.value})}>
                                 {beltOrder.map(f => <option key={f} value={f}>{f}</option>)}
                             </select>
+                            <select value={form.categoriaOverride} onChange={e => setForm({...form, categoriaOverride: e.target.value})}>
+                                {categoryOptions.map(c => <option key={c} value={c}>{c === "Auto" ? "Turma automática" : c}</option>)}
+                            </select>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
                                 if(!form.nome || !form.nascimento) return alert("Preencha tudo!");
                                 const nome = form.nome.trim();
                                 const exists = students.some(s => s.nome.toLowerCase().trim() === nome.toLowerCase() && s.nascimento === form.nascimento);
                                 if (exists) return alert("Este aluno já está cadastrado.");
-                                setStudents([...students, { ...form, nome, id: Date.now(), aulas: 0, historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`] }]);
+                                const categoriaTexto = form.categoriaOverride === "Auto" ? getAutoCategory(form.nascimento) : `${form.categoriaOverride} (manual)`;
+                                setStudents([...students, { ...form, nome, id: Date.now(), aulas: 0, historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`] }]);
                                 setModalOpen(null);
-                                setForm({ nome: "", nascimento: "", faixa: "Branca", sexo: "M" });
+                                setForm({ nome: "", nascimento: "", faixa: "Branca", sexo: "M", categoriaOverride: "Auto" });
                             }}>SALVAR</button>
                             <button className="btn-full" onClick={() => setModalOpen(null)}>CANCELAR</button>
                         </div>
@@ -1016,9 +1022,28 @@
                             <select value={editingStudent.faixa} onChange={e => setEditingStudent({...editingStudent, faixa: e.target.value})}>
                                 {beltOrder.map(f => <option key={f} value={f}>{f}</option>)}
                             </select>
+                            <select value={editingStudent.categoriaOverride || "Auto"} onChange={e => setEditingStudent({...editingStudent, categoriaOverride: e.target.value})}>
+                                {categoryOptions.map(c => <option key={c} value={c}>{c === "Auto" ? "Turma automática" : c}</option>)}
+                            </select>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
                                 if(!editingStudent.nome.trim() || !editingStudent.nascimento) return alert("Preencha tudo!");
-                                const alunoAtualizado = { ...editingStudent, nome: editingStudent.nome.trim() };
+                                const alunoOriginal = students.find(s => s.id === editingStudent.id);
+                                const hoje = new Date().toLocaleDateString('pt-BR');
+                                const logs = [];
+                                let alunoAtualizado = { ...editingStudent, nome: editingStudent.nome.trim() };
+
+                                if (alunoOriginal && alunoOriginal.faixa !== alunoAtualizado.faixa) {
+                                    logs.push(`🎓 FAIXA ALTERADA MANUALMENTE: ${alunoOriginal.faixa} → ${alunoAtualizado.faixa} | ${hoje}`);
+                                    alunoAtualizado = { ...alunoAtualizado, aulas: 0, comp: {} };
+                                }
+
+                                const categoriaAnterior = alunoOriginal?.categoriaOverride || "Auto";
+                                const categoriaNova = alunoAtualizado.categoriaOverride || "Auto";
+                                if (alunoOriginal && categoriaAnterior !== categoriaNova) {
+                                    logs.push(`🏷️ TURMA ALTERADA: ${categoriaAnterior === "Auto" ? "Automática" : categoriaAnterior} → ${categoriaNova === "Auto" ? "Automática" : categoriaNova} | ${hoje}`);
+                                }
+
+                                if (logs.length) alunoAtualizado = { ...alunoAtualizado, historico: [...(alunoOriginal?.historico || []), ...logs] };
                                 setStudents(students.map(s => s.id === editingStudent.id ? alunoAtualizado : s));
                                 setModalOpen(null);
                             }}>ATUALIZAR</button>
