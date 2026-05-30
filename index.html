@@ -203,6 +203,7 @@
         .top-card strong { color: white; display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .top-card span { color: #aaa; display: block; font-size: 10px; font-weight: 800; margin-top: 5px; text-transform: uppercase; }
         .warning-banner { max-width: 850px; margin: 0 auto 15px; background: #3a2410; color: #f8c471; border: 1px solid #8a5a20; padding: 12px 16px; border-radius: 14px; font-size: 13px; font-weight: 700; }
+        .rule-warning { margin: 10px 0 20px; padding: 13px 15px; border-radius: 14px; background: #2d2110; border: 1px solid #6a4b1b; color: #f5c16c; font-size: 12px; font-weight: 800; text-transform: uppercase; }
         .sync-banner { max-width: 850px; margin: 0 auto 15px; background: #11251d; color: #7ee0ad; border: 1px solid #245c43; padding: 12px 16px; border-radius: 14px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-transform: uppercase; }
         .sync-banner.offline { background: #2a1f12; color: #f5c16c; border-color: #6b4b1f; }
         .sync-banner.error { background: #321818; color: #ff9d9d; border-color: #743333; }
@@ -239,7 +240,7 @@
 
 <script type="text/babel">
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
-    const groups = ["Todos", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth"];
+    const groups = ["Todos", "Baby Eagle", "Little Eagle", "Eagle Warrior", "Eagle Youth", "Fora da regra"];
     const classDays = [1, 3, 5, 6]; // Segunda, quarta, sexta e sábado.
     const AVATAR_BOY = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
     const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
@@ -298,24 +299,65 @@
 
     function getAutoCategory(nascimento) {
         const idade = calculateAge(nascimento);
+        if (idade < 4 || idade > 15) return "Fora da regra";
         if (idade >= 4 && idade <= 6) return "Baby Eagle";
         if (idade >= 7 && idade <= 10) return "Little Eagle";
         if (idade >= 11 && idade <= 12) return "Eagle Warrior";
-        return "Eagle Youth";
+        if (idade >= 13 && idade <= 15) return "Eagle Youth";
+        return "Fora da regra";
+    }
+
+    function getBeltFamily(faixa = "") {
+        const f = faixa.toLowerCase();
+        if (f.includes("branca") || f.includes("cinza")) return "brancaCinza";
+        if (f.includes("amarela") || f.includes("laranja")) return "amarelaLaranja";
+        if (f.includes("verde")) return "verde";
+        return "desconhecida";
+    }
+
+    function getRuleInfo(nascimento, faixa) {
+        const idade = calculateAge(nascimento);
+        const categoria = getAutoCategory(nascimento);
+        const familia = getBeltFamily(faixa);
+        const foraDaIdade = categoria === "Fora da regra";
+
+        if (foraDaIdade) {
+            return {
+                categoria,
+                aulasPorGrau: 0,
+                elegivel: false,
+                aviso: idade < 4 ? "Idade mínima: 4 anos" : "Programa Kids até 15 anos"
+            };
+        }
+
+        if (categoria === "Baby Eagle") {
+            if (familia === "brancaCinza") return { categoria, aulasPorGrau: 12, elegivel: true, aviso: "" };
+            return { categoria, aulasPorGrau: 0, elegivel: false, aviso: "Baby Eagle usa Branca/Cinza" };
+        }
+
+        if (categoria === "Little Eagle" || categoria === "Eagle Warrior") {
+            if (familia === "brancaCinza") return { categoria, aulasPorGrau: 15, elegivel: true, aviso: "" };
+            if (familia === "amarelaLaranja") return { categoria, aulasPorGrau: 20, elegivel: true, aviso: "" };
+            return { categoria, aulasPorGrau: 0, elegivel: false, aviso: "Verde é regra do Eagle Youth" };
+        }
+
+        if (categoria === "Eagle Youth") {
+            if (familia === "brancaCinza") return { categoria, aulasPorGrau: 20, elegivel: true, aviso: "" };
+            if (familia === "amarelaLaranja") return { categoria, aulasPorGrau: 22, elegivel: true, aviso: "" };
+            if (familia === "verde") return { categoria, aulasPorGrau: 25, elegivel: true, aviso: "" };
+        }
+
+        return { categoria: "Fora da regra", aulasPorGrau: 0, elegivel: false, aviso: "Faixa fora da regra" };
     }
 
     function getRules(nascimento, faixa) {
-        const cat = getAutoCategory(nascimento);
-        const f = faixa.toLowerCase();
-        if (cat === "Baby Eagle") return 12;
-        if (cat === "Little Eagle" || cat === "Eagle Warrior") {
-             return (f.includes("branca") || f.includes("cinza")) ? 15 : 20;
-        }
-        return 15;
+        return getRuleInfo(nascimento, faixa).aulasPorGrau;
     }
 
     function getPrevisaoGraduacao(aulasAtuais, nascimento, faixa) {
-        const rules = getRules(nascimento, faixa);
+        const ruleInfo = getRuleInfo(nascimento, faixa);
+        const rules = ruleInfo.aulasPorGrau;
+        if (!ruleInfo.elegivel || rules <= 0) return ruleInfo.aviso;
         const totalAulasNecessarias = rules * 9;
         const aulasFaltantes = totalAulasNecessarias - aulasAtuais;
         
@@ -332,7 +374,20 @@
     }
 
     function getGraduationProgress(aulasAtuais, nascimento, faixa, comp = {}) {
-        const rules = getRules(nascimento, faixa);
+        const ruleInfo = getRuleInfo(nascimento, faixa);
+        const rules = ruleInfo.aulasPorGrau;
+        if (!ruleInfo.elegivel || rules <= 0) {
+            return {
+                total: 0,
+                feitas: 0,
+                faltantes: 0,
+                percentual: 0,
+                elegivel: false,
+                aviso: ruleInfo.aviso,
+                aulasPorGrau: 0,
+                previsao: ruleInfo.aviso
+            };
+        }
         const total = rules * 9;
         const feitas = Math.min(aulasAtuais, total);
         const faltantes = Math.max(0, total - aulasAtuais);
@@ -345,6 +400,9 @@
             feitas,
             faltantes,
             percentual,
+            elegivel: ruleInfo.elegivel,
+            aviso: ruleInfo.aviso,
+            aulasPorGrau: rules,
             previsao: getPrevisaoGraduacao(aulasAtuais, nascimento, faixa)
         };
     }
@@ -525,6 +583,12 @@
 
         const togglePresenca = (sid, boxIndex) => {
             if(mode !== "Professor") return;
+            const aluno = students.find(s => s.id === sid);
+            const ruleInfo = aluno ? getRuleInfo(aluno.nascimento, aluno.faixa) : null;
+            if (!ruleInfo?.elegivel) {
+                alert(ruleInfo?.aviso || "Aluno fora da regra de graduação.");
+                return;
+            }
             setStudents(prev => prev.map(s => {
                 if (s.id === sid) {
                     const rules = getRules(s.nascimento, s.faixa);
@@ -624,7 +688,7 @@
         });
         const readyStudents = students.filter(s => {
             const rules = getRules(s.nascimento, s.faixa);
-            return s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
+            return rules > 0 && s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
         }).length;
         if (!mode) {
             if (!subMode) return (
@@ -710,9 +774,10 @@
                 )}
 
                 {filtered.map(s => {
-                    const rules = getRules(s.nascimento, s.faixa);
-                    const tg = Math.floor(s.aulas / rules);
-                    const pronto = (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
+                    const ruleInfo = getRuleInfo(s.nascimento, s.faixa);
+                    const rules = ruleInfo.aulasPorGrau;
+                    const tg = rules > 0 ? Math.floor(s.aulas / rules) : 0;
+                    const pronto = rules > 0 && (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
                     const unread = s.chat?.filter(m => !(m.readBy || []).includes(mode)).length || 0;
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
                     const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp);
@@ -730,7 +795,7 @@
                                         {mode === "Professor" && <i className="fas fa-edit btn-edit-info" onClick={() => { setEditingStudent({...s}); setModalOpen('edit'); }}></i>}
                                     </h3>
                                     <div className="cat-badge">{s.faixa}</div><br/>
-                                    <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento)}</small><br/>
+                                    <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento)}{ruleInfo.elegivel ? ` • ${rules} AULAS/GRAU` : ''}</small><br/>
                                 </div>
                                 {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
@@ -744,14 +809,22 @@
                                     <div className="progress-fill" style={{width: `${progresso.percentual}%`}}></div>
                                 </div>
                                 <div className="graduation-meta">
-                                    <span><strong>{progresso.faltantes}</strong>aulas faltam</span>
-                                    <span><strong>{progresso.feitas}/{progresso.total}</strong>aulas feitas</span>
-                                    <span><strong>{progresso.percentual}%</strong>concluído</span>
+                                    {progresso.elegivel ? (
+                                        <>
+                                            <span><strong>{progresso.faltantes}</strong>aulas faltam</span>
+                                            <span><strong>{progresso.feitas}/{progresso.total}</strong>aulas feitas</span>
+                                            <span><strong>{progresso.percentual}%</strong>concluído</span>
+                                        </>
+                                    ) : (
+                                        <span style={{gridColumn: '1 / -1'}}><strong>Fora da regra</strong>{progresso.aviso}</span>
+                                    )}
                                 </div>
                             </div>
 
                             <span className="section-label">Aulas de Presença</span>
-                            {mode === "Pais" && pronto ? (
+                            {!ruleInfo.elegivel ? (
+                                <div className="rule-warning"><i className="fas fa-exclamation-triangle"></i> {ruleInfo.aviso}</div>
+                            ) : mode === "Pais" && pronto ? (
                                 <button className="alert-parents" onClick={() => agendarExamePeloAlerta(s.id)}>
                                     <i className="fas fa-star"></i> AGENDAR EXAME DE FAIXA (CLIQUE AQUI)
                                 </button>
