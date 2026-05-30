@@ -410,6 +410,19 @@
         };
     }
 
+    function getPresenceDegreeStates(aulas = 0, rules = 1) {
+        const graus = rules > 0 ? Math.floor(aulas / rules) : 0;
+        return Array.from({length: 4}).map((_, i) => {
+            if (graus > i + 4) return 2; // Vermelho sobreposto.
+            if (graus > i) return 1; // Branco convencional.
+            return 0;
+        });
+    }
+
+    function getClassesFromDegreeStates(states, rules) {
+        return states.reduce((total, state) => total + state, 0) * rules;
+    }
+
     function App() {
         const [mode, setMode] = React.useState(null); 
         const [subMode, setSubMode] = React.useState(null);
@@ -430,6 +443,7 @@
         const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca", sexo: "M", categoriaOverride: "Auto" });
         const [chatInputs, setChatInputs] = React.useState({});
         const [openChats, setOpenChats] = React.useState({});
+        const [degreeDirections, setDegreeDirections] = React.useState({});
         const [modalOpen, setModalOpen] = React.useState(null);
         const [viewImage, setViewImage] = React.useState(null);
         const [editingStudent, setEditingStudent] = React.useState(null);
@@ -628,26 +642,43 @@
                 return;
             }
 
+            const directionKey = `${sid}-${degreeIndex}`;
+            let nextDirection = null;
             setStudents(prev => prev.map(s => {
                 if (s.id !== sid) return s;
                 const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
-                const grauAtual = Math.floor((s.aulas || 0) / rules);
-                const alvo = degreeIndex + 1;
+                const states = getPresenceDegreeStates(s.aulas || 0, rules);
+                const currentState = states[degreeIndex];
+                const direction = degreeDirections[directionKey] || "up";
+                let nextState = currentState;
                 const hoje = new Date().toLocaleDateString('pt-BR');
+                let log = "";
 
-                if (grauAtual >= alvo) {
-                    const novaAula = Math.max(0, (s.aulas || 0) - rules);
-                    return { ...s, aulas: novaAula, historico: [...(s.historico || []), `❌ Grau de presença removido (${alvo}) | ${hoje}`] };
+                if (currentState === 0) {
+                    nextState = 1;
+                    nextDirection = "up";
+                    log = `✅ Grau de presença branco adicionado (${degreeIndex + 1}) | ${hoje}`;
+                } else if (currentState === 1) {
+                    if (direction === "down") {
+                        nextState = 0;
+                        nextDirection = "up";
+                        log = `❌ Grau de presença zerado (${degreeIndex + 1}) | ${hoje}`;
+                    } else {
+                        nextState = 2;
+                        nextDirection = "down";
+                        log = `🔴 Grau de presença vermelho adicionado (${degreeIndex + 1}) | ${hoje}`;
+                    }
+                } else {
+                    nextState = 1;
+                    nextDirection = "down";
+                    log = `↩️ Grau de presença voltou para branco (${degreeIndex + 1}) | ${hoje}`;
                 }
 
-                if (grauAtual === degreeIndex && (s.aulas || 0) < rules * 9) {
-                    const novaAula = Math.min(rules * 9, (s.aulas || 0) + rules);
-                    const tipo = alvo <= 4 ? "BRANCO" : "VERMELHO";
-                    return { ...s, aulas: novaAula, historico: [...(s.historico || []), `✅ Grau de presença ${tipo} adicionado (${alvo}) | ${hoje}`] };
-                }
-
-                return s;
+                const nextStates = states.map((state, i) => i === degreeIndex ? nextState : state);
+                const novaAula = Math.min(rules * 9, getClassesFromDegreeStates(nextStates, rules));
+                return { ...s, aulas: novaAula, historico: [...(s.historico || []), log] };
             }));
+            setDegreeDirections(prev => ({ ...prev, [directionKey]: nextDirection || "up" }));
         };
 
         const graduarAluno = (sid) => {
@@ -810,7 +841,7 @@
                 {filtered.map(s => {
                     const ruleInfo = getRuleInfo(s.nascimento, s.faixa, s.categoriaOverride);
                     const rules = ruleInfo.aulasPorGrau;
-                    const tg = rules > 0 ? Math.floor(s.aulas / rules) : 0;
+                    const presenceDegreeStates = rules > 0 ? getPresenceDegreeStates(s.aulas, rules) : [0, 0, 0, 0];
                     const pronto = rules > 0 && (s.aulas >= rules * 9) && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
                     const unread = s.chat?.filter(m => !(m.readBy || []).includes(mode)).length || 0;
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
@@ -874,7 +905,8 @@
                             <div className="degree-row">
                                 {Array.from({length:4}).map((_, i) => {
                                     let c = "";
-                                    if (tg > i + 4) c = "bg-red"; else if (tg > i) c = "bg-white";
+                                    if (presenceDegreeStates[i] === 2) c = "bg-red";
+                                    else if (presenceDegreeStates[i] === 1) c = "bg-white";
                                     return <div key={i} className={`degree-box ${c}`} onClick={() => toggleGrauPresenca(s.id, i)}></div>;
                                 })}
                             </div>
