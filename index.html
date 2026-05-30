@@ -619,6 +619,37 @@
             setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'✅':'❌'} ${label}`] } : s));
         };
 
+        const toggleGrauPresenca = (sid, degreeIndex) => {
+            if(mode !== "Professor") return;
+            const aluno = students.find(s => s.id === sid);
+            const ruleInfo = aluno ? getRuleInfo(aluno.nascimento, aluno.faixa, aluno.categoriaOverride) : null;
+            if (!ruleInfo?.elegivel) {
+                alert(ruleInfo?.aviso || "Aluno fora da regra de graduação.");
+                return;
+            }
+
+            setStudents(prev => prev.map(s => {
+                if (s.id !== sid) return s;
+                const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
+                const grauAtual = Math.floor((s.aulas || 0) / rules);
+                const alvo = degreeIndex + 1;
+                const hoje = new Date().toLocaleDateString('pt-BR');
+
+                if (grauAtual >= alvo) {
+                    const novaAula = Math.max(0, (s.aulas || 0) - rules);
+                    return { ...s, aulas: novaAula, historico: [...(s.historico || []), `❌ Grau de presença removido (${alvo}) | ${hoje}`] };
+                }
+
+                if (grauAtual === degreeIndex && (s.aulas || 0) < rules * 9) {
+                    const novaAula = Math.min(rules * 9, (s.aulas || 0) + rules);
+                    const tipo = alvo <= 4 ? "BRANCO" : "VERMELHO";
+                    return { ...s, aulas: novaAula, historico: [...(s.historico || []), `✅ Grau de presença ${tipo} adicionado (${alvo}) | ${hoje}`] };
+                }
+
+                return s;
+            }));
+        };
+
         const graduarAluno = (sid) => {
             if(mode !== "Professor") return;
             setStudents(prev => prev.map(s => {
@@ -844,7 +875,7 @@
                                 {Array.from({length:4}).map((_, i) => {
                                     let c = "";
                                     if (tg > i + 4) c = "bg-red"; else if (tg > i) c = "bg-white";
-                                    return <div key={i} className={`degree-box ${c}`}></div>;
+                                    return <div key={i} className={`degree-box ${c}`} onClick={() => toggleGrauPresenca(s.id, i)}></div>;
                                 })}
                             </div>
 
