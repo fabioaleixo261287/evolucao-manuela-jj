@@ -17,7 +17,7 @@
 
     <style>
         :root { 
-            --alliance-red: #e74c3c; 
+            --alliance-red: #cf2e2e;
             --alliance-green: #2ecc71; 
             --bg: #121212; 
             --whatsapp-green: #075e54; 
@@ -29,6 +29,13 @@
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, button, div, section, header, main, article, aside, h1, h2, h3, p, span, small, strong, label {
+            caret-color: transparent;
+        }
+        input, textarea {
+            caret-color: var(--alliance-red);
+            user-select: text;
+        }
         html { scroll-behavior: smooth; }
 
         body { 
@@ -47,7 +54,7 @@
         body.auth-mode .auth-container, body.auth-mode .selection-screen { height: 100dvh; min-height: 100dvh; overflow: hidden; }
         .auth-shell { width: min(430px, 100%); display: flex; flex-direction: column; align-items: center; gap: 18px; }
         .brand-card { width: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.12); border-radius: 26px; padding: 26px 24px; text-align: center; box-shadow: 0 20px 55px rgba(0,0,0,0.45); backdrop-filter: blur(14px); }
-        .auth-logo { width: 150px; height: 118px; object-fit: cover; border-radius: 20px; border: 1px solid #2f2f2f; box-shadow: 0 14px 35px rgba(0,0,0,0.35); margin-bottom: 18px; }
+        .auth-logo { width: 150px; height: 118px; object-fit: cover; border-radius: 20px; border: 1px solid #2f2f2f; box-shadow: 0 14px 35px rgba(0,0,0,0.35); margin: 0 auto 18px; display: block; user-select: none; pointer-events: none; }
         .auth-title { margin: 0; color: #fff; font-size: 24px; line-height: 1.1; letter-spacing: 0; }
         .auth-subtitle { margin: 8px 0 0; color: #9b9b9b; font-size: 12px; font-weight: 800; text-transform: uppercase; }
         .role-grid { width: 100%; display: grid; grid-template-columns: 1fr; gap: 12px; }
@@ -55,7 +62,8 @@
         .btn-select:hover { transform: translateY(-1px); border-color: #555; background: #202020; }
         .btn-select i { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: #262626; color: var(--alliance-red); font-size: 18px; }
         .btn-select small { display: block; margin-top: 4px; color: #888; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-        .login-box { background: var(--card-bg); padding: 28px; border-radius: 24px; width: 100%; text-align: center; box-shadow: 0 18px 45px rgba(0,0,0,0.45); border: 1px solid var(--border-color); }
+        .login-box { background: var(--card-bg); padding: 28px; border-radius: 24px; width: 100%; text-align: center; box-shadow: 0 18px 45px rgba(0,0,0,0.45); border: 1px solid var(--border-color); cursor: default; transform: translateZ(0); }
+        .login-box input { display: block; position: relative; z-index: 1; cursor: text; transform: translateZ(0); }
         .login-heading { margin: 0 0 18px; color: #fff; font-size: 18px; }
         .back-link { font-size: 11px; margin-top: 18px; cursor: pointer; color: #777; font-weight: 800; text-transform: uppercase; }
 
@@ -102,6 +110,18 @@
         
         .cat-badge { background: #333; color: #fff; padding: 5px 12px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: 6px; display: inline-block; border: 1px solid #444; }
         .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #777; margin-bottom: 10px; display: block; border-left: 3px solid var(--alliance-red); padding-left: 10px; letter-spacing: 0.5px; }
+        .student-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: -6px 0 16px; }
+        .student-info-chip { background: #171717; border: 1px solid #303030; border-radius: 12px; padding: 9px 11px; color: #aaa; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .student-info-chip strong { display: block; color: #fff; font-size: 12px; margin-bottom: 3px; text-transform: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .status-badge { background: #27372f; color: #9ff0bd; border-color: #355f46; }
+        .status-badge.inativo, .status-badge.pausado { background: #35221f; color: #ffad9f; border-color: #68413b; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 14px; align-items: end; }
+        .form-grid > div { min-width: 0; }
+        .form-grid input, .form-grid select { margin: 0; }
+        textarea { width: 100%; min-height: 86px; resize: vertical; padding: 14px; margin: 10px 0; border: 1px solid #333; background: #1a1a1a; color: white; border-radius: 14px; font-size: 15px; outline: none; font-family: inherit; }
+        textarea:focus { border-color: var(--alliance-red); box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.18); }
+        .check-row { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #333; border-radius: 14px; color: #ddd; font-size: 12px; font-weight: 800; background: #1a1a1a; margin: 10px 0; }
+        .check-row input { width: auto; margin: 0; }
 
         .bar { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 10px; margin: 10px 0 25px 0; }
         .box-class { height:42px; border:1px solid var(--border-color); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:bold; background:#252525; color:#444; cursor: pointer; transition: 0.2s; }
@@ -159,7 +179,8 @@
         .parent-composer { display: flex; padding: 14px; background: #1a1a1a; gap: 10px; align-items: center; }
         .parent-composer input { flex: 1; border: none; background: #000; color: white; padding: 13px 18px; border-radius: 25px; font-size: 14px; margin: 0; outline: none; }
         .conversation-page { max-width: 1100px; margin: 0 auto 110px; }
-        .conversation-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 8px 0 18px; }
+        .conversation-title { display: grid; grid-template-columns: minmax(280px, 340px) 1fr; gap: 14px; align-items: end; margin: 8px 0 18px; }
+        .conversation-actions { display: flex; justify-content: flex-end; align-items: center; }
         .conversation-title h3 { margin: 0; color: #fff; font-size: 22px; text-transform: uppercase; letter-spacing: 0; }
         .conversation-title span { color: #888; font-size: 12px; font-weight: 800; text-transform: uppercase; }
         .conversation-view { display: grid; grid-template-columns: minmax(280px, 340px) 1fr; gap: 14px; align-items: stretch; }
@@ -186,6 +207,41 @@
         .conversation-composer { display: flex; padding: 14px; background: #1a1a1a; gap: 10px; align-items: center; }
         .conversation-composer input { flex: 1; border: none; background: #000; color: white; padding: 13px 18px; border-radius: 25px; font-size: 14px; margin: 0; outline: none; }
         .conversation-empty { padding: 28px; text-align: center; color: #777; font-weight: 800; }
+        .dashboard-page { max-width: 1100px; margin: 0 auto 110px; }
+        .dashboard-hero { background: linear-gradient(135deg, rgba(231,76,60,0.18), rgba(46,204,113,0.08)), #181818; border: 1px solid #303030; border-radius: 24px; padding: 22px; margin-bottom: 16px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+        .dashboard-hero h3 { color: #fff; margin: 0; font-size: 24px; text-transform: uppercase; }
+        .dashboard-hero p { color: #a0a0a0; margin: 7px 0 0; font-size: 13px; font-weight: 700; }
+        .dashboard-filters { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 12px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; align-items: end; }
+        .dashboard-filter label { color: #777; display: block; font-size: 10px; font-weight: 900; text-transform: uppercase; margin: 0 0 6px; }
+        .dashboard-filter select { width: 100%; margin: 0; border-radius: 12px; padding: 11px 12px; font-size: 12px; background: #101010; border: 1px solid #333; color: #fff; outline: none; }
+        .dashboard-filter select:focus { border-color: var(--alliance-red); box-shadow: 0 0 0 3px rgba(231,76,60,0.14); }
+        .dashboard-clear { width: 100%; border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 12px; padding: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+        .dashboard-card { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 16px; min-height: 108px; box-shadow: 0 10px 25px rgba(0,0,0,0.22); cursor: pointer; text-align: left; transition: 0.2s; }
+        .dashboard-card:hover, .dashboard-card.active { border-color: var(--alliance-red); background: #202020; transform: translateY(-1px); }
+        .dashboard-card.active { box-shadow: 0 0 0 3px rgba(231,76,60,0.14), 0 12px 28px rgba(0,0,0,0.28); }
+        .dashboard-card strong { display: block; color: #fff; font-size: 28px; line-height: 1; margin-bottom: 8px; }
+        .dashboard-card span { color: #8e8e8e; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+        .dashboard-card small { display: block; color: #666; font-size: 11px; margin-top: 8px; line-height: 1.35; }
+        .dashboard-detail { background: #181818; border: 1px solid #303030; border-radius: 20px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 12px 28px rgba(0,0,0,0.24); }
+        .dashboard-detail-head { padding: 15px 16px; display: flex; justify-content: space-between; gap: 12px; align-items: center; border-bottom: 1px solid #2a2a2a; }
+        .dashboard-detail-head strong { color: #fff; font-size: 14px; text-transform: uppercase; display: block; }
+        .dashboard-detail-head span { color: #777; font-size: 11px; font-weight: 800; display: block; margin-top: 4px; }
+        .dashboard-detail-list { max-height: 300px; overflow-y: auto; }
+        .dashboard-detail-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 13px 16px; border-bottom: 1px solid #252525; }
+        .dashboard-detail-row:last-child { border-bottom: 0; }
+        .dashboard-detail-row b { color: #fff; display: block; font-size: 13px; }
+        .dashboard-detail-row small { color: #777; display: block; margin-top: 4px; font-size: 11px; font-weight: 700; }
+        .dashboard-detail-action { border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 999px; padding: 8px 11px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .dashboard-split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .dashboard-panel { background: #181818; border: 1px solid #303030; border-radius: 20px; overflow: hidden; }
+        .dashboard-panel-title { padding: 14px 16px; border-bottom: 1px solid #2a2a2a; color: #fff; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .dashboard-list { padding: 8px 14px 14px; }
+        .dashboard-row { display: grid; grid-template-columns: minmax(95px, 1fr) minmax(120px, 2fr) auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #252525; color: #ddd; font-size: 12px; font-weight: 800; }
+        .dashboard-row:last-child { border-bottom: 0; }
+        .dashboard-bar { height: 8px; background: #272727; border-radius: 999px; overflow: hidden; }
+        .dashboard-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--alliance-green), #f1c40f); border-radius: 999px; }
+        .dashboard-note { color: #777; padding: 18px; text-align: center; font-size: 12px; font-weight: 800; }
 
         .action-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(34, 34, 34, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 40px; display: flex; gap: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 1000; border: 1px solid #444; align-items: center; }
         .action-item { color: #fff; text-align: center; cursor: pointer; font-size: 22px; transition: 0.3s; opacity: 0.8; position: relative; min-width: 48px; }
@@ -235,7 +291,7 @@
 
         input, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #333; background: #1a1a1a; color: white; border-radius: 14px; font-size: 16px; outline: none; }
         input:focus, select:focus { border-color: var(--alliance-red); box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.18); }
-        .field-label { display: block; color: #888; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: left; margin: 12px 0 -4px; }
+        .field-label { display: block; color: #888; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: left; margin: 12px 0 6px; }
         button, .action-item, .box-class, .degree-box, .btn-settings-hidden, .btn-edit-info { touch-action: manipulation; }
         
         #compress-loader { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.9); color:white; padding:20px; border-radius:15px; z-index:5000; text-align:center; }
@@ -287,11 +343,20 @@
             .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .summary-item { padding: 12px 8px; }
             .summary-item strong { font-size: 20px; }
-            .conversation-title { align-items: flex-start; flex-direction: column; }
+            .form-grid { grid-template-columns: 1fr; }
+            .conversation-title { align-items: flex-start; }
+            .conversation-title { grid-template-columns: 1fr; }
+            .conversation-actions { justify-content: flex-start; }
             .conversation-view { grid-template-columns: 1fr; }
             .conversation-list { height: 300px; }
             .conversation-panel { min-height: 520px; }
             .conversation-panel .chat-msgs { min-height: 320px; }
+            .dashboard-hero { grid-template-columns: 1fr; }
+            .dashboard-filters { grid-template-columns: 1fr; }
+            .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .dashboard-split { grid-template-columns: 1fr; }
+            .dashboard-row { grid-template-columns: 1fr; }
+            .dashboard-detail-row { grid-template-columns: 1fr; }
             .parent-grid { grid-template-columns: 1fr; }
             .parent-card { height: calc(100dvh - 96px); padding: 14px; }
             .parent-card .student-top { flex-wrap: wrap; }
@@ -301,9 +366,385 @@
             .graduation-meta { grid-template-columns: 1fr; }
             .modal-content { padding: 22px; border-radius: 22px; }
         }
+
+        /* Modern light Alliance layer - visual only */
+        body {
+            background:
+                radial-gradient(circle at 14% 0%, rgba(207,46,46,0.13), transparent 28%),
+                radial-gradient(circle at 86% 8%, rgba(255,201,57,0.18), transparent 24%),
+                linear-gradient(180deg, #ffffff 0%, #f4f4f4 46%, #eceff3 100%);
+            color: #1f2933;
+            overflow-x: hidden;
+        }
+        .container, .conversation-page, .dashboard-page { max-width: 1180px; }
+        .header-main { margin: 18px auto 24px; max-width: 1180px; }
+        .header-main h2 {
+            color: #111;
+            text-shadow: none;
+            border-bottom: 0;
+            padding-bottom: 0;
+            position: relative;
+            font-size: 25px;
+            letter-spacing: 1.5px;
+        }
+        .header-main h2::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -12px;
+            width: 150px;
+            height: 3px;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, var(--alliance-red), #FFC939, #ffffff);
+            border-radius: 999px;
+        }
+        .btn-settings-hidden {
+            right: 0;
+            color: #5f6670;
+            background: rgba(255,255,255,0.82);
+            border: 1px solid rgba(17,24,39,0.10);
+            border-radius: 8px;
+        }
+        .auth-container, .selection-screen {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(207,46,46,0.16), transparent 36%),
+                radial-gradient(circle at 88% 10%, rgba(255,201,57,0.18), transparent 30%),
+                linear-gradient(180deg, #ffffff 0%, #f7f7f7 54%, #eef1f5 100%);
+        }
+        .brand-card, .login-box, .btn-select {
+            border-radius: 8px;
+            background: rgba(255,255,255,0.92);
+            border-color: rgba(17,24,39,0.12);
+            box-shadow: 0 24px 60px rgba(15,23,42,0.14);
+        }
+        .brand-card h1, .login-box h2, .btn-select strong { color: #111; }
+        .brand-card p, .btn-select span { color: #667085; }
+        .btn-select:hover {
+            background: rgba(255,255,255,0.98);
+            border-color: rgba(207,46,46,0.45);
+        }
+        .auth-logo { border-radius: 8px; }
+        .btn-select i { border-radius: 8px; }
+        .summary-grid {
+            max-width: 1180px;
+            gap: 12px;
+        }
+        .summary-item, .search-container, .card, .dashboard-card, .dashboard-panel, .dashboard-detail,
+        .dashboard-filters, .conversation-list, .conversation-panel, .empty-state, .parent-detail,
+        .parent-panel, .graduation-panel, .modal-content {
+            border-radius: 8px;
+            background: rgba(255,255,255,0.92);
+            border-color: rgba(17,24,39,0.12);
+            box-shadow: 0 18px 45px rgba(15,23,42,0.13);
+        }
+        .modal-content { max-width: 560px; }
+        .form-grid input, .form-grid select { min-height: 60px; }
+        .summary-item {
+            min-height: 86px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-top: 2px solid rgba(207,46,46,0.74);
+        }
+        .summary-item strong, .dashboard-card strong { color: #111; }
+        .summary-item span, .dashboard-card span, .dashboard-card small,
+        .student-info-chip, .conversation-last, .dashboard-row, .belt-name,
+        .dashboard-detail-row small, .empty-state span { color: #667085; }
+        .search-container { padding: 12px; }
+        .search-input, .conversation-search input, .dashboard-filter select, input, select, textarea {
+            border-radius: 8px;
+            background: #ffffff;
+            border-color: rgba(17,24,39,0.14);
+            color: #111;
+        }
+        .filter-btn {
+            border-radius: 8px;
+            background: #ffffff;
+            border-color: rgba(17,24,39,0.14);
+            color: #555;
+        }
+        .filter-btn.active, .dashboard-card.active {
+            background: linear-gradient(135deg, rgba(207,46,46,0.30), rgba(207,46,46,0.10));
+            border-color: rgba(207,46,46,0.82);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.62), 0 16px 35px rgba(207,46,46,0.14);
+        }
+        .dashboard-hero {
+            border-radius: 8px;
+            background:
+                linear-gradient(135deg, rgba(207,46,46,0.12), rgba(255,201,57,0.20)),
+                rgba(255,255,255,0.96);
+        }
+        .dashboard-hero h3, .conversation-title h3, .card h3,
+        .dashboard-panel-title, .parent-panel-title, .chat-header,
+        .dashboard-detail-head strong, .empty-state strong { color: #111; }
+        .dashboard-hero p, .conversation-title span { color: #667085; }
+        .dashboard-grid { gap: 12px; }
+        .dashboard-card {
+            min-height: 118px;
+            padding: 18px;
+            border-top: 2px solid rgba(255,255,255,0.08);
+        }
+        .dashboard-split { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .dashboard-panel { min-width: 0; }
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.22);
+        }
+        .dashboard-detail-action, .dashboard-clear {
+            border-radius: 8px;
+            background: #ffffff;
+            color: #111;
+            border-color: rgba(17,24,39,0.16);
+        }
+        .dashboard-panel-title, .parent-panel-title, .chat-header {
+            background: rgba(17,24,39,0.04);
+        }
+        .conversation-title {
+            padding: 0 2px;
+        }
+        .conversation-list, .conversation-panel {
+            min-width: 0;
+        }
+        .conversation-search {
+            background: rgba(255,255,255,0.76);
+            border-bottom-color: rgba(17,24,39,0.10);
+        }
+        .conversation-item {
+            min-height: 78px;
+            border-bottom-color: rgba(17,24,39,0.10);
+        }
+        .conversation-item.active {
+            background: rgba(207,46,46,0.08);
+            border-left-color: var(--alliance-red);
+        }
+        .conversation-item:hover { background: rgba(17,24,39,0.04); }
+        .conversation-name { color: #111; }
+        .conversation-item.unread {
+            background: rgba(37,211,102,0.10);
+        }
+        .conversation-item.unread .conversation-name { color: #111; }
+        .conversation-item.unread .conversation-last { color: #1d7d45; }
+        .conversation-empty { color: #667085; }
+        .chat-msgs {
+            background:
+                linear-gradient(rgba(246,247,249,0.96), rgba(246,247,249,0.96)),
+                repeating-linear-gradient(45deg, transparent 0 12px, rgba(0,0,0,0.025) 12px 13px);
+        }
+        .msg-bubble, .degree-box, .box-class, .student-info-chip, .cat-badge {
+            border-radius: 8px;
+        }
+        .graduation-panel {
+            padding: 16px;
+        }
+        .graduation-meta span {
+            border-radius: 8px;
+            background: rgba(17,24,39,0.04);
+        }
+        .progress-track, .dashboard-bar, .belt-bar {
+            background: #e9edf2;
+            border: 1px solid rgba(17,24,39,0.10);
+        }
+        .progress-fill, .dashboard-bar i, .belt-bar-fill {
+            background: linear-gradient(90deg, #2ecc71, #FFC939);
+        }
+        .action-bar {
+            border-radius: 16px;
+            background: rgba(255,255,255,0.94);
+            border-color: rgba(17,24,39,0.14);
+            box-shadow: 0 22px 50px rgba(15,23,42,0.20);
+        }
+        .action-item { color: #111; }
+        .action-item {
+            border-radius: 8px;
+            padding: 4px 6px;
+        }
+        .action-item:hover {
+            opacity: 1;
+            background: rgba(207,46,46,0.08);
+        }
+        .box-class, .degree-box { background: #f4f6f8; border-color: #d7dce3; color: #6b7280; }
+        .box-class.done { color: #fff; }
+        .box-class.locked { background: #e9edf2; color: #adb5bd; }
+        .student-info-chip { background: #f7f8fa; border-color: #e0e4ea; }
+        .student-info-chip strong { color: #111; }
+        .status-badge { background: #eaf7ef; color: #217a43; border-color: #bae5c8; }
+        .msg-wrapper.other .msg-bubble { background: #ffffff; color: #111; border: 1px solid #e5e7eb; }
+        .parent-card {
+            border-radius: 8px;
+        }
+        .theme-toggle-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 14px 0 18px;
+        }
+        .theme-choice {
+            border: 1px solid rgba(17,24,39,0.14);
+            background: #ffffff;
+            color: #111;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .theme-choice.active {
+            border-color: var(--alliance-red);
+            box-shadow: 0 0 0 3px rgba(207,46,46,0.12);
+        }
+        @media (max-width: 720px) {
+            .dashboard-split { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 560px) {
+            .header-main h2 { font-size: 18px; }
+            .dashboard-card { min-height: 112px; padding: 14px; }
+            .dashboard-split { grid-template-columns: 1fr; }
+            .action-bar { border-radius: 14px; }
+        }
+
+        /* Dark theme restores the original dark experience when selected */
+        body.theme-dark {
+            background: #111;
+            color: #e5e5e5;
+        }
+        body.theme-dark .auth-container, body.theme-dark .selection-screen {
+            background: radial-gradient(circle at 50% 0%, #2a2a2a 0, #111 46%, #050505 100%);
+        }
+        body.theme-dark .brand-card, body.theme-dark .login-box, body.theme-dark .btn-select {
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+            border-color: rgba(255,255,255,0.12);
+            box-shadow: 0 20px 55px rgba(0,0,0,0.45);
+        }
+        body.theme-dark .brand-card h1, body.theme-dark .login-box h2, body.theme-dark .login-heading,
+        body.theme-dark .btn-select strong, body.theme-dark .header-main h2,
+        body.theme-dark .dashboard-hero h3, body.theme-dark .conversation-title h3,
+        body.theme-dark .card h3, body.theme-dark .dashboard-panel-title,
+        body.theme-dark .parent-panel-title, body.theme-dark .chat-header,
+        body.theme-dark .dashboard-detail-head strong, body.theme-dark .empty-state strong {
+            color: #fff;
+        }
+        body.theme-dark .brand-card p, body.theme-dark .btn-select span,
+        body.theme-dark .dashboard-hero p, body.theme-dark .conversation-title span,
+        body.theme-dark .summary-item span, body.theme-dark .dashboard-card span,
+        body.theme-dark .dashboard-card small, body.theme-dark .student-info-chip,
+        body.theme-dark .conversation-last, body.theme-dark .dashboard-row,
+        body.theme-dark .belt-name, body.theme-dark .dashboard-detail-row small,
+        body.theme-dark .empty-state span, body.theme-dark .conversation-empty {
+            color: #9b9b9b;
+        }
+        body.theme-dark .btn-settings-hidden {
+            color: #555;
+            background: transparent;
+            border-color: transparent;
+        }
+        body.theme-dark .summary-item, body.theme-dark .search-container, body.theme-dark .card,
+        body.theme-dark .dashboard-card, body.theme-dark .dashboard-panel, body.theme-dark .dashboard-detail,
+        body.theme-dark .dashboard-filters, body.theme-dark .conversation-list, body.theme-dark .conversation-panel,
+        body.theme-dark .empty-state, body.theme-dark .parent-detail, body.theme-dark .parent-panel,
+        body.theme-dark .graduation-panel, body.theme-dark .modal-content {
+            background: #181818;
+            border-color: #303030;
+            box-shadow: 0 14px 34px rgba(0,0,0,0.26);
+        }
+        body.theme-dark .summary-item strong, body.theme-dark .dashboard-card strong,
+        body.theme-dark .student-info-chip strong, body.theme-dark .conversation-name {
+            color: #fff;
+        }
+        body.theme-dark .search-input, body.theme-dark .conversation-search input,
+        body.theme-dark .dashboard-filter select, body.theme-dark input,
+        body.theme-dark select, body.theme-dark textarea {
+            background: #0e0e0e;
+            border-color: #303030;
+            color: #fff;
+        }
+        body.theme-dark .filter-btn, body.theme-dark .dashboard-detail-action,
+        body.theme-dark .dashboard-clear, body.theme-dark .theme-choice {
+            background: #151515;
+            border-color: #303030;
+            color: #fff;
+        }
+        body.theme-dark .filter-btn.active, body.theme-dark .dashboard-card.active {
+            background: #202020;
+            border-color: var(--alliance-red);
+            box-shadow: 0 0 0 3px rgba(207,46,46,0.14), 0 12px 28px rgba(0,0,0,0.28);
+        }
+        body.theme-dark .dashboard-hero {
+            background: linear-gradient(135deg, rgba(207,46,46,0.25), rgba(20,20,20,0.96));
+        }
+        body.theme-dark .dashboard-panel-title, body.theme-dark .parent-panel-title,
+        body.theme-dark .chat-header, body.theme-dark .conversation-search {
+            background: #151515;
+            border-bottom-color: #282828;
+        }
+        body.theme-dark .conversation-item {
+            border-bottom-color: #282828;
+        }
+        body.theme-dark .conversation-item.active {
+            background: #242424;
+        }
+        body.theme-dark .conversation-item:hover {
+            background: #202020;
+        }
+        body.theme-dark .conversation-item.unread {
+            background: #102016;
+        }
+        body.theme-dark .conversation-item.unread .conversation-last {
+            color: #dfffe9;
+        }
+        body.theme-dark .chat-msgs {
+            background: #0b0b0b;
+        }
+        body.theme-dark .graduation-meta span {
+            background: rgba(255,255,255,0.06);
+        }
+        body.theme-dark .progress-track, body.theme-dark .dashboard-bar,
+        body.theme-dark .belt-bar {
+            background: #111;
+            border-color: #303030;
+        }
+        body.theme-dark .action-bar {
+            background: rgba(34,34,34,0.95);
+            border-color: #444;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
+        body.theme-dark .action-item {
+            color: #fff;
+        }
+        body.theme-dark .box-class, body.theme-dark .degree-box {
+            background: #242424;
+            border-color: #303030;
+            color: #555;
+        }
+        body.theme-dark .box-class.done {
+            background: var(--alliance-green);
+            color: #fff;
+            border-color: var(--alliance-green);
+            box-shadow: 0 4px 12px rgba(46,204,113,0.3);
+        }
+        body.theme-dark .box-class.locked {
+            background: #202020;
+            color: #444;
+        }
+        body.theme-dark .student-info-chip {
+            background: #202020;
+            border-color: #303030;
+        }
+        body.theme-dark .status-badge {
+            background: #333;
+            color: #fff;
+            border-color: #444;
+        }
+        body.theme-dark .msg-wrapper.other .msg-bubble {
+            background: #2a2a2a;
+            color: #fff;
+            border-color: #2a2a2a;
+        }
     </style>
 </head>
-<body>
+<body class="theme-dark">
 <div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando foto...</div>
 <div id="root"></div>
 
@@ -316,6 +757,7 @@
     const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
     const LOCAL_STUDENTS_KEY = "all_eagle_v22_s";
     const LOCAL_REPO_KEY = "all_eagle_v22_r";
+    const LOCAL_THEME_KEY = "all_eagle_v22_theme";
     const SUPABASE_STATE_ID = "alliance_mooca_kids_v22";
 
     // Preencha aqui se quiser deixar fixo no arquivo, ou defina window.SUPABASE_CONFIG antes deste script.
@@ -358,9 +800,32 @@
         });
     };
 
+    function parseLocalDate(value) {
+        if (!value) return null;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+            const [year, month, day] = value.split("-").map(Number);
+            return new Date(year, month - 1, day);
+        }
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function getTodayISO() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+
+    function formatDateBR(value) {
+        const date = parseLocalDate(value);
+        return date ? date.toLocaleDateString('pt-BR') : "";
+    }
+
     function calculateAge(birthday) {
-        if(!birthday) return 0;
-        const b = new Date(birthday);
+        const b = parseLocalDate(birthday);
+        if(!b) return 0;
         const t = new Date();
         let age = t.getFullYear() - b.getFullYear();
         if (t.getMonth() < b.getMonth() || (t.getMonth() === b.getMonth() && t.getDate() < b.getDate())) age--;
@@ -429,8 +894,9 @@
         const ruleInfo = getRuleInfo(nascimento, faixa, categoriaOverride);
         const rules = ruleInfo.aulasPorGrau;
         if (!ruleInfo.elegivel || rules <= 0) return ruleInfo.aviso;
+        const aulasSeguras = Math.max(0, Number(aulasAtuais) || 0);
         const totalAulasNecessarias = rules * 9;
-        const aulasFaltantes = totalAulasNecessarias - aulasAtuais;
+        const aulasFaltantes = Math.max(0, totalAulasNecessarias - aulasSeguras);
         
         if (aulasFaltantes <= 0) return "Pronto para exame!";
         
@@ -459,9 +925,10 @@
                 previsao: ruleInfo.aviso
             };
         }
+        const aulasSeguras = Math.max(0, Number(aulasAtuais) || 0);
         const total = rules * 9;
-        const feitas = Math.min(aulasAtuais, total);
-        const faltantes = Math.max(0, total - aulasAtuais);
+        const feitas = Math.min(aulasSeguras, total);
+        const faltantes = Math.max(0, total - feitas);
         const aulasPercentual = total ? (feitas / total) * 100 : 0;
         const meritos = ["Rel", "Comp", "Notas", "Hab"];
         const meritosFeitos = meritos.filter(k => comp?.[k]).length;
@@ -474,7 +941,7 @@
             elegivel: ruleInfo.elegivel,
             aviso: ruleInfo.aviso,
             aulasPorGrau: rules,
-            previsao: getPrevisaoGraduacao(aulasAtuais, nascimento, faixa, categoriaOverride)
+            previsao: getPrevisaoGraduacao(aulasSeguras, nascimento, faixa, categoriaOverride)
         };
     }
 
@@ -494,6 +961,32 @@
         return states.reduce((total, state) => total + state, 0) * rules;
     }
 
+    function getCurrentCycleClasses(aulas = 0, rules = 1) {
+        const safeRules = Math.max(1, Number(rules) || 1);
+        const safeAulas = Math.max(0, Number(aulas) || 0);
+        const total = safeRules * 9;
+        if (safeAulas >= total) return safeRules;
+        return safeAulas % safeRules;
+    }
+
+    const statusOptions = ["Ativo", "Experimental", "Pausado", "Transferido", "Inativo"];
+    const createEmptyStudentForm = () => ({
+        nome: "",
+        nascimento: "",
+        faixa: "Branca",
+        sexo: "M",
+        categoriaOverride: "Auto",
+        status: "Ativo",
+        responsavel: "",
+        telefone: "",
+        email: "",
+        matricula: getTodayISO(),
+        ultimaPresenca: "",
+        necessidades: "",
+        observacoesInternas: "",
+        autorizacaoImagem: false
+    });
+
     function App() {
         const [mode, setMode] = React.useState(null); 
         const [subMode, setSubMode] = React.useState(null);
@@ -512,9 +1005,11 @@
         const [searchTerm, setSearchTerm] = React.useState("");
         const [filterGroup, setFilterGroup] = React.useState("Todos");
         const [professorView, setProfessorView] = React.useState("alunos");
+        const [dashboardDetail, setDashboardDetail] = React.useState(null);
+        const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos" });
         const [selectedChatId, setSelectedChatId] = React.useState(null);
         const [conversationSearch, setConversationSearch] = React.useState("");
-        const [form, setForm] = React.useState({ nome: "", nascimento: "", faixa: "Branca", sexo: "M", categoriaOverride: "Auto" });
+        const [form, setForm] = React.useState(createEmptyStudentForm);
         const [chatInputs, setChatInputs] = React.useState({});
         const [openChats, setOpenChats] = React.useState({});
         const [degreeDirections, setDegreeDirections] = React.useState({});
@@ -525,6 +1020,10 @@
         const [isHydrated, setIsHydrated] = React.useState(false);
         const [dbStatus, setDbStatus] = React.useState(supabaseClient ? "Conectando ao Supabase..." : "Supabase não configurado");
         const applyingRemoteRef = React.useRef(false);
+        const pendingLocalSaveRef = React.useRef(false);
+        const lastLocalChangeRef = React.useRef(0);
+        const lastSavedAtRef = React.useRef("");
+        const [theme] = React.useState("dark");
 
         React.useEffect(() => {
             document.body.classList.toggle("auth-mode", !mode);
@@ -534,6 +1033,16 @@
                 document.body.classList.remove("parent-mode");
             };
         }, [mode]);
+
+        React.useEffect(() => {
+            document.body.classList.toggle("theme-light", theme === "light");
+            document.body.classList.toggle("theme-dark", theme === "dark");
+            localStorage.setItem(LOCAL_THEME_KEY, "dark");
+            return () => {
+                document.body.classList.remove("theme-light");
+                document.body.classList.remove("theme-dark");
+            };
+        }, [theme]);
 
         React.useEffect(() => {
             const loadRemoteData = async () => {
@@ -560,29 +1069,34 @@
                         const localHasData = localStudents.length > 0 || localRepo.length > 0;
 
                         if (remoteIsEmpty && localHasData) {
+                            const updatedAt = new Date().toISOString();
                             await supabaseClient.from("app_state").upsert({
                                 id: SUPABASE_STATE_ID,
                                 students: localStudents,
                                 repo: localRepo,
-                                updated_at: new Date().toISOString()
+                                updated_at: updatedAt
                             });
+                            lastSavedAtRef.current = updatedAt;
                             applyingRemoteRef.current = true;
                             setStudents(localStudents);
                             setRepo(localRepo);
                             setDbStatus("Base local enviada ao Supabase");
                         } else {
+                            lastSavedAtRef.current = data.updated_at || "";
                             applyingRemoteRef.current = true;
                             setStudents(remoteStudents);
                             setRepo(remoteRepo);
                             setDbStatus("Sincronizado com Supabase");
                         }
                     } else {
+                        const updatedAt = new Date().toISOString();
                         await supabaseClient.from("app_state").insert({
                             id: SUPABASE_STATE_ID,
                             students: localStudents,
                             repo: localRepo,
-                            updated_at: new Date().toISOString()
+                            updated_at: updatedAt
                         });
+                        lastSavedAtRef.current = updatedAt;
                         setDbStatus("Dados locais enviados ao Supabase");
                     }
                 } catch (err) {
@@ -611,19 +1125,25 @@
                 return;
             }
 
+            pendingLocalSaveRef.current = true;
+            lastLocalChangeRef.current = Date.now();
             if (!supabaseClient) return;
             const syncTimer = setTimeout(async () => {
                 try {
+                    const updatedAt = new Date().toISOString();
                     const { error } = await supabaseClient.from("app_state").upsert({
                         id: SUPABASE_STATE_ID,
                         students,
                         repo,
-                        updated_at: new Date().toISOString()
+                        updated_at: updatedAt
                     });
                     if (error) throw error;
+                    lastSavedAtRef.current = updatedAt;
+                    pendingLocalSaveRef.current = false;
                     setDbStatus("Sincronizado com Supabase");
                 } catch (err) {
                     console.error(err);
+                    pendingLocalSaveRef.current = false;
                     setDbStatus("Erro ao salvar no Supabase");
                 }
             }, 600);
@@ -637,11 +1157,15 @@
                 try {
                     const { data, error } = await supabaseClient
                         .from("app_state")
-                        .select("students, repo")
+                        .select("students, repo, updated_at")
                         .eq("id", SUPABASE_STATE_ID)
                         .maybeSingle();
                     if (error) throw error;
                     if (!data) return;
+                    const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 8000;
+                    if (pendingLocalSaveRef.current || localChangeIsFresh) return;
+                    if (data.updated_at && lastSavedAtRef.current && new Date(data.updated_at) < new Date(lastSavedAtRef.current)) return;
+                    lastSavedAtRef.current = data.updated_at || lastSavedAtRef.current;
                     applyingRemoteRef.current = true;
                     setStudents(Array.isArray(data.students) ? data.students : []);
                     setRepo(Array.isArray(data.repo) ? data.repo : []);
@@ -713,7 +1237,7 @@
             reader.readAsDataURL(file);
         };
 
-        const togglePresenca = (sid, boxIndex) => {
+        const togglePresenca = (sid, boxIndex, clickCount = 1) => {
             if(mode !== "Professor") return;
             const aluno = students.find(s => s.id === sid);
             const ruleInfo = aluno ? getRuleInfo(aluno.nascimento, aluno.faixa, aluno.categoriaOverride) : null;
@@ -721,15 +1245,16 @@
                 alert(ruleInfo?.aviso || "Aluno fora da regra de graduação.");
                 return;
             }
+            const hojeIso = getTodayISO();
             setStudents(prev => prev.map(s => {
                 if (s.id === sid) {
                     const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
-                    const currentRemainder = s.aulas % rules;
-                    if (boxIndex < currentRemainder) {
+                    const currentRemainder = getCurrentCycleClasses(s.aulas, rules);
+                    if (boxIndex === currentRemainder - 1 && clickCount >= 2) {
                         const novaAula = s.aulas - 1;
                         const { presenceDegrees, ...rest } = s;
-                        return { ...rest, aulas: Math.max(0, novaAula), historico: [...(s.historico || []), `❌ Remoção de Presença | Aula ${s.aulas} | ${new Date().toLocaleDateString('pt-BR')}`] };
-                    } else {
+                        return { ...rest, aulas: Math.max(0, novaAula), ultimaPresenca: hojeIso, historico: [...(s.historico || []), `❌ Remoção de Presença | Aula ${s.aulas} | ${new Date().toLocaleDateString('pt-BR')}`] };
+                    } else if (boxIndex === currentRemainder) {
                         if (s.aulas >= rules * 9) return s;
                         const novaAula = s.aulas + 1;
                         const log = [`Aula ${novaAula} | ${new Date().toLocaleDateString('pt-BR')}`];
@@ -738,8 +1263,9 @@
                             log.push(n <= 4 ? `🎓 GRAU DE PRESENÇA BRANCO (${n}º)` : `🔴 GRAU DE PRESENÇA VERMELHO (${n-4}º)`);
                         }
                         const { presenceDegrees, ...rest } = s;
-                        return { ...rest, aulas: novaAula, historico: [...(s.historico || []), ...log] };
+                        return { ...rest, aulas: novaAula, ultimaPresenca: hojeIso, historico: [...(s.historico || []), ...log] };
                     }
+                    return s;
                 }
                 return s;
             }));
@@ -897,16 +1423,170 @@
         const conversationStudents = allConversationStudents.filter(s => s.nome.toLowerCase().includes(conversationSearch.toLowerCase()));
         const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || null;
         const totalUnreadProfessor = allConversationStudents.reduce((total, s) => total + s.unread, 0);
+        const today = new Date();
+        const dashboardStudents = students.filter(s => {
+            const group = getAutoCategory(s.nascimento, s.categoriaOverride);
+            const status = s.status || "Ativo";
+            const matchesGroup = dashboardFilters.group === "Todos" || group === dashboardFilters.group;
+            const matchesFaixa = dashboardFilters.faixa === "Todas" || s.faixa === dashboardFilters.faixa;
+            const matchesStatus = dashboardFilters.status === "Todos" || status === dashboardFilters.status;
+            return matchesGroup && matchesFaixa && matchesStatus;
+        });
+        const dashboardFilterActive = dashboardFilters.group !== "Todos" || dashboardFilters.faixa !== "Todas" || dashboardFilters.status !== "Todos";
+        const activeStudents = dashboardStudents.filter(s => !["Inativo", "Transferido"].includes(s.status || "Ativo"));
+        const readyList = dashboardStudents.filter(s => {
+            const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
+            return rules > 0 && s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
+        });
+        const dashboardRows = {
+            categorias: groups.map(group => ({
+                label: group,
+                value: dashboardStudents.filter(s => getAutoCategory(s.nascimento, s.categoriaOverride) === group).length
+            })),
+            faixas: beltOrder.map(faixa => ({
+                label: faixa,
+                value: dashboardStudents.filter(s => s.faixa === faixa).length
+            })).filter(row => row.value > 0),
+            status: statusOptions.map(status => ({
+                label: status,
+                value: dashboardStudents.filter(s => (s.status || "Ativo") === status).length
+            })).filter(row => row.value > 0)
+        };
+        const maxCategory = Math.max(1, ...dashboardRows.categorias.map(row => row.value));
+        const maxBelt = Math.max(1, ...dashboardRows.faixas.map(row => row.value));
+        const maxStatus = Math.max(1, ...dashboardRows.status.map(row => row.value));
+        const studentsWithProgress = dashboardStudents.map(s => ({
+            ...s,
+            progresso: getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride),
+            unread: s.chat?.filter(m => !(m.readBy || []).includes("Professor")).length || 0
+        }));
+        const nearGraduation = studentsWithProgress
+            .filter(s => s.progresso.elegivel && s.progresso.percentual >= 75)
+            .sort((a, b) => b.progresso.percentual - a.progresso.percentual)
+            .slice(0, 5);
+        const studentsWithoutRecentPresence = dashboardStudents.filter(s => {
+            if (!s.ultimaPresenca) return true;
+            const lastPresence = parseLocalDate(s.ultimaPresenca);
+            if (!lastPresence) return true;
+            const diffDays = Math.floor((today - lastPresence) / 86400000);
+            return diffDays >= 10;
+        }).length;
+        const missingCoreData = dashboardStudents.filter(s => !s.responsavel || !s.telefone || !s.matricula).length;
+        const imageAuthPending = dashboardStudents.filter(s => !s.autorizacaoImagem).length;
+        const averageProgress = studentsWithProgress.length ? Math.round(studentsWithProgress.reduce((total, s) => total + (s.progresso.percentual || 0), 0) / studentsWithProgress.length) : 0;
+        const totalUnreadDashboard = studentsWithProgress.reduce((total, s) => total + s.unread, 0);
+        const topUnread = studentsWithProgress
+            .filter(s => s.unread > 0)
+            .sort((a, b) => b.unread - a.unread)
+            .slice(0, 5);
+        const dashboardDetailMap = {
+            alunos: {
+                title: "Alunos cadastrados",
+                subtitle: dashboardFilterActive ? "Lista filtrada da base atual" : "Lista completa da base atual",
+                rows: dashboardStudents.map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: `${calculateAge(s.nascimento)} anos • ${getAutoCategory(s.nascimento, s.categoriaOverride)} • ${s.status || "Ativo"}`,
+                    action: () => { setProfessorView("alunos"); setSearchTerm(s.nome); setFilterGroup("Todos"); }
+                }))
+            },
+            prontos: {
+                title: "Prontos para exame",
+                subtitle: "Alunos que atingiram as regras para graduacao",
+                rows: readyList.map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: `${s.faixa} • ${getAutoCategory(s.nascimento, s.categoriaOverride)} • pronto para avaliar`,
+                    action: () => { setProfessorView("alunos"); setSearchTerm(s.nome); setFilterGroup("Todos"); }
+                }))
+            },
+            mensagens: {
+                title: "Mensagens pendentes",
+                subtitle: "Conversas com leitura pendente para o professor",
+                rows: studentsWithProgress.filter(s => s.unread > 0).map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: `${s.unread} mensagem${s.unread === 1 ? "" : "s"} sem leitura`,
+                    action: () => openProfessorConversation(s.id),
+                    actionLabel: "Abrir"
+                }))
+            },
+            evolucao: {
+                title: "Evolucao media",
+                subtitle: "Ranking de progresso ate a proxima faixa",
+                rows: studentsWithProgress
+                    .filter(s => s.progresso.elegivel)
+                    .sort((a, b) => b.progresso.percentual - a.progresso.percentual)
+                    .map(s => ({
+                        id: s.id,
+                        name: s.nome,
+                        meta: `${s.progresso.percentual}% concluido • ${s.progresso.faltantes} aulas faltam`,
+                        action: () => { setProfessorView("alunos"); setSearchTerm(s.nome); setFilterGroup("Todos"); }
+                    }))
+            },
+            presenca: {
+                title: "Sem presenca recente",
+                subtitle: "Alunos sem data de presenca ou ha 10 dias ou mais",
+                rows: dashboardStudents.filter(s => {
+                    if (!s.ultimaPresenca) return true;
+                    const lastPresence = parseLocalDate(s.ultimaPresenca);
+                    if (!lastPresence) return true;
+                    const diffDays = Math.floor((today - lastPresence) / 86400000);
+                    return diffDays >= 10;
+                }).map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: s.ultimaPresenca ? `Ultima presenca: ${formatDateBR(s.ultimaPresenca)}` : "Sem presenca registrada",
+                    action: () => { setProfessorView("alunos"); setSearchTerm(s.nome); setFilterGroup("Todos"); }
+                }))
+            },
+            cadastro: {
+                title: "Cadastro incompleto",
+                subtitle: "Faltando responsavel, WhatsApp ou matricula",
+                rows: dashboardStudents.filter(s => !s.responsavel || !s.telefone || !s.matricula).map(s => {
+                    const missing = [
+                        !s.responsavel ? "responsavel" : "",
+                        !s.telefone ? "WhatsApp" : "",
+                        !s.matricula ? "matricula" : ""
+                    ].filter(Boolean).join(", ");
+                    return {
+                        id: s.id,
+                        name: s.nome,
+                        meta: `Falta: ${missing}`,
+                        action: () => { setEditingStudent({...s}); setModalOpen("edit"); }
+                    };
+                })
+            },
+            imagem: {
+                title: "Autorizacao pendente",
+                subtitle: "Alunos sem autorizacao de uso de imagem marcada",
+                rows: dashboardStudents.filter(s => !s.autorizacaoImagem).map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: `${s.responsavel || "Responsavel nao informado"} • autorizacao nao marcada`,
+                    action: () => { setEditingStudent({...s}); setModalOpen("edit"); }
+                }))
+            },
+            arquivos: {
+                title: "Arquivos",
+                subtitle: "Anexos disponiveis no repositorio interno",
+                rows: repo.map((file, index) => ({
+                    id: file.id || index,
+                    name: file.name || file.fileName || file.titulo || `Arquivo ${index + 1}`,
+                    meta: file.category || file.categoria || file.type || "Arquivo salvo",
+                    action: () => setModalOpen("repo"),
+                    actionLabel: "Ver"
+                }))
+            }
+        };
+        const activeDashboardDetail = dashboardDetail ? dashboardDetailMap[dashboardDetail] : null;
 
         React.useEffect(() => {
             if (mode === "Professor" && professorView === "conversas" && selectedConversation && selectedConversation.unread > 0) {
                 openProfessorConversation(selectedConversation.id);
             }
         }, [mode, professorView, selectedConversation?.id, selectedConversation?.unread]);
-        const readyStudents = students.filter(s => {
-            const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
-            return rules > 0 && s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
-        }).length;
+        const readyStudents = readyList.length;
         if (!mode) {
             if (!subMode) return (
                 <div className="selection-screen">
@@ -946,7 +1626,7 @@
         }
 
         return (
-            <div className={`container ${mode === "Professor" && professorView === "conversas" ? "wide-container" : ""}`}>
+            <div className={`container ${mode === "Professor" && ["conversas", "painel"].includes(professorView) ? "wide-container" : ""}`}>
                 <header className="header-main">
                     <h2>Alliance Mooca Kids</h2>
                     {/* Botão de backup */}
@@ -993,6 +1673,138 @@
                     </>
                 )}
 
+                {mode === "Professor" && professorView === "painel" && (
+                    <section className="dashboard-page">
+                        <div className="dashboard-hero">
+                            <div>
+                                <h3>Painel da turma</h3>
+                                <p>Indicadores internos para acompanhar evolução.</p>
+                            </div>
+                            <button className="filter-btn" onClick={() => setProfessorView("alunos")}><i className="fas fa-arrow-left"></i> Voltar para alunos</button>
+                        </div>
+
+                        <div className="dashboard-filters">
+                            <div className="dashboard-filter">
+                                <label>Turma</label>
+                                <select value={dashboardFilters.group} onChange={e => setDashboardFilters({...dashboardFilters, group: e.target.value})}>
+                                    <option value="Todos">Todas</option>
+                                    {groups.map(group => <option key={group} value={group}>{group}</option>)}
+                                </select>
+                            </div>
+                            <div className="dashboard-filter">
+                                <label>Faixa</label>
+                                <select value={dashboardFilters.faixa} onChange={e => setDashboardFilters({...dashboardFilters, faixa: e.target.value})}>
+                                    <option value="Todas">Todas</option>
+                                    {beltOrder.map(faixa => <option key={faixa} value={faixa}>{faixa}</option>)}
+                                </select>
+                            </div>
+                            <div className="dashboard-filter">
+                                <label>Status</label>
+                                <select value={dashboardFilters.status} onChange={e => setDashboardFilters({...dashboardFilters, status: e.target.value})}>
+                                    <option value="Todos">Todos</option>
+                                    {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
+                                </select>
+                            </div>
+                            <button className="dashboard-clear" onClick={() => { setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos" }); setDashboardDetail(null); }}>
+                                Limpar filtros
+                            </button>
+                        </div>
+
+                        <div className="dashboard-grid">
+                            <div className="dashboard-card" onClick={() => { setProfessorView("alunos"); setSearchTerm(""); setFilterGroup("Todos"); }}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => setDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{nearGraduation.length} acima de 75% de conclusao</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "mensagens" ? "active" : ""}`} onClick={() => setDashboardDetail("mensagens")}><strong>{totalUnreadDashboard}</strong><span>Mensagens pendentes</span><small>{topUnread.length} aluno{topUnread.length === 1 ? "" : "s"} com alerta de leitura</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => setDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolucao media</span><small>Baseado no progresso para a proxima faixa</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => setDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presenca recente</span><small>Sem data ou ha 10 dias ou mais</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "cadastro" ? "active" : ""}`} onClick={() => setDashboardDetail("cadastro")}><strong>{missingCoreData}</strong><span>Cadastro incompleto</span><small>Falta responsavel, WhatsApp ou matricula</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => setDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorizacao pendente</span><small>Alunos sem autorizacao de imagem marcada</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => setDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponiveis no repositorio interno</small></div>
+                        </div>
+
+                        {activeDashboardDetail && <div className="dashboard-detail">
+                            <div className="dashboard-detail-head">
+                                <div>
+                                    <strong>{activeDashboardDetail.title}</strong>
+                                    <span>{activeDashboardDetail.subtitle}</span>
+                                </div>
+                                <button className="dashboard-detail-action" onClick={() => setDashboardDetail(null)}>Limpar</button>
+                            </div>
+                            <div className="dashboard-detail-list">
+                                {activeDashboardDetail.rows.length > 0 ? activeDashboardDetail.rows.map(row => (
+                                    <div className="dashboard-detail-row" key={`${dashboardDetail}-${row.id}`}>
+                                        <div>
+                                            <b>{row.name}</b>
+                                            <small>{row.meta}</small>
+                                        </div>
+                                        <button className="dashboard-detail-action" onClick={row.action}>{row.actionLabel || "Abrir"}</button>
+                                    </div>
+                                )) : (
+                                    <div className="dashboard-note">Nenhum item encontrado para este indicador.</div>
+                                )}
+                            </div>
+                        </div>}
+
+                        <div className="dashboard-split">
+                            <div className="dashboard-panel">
+                                <div className="dashboard-panel-title"><span>Distribuicao por turma</span><i className="fas fa-layer-group"></i></div>
+                                <div className="dashboard-list">
+                                    {dashboardRows.categorias.map(row => (
+                                        <div className="dashboard-row" key={row.label}>
+                                            <span>{row.label}</span>
+                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxCategory) * 100}%`}}></i></div>
+                                            <b>{row.value}</b>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="dashboard-panel">
+                                <div className="dashboard-panel-title"><span>Distribuicao por faixa</span><i className="fas fa-medal"></i></div>
+                                <div className="dashboard-list">
+                                    {dashboardRows.faixas.length > 0 ? dashboardRows.faixas.map(row => (
+                                        <div className="dashboard-row" key={row.label}>
+                                            <span>{row.label}</span>
+                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxBelt) * 100}%`}}></i></div>
+                                            <b>{row.value}</b>
+                                        </div>
+                                    )) : <div className="dashboard-note">Nenhuma faixa com aluno ainda.</div>}
+                                </div>
+                            </div>
+                            <div className="dashboard-panel">
+                                <div className="dashboard-panel-title"><span>Status dos alunos</span><i className="fas fa-toggle-on"></i></div>
+                                <div className="dashboard-list">
+                                    {dashboardRows.status.length > 0 ? dashboardRows.status.map(row => (
+                                        <div className="dashboard-row" key={row.label}>
+                                            <span>{row.label}</span>
+                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxStatus) * 100}%`}}></i></div>
+                                            <b>{row.value}</b>
+                                        </div>
+                                    )) : <div className="dashboard-note">Nenhum status informado.</div>}
+                                </div>
+                            </div>
+                            <div className="dashboard-panel">
+                                <div className="dashboard-panel-title"><span>Prioridades de atendimento</span><i className="fas fa-bell"></i></div>
+                                <div className="dashboard-list">
+                                    {topUnread.length > 0 && topUnread.map(s => (
+                                        <div className="dashboard-row" key={`msg-${s.id}`}>
+                                            <span>{s.nome}</span>
+                                            <div className="dashboard-bar"><i style={{width: `${Math.min(100, s.unread * 25)}%`}}></i></div>
+                                            <b>{s.unread} msg</b>
+                                        </div>
+                                    ))}
+                                    {topUnread.length === 0 && nearGraduation.length > 0 && nearGraduation.map(s => (
+                                        <div className="dashboard-row" key={`grad-${s.id}`}>
+                                            <span>{s.nome}</span>
+                                            <div className="dashboard-bar"><i style={{width: `${s.progresso.percentual}%`}}></i></div>
+                                            <b>{s.progresso.percentual}%</b>
+                                        </div>
+                                    ))}
+                                    {topUnread.length === 0 && nearGraduation.length === 0 && <div className="dashboard-note">Sem alertas criticos no momento.</div>}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
                 {mode === "Professor" && professorView === "conversas" && (
                     <section className="conversation-page">
                         <div className="conversation-title">
@@ -1000,7 +1812,9 @@
                                 <h3>Conversas</h3>
                                 <span>{allConversationStudents.length} alunos cadastrados</span>
                             </div>
-                            <button className="filter-btn" onClick={() => setProfessorView("alunos")}><i className="fas fa-arrow-left"></i> Voltar para alunos</button>
+                            <div className="conversation-actions">
+                                <button className="filter-btn" onClick={() => setProfessorView("alunos")}><i className="fas fa-arrow-left"></i> Voltar para alunos</button>
+                            </div>
                         </div>
                     <div className="conversation-view">
                         <aside className="conversation-list">
@@ -1061,7 +1875,7 @@
                     </section>
                 )}
 
-                {!(mode === "Professor" && professorView === "conversas") && displayedStudents.length === 0 && (
+                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && displayedStudents.length === 0 && (
                     <div className="empty-state">
                         <i className="fas fa-user-graduate"></i>
                         <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : (mode === "Professor" && !professorHasQuery ? "Faça uma consulta" : "Nenhum aluno encontrado")}</strong>
@@ -1069,7 +1883,7 @@
                     </div>
                 )}
 
-                {!(mode === "Professor" && professorView === "conversas") && displayedStudents.map(s => {
+                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && displayedStudents.map(s => {
                     const ruleInfo = getRuleInfo(s.nascimento, s.faixa, s.categoriaOverride);
                     const rules = ruleInfo.aulasPorGrau;
                     const presenceDegreeStates = rules > 0 ? getPresenceDegreeStates(s.aulas, rules, s.presenceDegrees) : [0, 0, 0, 0];
@@ -1077,6 +1891,7 @@
                     const unread = s.chat?.filter(m => !(m.readBy || []).includes(mode)).length || 0;
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
                     const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
+                    const currentCycleClasses = rules > 0 ? getCurrentCycleClasses(s.aulas, rules) : 0;
 
                     return (
                         <div key={s.id} className={`card ${mode === "Pais" ? "parent-card" : ""}`}>
@@ -1101,6 +1916,18 @@
                                     </div>
                                 )}
                                 {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
+                            </div>
+
+                            <div className="student-info-grid">
+                                <div className={`student-info-chip status-badge ${(s.status || "Ativo").toLowerCase()}`}><strong>{s.status || "Ativo"}</strong>Status</div>
+                                {s.responsavel && <div className="student-info-chip"><strong>{s.responsavel}</strong>Responsável</div>}
+                                {s.telefone && <div className="student-info-chip"><strong>{s.telefone}</strong>WhatsApp</div>}
+                                {s.matricula && <div className="student-info-chip"><strong>{formatDateBR(s.matricula)}</strong>Matrícula</div>}
+                                {s.ultimaPresenca && <div className="student-info-chip"><strong>{formatDateBR(s.ultimaPresenca)}</strong>Última presença</div>}
+                                {mode === "Professor" && s.necessidades && <div className="student-info-chip"><strong>{s.necessidades}</strong>Observação interna</div>}
+                                <div className="student-info-chip"><strong>{s.autorizacaoImagem ? "Sim" : "Não"}</strong>Autorização de imagem</div>
+                                {mode === "Professor" && s.email && <div className="student-info-chip"><strong>{s.email}</strong>E-mail</div>}
+                                {mode === "Professor" && s.observacoesInternas && <div className="student-info-chip"><strong>{s.observacoesInternas}</strong>Obs. professor</div>}
                             </div>
 
                             <div className="graduation-panel">
@@ -1140,7 +1967,7 @@
                                                 ) : (
                                                     <div className="bar">
                                                         {Array.from({length:rules}).map((_, i) => (
-                                                            <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''} ${s.aulas >= rules * 9 ? 'locked' : ''}`}>{i+1}</div>
+                                                            <div key={i} className={`box-class ${i < currentCycleClasses ? 'done' : ''} ${s.aulas >= rules * 9 && i >= currentCycleClasses ? 'locked' : ''}`}>{i+1}</div>
                                                         ))}
                                                     </div>
                                                 )}
@@ -1207,7 +2034,7 @@
                             ) : (
                                 <div className="bar">
                                     {Array.from({length:rules}).map((_, i) => (
-                                        <div key={i} className={`box-class ${i < (s.aulas % rules) ? 'done' : ''} ${s.aulas >= rules * 9 ? 'locked' : ''}`} onClick={() => togglePresenca(s.id, i)}>{i+1}</div>
+                                        <div key={i} className={`box-class ${i < currentCycleClasses ? 'done' : ''} ${s.aulas >= rules * 9 && i >= currentCycleClasses ? 'locked' : ''}`} onClick={(e) => togglePresenca(s.id, i, e.detail)}>{i+1}</div>
                                     ))}
                                 </div>
                             )}
@@ -1286,11 +2113,12 @@
                     );
                 })}
 
-                {mode !== "Pais" && <div className="action-bar">
+                {mode !== "Pais" && mode === "Professor" && professorView === "alunos" && <div className="action-bar">
                     {mode === "Professor" ? (
                         <>
-                            <div className="action-item" onClick={() => setModalOpen('add')}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
+                            <div className="action-item" onClick={() => { setProfessorView("alunos"); setModalOpen('add'); }}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
+                            <div className="action-item" onClick={() => setProfessorView("painel")}><i className="fas fa-chart-pie"></i><span>PAINEL</span></div>
                             <div className="action-item" onClick={() => setProfessorView("conversas")}>
                                 {totalUnreadProfessor > 0 && <b className="nav-badge">{totalUnreadProfessor > 99 ? "99+" : totalUnreadProfessor}</b>}
                                 <i className="fab fa-whatsapp"></i><span>CONVERSAS</span>
@@ -1339,6 +2167,27 @@
                                 <option value="M">Masculino</option>
                                 <option value="F">Feminino</option>
                             </select>
+                            <div className="form-grid">
+                                <div>
+                                    <label className="field-label">Status</label>
+                                    <select value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
+                                        {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="field-label">Matrícula</label>
+                                    <input type="date" value={form.matricula} onChange={e => setForm({...form, matricula: e.target.value})} />
+                                </div>
+                                <input placeholder="Responsável" value={form.responsavel} onChange={e => setForm({...form, responsavel: e.target.value})} />
+                                <input placeholder="WhatsApp do responsável" value={form.telefone} onChange={e => setForm({...form, telefone: e.target.value})} />
+                                <input placeholder="E-mail do responsável" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                            </div>
+                            <textarea placeholder="Observação interna / necessidade especial" value={form.necessidades} onChange={e => setForm({...form, necessidades: e.target.value})}></textarea>
+                            <textarea placeholder="Observações internas do professor" value={form.observacoesInternas} onChange={e => setForm({...form, observacoesInternas: e.target.value})}></textarea>
+                            <label className="check-row">
+                                <input type="checkbox" checked={form.autorizacaoImagem} onChange={e => setForm({...form, autorizacaoImagem: e.target.checked})} />
+                                Autorização de uso de imagem
+                            </label>
                             <label className="field-label">Turma</label>
                             <select value={form.categoriaOverride} onChange={e => setForm({...form, categoriaOverride: e.target.value})}>
                                 {categoryOptions.map(c => <option key={c} value={c}>{c === "Auto" ? `Automática: ${form.nascimento ? getAutoCategory(form.nascimento) : "pela idade"}` : c}</option>)}
@@ -1355,7 +2204,7 @@
                                 const categoriaTexto = form.categoriaOverride === "Auto" ? getAutoCategory(form.nascimento) : `${form.categoriaOverride} (manual)`;
                                 setStudents([...students, { ...form, nome, id: Date.now(), aulas: 0, historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`] }]);
                                 setModalOpen(null);
-                                setForm({ nome: "", nascimento: "", faixa: "Branca", sexo: "M", categoriaOverride: "Auto" });
+                                setForm(createEmptyStudentForm());
                             }}>SALVAR</button>
                             <button className="btn-full" onClick={() => setModalOpen(null)}>CANCELAR</button>
                         </div>
@@ -1406,6 +2255,28 @@
                                 <option value="M">Masculino</option>
                                 <option value="F">Feminino</option>
                             </select>
+                            <div className="form-grid">
+                                <div>
+                                    <label className="field-label">Status</label>
+                                    <select value={editingStudent.status || "Ativo"} onChange={e => setEditingStudent({...editingStudent, status: e.target.value})}>
+                                        {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="field-label">Matrícula</label>
+                                    <input type="date" value={editingStudent.matricula || ""} onChange={e => setEditingStudent({...editingStudent, matricula: e.target.value})} />
+                                </div>
+                                <input placeholder="Última presença" type="date" value={editingStudent.ultimaPresenca || ""} onChange={e => setEditingStudent({...editingStudent, ultimaPresenca: e.target.value})} />
+                                <input placeholder="Responsável" value={editingStudent.responsavel || ""} onChange={e => setEditingStudent({...editingStudent, responsavel: e.target.value})} />
+                                <input placeholder="WhatsApp do responsável" value={editingStudent.telefone || ""} onChange={e => setEditingStudent({...editingStudent, telefone: e.target.value})} />
+                                <input placeholder="E-mail do responsável" value={editingStudent.email || ""} onChange={e => setEditingStudent({...editingStudent, email: e.target.value})} />
+                            </div>
+                            <textarea placeholder="Observação interna / necessidade especial" value={editingStudent.necessidades || ""} onChange={e => setEditingStudent({...editingStudent, necessidades: e.target.value})}></textarea>
+                            <textarea placeholder="Observações internas do professor" value={editingStudent.observacoesInternas || ""} onChange={e => setEditingStudent({...editingStudent, observacoesInternas: e.target.value})}></textarea>
+                            <label className="check-row">
+                                <input type="checkbox" checked={!!editingStudent.autorizacaoImagem} onChange={e => setEditingStudent({...editingStudent, autorizacaoImagem: e.target.checked})} />
+                                Autorização de uso de imagem
+                            </label>
                             <label className="field-label">Turma</label>
                             <select value={editingStudent.categoriaOverride || "Auto"} onChange={e => setEditingStudent({...editingStudent, categoriaOverride: e.target.value})}>
                                 {categoryOptions.map(c => <option key={c} value={c}>{c === "Auto" ? `Automática: ${getAutoCategory(editingStudent.nascimento)}` : c}</option>)}
@@ -1431,6 +2302,12 @@
                                 const categoriaNova = alunoAtualizado.categoriaOverride || "Auto";
                                 if (alunoOriginal && categoriaAnterior !== categoriaNova) {
                                     logs.push(`🏷️ TURMA ALTERADA: ${categoriaAnterior === "Auto" ? "Automática" : categoriaAnterior} → ${categoriaNova === "Auto" ? "Automática" : categoriaNova} | ${hoje}`);
+                                }
+
+                                const statusAnterior = alunoOriginal?.status || "Ativo";
+                                const statusNovo = alunoAtualizado.status || "Ativo";
+                                if (alunoOriginal && statusAnterior !== statusNovo) {
+                                    logs.push(`📌 STATUS ALTERADO: ${statusAnterior} → ${statusNovo} | ${hoje}`);
                                 }
 
                                 if (logs.length) alunoAtualizado = { ...alunoAtualizado, historico: [...(alunoOriginal?.historico || []), ...logs] };
