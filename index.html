@@ -251,13 +251,15 @@
         .pending-message-alert button { width: auto; margin: 0; border: 1px solid rgba(37,211,102,0.38); background: var(--whatsapp-green); color: #fff; border-radius: 999px; padding: 10px 14px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap; }
         .student-compact-card { max-width: 1060px; margin: 0 auto 12px; background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 14px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.24); transition: 0.2s; }
         .student-compact-card:hover { border-color: var(--alliance-red); background: #202020; transform: translateY(-1px); }
+        .student-results-grid { max-width: 1060px; margin: 0 auto 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; align-items: start; }
+        .student-results-grid .student-compact-card { max-width: none; margin: 0; grid-template-columns: auto 1fr; min-height: 116px; padding: 12px; border-radius: 16px; }
+        .student-results-grid .expanded-result-card { grid-column: 1 / -1; margin-bottom: 0; }
         .student-compact-avatar { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid #333; background: #222; }
         .student-compact-main { min-width: 0; }
         .student-compact-main strong { color: #fff; display: block; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .student-compact-main span { display: block; color: #888; font-size: 11px; font-weight: 800; margin-top: 4px; }
         .student-compact-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
         .student-compact-meta b { background: #242424; color: #ddd; border: 1px solid #333; border-radius: 999px; padding: 5px 9px; font-size: 10px; text-transform: uppercase; }
-        .student-compact-action { border: 1px solid #3a3a3a; background: #111; color: #fff; border-radius: 999px; padding: 9px 13px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
 
         .action-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(34, 34, 34, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 40px; display: flex; gap: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 1000; border: 1px solid #444; align-items: center; }
         .action-item { color: #fff; text-align: center; cursor: pointer; font-size: 22px; transition: 0.3s; opacity: 0.8; position: relative; min-width: 48px; }
@@ -344,6 +346,9 @@
         .sync-banner.error { background: #321818; color: #ff9d9d; border-color: #743333; }
         .empty-state { max-width: 1060px; margin: 28px auto; min-height: 240px; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; color: #8d8d8d; padding: 34px; background: linear-gradient(135deg, rgba(31,31,31,0.92), rgba(13,13,13,0.92)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 18px 42px rgba(0,0,0,0.28); }
         .empty-state i { width: 62px; height: 62px; border-radius: 18px; display: grid; place-items: center; font-size: 28px; color: #fff; background: #242424; border: 1px solid #343434; }
+        .jiu-jitsu-icon { width: 62px; height: 62px; border-radius: 18px; display: grid; place-items: center; background: #242424; border: 1px solid #343434; position: relative; box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
+        .jiu-jitsu-icon::before { content: ""; width: 34px; height: 28px; border: 5px solid #fff; border-top: 0; border-radius: 3px 3px 12px 12px; transform: translateY(6px); clip-path: polygon(0 0, 34% 0, 50% 38%, 66% 0, 100% 0, 100% 100%, 0 100%); }
+        .jiu-jitsu-icon::after { content: ""; position: absolute; width: 38px; height: 7px; background: linear-gradient(90deg, var(--alliance-red) 0 27%, #fff 27% 73%, var(--alliance-red) 73%); border-radius: 999px; left: 12px; bottom: 18px; box-shadow: 0 0 0 1px rgba(0,0,0,0.18); }
         .empty-state strong { color: #fff; font-size: 20px; }
         .empty-state span { max-width: 360px; font-size: 13px; line-height: 1.5; }
 
@@ -361,8 +366,8 @@
             .summary-item strong { font-size: 20px; }
             .pending-message-alert { flex-direction: column; align-items: stretch; margin: 0 auto 14px; border-radius: 16px; }
             .pending-message-alert button { width: 100%; }
+            .student-results-grid { grid-template-columns: 1fr; }
             .student-compact-card { grid-template-columns: auto 1fr; }
-            .student-compact-action { grid-column: 1 / -1; text-align: center; }
             .form-grid { grid-template-columns: 1fr; }
             .conversation-title { align-items: flex-start; }
             .conversation-title { grid-template-columns: 1fr; }
@@ -1047,6 +1052,10 @@
         const [theme] = React.useState("dark");
 
         React.useEffect(() => {
+            setExpandedSearchStudentId(null);
+        }, [searchTerm, filterGroup]);
+
+        React.useEffect(() => {
             document.body.classList.toggle("auth-mode", !mode);
             document.body.classList.toggle("parent-mode", mode === "Pais");
             return () => {
@@ -1220,6 +1229,19 @@
             }
         };
 
+        const createMessageTimestamp = () => {
+            const now = new Date();
+            return {
+                date: now.toLocaleDateString('pt-BR'),
+                time: now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+            };
+        };
+
+        const getMessageMeta = (message) => {
+            if (!message) return "";
+            return message.date ? `${message.date} ${message.time || ""}`.trim() : (message.time || "");
+        };
+
         const handleFile = async (file, type, id = null) => {
             if(!file) return;
             const isImage = file.type.startsWith('image/');
@@ -1233,11 +1255,13 @@
                     if (type === 'avatar') {
                         setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: finalData } : s));
                     } else if (type === 'chat') {
+                        const timestamp = createMessageTimestamp();
                         const msgAnexo = { 
                             id: Date.now(), sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
                             text: isImage ? "" : `📎 Arquivo: ${file.name}`, fileData: finalData, 
                             fileName: file.name, isImage: isImage,
-                            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), 
+                            date: timestamp.date,
+                            time: timestamp.time,
                             readBy: [mode] 
                         };
                         setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
@@ -1394,9 +1418,10 @@
         const sendMessage = (sid) => {
             const txt = chatInputs[sid] || "";
             if(!txt.trim()) return;
+            const timestamp = createMessageTimestamp();
             const novaMsg = { 
                 id: Date.now(), sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
-                text: txt, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), readBy: [mode] 
+                text: txt, date: timestamp.date, time: timestamp.time, readBy: [mode]
             };
             setStudents(prev => prev.map(s => s.id === sid ? { ...s, chat: [...(s.chat || []), novaMsg] } : s));
             setChatInputs({ ...chatInputs, [sid]: "" });
@@ -1433,6 +1458,7 @@
         });
         const professorHasQuery = searchTerm.trim().length > 0 || filterGroup !== "Todos";
         const displayedStudents = mode === "Professor" ? (professorHasQuery ? filtered : []) : filtered;
+        const useCompactStudentResults = mode === "Professor" && professorHasQuery;
         const allConversationStudents = students
             .map(s => {
                 const chat = s.chat || [];
@@ -1899,7 +1925,7 @@
                                                     {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
                                                     {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
                                                     {m.text && <div>{m.text}</div>}
-                                                    <div className="msg-meta">{m.time}</div>
+                                                    <div className="msg-meta">{getMessageMeta(m)}</div>
                                                 </div>
                                             </div>
                                         ))}
@@ -1920,13 +1946,15 @@
 
                 {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && displayedStudents.length === 0 && (
                     <div className="empty-state">
-                        <i className="fas fa-user-graduate"></i>
+                        <span className="jiu-jitsu-icon" aria-hidden="true"></span>
                         <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : (mode === "Professor" && !professorHasQuery ? "Faça uma consulta" : "Nenhum aluno encontrado")}</strong>
                         <span>{mode === "Professor" ? "Digite um nome ou escolha uma categoria para exibir os alunos." : "Confira o nome e a data de nascimento usados no acesso."}</span>
                     </div>
                 )}
 
-                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && displayedStudents.map(s => {
+                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && displayedStudents.length > 0 && (
+                    <div className={useCompactStudentResults ? "student-results-grid" : ""}>
+                    {displayedStudents.map(s => {
                     const ruleInfo = getRuleInfo(s.nascimento, s.faixa, s.categoriaOverride);
                     const rules = ruleInfo.aulasPorGrau;
                     const presenceDegreeStates = rules > 0 ? getPresenceDegreeStates(s.aulas, rules, s.presenceDegrees) : [0, 0, 0, 0];
@@ -1935,28 +1963,27 @@
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
                     const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
                     const currentCycleClasses = rules > 0 ? getCurrentCycleClasses(s.aulas, rules) : 0;
-                    const showCompactSearchCard = mode === "Professor" && searchTerm.trim().length > 0 && expandedSearchStudentId !== s.id;
+                    const showCompactStudentCard = useCompactStudentResults && expandedSearchStudentId !== s.id;
 
-                    if (showCompactSearchCard) {
+                    if (showCompactStudentCard) {
                         return (
                             <div key={s.id} className="student-compact-card" onClick={() => setExpandedSearchStudentId(s.id)}>
                                 <img src={s.avatar || defaultAvatar} className="student-compact-avatar" />
                                 <div className="student-compact-main">
                                     <strong>{s.nome}</strong>
-                                    <span>{calculateAge(s.nascimento)} anos â€¢ {getAutoCategory(s.nascimento, s.categoriaOverride)} â€¢ {s.faixa}</span>
+                                    <span>{calculateAge(s.nascimento)} anos - {getAutoCategory(s.nascimento, s.categoriaOverride)} - {s.faixa}</span>
                                     <div className="student-compact-meta">
                                         <b>{s.status || "Ativo"}</b>
                                         {ruleInfo.elegivel && <b>{progresso.percentual}% concluido</b>}
                                         {s.ultimaPresenca && <b>{formatDateBR(s.ultimaPresenca)}</b>}
                                     </div>
                                 </div>
-                                <div className="student-compact-action">Abrir</div>
                             </div>
                         );
                     }
 
                     return (
-                        <div key={s.id} className={`card ${mode === "Pais" ? "parent-card" : ""}`}>
+                        <div key={s.id} className={`card ${mode === "Pais" ? "parent-card" : ""} ${useCompactStudentResults ? "expanded-result-card" : ""}`}>
                             <div className="student-top">
                                 <div className="avatar-container">
                                     <img src={s.avatar || defaultAvatar} className="avatar" />
@@ -2070,7 +2097,7 @@
                                                         {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
                                                         {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
                                                         {m.text && <div>{m.text}</div>}
-                                                        <div className="msg-meta">{m.time}</div>
+                                                        <div className="msg-meta">{getMessageMeta(m)}</div>
                                                     </div>
                                                 </div>
                                             ))}
@@ -2156,7 +2183,7 @@
                                                         {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
                                                         {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
                                                         {m.text && <div>{m.text}</div>}
-                                                        <div className="msg-meta">{m.time}</div>
+                                                        <div className="msg-meta">{getMessageMeta(m)}</div>
                                                     </div>
                                                 </div>
                                             ))}
@@ -2173,7 +2200,9 @@
                             )}
                         </div>
                     );
-                })}
+                    })}
+                    </div>
+                )}
 
                 {mode !== "Pais" && mode === "Professor" && professorView === "alunos" && <div className="action-bar">
                     {mode === "Professor" ? (
