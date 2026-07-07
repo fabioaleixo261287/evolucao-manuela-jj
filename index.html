@@ -346,9 +346,6 @@
         .sync-banner.error { background: #321818; color: #ff9d9d; border-color: #743333; }
         .empty-state { max-width: 1060px; margin: 28px auto; min-height: 240px; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; color: #8d8d8d; padding: 34px; background: linear-gradient(135deg, rgba(31,31,31,0.92), rgba(13,13,13,0.92)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 18px 42px rgba(0,0,0,0.28); }
         .empty-state i { width: 62px; height: 62px; border-radius: 18px; display: grid; place-items: center; font-size: 28px; color: #fff; background: #242424; border: 1px solid #343434; }
-        .jiu-jitsu-icon { width: 62px; height: 62px; border-radius: 18px; display: grid; place-items: center; background: #242424; border: 1px solid #343434; position: relative; box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
-        .jiu-jitsu-icon::before { content: ""; width: 34px; height: 28px; border: 5px solid #fff; border-top: 0; border-radius: 3px 3px 12px 12px; transform: translateY(6px); clip-path: polygon(0 0, 34% 0, 50% 38%, 66% 0, 100% 0, 100% 100%, 0 100%); }
-        .jiu-jitsu-icon::after { content: ""; position: absolute; width: 38px; height: 7px; background: linear-gradient(90deg, var(--alliance-red) 0 27%, #fff 27% 73%, var(--alliance-red) 73%); border-radius: 999px; left: 12px; bottom: 18px; box-shadow: 0 0 0 1px rgba(0,0,0,0.18); }
         .empty-state strong { color: #fff; font-size: 20px; }
         .empty-state span { max-width: 360px; font-size: 13px; line-height: 1.5; }
 
@@ -1459,6 +1456,7 @@
         const professorHasQuery = searchTerm.trim().length > 0 || filterGroup !== "Todos";
         const displayedStudents = mode === "Professor" ? (professorHasQuery ? filtered : []) : filtered;
         const useCompactStudentResults = mode === "Professor" && professorHasQuery;
+        const renderedStudents = expandedSearchStudentId ? displayedStudents.filter(s => s.id === expandedSearchStudentId) : displayedStudents;
         const allConversationStudents = students
             .map(s => {
                 const chat = s.chat || [];
@@ -1944,17 +1942,17 @@
                     </section>
                 )}
 
-                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && displayedStudents.length === 0 && (
+                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && renderedStudents.length === 0 && (
                     <div className="empty-state">
-                        <span className="jiu-jitsu-icon" aria-hidden="true"></span>
+                        <i className="fas fa-medal"></i>
                         <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : (mode === "Professor" && !professorHasQuery ? "Faça uma consulta" : "Nenhum aluno encontrado")}</strong>
                         <span>{mode === "Professor" ? "Digite um nome ou escolha uma categoria para exibir os alunos." : "Confira o nome e a data de nascimento usados no acesso."}</span>
                     </div>
                 )}
 
-                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && displayedStudents.length > 0 && (
+                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && renderedStudents.length > 0 && (
                     <div className={useCompactStudentResults ? "student-results-grid" : ""}>
-                    {displayedStudents.map(s => {
+                    {renderedStudents.map(s => {
                     const ruleInfo = getRuleInfo(s.nascimento, s.faixa, s.categoriaOverride);
                     const rules = ruleInfo.aulasPorGrau;
                     const presenceDegreeStates = rules > 0 ? getPresenceDegreeStates(s.aulas, rules, s.presenceDegrees) : [0, 0, 0, 0];
