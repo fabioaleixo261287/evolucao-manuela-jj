@@ -196,6 +196,7 @@
         .conversation-item.unread { background: #102016; }
         .conversation-item.unread .conversation-name { color: #fff; }
         .conversation-item.unread .conversation-last { color: #dfffe9; font-weight: 800; }
+        .conversation-pending-label { color: var(--whatsapp-green); font-size: 9px; font-weight: 900; text-transform: uppercase; margin-top: 4px; display: flex; align-items: center; gap: 5px; }
         .conversation-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #222; border: 1px solid #333; flex-shrink: 0; }
         .conversation-main { min-width: 0; flex: 1; }
         .conversation-name { color: #fff; font-size: 13px; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -238,10 +239,25 @@
         .dashboard-panel-title { padding: 14px 16px; border-bottom: 1px solid #2a2a2a; color: #fff; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .dashboard-list { padding: 8px 14px 14px; }
         .dashboard-row { display: grid; grid-template-columns: minmax(95px, 1fr) minmax(120px, 2fr) auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #252525; color: #ddd; font-size: 12px; font-weight: 800; }
+        .dashboard-row.clickable { cursor: pointer; border-radius: 10px; padding-left: 8px; padding-right: 8px; transition: 0.2s; }
+        .dashboard-row.clickable:hover { background: #202020; color: #fff; }
         .dashboard-row:last-child { border-bottom: 0; }
         .dashboard-bar { height: 8px; background: #272727; border-radius: 999px; overflow: hidden; }
         .dashboard-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--alliance-green), #f1c40f); border-radius: 999px; }
         .dashboard-note { color: #777; padding: 18px; text-align: center; font-size: 12px; font-weight: 800; }
+        .pending-message-alert { max-width: 1180px; margin: -6px auto 16px; border: 1px solid rgba(37,211,102,0.35); background: linear-gradient(135deg, rgba(37,211,102,0.18), rgba(18,18,18,0.96)); color: #dfffe9; border-radius: 18px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
+        .pending-message-alert strong { color: #fff; display: block; font-size: 14px; }
+        .pending-message-alert span { color: #b8ffd5; font-size: 12px; font-weight: 800; }
+        .pending-message-alert button { width: auto; margin: 0; border: 1px solid rgba(37,211,102,0.38); background: var(--whatsapp-green); color: #fff; border-radius: 999px; padding: 10px 14px; font-size: 11px; font-weight: 900; cursor: pointer; white-space: nowrap; }
+        .student-compact-card { max-width: 1060px; margin: 0 auto 12px; background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 14px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.24); transition: 0.2s; }
+        .student-compact-card:hover { border-color: var(--alliance-red); background: #202020; transform: translateY(-1px); }
+        .student-compact-avatar { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid #333; background: #222; }
+        .student-compact-main { min-width: 0; }
+        .student-compact-main strong { color: #fff; display: block; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .student-compact-main span { display: block; color: #888; font-size: 11px; font-weight: 800; margin-top: 4px; }
+        .student-compact-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .student-compact-meta b { background: #242424; color: #ddd; border: 1px solid #333; border-radius: 999px; padding: 5px 9px; font-size: 10px; text-transform: uppercase; }
+        .student-compact-action { border: 1px solid #3a3a3a; background: #111; color: #fff; border-radius: 999px; padding: 9px 13px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
 
         .action-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(34, 34, 34, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 40px; display: flex; gap: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 1000; border: 1px solid #444; align-items: center; }
         .action-item { color: #fff; text-align: center; cursor: pointer; font-size: 22px; transition: 0.3s; opacity: 0.8; position: relative; min-width: 48px; }
@@ -343,6 +359,10 @@
             .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .summary-item { padding: 12px 8px; }
             .summary-item strong { font-size: 20px; }
+            .pending-message-alert { flex-direction: column; align-items: stretch; margin: 0 auto 14px; border-radius: 16px; }
+            .pending-message-alert button { width: 100%; }
+            .student-compact-card { grid-template-columns: auto 1fr; }
+            .student-compact-action { grid-column: 1 / -1; text-align: center; }
             .form-grid { grid-template-columns: 1fr; }
             .conversation-title { align-items: flex-start; }
             .conversation-title { grid-template-columns: 1fr; }
@@ -1005,6 +1025,7 @@
         const [searchTerm, setSearchTerm] = React.useState("");
         const [filterGroup, setFilterGroup] = React.useState("Todos");
         const [professorView, setProfessorView] = React.useState("alunos");
+        const [expandedSearchStudentId, setExpandedSearchStudentId] = React.useState(null);
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
         const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos" });
         const [selectedChatId, setSelectedChatId] = React.useState(null);
@@ -1423,6 +1444,16 @@
         const conversationStudents = allConversationStudents.filter(s => s.nome.toLowerCase().includes(conversationSearch.toLowerCase()));
         const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || null;
         const totalUnreadProfessor = allConversationStudents.reduce((total, s) => total + s.unread, 0);
+        const openDashboardStudents = (filters = {}) => {
+            setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", ...filters });
+            setDashboardDetail("alunos");
+        };
+        const openStudentFromDashboard = (studentName) => {
+            setProfessorView("alunos");
+            setSearchTerm(studentName);
+            setFilterGroup("Todos");
+            setExpandedSearchStudentId(null);
+        };
         const today = new Date();
         const dashboardStudents = students.filter(s => {
             const group = getAutoCategory(s.nascimento, s.categoriaOverride);
@@ -1475,6 +1506,7 @@
         const imageAuthPending = dashboardStudents.filter(s => !s.autorizacaoImagem).length;
         const averageProgress = studentsWithProgress.length ? Math.round(studentsWithProgress.reduce((total, s) => total + (s.progresso.percentual || 0), 0) / studentsWithProgress.length) : 0;
         const totalUnreadDashboard = studentsWithProgress.reduce((total, s) => total + s.unread, 0);
+        const unreadConversationCount = studentsWithProgress.filter(s => s.unread > 0).length;
         const topUnread = studentsWithProgress
             .filter(s => s.unread > 0)
             .sort((a, b) => b.unread - a.unread)
@@ -1487,7 +1519,7 @@
                     id: s.id,
                     name: s.nome,
                     meta: `${calculateAge(s.nascimento)} anos • ${getAutoCategory(s.nascimento, s.categoriaOverride)} • ${s.status || "Ativo"}`,
-                    action: () => { setProfessorView("alunos"); setSearchTerm(s.nome); setFilterGroup("Todos"); }
+                    action: () => openStudentFromDashboard(s.nome)
                 }))
             },
             prontos: {
@@ -1497,7 +1529,7 @@
                     id: s.id,
                     name: s.nome,
                     meta: `${s.faixa} • ${getAutoCategory(s.nascimento, s.categoriaOverride)} • pronto para avaliar`,
-                    action: () => { setProfessorView("alunos"); setSearchTerm(s.nome); setFilterGroup("Todos"); }
+                    action: () => openStudentFromDashboard(s.nome)
                 }))
             },
             mensagens: {
@@ -1507,7 +1539,7 @@
                     id: s.id,
                     name: s.nome,
                     meta: `${s.unread} mensagem${s.unread === 1 ? "" : "s"} sem leitura`,
-                    action: () => openProfessorConversation(s.id),
+                    action: () => { setProfessorView("conversas"); openProfessorConversation(s.id); },
                     actionLabel: "Abrir"
                 }))
             },
@@ -1521,7 +1553,7 @@
                         id: s.id,
                         name: s.nome,
                         meta: `${s.progresso.percentual}% concluido • ${s.progresso.faltantes} aulas faltam`,
-                        action: () => { setProfessorView("alunos"); setSearchTerm(s.nome); setFilterGroup("Todos"); }
+                        action: () => openStudentFromDashboard(s.nome)
                     }))
             },
             presenca: {
@@ -1537,7 +1569,7 @@
                     id: s.id,
                     name: s.nome,
                     meta: s.ultimaPresenca ? `Ultima presenca: ${formatDateBR(s.ultimaPresenca)}` : "Sem presenca registrada",
-                    action: () => { setProfessorView("alunos"); setSearchTerm(s.nome); setFilterGroup("Todos"); }
+                    action: () => openStudentFromDashboard(s.nome)
                 }))
             },
             cadastro: {
@@ -1638,6 +1670,15 @@
                 </header>
 
                 {storageWarning && <div className="warning-banner">{storageWarning}</div>}
+                {mode === "Professor" && totalUnreadProfessor > 0 && professorView !== "conversas" && (
+                    <div className="pending-message-alert">
+                        <div>
+                            <strong><i className="fas fa-bell"></i> Mensagens pendentes de leitura</strong>
+                            <span>{totalUnreadProfessor} mensagem{totalUnreadProfessor === 1 ? "" : "s"} aguardando visualizaÃ§Ã£o em {unreadConversationCount} conversa{unreadConversationCount === 1 ? "" : "s"}.</span>
+                        </div>
+                        <button onClick={() => setProfessorView("conversas")}><i className="fab fa-whatsapp"></i> Ver mensagens</button>
+                    </div>
+                )}
 
                 {mode === "Professor" && (
                     <>
@@ -1660,12 +1701,13 @@
                                         onChange={e => {
                                             setFilterGroup("Todos");
                                             setSearchTerm(e.target.value);
+                                            setExpandedSearchStudentId(null);
                                         }}
                                     />
                                 </div>
                                 <div className="filter-bar">
                                     {groups.map(g => (
-                                        <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => setFilterGroup(g)}>{g}</button>
+                                        <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => { setSearchTerm(""); setExpandedSearchStudentId(null); setFilterGroup(g); }}>{g}</button>
                                     ))}
                                 </div>
                             </div>
@@ -1711,7 +1753,7 @@
                         </div>
 
                         <div className="dashboard-grid">
-                            <div className="dashboard-card" onClick={() => { setProfessorView("alunos"); setSearchTerm(""); setFilterGroup("Todos"); }}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "alunos" ? "active" : ""}`} onClick={() => setDashboardDetail("alunos")}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => setDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{nearGraduation.length} acima de 75% de conclusao</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "mensagens" ? "active" : ""}`} onClick={() => setDashboardDetail("mensagens")}><strong>{totalUnreadDashboard}</strong><span>Mensagens pendentes</span><small>{topUnread.length} aluno{topUnread.length === 1 ? "" : "s"} com alerta de leitura</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => setDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolucao media</span><small>Baseado no progresso para a proxima faixa</small></div>
@@ -1749,7 +1791,7 @@
                                 <div className="dashboard-panel-title"><span>Distribuicao por turma</span><i className="fas fa-layer-group"></i></div>
                                 <div className="dashboard-list">
                                     {dashboardRows.categorias.map(row => (
-                                        <div className="dashboard-row" key={row.label}>
+                                        <div className="dashboard-row clickable" key={row.label} onClick={() => openDashboardStudents({ group: row.label })}>
                                             <span>{row.label}</span>
                                             <div className="dashboard-bar"><i style={{width: `${(row.value / maxCategory) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
@@ -1761,7 +1803,7 @@
                                 <div className="dashboard-panel-title"><span>Distribuicao por faixa</span><i className="fas fa-medal"></i></div>
                                 <div className="dashboard-list">
                                     {dashboardRows.faixas.length > 0 ? dashboardRows.faixas.map(row => (
-                                        <div className="dashboard-row" key={row.label}>
+                                        <div className="dashboard-row clickable" key={row.label} onClick={() => openDashboardStudents({ faixa: row.label })}>
                                             <span>{row.label}</span>
                                             <div className="dashboard-bar"><i style={{width: `${(row.value / maxBelt) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
@@ -1773,7 +1815,7 @@
                                 <div className="dashboard-panel-title"><span>Status dos alunos</span><i className="fas fa-toggle-on"></i></div>
                                 <div className="dashboard-list">
                                     {dashboardRows.status.length > 0 ? dashboardRows.status.map(row => (
-                                        <div className="dashboard-row" key={row.label}>
+                                        <div className="dashboard-row clickable" key={row.label} onClick={() => openDashboardStudents({ status: row.label })}>
                                             <span>{row.label}</span>
                                             <div className="dashboard-bar"><i style={{width: `${(row.value / maxStatus) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
@@ -1785,14 +1827,14 @@
                                 <div className="dashboard-panel-title"><span>Prioridades de atendimento</span><i className="fas fa-bell"></i></div>
                                 <div className="dashboard-list">
                                     {topUnread.length > 0 && topUnread.map(s => (
-                                        <div className="dashboard-row" key={`msg-${s.id}`}>
+                                        <div className="dashboard-row clickable" key={`msg-${s.id}`} onClick={() => { setProfessorView("conversas"); openProfessorConversation(s.id); }}>
                                             <span>{s.nome}</span>
                                             <div className="dashboard-bar"><i style={{width: `${Math.min(100, s.unread * 25)}%`}}></i></div>
                                             <b>{s.unread} msg</b>
                                         </div>
                                     ))}
                                     {topUnread.length === 0 && nearGraduation.length > 0 && nearGraduation.map(s => (
-                                        <div className="dashboard-row" key={`grad-${s.id}`}>
+                                        <div className="dashboard-row clickable" key={`grad-${s.id}`} onClick={() => openStudentFromDashboard(s.nome)}>
                                             <span>{s.nome}</span>
                                             <div className="dashboard-bar"><i style={{width: `${s.progresso.percentual}%`}}></i></div>
                                             <b>{s.progresso.percentual}%</b>
@@ -1810,7 +1852,7 @@
                         <div className="conversation-title">
                             <div>
                                 <h3>Conversas</h3>
-                                <span>{allConversationStudents.length} alunos cadastrados</span>
+                                <span>{allConversationStudents.length} alunos cadastrados{totalUnreadProfessor > 0 ? ` â€¢ ${totalUnreadProfessor} pendente${totalUnreadProfessor === 1 ? "" : "s"} de leitura` : ""}</span>
                             </div>
                             <div className="conversation-actions">
                                 <button className="filter-btn" onClick={() => setProfessorView("alunos")}><i className="fas fa-arrow-left"></i> Voltar para alunos</button>
@@ -1832,6 +1874,7 @@
                                         <div className="conversation-main">
                                             <div className="conversation-name">{s.nome}</div>
                                             <div className="conversation-last">{lastText}</div>
+                                            {s.unread > 0 && <div className="conversation-pending-label"><i className="fas fa-bell"></i> Pendente de leitura</div>}
                                         </div>
                                         {s.unread > 0 && <div className="unread-dot">{s.unread}</div>}
                                     </div>
@@ -1892,6 +1935,25 @@
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
                     const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
                     const currentCycleClasses = rules > 0 ? getCurrentCycleClasses(s.aulas, rules) : 0;
+                    const showCompactSearchCard = mode === "Professor" && searchTerm.trim().length > 0 && expandedSearchStudentId !== s.id;
+
+                    if (showCompactSearchCard) {
+                        return (
+                            <div key={s.id} className="student-compact-card" onClick={() => setExpandedSearchStudentId(s.id)}>
+                                <img src={s.avatar || defaultAvatar} className="student-compact-avatar" />
+                                <div className="student-compact-main">
+                                    <strong>{s.nome}</strong>
+                                    <span>{calculateAge(s.nascimento)} anos â€¢ {getAutoCategory(s.nascimento, s.categoriaOverride)} â€¢ {s.faixa}</span>
+                                    <div className="student-compact-meta">
+                                        <b>{s.status || "Ativo"}</b>
+                                        {ruleInfo.elegivel && <b>{progresso.percentual}% concluido</b>}
+                                        {s.ultimaPresenca && <b>{formatDateBR(s.ultimaPresenca)}</b>}
+                                    </div>
+                                </div>
+                                <div className="student-compact-action">Abrir</div>
+                            </div>
+                        );
+                    }
 
                     return (
                         <div key={s.id} className={`card ${mode === "Pais" ? "parent-card" : ""}`}>
