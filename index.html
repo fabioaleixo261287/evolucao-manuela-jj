@@ -2245,7 +2245,7 @@
                     </div>
                 )}
 
-                {mode !== "Pais" && mode === "Professor" && professorView === "alunos" && <div className="action-bar">
+                {mode !== "Pais" && mode === "Professor" && professorView === "alunos" && !expandedSearchStudentId && <div className="action-bar">
                     {mode === "Professor" ? (
                         <>
                             <div className="action-item" onClick={() => { setProfessorView("alunos"); setModalOpen('add'); }}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
