@@ -11,8 +11,12 @@
         function loadSupabaseFallback() {
             document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\\/script>');
         }
+        function loadAppwriteFallback() {
+            document.write('<script src="https://unpkg.com/appwrite@17.0.0"><\\/script>');
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="loadSupabaseFallback()"></script>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0" onerror="loadAppwriteFallback()"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -810,7 +814,7 @@
     </style>
 </head>
 <body class="theme-dark">
-<div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando foto...</div>
+<div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando arquivo...</div>
 <div id="root"></div>
 
 <script type="text/babel">
@@ -824,6 +828,12 @@
     const LOCAL_REPO_KEY = "all_eagle_v22_r";
     const LOCAL_THEME_KEY = "all_eagle_v22_theme";
     const SUPABASE_STATE_ID = "alliance_mooca_kids_v22";
+    const APPWRITE_ROW_ID = SUPABASE_STATE_ID;
+    const APPWRITE_ENDPOINT = "https://nyc.cloud.appwrite.io/v1";
+    const APPWRITE_PROJECT_ID = "6a5ae8f4000c42f9f83e";
+    const APPWRITE_DATABASE_ID = "alliance_db";
+    const APPWRITE_TABLE_ID = "app_state";
+    const APPWRITE_BUCKET_ID = "alliance_files";
 
     // Preencha aqui se quiser deixar fixo no arquivo, ou defina window.SUPABASE_CONFIG antes deste script.
     const SUPABASE_URL = "https://oozzhujtyqsaxhkluxer.supabase.co";
@@ -843,7 +853,125 @@
         return window.supabase.createClient(url, anonKey);
     };
 
-    const compressImage = (base64Str, maxWidth = 800, quality = 0.6) => {
+    const getAppwriteConfig = () => {
+        const externalConfig = window.APPWRITE_CONFIG || {};
+        return {
+            endpoint: externalConfig.endpoint || APPWRITE_ENDPOINT,
+            projectId: externalConfig.projectId || APPWRITE_PROJECT_ID,
+            databaseId: externalConfig.databaseId || APPWRITE_DATABASE_ID,
+            tableId: externalConfig.tableId || APPWRITE_TABLE_ID,
+            bucketId: externalConfig.bucketId || APPWRITE_BUCKET_ID,
+            rowId: externalConfig.rowId || APPWRITE_ROW_ID
+        };
+    };
+
+    const createAppwriteServices = () => {
+        const config = getAppwriteConfig();
+        if (!config.endpoint || !config.projectId || !window.Appwrite?.Client) return null;
+        const client = new window.Appwrite.Client()
+            .setEndpoint(config.endpoint)
+            .setProject(config.projectId);
+        return {
+            config,
+            client,
+            storage: window.Appwrite.Storage ? new window.Appwrite.Storage(client) : null,
+            ID: window.Appwrite.ID
+        };
+    };
+
+    const parseRemoteJson = (value, fallback) => {
+        if (Array.isArray(value)) return value;
+        if (!value) return fallback;
+        try {
+            const parsed = JSON.parse(value);
+            return Array.isArray(parsed) ? parsed : fallback;
+        } catch (e) {
+            return fallback;
+        }
+    };
+
+    const appwriteFetch = async (config, path, options = {}) => {
+        const response = await fetch(`${config.endpoint}${path}`, {
+            ...options,
+            headers: {
+                "Content-Type": "application/json",
+                "X-Appwrite-Project": config.projectId,
+                "X-Appwrite-Response-Format": "1.8.0",
+                ...(options.headers || {})
+            }
+        });
+        if (!response.ok) {
+            const detail = await response.json().catch(() => ({}));
+            const err = new Error(detail.message || `Appwrite HTTP ${response.status}`);
+            err.status = response.status;
+            err.detail = detail;
+            throw err;
+        }
+        return response.status === 204 ? null : response.json();
+    };
+
+    const getAppwriteState = (config) => {
+        return appwriteFetch(config, `/tablesdb/${config.databaseId}/tables/${config.tableId}/rows/${config.rowId}`);
+    };
+
+    const saveAppwriteState = async (config, students, repo, updatedAt) => {
+        const data = {
+            students: JSON.stringify(students),
+            repo: JSON.stringify(repo),
+            updated_at: updatedAt
+        };
+        try {
+            return await appwriteFetch(config, `/tablesdb/${config.databaseId}/tables/${config.tableId}/rows/${config.rowId}`, {
+                method: "PATCH",
+                body: JSON.stringify({ data })
+            });
+        } catch (err) {
+            if (err.status !== 404) throw err;
+            return appwriteFetch(config, `/tablesdb/${config.databaseId}/tables/${config.tableId}/rows`, {
+                method: "POST",
+                body: JSON.stringify({
+                    rowId: config.rowId,
+                    data,
+                    permissions: ['read("any")', 'update("any")', 'delete("any")']
+                })
+            });
+        }
+    };
+
+    const FILE_LIMITS = {
+        avatar: 350 * 1024,
+        chatImage: 650 * 1024,
+        repoImage: 900 * 1024,
+        genericFile: 1200 * 1024
+    };
+
+    const getBase64Bytes = (dataUrl = "") => {
+        const base64 = String(dataUrl).split(",")[1] || "";
+        return Math.ceil((base64.length * 3) / 4);
+    };
+
+    const formatBytes = (bytes) => {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+        return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    };
+
+    const dataUrlToFile = (dataUrl, fileName) => {
+        const [meta, base64] = String(dataUrl).split(",");
+        const mime = meta.match(/data:(.*?);base64/)?.[1] || "application/octet-stream";
+        const binary = atob(base64 || "");
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return new File([bytes], fileName, { type: mime });
+    };
+
+    const buildStorageFileName = (file, type) => {
+        const safeName = (file?.name || "arquivo").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9._-]/g, "_");
+        const prefix = type === "avatar" ? "avatar" : type === "chat" ? "chat" : "repo";
+        return `${prefix}_${Date.now()}_${safeName}`;
+    };
+
+    const compressImage = (base64Str, maxWidth = 900, quality = 0.58) => {
         return new Promise((resolve) => {
             const img = new Image();
             img.src = base64Str;
@@ -1056,6 +1184,7 @@
         const [mode, setMode] = React.useState(null); 
         const [subMode, setSubMode] = React.useState(null);
         const [auth, setAuth] = React.useState({ user: '', pass: '' });
+        const appwriteServices = React.useMemo(() => createAppwriteServices(), []);
         const supabaseClient = React.useMemo(() => createSupabaseClient(), []);
         
         const [students, setStudents] = React.useState(() => {
@@ -1085,7 +1214,7 @@
         const [editingStudent, setEditingStudent] = React.useState(null);
         const [storageWarning, setStorageWarning] = React.useState("");
         const [isHydrated, setIsHydrated] = React.useState(false);
-        const [dbStatus, setDbStatus] = React.useState(supabaseClient ? "Conectando ao Supabase..." : "Supabase não configurado");
+        const [dbStatus, setDbStatus] = React.useState(appwriteServices ? "Conectando ao Appwrite..." : (supabaseClient ? "Conectando ao Supabase..." : "Banco não configurado"));
         const applyingRemoteRef = React.useRef(false);
         const pendingLocalSaveRef = React.useRef(false);
         const lastLocalChangeRef = React.useRef(0);
@@ -1117,6 +1246,54 @@
 
         React.useEffect(() => {
             const loadRemoteData = async () => {
+                if (appwriteServices) {
+                    try {
+                        const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
+                        const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
+                        let data = null;
+
+                        try {
+                            data = await getAppwriteState(appwriteServices.config);
+                        } catch (err) {
+                            if (err.status !== 404) throw err;
+                        }
+
+                        if (data) {
+                            const remoteStudents = parseRemoteJson(data.students, []);
+                            const remoteRepo = parseRemoteJson(data.repo, []);
+                            const remoteIsEmpty = remoteStudents.length === 0 && remoteRepo.length === 0;
+                            const localHasData = localStudents.length > 0 || localRepo.length > 0;
+
+                            if (remoteIsEmpty && localHasData) {
+                                const updatedAt = new Date().toISOString();
+                                await saveAppwriteState(appwriteServices.config, localStudents, localRepo, updatedAt);
+                                lastSavedAtRef.current = updatedAt;
+                                applyingRemoteRef.current = true;
+                                setStudents(localStudents);
+                                setRepo(localRepo);
+                                setDbStatus("Base local enviada ao Appwrite");
+                            } else {
+                                lastSavedAtRef.current = data.updated_at || data.$updatedAt || "";
+                                applyingRemoteRef.current = true;
+                                setStudents(remoteStudents);
+                                setRepo(remoteRepo);
+                                setDbStatus("Sincronizado com Appwrite");
+                            }
+                        } else {
+                            const updatedAt = new Date().toISOString();
+                            await saveAppwriteState(appwriteServices.config, localStudents, localRepo, updatedAt);
+                            lastSavedAtRef.current = updatedAt;
+                            setDbStatus("Dados locais enviados ao Appwrite");
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        setDbStatus("Erro ao conectar Appwrite. Usando dados locais.");
+                    } finally {
+                        setIsHydrated(true);
+                    }
+                    return;
+                }
+
                 if (!supabaseClient) {
                     setIsHydrated(true);
                     return;
@@ -1179,7 +1356,7 @@
             };
 
             loadRemoteData();
-        }, [supabaseClient]);
+        }, [appwriteServices, supabaseClient]);
 
         React.useEffect(() => { 
             if (!isHydrated) return;
@@ -1198,6 +1375,24 @@
 
             pendingLocalSaveRef.current = true;
             lastLocalChangeRef.current = Date.now();
+            if (appwriteServices) {
+                const syncTimer = setTimeout(async () => {
+                    try {
+                        const updatedAt = new Date().toISOString();
+                        await saveAppwriteState(appwriteServices.config, students, repo, updatedAt);
+                        lastSavedAtRef.current = updatedAt;
+                        pendingLocalSaveRef.current = false;
+                        setDbStatus("Sincronizado com Appwrite");
+                    } catch (err) {
+                        console.error(err);
+                        pendingLocalSaveRef.current = false;
+                        setDbStatus("Erro ao salvar no Appwrite");
+                    }
+                }, 1200);
+
+                return () => clearTimeout(syncTimer);
+            }
+
             if (!supabaseClient) return;
             const syncTimer = setTimeout(async () => {
                 try {
@@ -1217,15 +1412,48 @@
                     pendingLocalSaveRef.current = false;
                     setDbStatus("Erro ao salvar no Supabase");
                 }
-            }, 600);
+            }, 1200);
 
             return () => clearTimeout(syncTimer);
-        }, [students, repo, isHydrated, supabaseClient]);
+        }, [students, repo, isHydrated, appwriteServices, supabaseClient]);
 
         React.useEffect(() => {
+            if (appwriteServices && isHydrated) {
+                const refreshTimer = setInterval(async () => {
+                    try {
+                        const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 8000;
+                        if (pendingLocalSaveRef.current || localChangeIsFresh) return;
+                        const data = await getAppwriteState(appwriteServices.config);
+                        const remoteUpdatedAt = data?.updated_at || data?.$updatedAt || "";
+                        if (!remoteUpdatedAt) return;
+                        if (lastSavedAtRef.current && new Date(remoteUpdatedAt) <= new Date(lastSavedAtRef.current)) return;
+                        lastSavedAtRef.current = remoteUpdatedAt;
+                        applyingRemoteRef.current = true;
+                        setStudents(parseRemoteJson(data.students, []));
+                        setRepo(parseRemoteJson(data.repo, []));
+                        setDbStatus("Sincronizado com Appwrite");
+                    } catch (err) {
+                        console.error(err);
+                        setDbStatus("Erro ao atualizar Appwrite");
+                    }
+                }, 60000);
+
+                return () => clearInterval(refreshTimer);
+            }
+
             if (!supabaseClient || !isHydrated) return;
             const refreshTimer = setInterval(async () => {
                 try {
+                    const { data: stampData, error: stampError } = await supabaseClient
+                        .from("app_state")
+                        .select("updated_at")
+                        .eq("id", SUPABASE_STATE_ID)
+                        .maybeSingle();
+                    if (stampError) throw stampError;
+                    if (!stampData?.updated_at) return;
+                    const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 8000;
+                    if (pendingLocalSaveRef.current || localChangeIsFresh) return;
+                    if (lastSavedAtRef.current && new Date(stampData.updated_at) <= new Date(lastSavedAtRef.current)) return;
                     const { data, error } = await supabaseClient
                         .from("app_state")
                         .select("students, repo, updated_at")
@@ -1233,9 +1461,6 @@
                         .maybeSingle();
                     if (error) throw error;
                     if (!data) return;
-                    const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 8000;
-                    if (pendingLocalSaveRef.current || localChangeIsFresh) return;
-                    if (data.updated_at && lastSavedAtRef.current && new Date(data.updated_at) < new Date(lastSavedAtRef.current)) return;
                     lastSavedAtRef.current = data.updated_at || lastSavedAtRef.current;
                     applyingRemoteRef.current = true;
                     setStudents(Array.isArray(data.students) ? data.students : []);
@@ -1245,10 +1470,10 @@
                     console.error(err);
                     setDbStatus("Erro ao atualizar Supabase");
                 }
-            }, 4000);
+            }, 30000);
 
             return () => clearInterval(refreshTimer);
-        }, [supabaseClient, isHydrated]);
+        }, [appwriteServices, supabaseClient, isHydrated]);
 
         const handleLogin = () => {
             if (subMode === 'Professor') {
@@ -1289,31 +1514,82 @@
             return message.date ? `${message.date} ${message.time || ""}`.trim() : (message.time || "");
         };
 
+        const uploadAppwriteFile = async (fileToUpload, type) => {
+            if (!appwriteServices?.storage || !appwriteServices?.ID?.unique) return null;
+            const result = await appwriteServices.storage.createFile({
+                bucketId: appwriteServices.config.bucketId,
+                fileId: appwriteServices.ID.unique(),
+                file: fileToUpload
+            });
+            const fileId = result?.$id;
+            if (!fileId) return null;
+            const fileUrl = appwriteServices.storage.getFileView({
+                bucketId: appwriteServices.config.bucketId,
+                fileId
+            }).toString();
+            return { fileId, fileUrl, type };
+        };
+
         const handleFile = async (file, type, id = null) => {
             if(!file) return;
             const isImage = file.type.startsWith('image/');
+            const genericLimit = type === "repo" ? FILE_LIMITS.genericFile : FILE_LIMITS.chatImage;
+            if (!isImage && file.size > genericLimit) {
+                alert(`Arquivo muito grande. Limite: ${formatBytes(genericLimit)}.`);
+                return;
+            }
             const reader = new FileReader();
             document.getElementById('compress-loader').style.display = 'block';
             reader.onload = async (e) => {
                 try {
                     let finalData = e.target.result;
-                    if (isImage) finalData = await compressImage(finalData);
+                    if (isImage) {
+                        const imageOptions = type === "avatar"
+                            ? { maxWidth: 420, quality: 0.5, limit: FILE_LIMITS.avatar }
+                            : type === "repo"
+                                ? { maxWidth: 1000, quality: 0.58, limit: FILE_LIMITS.repoImage }
+                                : { maxWidth: 820, quality: 0.55, limit: FILE_LIMITS.chatImage };
+                        finalData = await compressImage(finalData, imageOptions.maxWidth, imageOptions.quality);
+                        if (getBase64Bytes(finalData) > imageOptions.limit) {
+                            finalData = await compressImage(finalData, Math.round(imageOptions.maxWidth * 0.75), 0.45);
+                        }
+                        if (getBase64Bytes(finalData) > imageOptions.limit) {
+                            alert(`Imagem muito grande mesmo apos otimizar. Limite: ${formatBytes(imageOptions.limit)}.`);
+                            return;
+                        }
+                    } else if (getBase64Bytes(finalData) > genericLimit) {
+                        alert(`Arquivo muito grande. Limite: ${formatBytes(genericLimit)}.`);
+                        return;
+                    }
+
+                    let uploadedFile = null;
+                    try {
+                        const uploadFile = isImage
+                            ? dataUrlToFile(finalData, buildStorageFileName(file, type))
+                            : new File([file], buildStorageFileName(file, type), { type: file.type || "application/octet-stream" });
+                        uploadedFile = await uploadAppwriteFile(uploadFile, type);
+                    } catch (uploadErr) {
+                        console.warn("Falha ao enviar arquivo para o Appwrite Storage. Mantendo arquivo no JSON local.", uploadErr);
+                    }
                     
                     if (type === 'avatar') {
-                        setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: finalData } : s));
+                        setStudents(prev => prev.map(s => s.id === id ? { ...s, avatar: uploadedFile?.fileUrl || finalData, avatarFileId: uploadedFile?.fileId || s.avatarFileId } : s));
                     } else if (type === 'chat') {
                         const timestamp = createMessageTimestamp();
                         const msgAnexo = { 
                             id: Date.now(), sender: mode, author: mode === "Professor" ? "Professor" : "PAIS",
-                            text: isImage ? "" : `📎 Arquivo: ${file.name}`, fileData: finalData, 
+                            text: isImage ? "" : `Arquivo: ${file.name}`,
+                            fileData: uploadedFile ? "" : finalData,
                             fileName: file.name, isImage: isImage,
+                            fileUrl: uploadedFile?.fileUrl || "",
+                            fileId: uploadedFile?.fileId || "",
                             date: timestamp.date,
                             time: timestamp.time,
                             readBy: [mode] 
                         };
                         setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
                     } else if (type === 'repo') {
-                        const newItem = { id: Date.now(), name: file.name, data: finalData, date: new Date().toLocaleDateString('pt-BR') };
+                        const newItem = { id: Date.now(), name: file.name, data: uploadedFile ? "" : finalData, fileUrl: uploadedFile?.fileUrl || "", fileId: uploadedFile?.fileId || "", date: new Date().toLocaleDateString('pt-BR') };
                         setRepo(prev => [...prev, newItem]);
                     }
                 } catch (err) {
@@ -1352,7 +1628,7 @@
                         const log = [`Aula ${novaAula} | ${new Date().toLocaleDateString('pt-BR')}`];
                         if (novaAula % rules === 0) {
                             const n = novaAula / rules;
-                            log.push(n <= 4 ? `🎓 GRAU DE PRESENÇA BRANCO (${n}º)` : `🔴 GRAU DE PRESENÇA VERMELHO (${n-4}º)`);
+                            log.push(n <= 4 ? `🎓 GRAU DE PRESENÇA BRANCO (${n}º)` : `GRAU DE PRESENÇA VERMELHO (${n-4}º)`);
                         }
                         const { presenceDegrees, ...rest } = s;
                         return { ...rest, aulas: novaAula, ultimaPresenca: hojeIso, historico: [...(s.historico || []), ...log] };
@@ -1365,7 +1641,7 @@
 
         const toggleMerito = (sid, key, label) => {
             if(mode !== "Professor") return;
-            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'✅':'❌'} ${label}`] } : s));
+            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'âœ…':'❌'} ${label}`] } : s));
         };
 
         const toggleGrauPresenca = (sid, degreeIndex) => {
@@ -1392,7 +1668,7 @@
                 if (currentState === 0) {
                     nextState = 1;
                     nextDirection = "up";
-                    log = `✅ Grau de presença branco adicionado (${degreeIndex + 1}) | ${hoje}`;
+                    log = `âœ… Grau de presença branco adicionado (${degreeIndex + 1}) | ${hoje}`;
                 } else if (currentState === 1) {
                     if (direction === "down") {
                         nextState = 0;
@@ -1401,12 +1677,12 @@
                     } else {
                         nextState = 2;
                         nextDirection = "down";
-                        log = `🔴 Grau de presença vermelho adicionado (${degreeIndex + 1}) | ${hoje}`;
+                        log = `Grau de presença vermelho adicionado (${degreeIndex + 1}) | ${hoje}`;
                     }
                 } else {
                     nextState = 1;
                     nextDirection = "down";
-                    log = `↩️ Grau de presença voltou para branco (${degreeIndex + 1}) | ${hoje}`;
+                    log = `â†©ï¸ Grau de presença voltou para branco (${degreeIndex + 1}) | ${hoje}`;
                 }
 
                 const nextStates = states.map((state, i) => i === degreeIndex ? nextState : state);
@@ -1757,7 +2033,7 @@
                     <div className="pending-message-alert">
                         <div>
                             <strong><i className="fas fa-bell"></i> Mensagens pendentes de leitura</strong>
-                            <span>{totalUnreadProfessor} mensagem{totalUnreadProfessor === 1 ? "" : "s"} aguardando visualizaÃ§Ã£o em {unreadConversationCount} conversa{unreadConversationCount === 1 ? "" : "s"}.</span>
+                            <span>{totalUnreadProfessor} mensagem{totalUnreadProfessor === 1 ? "" : "s"} aguardando visualização em {unreadConversationCount} conversa{unreadConversationCount === 1 ? "" : "s"}.</span>
                         </div>
                         <button onClick={() => setProfessorView("conversas")}><i className="fab fa-whatsapp"></i> Ver mensagens</button>
                     </div>
@@ -1954,7 +2230,7 @@
                         <div className="conversation-title">
                             <div>
                                 <h3>Conversas</h3>
-                                <span>{allConversationStudents.length} alunos cadastrados{totalUnreadProfessor > 0 ? ` â€¢ ${totalUnreadProfessor} pendente${totalUnreadProfessor === 1 ? "" : "s"} de leitura` : ""}</span>
+                                <span>{allConversationStudents.length} alunos cadastrados{totalUnreadProfessor > 0 ? ` • ${totalUnreadProfessor} pendente${totalUnreadProfessor === 1 ? "" : "s"} de leitura` : ""}</span>
                             </div>
                             <div className="conversation-actions">
                                 <button className="filter-btn" onClick={() => setProfessorView("alunos")}><i className="fas fa-arrow-left"></i> Voltar para alunos</button>
@@ -1998,8 +2274,8 @@
                                             <div key={m.id} className={`msg-wrapper ${m.sender === "Professor" ? 'self' : 'other'}`}>
                                                 <span className="msg-author">{m.author}</span>
                                                 <div className="msg-bubble">
-                                                    {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
-                                                    {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
+                                                    {m.isImage && (m.fileUrl || m.fileData) && <img src={m.fileUrl || m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
+                                                    {!m.isImage && (m.fileUrl || m.fileData) && <a href={m.fileUrl || m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
                                                     {m.text && <div>{m.text}</div>}
                                                     <div className="msg-meta">{getMessageMeta(m)}</div>
                                                 </div>
@@ -2175,8 +2451,8 @@
                                                 <div key={m.id} className={`msg-wrapper ${m.sender === mode ? 'self' : 'other'}`}>
                                                     <span className="msg-author">{m.author}</span>
                                                     <div className="msg-bubble">
-                                                        {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
-                                                        {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
+                                                        {m.isImage && (m.fileUrl || m.fileData) && <img src={m.fileUrl || m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
+                                                        {!m.isImage && (m.fileUrl || m.fileData) && <a href={m.fileUrl || m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
                                                         {m.text && <div>{m.text}</div>}
                                                         <div className="msg-meta">{getMessageMeta(m)}</div>
                                                     </div>
@@ -2261,8 +2537,8 @@
                                                 <div key={m.id} className={`msg-wrapper ${m.sender === mode ? 'self' : 'other'}`}>
                                                     <span className="msg-author">{m.author}</span>
                                                     <div className="msg-bubble">
-                                                        {m.isImage && <img src={m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
-                                                        {!m.isImage && m.fileData && <a href={m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
+                                                        {m.isImage && (m.fileUrl || m.fileData) && <img src={m.fileUrl || m.fileData} className="chat-img-preview" onClick={() => setViewImage(m)} />}
+                                                        {!m.isImage && (m.fileUrl || m.fileData) && <a href={m.fileUrl || m.fileData} download={m.fileName} style={{color:'#3498db', textDecoration:'none'}}><i className="fas fa-file-download"></i> {m.fileName}</a>}
                                                         {m.text && <div>{m.text}</div>}
                                                         <div className="msg-meta">{getMessageMeta(m)}</div>
                                                     </div>
@@ -2313,7 +2589,7 @@
                         <div className="modal-content">
                             <h3>Gestão de Dados</h3>
                             <div className="data-status-card">
-                                <span><i className={`fas ${supabaseClient && !dbStatus.includes("Erro") ? "fa-database" : "fa-exclamation-triangle"}`}></i> Banco</span>
+                                <span><i className={`fas ${(appwriteServices || supabaseClient) && !dbStatus.includes("Erro") ? "fa-database" : "fa-exclamation-triangle"}`}></i> Banco</span>
                                 <strong>{dbStatus}{!isHydrated ? "..." : ""}</strong>
                             </div>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={downloadBackup}>
@@ -2405,7 +2681,7 @@
                                             <div style={{fontSize:'10px', color:'#555'}}>{r.date}</div>
                                         </div>
                                         <div style={{display:'flex', gap:'15px'}}>
-                                            <a href={r.data} download={r.name} style={{color:'#3498db'}}><i className="fas fa-download"></i></a>
+                                            <a href={r.fileUrl || r.data} download={r.name} style={{color:'#3498db'}}><i className="fas fa-download"></i></a>
                                             {mode === "Professor" && <i className="fas fa-trash" style={{color:'var(--alliance-red)', cursor:'pointer'}} onClick={() => confirm("Excluir arquivo?") && setRepo(repo.filter(x => x.id !== r.id))}></i>}
                                         </div>
                                     </div>
@@ -2493,7 +2769,7 @@
 
                 {viewImage && (
                     <div className="modal-overlay" onClick={() => setViewImage(null)}>
-                        <img src={viewImage.fileData} style={{maxWidth:'100%', maxHeight:'90vh', borderRadius:'10px'}} />
+                        <img src={viewImage.fileUrl || viewImage.fileData} style={{maxWidth:'100%', maxHeight:'90vh', borderRadius:'10px'}} />
                     </div>
                 )}
             </div>
