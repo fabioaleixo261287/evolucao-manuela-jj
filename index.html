@@ -897,7 +897,7 @@
             headers: {
                 "Content-Type": "application/json",
                 "X-Appwrite-Project": config.projectId,
-                "X-Appwrite-Response-Format": "1.8.0",
+                "X-Appwrite-Response-Format": "1.9.5",
                 ...(options.headers || {})
             }
         });
@@ -915,28 +915,25 @@
         return appwriteFetch(config, `/tablesdb/${config.databaseId}/tables/${config.tableId}/rows/${config.rowId}`);
     };
 
+    const getAppwriteErrorMessage = (err) => {
+        const message = err?.detail?.message || err?.message || "erro desconhecido";
+        const code = err?.status ? ` ${err.status}` : "";
+        return `Erro Appwrite${code}: ${message}`;
+    };
+
     const saveAppwriteState = async (config, students, repo, updatedAt) => {
         const data = {
             students: JSON.stringify(students),
             repo: JSON.stringify(repo),
             updated_at: updatedAt
         };
-        try {
-            return await appwriteFetch(config, `/tablesdb/${config.databaseId}/tables/${config.tableId}/rows/${config.rowId}`, {
-                method: "PATCH",
-                body: JSON.stringify({ data })
-            });
-        } catch (err) {
-            if (err.status !== 404) throw err;
-            return appwriteFetch(config, `/tablesdb/${config.databaseId}/tables/${config.tableId}/rows`, {
-                method: "POST",
-                body: JSON.stringify({
-                    rowId: config.rowId,
-                    data,
-                    permissions: ['read("any")', 'update("any")', 'delete("any")']
-                })
-            });
-        }
+        return appwriteFetch(config, `/tablesdb/${config.databaseId}/tables/${config.tableId}/rows/${config.rowId}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                data,
+                permissions: ['read("any")', 'update("any")', 'delete("any")']
+            })
+        });
     };
 
     const FILE_LIMITS = {
@@ -1288,7 +1285,7 @@
                         }
                     } catch (err) {
                         console.error(err);
-                        setDbStatus("Erro ao conectar Appwrite. Usando dados locais.");
+                        setDbStatus(getAppwriteErrorMessage(err));
                     } finally {
                         setIsHydrated(true);
                     }
@@ -1387,7 +1384,7 @@
                     } catch (err) {
                         console.error(err);
                         pendingLocalSaveRef.current = false;
-                        setDbStatus("Erro ao salvar no Appwrite");
+                        setDbStatus(getAppwriteErrorMessage(err));
                     }
                 }, 1200);
 
@@ -1435,7 +1432,7 @@
                         setDbStatus("Sincronizado com Appwrite");
                     } catch (err) {
                         console.error(err);
-                        setDbStatus("Erro ao atualizar Appwrite");
+                        setDbStatus(getAppwriteErrorMessage(err));
                     }
                 }, 60000);
 
