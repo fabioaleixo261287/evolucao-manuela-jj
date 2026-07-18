@@ -128,6 +128,8 @@
         .student-info-chip strong { display: block; color: #fff; font-size: 12px; margin-bottom: 3px; text-transform: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .status-badge { background: #27372f; color: #9ff0bd; border-color: #355f46; }
         .status-badge.inativo, .status-badge.pausado { background: #35221f; color: #ffad9f; border-color: #68413b; }
+        .student-chat-shortcut { border: 1px solid #343434; background: #151515; color: #ddd; border-radius: 14px; padding: 10px 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; margin-right: 6px; transition: 0.2s; }
+        .student-chat-shortcut:hover { border-color: var(--alliance-red); color: #fff; background: #202020; }
         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 14px; align-items: end; }
         .form-grid > div { min-width: 0; }
         .form-grid input, .form-grid select { margin: 0; }
@@ -331,9 +333,19 @@
         .btn-edit-info { color: #3498db; cursor: pointer; margin-left: 10px; font-size: 14px; }
         .summary-grid { max-width: 1060px; margin: 0 auto 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .summary-item { background: linear-gradient(180deg, #1f1f1f, #161616); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 18px; text-align: left; position: relative; overflow: hidden; box-shadow: 0 14px 34px rgba(0,0,0,0.26); }
+        .summary-item.clickable { cursor: pointer; transition: 0.2s; }
+        .summary-item.clickable:hover, .summary-item.active { border-color: var(--alliance-red); background: #202020; transform: translateY(-1px); }
         .summary-item::before { content: ""; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: var(--alliance-red); opacity: 0.9; }
         .summary-item strong { display: block; color: white; font-size: 30px; line-height: 1; }
         .summary-item span { display: block; color: #9b9b9b; font-size: 10px; font-weight: 900; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .summary-ready-list { max-width: 1060px; margin: -6px auto 16px; background: #151515; border: 1px solid #303030; border-radius: 18px; overflow: hidden; box-shadow: 0 12px 28px rgba(0,0,0,0.24); }
+        .summary-ready-head { padding: 12px 14px; border-bottom: 1px solid #2a2a2a; color: #fff; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+        .summary-ready-row { width: 100%; border: 0; border-bottom: 1px solid #252525; background: transparent; color: #fff; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 10px; text-align: left; cursor: pointer; font: inherit; }
+        .summary-ready-row:last-child { border-bottom: 0; }
+        .summary-ready-row:hover { background: #202020; }
+        .summary-ready-row strong { font-size: 13px; }
+        .summary-ready-row span, .summary-ready-empty { color: #888; font-size: 11px; font-weight: 800; }
+        .summary-ready-empty { padding: 14px; text-align: center; }
         .dashboard-panel { max-width: 850px; margin: 0 auto 18px; background: linear-gradient(135deg, #181818, #101010); border: 1px solid var(--border-color); border-radius: 20px; padding: 18px; box-shadow: 0 12px 28px rgba(0,0,0,0.35); }
         .dashboard-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 16px; }
         .dashboard-title { margin: 0; color: white; font-size: 18px; line-height: 1.2; }
@@ -1059,6 +1071,7 @@
         const [filterGroup, setFilterGroup] = React.useState("Todos");
         const [professorView, setProfessorView] = React.useState("alunos");
         const [expandedSearchStudentId, setExpandedSearchStudentId] = React.useState(null);
+        const [summaryDetail, setSummaryDetail] = React.useState(null);
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
         const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos" });
         const [selectedChatId, setSelectedChatId] = React.useState(null);
@@ -1510,10 +1523,12 @@
             setDashboardDetail("alunos");
         };
         const openStudentFromDashboard = (studentName) => {
+            const targetStudent = students.find(s => s.nome === studentName);
             setProfessorView("alunos");
             setSearchTerm(studentName);
             setFilterGroup("Todos");
-            setExpandedSearchStudentId(null);
+            setExpandedSearchStudentId(targetStudent?.id || null);
+            setSummaryDetail(null);
         };
         const today = new Date();
         const dashboardStudents = students.filter(s => {
@@ -1552,9 +1567,10 @@
             progresso: getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride),
             unread: s.chat?.filter(m => !(m.readBy || []).includes("Professor")).length || 0
         }));
-        const nearGraduation = studentsWithProgress
+        const examCandidates = studentsWithProgress
             .filter(s => s.progresso.elegivel && s.progresso.percentual >= 75)
-            .sort((a, b) => b.progresso.percentual - a.progresso.percentual)
+            .sort((a, b) => b.progresso.percentual - a.progresso.percentual);
+        const nearGraduation = examCandidates
             .slice(0, 5);
         const studentsWithoutRecentPresence = dashboardStudents.filter(s => {
             if (!s.ultimaPresenca) return true;
@@ -1585,11 +1601,11 @@
             },
             prontos: {
                 title: "Prontos para exame",
-                subtitle: "Alunos que atingiram as regras para graduacao",
-                rows: readyList.map(s => ({
+                subtitle: "Alunos acima de 75% de conclusao",
+                rows: examCandidates.map(s => ({
                     id: s.id,
                     name: s.nome,
-                    meta: `${s.faixa} • ${getAutoCategory(s.nascimento, s.categoriaOverride)} • pronto para avaliar`,
+                    meta: `${s.progresso.percentual}% concluido - faltam ${s.progresso.faltantes} aula${s.progresso.faltantes === 1 ? "" : "s"}`,
                     action: () => openStudentFromDashboard(s.nome)
                 }))
             },
@@ -1752,8 +1768,27 @@
                         {professorView === "alunos" && (
                             <div className="summary-grid">
                                 <div className="summary-item"><strong>{students.length}</strong><span>alunos</span></div>
-                                <div className="summary-item"><strong>{readyStudents}</strong><span>prontos</span></div>
+                                <div className={`summary-item clickable ${summaryDetail === "prontos" ? "active" : ""}`} onClick={() => setSummaryDetail(summaryDetail === "prontos" ? null : "prontos")}><strong>{readyStudents}</strong><span>prontos para exame</span></div>
                                 <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
+                            </div>
+                        )}
+                        {professorView === "alunos" && summaryDetail === "prontos" && (
+                            <div className="summary-ready-list">
+                                <div className="summary-ready-head">
+                                    <span>Alunos prontos para exame</span>
+                                    <small>{readyList.length}</small>
+                                </div>
+                                {readyList.length > 0 ? readyList.map(s => {
+                                    const progress = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
+                                    return (
+                                        <button key={s.id} className="summary-ready-row" onClick={() => openStudentFromDashboard(s.nome)}>
+                                            <strong>{s.nome}</strong>
+                                            <span>{progress.percentual}% - {s.faixa}</span>
+                                        </button>
+                                    );
+                                }) : (
+                                    <div className="summary-ready-empty">Nenhum aluno pronto no momento.</div>
+                                )}
                             </div>
                         )}
                         {professorView === "alunos" && (
@@ -1821,7 +1856,7 @@
 
                         <div className="dashboard-grid">
                             <div className={`dashboard-card ${dashboardDetail === "alunos" ? "active" : ""}`} onClick={() => setDashboardDetail("alunos")}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => setDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{nearGraduation.length} acima de 75% de conclusao</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => setDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusao</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "mensagens" ? "active" : ""}`} onClick={() => setDashboardDetail("mensagens")}><strong>{totalUnreadDashboard}</strong><span>Mensagens pendentes</span><small>{topUnread.length} aluno{topUnread.length === 1 ? "" : "s"} com alerta de leitura</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => setDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolucao media</span><small>Baseado no progresso para a proxima faixa</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => setDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presenca recente</span><small>Sem data ou ha 10 dias ou mais</small></div>
@@ -2044,6 +2079,11 @@
                                         <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
                                         <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); setFilterGroup("Todos"); setExpandedSearchStudentId(null); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                                     </div>
+                                )}
+                                {mode === "Professor" && (
+                                    <button className="student-chat-shortcut" onClick={() => { setProfessorView("conversas"); openProfessorConversation(s.id); }}>
+                                        <i className="fab fa-whatsapp"></i> Conversa
+                                    </button>
                                 )}
                                 {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
