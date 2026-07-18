@@ -12,11 +12,11 @@
             document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\\/script>');
         }
         function loadAppwriteFallback() {
-            document.write('<script src="https://unpkg.com/appwrite@17.0.0"><\\/script>');
+            document.write('<script src="https://unpkg.com/appwrite@17.0.0/dist/iife/sdk.js"><\\/script>');
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="loadSupabaseFallback()"></script>
-    <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0" onerror="loadAppwriteFallback()"></script>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0/dist/iife/sdk.js" onerror="loadAppwriteFallback()"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -867,15 +867,16 @@
 
     const createAppwriteServices = () => {
         const config = getAppwriteConfig();
-        if (!config.endpoint || !config.projectId || !window.Appwrite?.Client) return null;
-        const client = new window.Appwrite.Client()
-            .setEndpoint(config.endpoint)
-            .setProject(config.projectId);
+        if (!config.endpoint || !config.projectId || !config.databaseId || !config.tableId) return null;
+        const hasSdk = !!window.Appwrite?.Client;
+        const client = hasSdk
+            ? new window.Appwrite.Client().setEndpoint(config.endpoint).setProject(config.projectId)
+            : null;
         return {
             config,
             client,
-            storage: window.Appwrite.Storage ? new window.Appwrite.Storage(client) : null,
-            ID: window.Appwrite.ID
+            storage: client && window.Appwrite.Storage ? new window.Appwrite.Storage(client) : null,
+            ID: window.Appwrite?.ID || null
         };
     };
 
