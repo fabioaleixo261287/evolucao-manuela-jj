@@ -231,7 +231,7 @@
         .dashboard-hero { background: linear-gradient(135deg, rgba(52,152,219,0.18), rgba(46,204,113,0.08)), #181818; border: 1px solid #303030; border-radius: 24px; padding: 22px; margin-bottom: 16px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
         .dashboard-hero h3 { color: #fff; margin: 0; font-size: 24px; text-transform: uppercase; }
         .dashboard-hero p { color: #a0a0a0; margin: 7px 0 0; font-size: 13px; font-weight: 700; }
-        .dashboard-filters { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 12px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; align-items: end; }
+        .dashboard-filters { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 12px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; align-items: end; }
         .dashboard-filter label { color: #777; display: block; font-size: 10px; font-weight: 900; text-transform: uppercase; margin: 0 0 6px; }
         .dashboard-filter select { width: 100%; margin: 0; border-radius: 12px; padding: 11px 12px; font-size: 12px; background: #101010; border: 1px solid #333; color: #fff; outline: none; }
         .dashboard-filter select:focus { border-color: var(--alliance-red); box-shadow: 0 0 0 3px rgba(52,152,219,0.14); }
@@ -264,6 +264,25 @@
         .dashboard-bar { height: 8px; background: #272727; border-radius: 999px; overflow: hidden; }
         .dashboard-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--alliance-green), #f1c40f); border-radius: 999px; }
         .dashboard-note { color: #777; padding: 18px; text-align: center; font-size: 12px; font-weight: 800; }
+        .dashboard-executive { display: grid; grid-template-columns: 1.25fr 0.9fr; gap: 14px; margin-bottom: 16px; }
+        .dashboard-insight { background: linear-gradient(135deg, rgba(52,152,219,0.16), rgba(15,15,15,0.96)); border: 1px solid #303030; border-radius: 20px; padding: 16px; min-height: 150px; }
+        .dashboard-insight h4 { margin: 0 0 10px; color: #fff; font-size: 14px; text-transform: uppercase; }
+        .dashboard-insight p { margin: 0; color: #a0a0a0; font-size: 12px; font-weight: 800; line-height: 1.5; }
+        .dashboard-kpi-line { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+        .dashboard-kpi { background: rgba(255,255,255,0.04); border: 1px solid #2f2f2f; border-radius: 14px; padding: 12px; }
+        .dashboard-kpi strong { display: block; color: #fff; font-size: 22px; line-height: 1; margin-bottom: 6px; }
+        .dashboard-kpi span { color: #888; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+        .dashboard-actions { display: grid; gap: 10px; }
+        .dashboard-action-btn { width: 100%; border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 14px; padding: 13px 14px; font-size: 11px; font-weight: 900; text-transform: uppercase; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .dashboard-action-btn:hover { border-color: var(--alliance-red); color: #fff; background: #202020; }
+        .dashboard-priority-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+        .dashboard-priority-card { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 14px; min-height: 150px; }
+        .dashboard-priority-card h4 { color: #fff; margin: 0 0 12px; font-size: 12px; text-transform: uppercase; display: flex; justify-content: space-between; gap: 10px; }
+        .dashboard-mini-list { display: grid; gap: 8px; }
+        .dashboard-mini-row { border: 1px solid #2d2d2d; background: #111; color: #ddd; border-radius: 12px; padding: 9px 10px; cursor: pointer; text-align: left; font: inherit; }
+        .dashboard-mini-row:hover { border-color: var(--alliance-red); background: #202020; color: #fff; }
+        .dashboard-mini-row b { display: block; font-size: 12px; color: inherit; }
+        .dashboard-mini-row small { display: block; color: #777; font-size: 10px; font-weight: 800; margin-top: 3px; }
         .pending-message-alert { max-width: 1180px; margin: -6px auto 16px; border: 1px solid rgba(37,211,102,0.35); background: linear-gradient(135deg, rgba(37,211,102,0.18), rgba(18,18,18,0.96)); color: #dfffe9; border-radius: 18px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
         .pending-message-alert strong { color: #fff; display: block; font-size: 14px; }
         .pending-message-alert span { color: #b8ffd5; font-size: 12px; font-weight: 800; }
@@ -405,6 +424,9 @@
             .dashboard-hero { grid-template-columns: 1fr; }
             .dashboard-filters { grid-template-columns: 1fr; }
             .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .dashboard-executive { grid-template-columns: 1fr; }
+            .dashboard-kpi-line { grid-template-columns: 1fr; }
+            .dashboard-priority-grid { grid-template-columns: 1fr; }
             .dashboard-split { grid-template-columns: 1fr; }
             .dashboard-row { grid-template-columns: 1fr; }
             .dashboard-detail-row { grid-template-columns: 1fr; }
@@ -1200,7 +1222,13 @@
         const [expandedSearchStudentId, setExpandedSearchStudentId] = React.useState(null);
         const [summaryDetail, setSummaryDetail] = React.useState(null);
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
-        const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos" });
+        const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "30" });
+        const revealDashboardDetail = (detailKey) => {
+            setDashboardDetail(detailKey);
+            setTimeout(() => {
+                document.getElementById("dashboard-detail-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 120);
+        };
         const [selectedChatId, setSelectedChatId] = React.useState(null);
         const [conversationSearch, setConversationSearch] = React.useState("");
         const [form, setForm] = React.useState(createEmptyStudentForm);
@@ -1793,8 +1821,8 @@
         const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || null;
         const totalUnreadProfessor = allConversationStudents.reduce((total, s) => total + s.unread, 0);
         const openDashboardStudents = (filters = {}) => {
-            setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", ...filters });
-            setDashboardDetail("alunos");
+            setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: dashboardFilters.period, ...filters });
+            revealDashboardDetail("alunos");
         };
         const openStudentFromDashboard = (studentName) => {
             const targetStudent = students.find(s => s.nome === studentName);
@@ -1805,6 +1833,59 @@
             setSummaryDetail(null);
         };
         const today = new Date();
+        const parseDashboardDate = (value) => {
+            if (!value) return null;
+            if (/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                const [day, month, year] = value.split("/").map(Number);
+                return new Date(year, month - 1, day);
+            }
+            return parseLocalDate(value);
+        };
+        const getDashboardPeriodStart = () => {
+            if (dashboardFilters.period === "all") return null;
+            const start = new Date(today);
+            start.setHours(0, 0, 0, 0);
+            if (dashboardFilters.period === "month") {
+                start.setDate(1);
+                return start;
+            }
+            const days = Number(dashboardFilters.period || 30);
+            start.setDate(start.getDate() - Math.max(0, days - 1));
+            return start;
+        };
+        const dashboardPeriodStart = getDashboardPeriodStart();
+        const dashboardPeriodLabel = dashboardFilters.period === "all"
+            ? "todo o histórico"
+            : dashboardFilters.period === "month"
+                ? "mês atual"
+                : `últimos ${dashboardFilters.period} dias`;
+        const isInDashboardPeriod = (value) => {
+            if (!dashboardPeriodStart) return true;
+            const date = parseDashboardDate(value);
+            return !!date && date >= dashboardPeriodStart && date <= today;
+        };
+        const exportDashboardCsv = () => {
+            const headers = ["Aluno", "Turma", "Faixa", "Status", "Ultima presenca", "Progresso", "Aulas faltam", "Mensagens pendentes", "Responsavel", "WhatsApp"];
+            const lines = [headers, ...studentsWithProgress.map(s => [
+                s.nome,
+                getAutoCategory(s.nascimento, s.categoriaOverride),
+                s.faixa || "",
+                s.status || "Ativo",
+                s.ultimaPresenca ? formatDateBR(s.ultimaPresenca) : "",
+                `${s.progresso.percentual || 0}%`,
+                s.progresso.faltantes ?? "",
+                s.unread || 0,
+                s.responsavel || "",
+                s.telefone || ""
+            ])].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(";"));
+            const blob = new Blob([`\uFEFF${lines.join("\n")}`], { type: "text/csv;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `dashboard-alliance-${getTodayISO()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
         const dashboardStudents = students.filter(s => {
             const group = getAutoCategory(s.nascimento, s.categoriaOverride);
             const status = s.status || "Ativo";
@@ -1862,6 +1943,39 @@
             .filter(s => s.unread > 0)
             .sort((a, b) => b.unread - a.unread)
             .slice(0, 5);
+        const recentPresenceStudents = dashboardStudents.filter(s => isInDashboardPeriod(s.ultimaPresenca));
+        const recentMessages = dashboardStudents.reduce((total, s) => {
+            return total + (s.chat || []).filter(m => isInDashboardPeriod(m.date)).length;
+        }, 0);
+        const noRecentPresenceList = dashboardStudents.filter(s => {
+            if (!s.ultimaPresenca) return true;
+            const lastPresence = parseLocalDate(s.ultimaPresenca);
+            if (!lastPresence) return true;
+            const diffDays = Math.floor((today - lastPresence) / 86400000);
+            return diffDays >= 10;
+        }).map(s => {
+            const lastPresence = parseLocalDate(s.ultimaPresenca);
+            const days = lastPresence ? Math.floor((today - lastPresence) / 86400000) : null;
+            return { ...s, daysWithoutPresence: days };
+        }).sort((a, b) => (b.daysWithoutPresence ?? 9999) - (a.daysWithoutPresence ?? 9999));
+        const incompleteStudents = dashboardStudents.filter(s => !s.responsavel || !s.telefone || !s.matricula);
+        const imagePendingStudents = dashboardStudents.filter(s => !s.autorizacaoImagem);
+        const lowProgressStudents = studentsWithProgress
+            .filter(s => s.progresso.elegivel && s.progresso.percentual < 30)
+            .sort((a, b) => a.progresso.percentual - b.progresso.percentual);
+        const attentionStudents = [
+            ...topUnread.map(s => ({ ...s, priorityReason: `${s.unread} mensagem${s.unread === 1 ? "" : "s"} pendente${s.unread === 1 ? "" : "s"}`, priorityType: "Mensagem" })),
+            ...noRecentPresenceList.slice(0, 5).map(s => ({ ...s, priorityReason: s.daysWithoutPresence === null ? "sem presença registrada" : `${s.daysWithoutPresence} dias sem presença`, priorityType: "Presença" })),
+            ...examCandidates.slice(0, 5).map(s => ({ ...s, priorityReason: `${s.progresso.percentual}% pronto para exame`, priorityType: "Exame" })),
+            ...incompleteStudents.slice(0, 5).map(s => ({ ...s, priorityReason: "cadastro incompleto", priorityType: "Cadastro" }))
+        ].filter((item, index, arr) => arr.findIndex(other => other.id === item.id && other.priorityType === item.priorityType) === index);
+        const dashboardInsightText = totalUnreadDashboard > 0
+            ? `${totalUnreadDashboard} mensagem${totalUnreadDashboard === 1 ? "" : "s"} pendente${totalUnreadDashboard === 1 ? "" : "s"} pedem atenção antes da próxima aula.`
+            : noRecentPresenceList.length > 0
+                ? `${noRecentPresenceList.length} aluno${noRecentPresenceList.length === 1 ? "" : "s"} sem presença recente merece${noRecentPresenceList.length === 1 ? "" : "m"} acompanhamento.`
+                : examCandidates.length > 0
+                    ? `${examCandidates.length} aluno${examCandidates.length === 1 ? "" : "s"} já aparece${examCandidates.length === 1 ? "" : "m"} perto do exame.`
+                    : "A turma não possui alertas críticos no momento.";
         const dashboardDetailMap = {
             alunos: {
                 title: "Alunos cadastrados",
@@ -1959,6 +2073,26 @@
                     meta: file.category || file.categoria || file.type || "Arquivo salvo",
                     action: () => setModalOpen("repo"),
                     actionLabel: "Ver"
+                }))
+            },
+            prioridades: {
+                title: "Atenção da semana",
+                subtitle: "Alunos que merecem ação mais rápida",
+                rows: attentionStudents.map((s, index) => ({
+                    id: `${s.id}-${s.priorityType}-${index}`,
+                    name: s.nome,
+                    meta: `${s.priorityType}: ${s.priorityReason}`,
+                    action: () => s.priorityType === "Mensagem" ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)
+                }))
+            },
+            "evolucao-baixa": {
+                title: "Alunos abaixo de 30%",
+                subtitle: "Alunos que podem precisar de incentivo ou revisão de presença",
+                rows: lowProgressStudents.map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: `${s.progresso.percentual}% concluído - faltam ${s.progresso.faltantes} aulas`,
+                    action: () => openStudentFromDashboard(s.nome)
                 }))
             }
         };
@@ -2103,6 +2237,16 @@
 
                         <div className="dashboard-filters">
                             <div className="dashboard-filter">
+                                <label>Período</label>
+                                <select value={dashboardFilters.period} onChange={e => setDashboardFilters({...dashboardFilters, period: e.target.value})}>
+                                    <option value="7">Últimos 7 dias</option>
+                                    <option value="30">Últimos 30 dias</option>
+                                    <option value="90">Últimos 90 dias</option>
+                                    <option value="month">Mês atual</option>
+                                    <option value="all">Todo histórico</option>
+                                </select>
+                            </div>
+                            <div className="dashboard-filter">
                                 <label>Turma</label>
                                 <select value={dashboardFilters.group} onChange={e => setDashboardFilters({...dashboardFilters, group: e.target.value})}>
                                     <option value="Todos">Todas</option>
@@ -2123,23 +2267,77 @@
                                     {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
                                 </select>
                             </div>
-                            <button className="dashboard-clear" onClick={() => { setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos" }); setDashboardDetail(null); }}>
+                            <button className="dashboard-clear" onClick={() => { setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: "30" }); setDashboardDetail(null); }}>
                                 Limpar filtros
                             </button>
                         </div>
 
-                        <div className="dashboard-grid">
-                            <div className={`dashboard-card ${dashboardDetail === "alunos" ? "active" : ""}`} onClick={() => setDashboardDetail("alunos")}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => setDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusao</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "mensagens" ? "active" : ""}`} onClick={() => setDashboardDetail("mensagens")}><strong>{totalUnreadDashboard}</strong><span>Mensagens pendentes</span><small>{topUnread.length} aluno{topUnread.length === 1 ? "" : "s"} com alerta de leitura</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => setDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolucao media</span><small>Baseado no progresso para a proxima faixa</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => setDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presenca recente</span><small>Sem data ou ha 10 dias ou mais</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "cadastro" ? "active" : ""}`} onClick={() => setDashboardDetail("cadastro")}><strong>{missingCoreData}</strong><span>Cadastro incompleto</span><small>Falta responsavel, WhatsApp ou matricula</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => setDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorizacao pendente</span><small>Alunos sem autorizacao de imagem marcada</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => setDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponiveis no repositorio interno</small></div>
+                        <div className="dashboard-executive">
+                            <div className="dashboard-insight">
+                                <h4>Leitura executiva</h4>
+                                <p>{dashboardInsightText} A visão atual considera {dashboardPeriodLabel} e os filtros selecionados de turma, faixa e status.</p>
+                                <div className="dashboard-kpi-line">
+                                    <div className="dashboard-kpi"><strong>{recentPresenceStudents.length}</strong><span>presenças no período</span></div>
+                                    <div className="dashboard-kpi"><strong>{recentMessages}</strong><span>mensagens no período</span></div>
+                                    <div className="dashboard-kpi"><strong>{attentionStudents.length}</strong><span>pontos de atenção</span></div>
+                                </div>
+                            </div>
+                            <div className="dashboard-insight dashboard-actions">
+                                <h4>Ações rápidas</h4>
+                                <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("prioridades")}><span>Ver atenção da semana</span><i className="fas fa-bell"></i></button>
+                                <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("evolucao-baixa")}><span>Alunos abaixo de 30%</span><i className="fas fa-chart-line"></i></button>
+                                <button className="dashboard-action-btn" onClick={exportDashboardCsv}><span>Exportar CSV do painel</span><i className="fas fa-file-export"></i></button>
+                            </div>
                         </div>
 
-                        {activeDashboardDetail && <div className="dashboard-detail">
+                        <div className="dashboard-grid">
+                            <div className={`dashboard-card ${dashboardDetail === "alunos" ? "active" : ""}`} onClick={() => revealDashboardDetail("alunos")}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => revealDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusao</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "mensagens" ? "active" : ""}`} onClick={() => revealDashboardDetail("mensagens")}><strong>{totalUnreadDashboard}</strong><span>Mensagens pendentes</span><small>{topUnread.length} aluno{topUnread.length === 1 ? "" : "s"} com alerta de leitura</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => revealDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolucao media</span><small>Baseado no progresso para a proxima faixa</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presenca recente</span><small>Sem data ou ha 10 dias ou mais</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "cadastro" ? "active" : ""}`} onClick={() => revealDashboardDetail("cadastro")}><strong>{missingCoreData}</strong><span>Cadastro incompleto</span><small>Falta responsavel, WhatsApp ou matricula</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => revealDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorizacao pendente</span><small>Alunos sem autorizacao de imagem marcada</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => revealDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponiveis no repositorio interno</small></div>
+                        </div>
+
+                        <div className="dashboard-priority-grid">
+                            <div className="dashboard-priority-card">
+                                <h4><span>Mensagens</span><i className="fab fa-whatsapp"></i></h4>
+                                <div className="dashboard-mini-list">
+                                    {topUnread.length > 0 ? topUnread.slice(0, 3).map(s => (
+                                        <button className="dashboard-mini-row" key={`mini-msg-${s.id}`} onClick={() => { setProfessorView("conversas"); openProfessorConversation(s.id); }}>
+                                            <b>{s.nome}</b>
+                                            <small>{s.unread} mensagem{s.unread === 1 ? "" : "s"} pendente{s.unread === 1 ? "" : "s"}</small>
+                                        </button>
+                                    )) : <div className="dashboard-note">Sem mensagens pendentes.</div>}
+                                </div>
+                            </div>
+                            <div className="dashboard-priority-card">
+                                <h4><span>Ausência</span><i className="fas fa-calendar-times"></i></h4>
+                                <div className="dashboard-mini-list">
+                                    {noRecentPresenceList.length > 0 ? noRecentPresenceList.slice(0, 3).map(s => (
+                                        <button className="dashboard-mini-row" key={`mini-pres-${s.id}`} onClick={() => openStudentFromDashboard(s.nome)}>
+                                            <b>{s.nome}</b>
+                                            <small>{s.daysWithoutPresence === null ? "sem presença registrada" : `${s.daysWithoutPresence} dias sem presença`}</small>
+                                        </button>
+                                    )) : <div className="dashboard-note">Sem ausência recente.</div>}
+                                </div>
+                            </div>
+                            <div className="dashboard-priority-card">
+                                <h4><span>Exame</span><i className="fas fa-medal"></i></h4>
+                                <div className="dashboard-mini-list">
+                                    {examCandidates.length > 0 ? examCandidates.slice(0, 3).map(s => (
+                                        <button className="dashboard-mini-row" key={`mini-exam-${s.id}`} onClick={() => openStudentFromDashboard(s.nome)}>
+                                            <b>{s.nome}</b>
+                                            <small>{s.progresso.percentual}% concluído - {s.progresso.faltantes} aulas faltam</small>
+                                        </button>
+                                    )) : <div className="dashboard-note">Nenhum aluno apto agora.</div>}
+                                </div>
+                            </div>
+                        </div>
+
+                        {activeDashboardDetail && <div id="dashboard-detail-panel" className="dashboard-detail">
                             <div className="dashboard-detail-head">
                                 <div>
                                     <strong>{activeDashboardDetail.title}</strong>
@@ -2197,26 +2395,6 @@
                                             <b>{row.value}</b>
                                         </div>
                                     )) : <div className="dashboard-note">Nenhum status informado.</div>}
-                                </div>
-                            </div>
-                            <div className="dashboard-panel">
-                                <div className="dashboard-panel-title"><span>Prioridades de atendimento</span><i className="fas fa-bell"></i></div>
-                                <div className="dashboard-list">
-                                    {topUnread.length > 0 && topUnread.map(s => (
-                                        <div className="dashboard-row clickable" key={`msg-${s.id}`} onClick={() => { setProfessorView("conversas"); openProfessorConversation(s.id); }}>
-                                            <span>{s.nome}</span>
-                                            <div className="dashboard-bar"><i style={{width: `${Math.min(100, s.unread * 25)}%`}}></i></div>
-                                            <b>{s.unread} msg</b>
-                                        </div>
-                                    ))}
-                                    {topUnread.length === 0 && nearGraduation.length > 0 && nearGraduation.map(s => (
-                                        <div className="dashboard-row clickable" key={`grad-${s.id}`} onClick={() => openStudentFromDashboard(s.nome)}>
-                                            <span>{s.nome}</span>
-                                            <div className="dashboard-bar"><i style={{width: `${s.progresso.percentual}%`}}></i></div>
-                                            <b>{s.progresso.percentual}%</b>
-                                        </div>
-                                    ))}
-                                    {topUnread.length === 0 && nearGraduation.length === 0 && <div className="dashboard-note">Sem alertas criticos no momento.</div>}
                                 </div>
                             </div>
                         </div>
