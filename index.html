@@ -176,6 +176,18 @@
         .hist-details { margin-top: 15px; border: 1px solid var(--border-color); border-radius: 15px; background: #181818; overflow: hidden; }
         .hist-summary { cursor: pointer; font-size: 12px; font-weight: bold; color: #3498db; padding: 12px; display: flex; justify-content: space-between; align-items: center; list-style: none; }
         .hist-content { padding: 12px; font-size: 11px; max-height: 150px; overflow-y: auto; border-top: 1px solid var(--border-color); color: #777; line-height: 1.6; }
+        .belt-history-list { display: grid; gap: 10px; }
+        .belt-history-card { padding: 12px; background: #161616; border: 1px solid #2d2d2d; border-radius: 14px; }
+        .belt-history-card.current { border-color: rgba(52,152,219,0.55); background: linear-gradient(135deg, rgba(52,152,219,0.12), rgba(20,20,20,0.95)); }
+        .belt-history-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+        .belt-history-head strong { color: #fff; font-size: 14px; }
+        .belt-history-head small { color: #9a9a9a; font-weight: 800; text-transform: uppercase; font-size: 10px; }
+        .belt-history-status { flex-shrink: 0; padding: 4px 8px; border-radius: 999px; background: #242424; color: #aaa; font-size: 9px; font-weight: 900; text-transform: uppercase; }
+        .belt-history-card.current .belt-history-status { background: var(--alliance-red); color: #fff; }
+        .belt-history-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+        .belt-history-meta span { padding: 8px; border-radius: 10px; background: #202020; color: #aaa; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .belt-history-meta b { display: block; color: #fff; font-size: 13px; margin-bottom: 2px; text-transform: none; }
+        .belt-history-empty { padding: 12px; border: 1px dashed #333; border-radius: 12px; color: #888; font-size: 11px; line-height: 1.5; }
         
         .chat-container { border-radius: 18px; overflow: hidden; margin-top: 20px; border: 1px solid var(--border-color); background: #181818; }
         .chat-header { background: #222; color: white; padding: 15px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-bottom: 1px solid var(--border-color); }
@@ -1254,6 +1266,57 @@
         });
     }
 
+    function getBehaviorDoneCount(comp = {}) {
+        return ["Rel", "Comp", "Notas", "Hab"].filter(key => comp?.[key]).length;
+    }
+
+    function buildBeltCycleRecord(student, nextBelt, changeType = "Graduacao") {
+        const rules = getRules(student.nascimento, student.faixa, student.categoriaOverride);
+        const progress = getGraduationProgress(student.aulas, student.nascimento, student.faixa, student.comp, student.categoriaOverride);
+        const states = rules > 0 ? getPresenceDegreeStates(student.aulas, rules, student.presenceDegrees) : [0, 0, 0, 0];
+        const todayIso = getTodayISO();
+        return {
+            id: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
+            faixa: student.faixa,
+            proximaFaixa: nextBelt,
+            turma: getAutoCategory(student.nascimento, student.categoriaOverride),
+            dataInicio: student.cicloFaixaInicio || student.matricula || "",
+            dataConclusao: todayIso,
+            aulasFeitas: Math.max(0, Number(student.aulas) || 0),
+            aulasNecessarias: progress.total || (rules > 0 ? rules * 9 : 0),
+            percentualFinal: progress.percentual || 0,
+            grausBrancos: states.filter(state => state === 1).length,
+            grausVermelhos: states.filter(state => state === 2).length,
+            comportamentais: getBehaviorDoneCount(student.comp),
+            tipo: changeType
+        };
+    }
+
+    function getBeltHistory(student, progress) {
+        const closedCycles = Array.isArray(student.beltHistory) ? student.beltHistory : [];
+        const currentRules = getRules(student.nascimento, student.faixa, student.categoriaOverride);
+        const currentStates = currentRules > 0 ? getPresenceDegreeStates(student.aulas, currentRules, student.presenceDegrees) : [0, 0, 0, 0];
+        return [
+            ...closedCycles,
+            {
+                id: "current",
+                faixa: student.faixa,
+                proximaFaixa: beltOrder[beltOrder.indexOf(student.faixa) + 1] || student.faixa,
+                turma: getAutoCategory(student.nascimento, student.categoriaOverride),
+                dataInicio: student.cicloFaixaInicio || student.matricula || "",
+                dataConclusao: "",
+                aulasFeitas: progress.feitas || 0,
+                aulasNecessarias: progress.total || 0,
+                percentualFinal: progress.percentual || 0,
+                grausBrancos: currentStates.filter(state => state === 1).length,
+                grausVermelhos: currentStates.filter(state => state === 2).length,
+                comportamentais: getBehaviorDoneCount(student.comp),
+                tipo: "Em andamento",
+                current: true
+            }
+        ];
+    }
+
     function getClassesFromDegreeStates(states, rules) {
         return states.reduce((total, state) => total + state, 0) * rules;
     }
@@ -1815,6 +1878,26 @@
             }));
         };
 
+        const graduarAlunoComHistorico = (sid) => {
+            if(mode !== "Professor") return;
+            setStudents(prev => prev.map(s => {
+                if (s.id !== sid) return s;
+                const cur = beltOrder.indexOf(s.faixa);
+                const prox = beltOrder[cur + 1] || s.faixa;
+                const beltRecord = buildBeltCycleRecord(s, prox, "Graduacao");
+                const { presenceDegrees, ...rest } = s;
+                return {
+                    ...rest,
+                    faixa: prox,
+                    aulas: 0,
+                    comp: {},
+                    cicloFaixaInicio: getTodayISO(),
+                    beltHistory: [...(s.beltHistory || []), beltRecord],
+                    historico: [...(s.historico || []), `GRADUADO: ${s.faixa} -> ${prox}`]
+                };
+            }));
+        };
+
         const downloadBackup = () => {
             const data = { students, repo, timestamp: new Date().toISOString() };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2187,6 +2270,35 @@
                 openProfessorConversation(selectedConversation.id);
             }
         }, [mode, professorView, selectedConversation?.id, selectedConversation?.unread]);
+        const renderBeltHistory = (student, progress) => {
+            const items = getBeltHistory(student, progress).slice().reverse();
+            if (!items.length) {
+                return <div className="belt-history-empty">Ainda não existe histórico de troca de faixa para este aluno.</div>;
+            }
+            return (
+                <div className="belt-history-list">
+                    {items.map(item => (
+                        <div key={item.id} className={`belt-history-card ${item.current ? "current" : ""}`}>
+                            <div className="belt-history-head">
+                                <div>
+                                    <strong>{item.faixa}</strong>
+                                    <small>{item.current ? "Faixa atual" : `${item.tipo || "Concluida"} para ${item.proximaFaixa || "proxima faixa"}`}</small>
+                                </div>
+                                <span className="belt-history-status">{item.current ? `${item.percentualFinal}%` : "Concluida"}</span>
+                            </div>
+                            <div className="belt-history-meta">
+                                <span><b>{item.dataInicio ? formatDateBR(item.dataInicio) : "Sem data"}</b>Início</span>
+                                <span><b>{item.dataConclusao ? formatDateBR(item.dataConclusao) : "Em andamento"}</b>Conclusão</span>
+                                <span><b>{item.aulasFeitas}/{item.aulasNecessarias || 0}</b>Aulas</span>
+                                <span><b>{item.grausBrancos || 0}B / {item.grausVermelhos || 0}V</b>Presença</span>
+                                <span><b>{item.comportamentais || 0}/4</b>Comport.</span>
+                                <span><b>{item.turma || "-"}</b>Turma</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
         const readyStudents = readyList.length;
         if (!mode) {
             if (!subMode) return (
@@ -2691,7 +2803,7 @@
                                         <details className="parent-detail">
                                             <summary><span><i className="fas fa-history"></i> Histórico de evolução</span><i className="fas fa-chevron-down"></i></summary>
                                             <div className="parent-detail-body">
-                                                <div className="hist-content" style={{maxHeight:'220px'}}>{s.historico?.slice().reverse().map((h, i) => <div key={i} style={{padding:'6px 0', borderBottom:'1px solid #222'}}>{h}</div>)}</div>
+                                                {renderBeltHistory(s, progresso)}
                                             </div>
                                         </details>
                                     </div>
@@ -2777,8 +2889,13 @@
                             </div>
 
                             {mode === "Professor" && pronto && (
-                                <button className="btn-full btn-graduar" onClick={() => graduarAluno(s.id)}><i className="fas fa-medal"></i> GRADUAR PARA {beltOrder[beltOrder.indexOf(s.faixa)+1]}</button>
+                                <button className="btn-full btn-graduar" onClick={() => graduarAlunoComHistorico(s.id)}><i className="fas fa-medal"></i> GRADUAR PARA {beltOrder[beltOrder.indexOf(s.faixa)+1]}</button>
                             )}
+
+                            <details className="hist-details">
+                                <summary className="hist-summary"><span><i className="fas fa-medal"></i> Histórico de faixas</span><i className="fas fa-chevron-down"></i></summary>
+                                <div className="hist-content" style={{maxHeight:'360px'}}>{renderBeltHistory(s, progresso)}</div>
+                            </details>
 
                             <details className="hist-details">
                                 <summary className="hist-summary"><span><i className="fas fa-history"></i> Histórico</span><i className="fas fa-chevron-down"></i></summary>
@@ -2910,7 +3027,7 @@
                                 const exists = students.some(s => s.nome.toLowerCase().trim() === nome.toLowerCase() && s.nascimento === form.nascimento);
                                 if (exists) return alert("Este aluno já está cadastrado.");
                                 const categoriaTexto = form.categoriaOverride === "Auto" ? getAutoCategory(form.nascimento) : `${form.categoriaOverride} (manual)`;
-                                setStudents([...students, { ...form, nome, id: Date.now(), aulas: 0, historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`] }]);
+                                setStudents([...students, { ...form, nome, id: Date.now(), aulas: 0, cicloFaixaInicio: form.matricula || getTodayISO(), beltHistory: [], historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`] }]);
                                 setModalOpen(null);
                                 setForm(createEmptyStudentForm());
                             }}>SALVAR</button>
@@ -3003,7 +3120,7 @@
                                 if (alunoOriginal && alunoOriginal.faixa !== alunoAtualizado.faixa) {
                                     logs.push(`🎓 FAIXA ALTERADA MANUALMENTE: ${alunoOriginal.faixa} → ${alunoAtualizado.faixa} | ${hoje}`);
                                     const { presenceDegrees, ...semGrausPresenca } = alunoAtualizado;
-                                    alunoAtualizado = { ...semGrausPresenca, aulas: 0, comp: {} };
+                                    alunoAtualizado = { ...semGrausPresenca, aulas: 0, comp: {}, cicloFaixaInicio: getTodayISO(), beltHistory: [...(alunoOriginal.beltHistory || []), buildBeltCycleRecord(alunoOriginal, alunoAtualizado.faixa, "Alteracao manual")] };
                                 }
 
                                 const categoriaAnterior = alunoOriginal?.categoriaOverride || "Auto";
