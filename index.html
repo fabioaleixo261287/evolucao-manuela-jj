@@ -5,10 +5,11 @@
     <title>Alliance Mooca Kids - Sistema Eagle V22</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#3498db">
+    <meta name="application-name" content="Alliance Mooca Kids">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Mooca Kids">
+    <meta name="apple-mobile-web-app-title" content="Alliance Mooca Kids">
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="apple-touch-icon" href="./pwa-icons/apple-touch-icon.png">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -849,11 +850,78 @@
             color: #fff;
             border-color: #2a2a2a;
         }
+        .app-splash {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px;
+            background:
+                radial-gradient(circle at top, rgba(52,152,219,0.16), transparent 34%),
+                linear-gradient(180deg, #161616, #050505);
+        }
+        .app-splash-card {
+            width: min(360px, 100%);
+            min-height: 260px;
+            border: 1px solid #303030;
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+            box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        .app-splash-card .auth-hero-frame {
+            margin-bottom: -2px;
+        }
+        .app-splash-card .auth-title {
+            margin: 0;
+        }
+        .app-splash-card .auth-subtitle {
+            margin: 6px 0 0;
+        }
+        .app-splash-loading {
+            width: 118px;
+            height: 3px;
+            margin-top: 22px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: #2c2c2c;
+        }
+        .app-splash-loading::after {
+            content: "";
+            display: block;
+            width: 44px;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--alliance-red), #ffd84d, #ffffff);
+            animation: splash-loading 1.1s ease-in-out infinite;
+        }
+        @keyframes splash-loading {
+            0% { transform: translateX(-48px); }
+            100% { transform: translateX(126px); }
+        }
     </style>
 </head>
 <body class="theme-dark">
 <div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando arquivo...</div>
-<div id="root"></div>
+<div id="root">
+    <div class="app-splash" aria-label="Carregando Alliance Mooca Kids">
+        <div class="app-splash-card">
+            <div class="auth-hero-frame">
+                <img src="eagle-cutout.png" class="auth-hero-image" alt="Alliance Mooca Kids">
+            </div>
+            <div class="auth-hero-copy">
+                <h1 class="auth-title">Alliance Mooca Kids</h1>
+                <p class="auth-subtitle">Sistema de evolução e graduação</p>
+            </div>
+            <div class="app-splash-loading" aria-hidden="true"></div>
+        </div>
+    </div>
+</div>
 
 <script type="text/babel">
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
