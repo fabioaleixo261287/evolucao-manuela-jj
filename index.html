@@ -12,8 +12,11 @@
     <meta name="apple-mobile-web-app-title" content="Alliance Mooca Kids">
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="apple-touch-icon" href="./pwa-icons/apple-touch-icon-brand.png">
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script>
         function loadSupabaseFallback() {
@@ -1107,6 +1110,17 @@
         return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
     };
 
+    const getDataSignature = (students, repo) => {
+        try {
+            return JSON.stringify({
+                students: students || [],
+                repo: repo || []
+            });
+        } catch (e) {
+            return `${Date.now()}`;
+        }
+    };
+
     const dataUrlToFile = (dataUrl, fileName) => {
         const [meta, base64] = String(dataUrl).split(",");
         const mime = meta.match(/data:(.*?);base64/)?.[1] || "application/octet-stream";
@@ -1427,6 +1441,8 @@
         const pendingLocalSaveRef = React.useRef(false);
         const lastLocalChangeRef = React.useRef(0);
         const lastSavedAtRef = React.useRef("");
+        const lastLocalSignatureRef = React.useRef("");
+        const lastRemoteSignatureRef = React.useRef("");
         const [theme] = React.useState("dark");
 
         React.useEffect(() => {
@@ -1458,6 +1474,8 @@
                     try {
                         const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
                         const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
+                        const localSignature = getDataSignature(localStudents, localRepo);
+                        lastLocalSignatureRef.current = localSignature;
                         let data = null;
 
                         try {
@@ -1476,12 +1494,15 @@
                                 const updatedAt = new Date().toISOString();
                                 await saveAppwriteState(appwriteServices.config, localStudents, localRepo, updatedAt);
                                 lastSavedAtRef.current = updatedAt;
+                                lastRemoteSignatureRef.current = localSignature;
                                 applyingRemoteRef.current = true;
                                 setStudents(localStudents);
                                 setRepo(localRepo);
                                 setDbStatus("Base local enviada ao Appwrite");
                             } else {
                                 lastSavedAtRef.current = data.updated_at || data.$updatedAt || "";
+                                lastRemoteSignatureRef.current = getDataSignature(remoteStudents, remoteRepo);
+                                lastLocalSignatureRef.current = lastRemoteSignatureRef.current;
                                 applyingRemoteRef.current = true;
                                 setStudents(remoteStudents);
                                 setRepo(remoteRepo);
@@ -1491,6 +1512,7 @@
                             const updatedAt = new Date().toISOString();
                             await saveAppwriteState(appwriteServices.config, localStudents, localRepo, updatedAt);
                             lastSavedAtRef.current = updatedAt;
+                            lastRemoteSignatureRef.current = localSignature;
                             setDbStatus("Dados locais enviados ao Appwrite");
                         }
                     } catch (err) {
@@ -1510,6 +1532,8 @@
                 try {
                     const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
                     const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
+                    const localSignature = getDataSignature(localStudents, localRepo);
+                    lastLocalSignatureRef.current = localSignature;
                     const { data, error } = await withTimeout(
                         supabaseClient
                             .from("app_state")
@@ -1541,12 +1565,15 @@
                                 "Tempo limite ao enviar dados ao Supabase"
                             );
                             lastSavedAtRef.current = updatedAt;
+                            lastRemoteSignatureRef.current = localSignature;
                             applyingRemoteRef.current = true;
                             setStudents(localStudents);
                             setRepo(localRepo);
                             setDbStatus("Base local enviada ao Supabase");
                         } else {
                             lastSavedAtRef.current = data.updated_at || "";
+                            lastRemoteSignatureRef.current = getDataSignature(remoteStudents, remoteRepo);
+                            lastLocalSignatureRef.current = lastRemoteSignatureRef.current;
                             applyingRemoteRef.current = true;
                             setStudents(remoteStudents);
                             setRepo(remoteRepo);
@@ -1565,6 +1592,7 @@
                             "Tempo limite ao criar dados no Supabase"
                         );
                         lastSavedAtRef.current = updatedAt;
+                        lastRemoteSignatureRef.current = localSignature;
                         setDbStatus("Dados locais enviados ao Supabase");
                     }
                 } catch (err) {
@@ -1580,9 +1608,14 @@
 
         React.useEffect(() => { 
             if (!isHydrated) return;
+            const currentSignature = getDataSignature(students, repo);
+            const signatureChanged = currentSignature !== lastLocalSignatureRef.current;
             try {
-                localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(students));
-                localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(repo));
+                if (signatureChanged) {
+                    localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(students));
+                    localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(repo));
+                    lastLocalSignatureRef.current = currentSignature;
+                }
                 setStorageWarning("");
             } catch(e) {
                 setStorageWarning("O armazenamento do navegador está cheio. Gere um backup e remova arquivos grandes.");
@@ -1593,6 +1626,8 @@
                 return;
             }
 
+            if (!signatureChanged || currentSignature === lastRemoteSignatureRef.current) return;
+
             pendingLocalSaveRef.current = true;
             lastLocalChangeRef.current = Date.now();
             if (appwriteServices) {
@@ -1601,6 +1636,7 @@
                         const updatedAt = new Date().toISOString();
                         await saveAppwriteState(appwriteServices.config, students, repo, updatedAt);
                         lastSavedAtRef.current = updatedAt;
+                        lastRemoteSignatureRef.current = currentSignature;
                         pendingLocalSaveRef.current = false;
                         setDbStatus("Sincronizado com Appwrite");
                     } catch (err) {
@@ -1608,7 +1644,7 @@
                         pendingLocalSaveRef.current = false;
                         setDbStatus(getAppwriteErrorMessage(err));
                     }
-                }, 1200);
+                }, 1800);
 
                 return () => clearTimeout(syncTimer);
             }
@@ -1629,6 +1665,7 @@
                     );
                     if (error) throw error;
                     lastSavedAtRef.current = updatedAt;
+                    lastRemoteSignatureRef.current = currentSignature;
                     pendingLocalSaveRef.current = false;
                     setDbStatus("Sincronizado com Supabase");
                 } catch (err) {
@@ -1636,7 +1673,7 @@
                     pendingLocalSaveRef.current = false;
                     setDbStatus("Erro ao salvar no Supabase");
                 }
-            }, 1200);
+            }, 1800);
 
             return () => clearTimeout(syncTimer);
         }, [students, repo, isHydrated, appwriteServices, supabaseClient]);
@@ -1645,6 +1682,7 @@
             if (appwriteServices && isHydrated) {
                 const refreshTimer = setInterval(async () => {
                     try {
+                        if (document.hidden) return;
                         const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 8000;
                         if (pendingLocalSaveRef.current || localChangeIsFresh) return;
                         const data = await getAppwriteState(appwriteServices.config);
@@ -1653,8 +1691,12 @@
                         if (lastSavedAtRef.current && new Date(remoteUpdatedAt) <= new Date(lastSavedAtRef.current)) return;
                         lastSavedAtRef.current = remoteUpdatedAt;
                         applyingRemoteRef.current = true;
-                        setStudents(parseRemoteJson(data.students, []));
-                        setRepo(parseRemoteJson(data.repo, []));
+                        const remoteStudents = parseRemoteJson(data.students, []);
+                        const remoteRepo = parseRemoteJson(data.repo, []);
+                        lastRemoteSignatureRef.current = getDataSignature(remoteStudents, remoteRepo);
+                        lastLocalSignatureRef.current = lastRemoteSignatureRef.current;
+                        setStudents(remoteStudents);
+                        setRepo(remoteRepo);
                         setDbStatus("Sincronizado com Appwrite");
                     } catch (err) {
                         console.error(err);
@@ -1668,24 +1710,35 @@
             if (!supabaseClient || !isHydrated) return;
             const refreshTimer = setInterval(async () => {
                 try {
-                    const { data: stampData, error: stampError } = await supabaseClient
-                        .from("app_state")
-                        .select("updated_at")
-                        .eq("id", SUPABASE_STATE_ID)
-                        .maybeSingle();
+                    if (document.hidden) return;
+                    const { data: stampData, error: stampError } = await withTimeout(
+                        supabaseClient
+                            .from("app_state")
+                            .select("updated_at")
+                            .eq("id", SUPABASE_STATE_ID)
+                            .maybeSingle(),
+                        12000,
+                        "Tempo limite ao atualizar Supabase"
+                    );
                     if (stampError) throw stampError;
                     if (!stampData?.updated_at) return;
                     const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 8000;
                     if (pendingLocalSaveRef.current || localChangeIsFresh) return;
                     if (lastSavedAtRef.current && new Date(stampData.updated_at) <= new Date(lastSavedAtRef.current)) return;
-                    const { data, error } = await supabaseClient
-                        .from("app_state")
-                        .select("students, repo, updated_at")
-                        .eq("id", SUPABASE_STATE_ID)
-                        .maybeSingle();
+                    const { data, error } = await withTimeout(
+                        supabaseClient
+                            .from("app_state")
+                            .select("students, repo, updated_at")
+                            .eq("id", SUPABASE_STATE_ID)
+                            .maybeSingle(),
+                        12000,
+                        "Tempo limite ao carregar dados do Supabase"
+                    );
                     if (error) throw error;
                     if (!data) return;
                     lastSavedAtRef.current = data.updated_at || lastSavedAtRef.current;
+                    lastRemoteSignatureRef.current = getDataSignature(data.students || [], data.repo || []);
+                    lastLocalSignatureRef.current = lastRemoteSignatureRef.current;
                     applyingRemoteRef.current = true;
                     setStudents(Array.isArray(data.students) ? data.students : []);
                     setRepo(Array.isArray(data.repo) ? data.repo : []);
