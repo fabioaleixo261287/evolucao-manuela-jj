@@ -73,7 +73,7 @@
             padding: 14px; 
             padding-bottom: 120px; 
         }
-        body.auth-mode, body.parent-mode { padding: 0; overflow: hidden; }
+        body.auth-mode, body.parent-mode, body.conversation-mode { padding: 0; overflow: hidden; }
 
         .auth-container, .selection-screen {
             min-height: 100vh;
@@ -888,6 +888,66 @@
             color: #fff;
             border-color: rgba(93,154,220,0.18);
         }
+        body.conversation-mode .header-main {
+            margin: 12px 0;
+        }
+        body.conversation-mode .conversation-page {
+            height: calc(100dvh - 90px);
+            margin-bottom: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        body.conversation-mode .conversation-title {
+            flex-shrink: 0;
+            margin: 0 0 12px;
+        }
+        body.conversation-mode .conversation-view {
+            flex: 1;
+            min-height: 0;
+        }
+        body.conversation-mode .conversation-list,
+        body.conversation-mode .conversation-panel {
+            height: 100%;
+            min-height: 0;
+        }
+        body.conversation-mode .conversation-panel .chat-msgs {
+            min-height: 0;
+            overflow-y: auto;
+        }
+        body.parent-mode .parent-card {
+            height: 100dvh;
+            max-height: 100dvh;
+            margin: 0 auto;
+            border-radius: 0;
+        }
+        body.parent-mode .parent-grid,
+        body.parent-mode .parent-side,
+        body.parent-mode .parent-chat {
+            min-height: 0;
+        }
+        body.parent-mode .parent-chat .chat-msgs {
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 560px) {
+            body.conversation-mode .conversation-page {
+                height: calc(100dvh - 78px);
+                padding: 0 8px 8px;
+            }
+            body.conversation-mode .conversation-list {
+                height: 220px;
+            }
+            body.conversation-mode .conversation-panel,
+            body.conversation-mode .conversation-panel .chat-msgs {
+                min-height: 0;
+            }
+            body.parent-mode .parent-card {
+                height: 100dvh;
+                max-height: 100dvh;
+            }
+        }
         .app-splash {
             min-height: 100vh;
             display: flex;
@@ -1452,11 +1512,13 @@
         React.useEffect(() => {
             document.body.classList.toggle("auth-mode", !mode);
             document.body.classList.toggle("parent-mode", mode === "Pais");
+            document.body.classList.toggle("conversation-mode", mode === "Professor" && professorView === "conversas");
             return () => {
                 document.body.classList.remove("auth-mode");
                 document.body.classList.remove("parent-mode");
+                document.body.classList.remove("conversation-mode");
             };
-        }, [mode]);
+        }, [mode, professorView]);
 
         React.useEffect(() => {
             document.body.classList.toggle("theme-light", theme === "light");
