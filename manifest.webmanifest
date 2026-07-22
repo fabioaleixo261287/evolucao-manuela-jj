@@ -2,23 +2,24 @@
   "name": "Alliance Mooca Kids",
   "short_name": "Alliance Mooca Kids",
   "description": "Sistema de evolucao e graduacao infantil da Alliance Mooca Kids.",
+  "id": "./index.html",
   "lang": "pt-BR",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#121212",
+  "background_color": "#07101a",
   "theme_color": "#3498db",
   "categories": ["education", "sports", "productivity"],
   "icons": [
     {
-      "src": "./pwa-icons/icon-192.png",
+      "src": "./pwa-icons/icon-brand-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./pwa-icons/icon-512.png",
+      "src": "./pwa-icons/icon-brand-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

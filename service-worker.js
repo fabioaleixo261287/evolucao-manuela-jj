@@ -1,4 +1,4 @@
-const CACHE_NAME = "alliance-mooca-kids-pwa-v7";
+const CACHE_NAME = "alliance-mooca-kids-pwa-v8";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -10,7 +10,10 @@ const APP_SHELL = [
   "./sistema_graduacao.jpeg",
   "./pwa-icons/icon-192.png",
   "./pwa-icons/icon-512.png",
-  "./pwa-icons/apple-touch-icon.png"
+  "./pwa-icons/apple-touch-icon.png",
+  "./pwa-icons/icon-brand-192.png",
+  "./pwa-icons/icon-brand-512.png",
+  "./pwa-icons/apple-touch-icon-brand.png"
 ];
 
 self.addEventListener("install", (event) => {
