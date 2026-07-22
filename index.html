@@ -1030,16 +1030,27 @@
         }
     };
 
-    const appwriteFetch = async (config, path, options = {}) => {
+    const withTimeout = (promise, timeoutMs = 12000, label = "Tempo limite excedido") => {
+        let timer;
+        const timeout = new Promise((_, reject) => {
+            timer = setTimeout(() => reject(new Error(label)), timeoutMs);
+        });
+        return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+    };
+
+    const appwriteFetch = async (config, path, options = {}, timeoutMs = 12000) => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
         const response = await fetch(`${config.endpoint}${path}`, {
             ...options,
+            signal: controller.signal,
             headers: {
                 "Content-Type": "application/json",
                 "X-Appwrite-Project": config.projectId,
                 "X-Appwrite-Response-Format": "1.9.5",
                 ...(options.headers || {})
             }
-        });
+        }).finally(() => clearTimeout(timer));
         if (!response.ok) {
             const detail = await response.json().catch(() => ({}));
             const err = new Error(detail.message || `Appwrite HTTP ${response.status}`);
@@ -1055,6 +1066,9 @@
     };
 
     const getAppwriteErrorMessage = (err) => {
+        if (err?.name === "AbortError" || String(err?.message || "").toLowerCase().includes("tempo limite")) {
+            return "Appwrite demorou para responder. Usando dados locais.";
+        }
         const message = err?.detail?.message || err?.message || "erro desconhecido";
         const code = err?.status ? ` ${err.status}` : "";
         return `Erro Appwrite${code}: ${message}`;
@@ -1496,11 +1510,15 @@
                 try {
                     const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
                     const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
-                    const { data, error } = await supabaseClient
-                        .from("app_state")
-                        .select("students, repo")
-                        .eq("id", SUPABASE_STATE_ID)
-                        .maybeSingle();
+                    const { data, error } = await withTimeout(
+                        supabaseClient
+                            .from("app_state")
+                            .select("students, repo")
+                            .eq("id", SUPABASE_STATE_ID)
+                            .maybeSingle(),
+                        12000,
+                        "Tempo limite ao conectar Supabase"
+                    );
 
                     if (error) throw error;
 
@@ -1512,12 +1530,16 @@
 
                         if (remoteIsEmpty && localHasData) {
                             const updatedAt = new Date().toISOString();
-                            await supabaseClient.from("app_state").upsert({
-                                id: SUPABASE_STATE_ID,
-                                students: localStudents,
-                                repo: localRepo,
-                                updated_at: updatedAt
-                            });
+                            await withTimeout(
+                                supabaseClient.from("app_state").upsert({
+                                    id: SUPABASE_STATE_ID,
+                                    students: localStudents,
+                                    repo: localRepo,
+                                    updated_at: updatedAt
+                                }),
+                                12000,
+                                "Tempo limite ao enviar dados ao Supabase"
+                            );
                             lastSavedAtRef.current = updatedAt;
                             applyingRemoteRef.current = true;
                             setStudents(localStudents);
@@ -1532,12 +1554,16 @@
                         }
                     } else {
                         const updatedAt = new Date().toISOString();
-                        await supabaseClient.from("app_state").insert({
-                            id: SUPABASE_STATE_ID,
-                            students: localStudents,
-                            repo: localRepo,
-                            updated_at: updatedAt
-                        });
+                        await withTimeout(
+                            supabaseClient.from("app_state").insert({
+                                id: SUPABASE_STATE_ID,
+                                students: localStudents,
+                                repo: localRepo,
+                                updated_at: updatedAt
+                            }),
+                            12000,
+                            "Tempo limite ao criar dados no Supabase"
+                        );
                         lastSavedAtRef.current = updatedAt;
                         setDbStatus("Dados locais enviados ao Supabase");
                     }
@@ -1591,12 +1617,16 @@
             const syncTimer = setTimeout(async () => {
                 try {
                     const updatedAt = new Date().toISOString();
-                    const { error } = await supabaseClient.from("app_state").upsert({
-                        id: SUPABASE_STATE_ID,
-                        students,
-                        repo,
-                        updated_at: updatedAt
-                    });
+                    const { error } = await withTimeout(
+                        supabaseClient.from("app_state").upsert({
+                            id: SUPABASE_STATE_ID,
+                            students,
+                            repo,
+                            updated_at: updatedAt
+                        }),
+                        12000,
+                        "Tempo limite ao salvar no Supabase"
+                    );
                     if (error) throw error;
                     lastSavedAtRef.current = updatedAt;
                     pendingLocalSaveRef.current = false;
