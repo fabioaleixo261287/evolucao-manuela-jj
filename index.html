@@ -41,13 +41,13 @@
             --alliance-red: #3498db;
             --grade-red: #cf2e2e;
             --alliance-green: #2ecc71; 
-            --bg: #121212; 
+            --bg: #07101a; 
             --whatsapp-green: #075e54; 
             --dark: #000000; 
             --light-green: #054d44; 
-            --card-bg: #1e1e1e;
+            --card-bg: #111923;
             --text-color: #e0e0e0;
-            --border-color: #333;
+            --border-color: rgba(93,154,220,0.28);
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -63,8 +63,8 @@
         body { 
             font-family: 'Segoe UI', system-ui, -apple-system; 
             background:
-                linear-gradient(180deg, rgba(52,152,219,0.08) 0, rgba(18,18,18,0) 210px),
-                radial-gradient(circle at 50% -120px, #2b2b2b 0, #151515 38%, #0d0d0d 100%);
+                radial-gradient(circle at 50% -90px, rgba(52,152,219,0.22), transparent 280px),
+                linear-gradient(180deg, #08111d 0%, #07101a 42%, #05070a 100%);
             color: var(--text-color); 
             margin:0; 
             padding: 14px; 
@@ -72,29 +72,39 @@
         }
         body.auth-mode, body.parent-mode { padding: 0; overflow: hidden; }
 
-        .auth-container, .selection-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(145deg, #070707 0%, #151515 45%, #1b1110 100%); padding: 24px 12px; }
+        .auth-container, .selection-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(52,152,219,0.45) 0, rgba(52,152,219,0.16) 18%, transparent 42%),
+                radial-gradient(circle at 50% 34%, rgba(255,255,255,0.08), transparent 30%),
+                linear-gradient(180deg, #07101c 0%, #07101a 34%, #05070a 100%);
+            padding: 22px 12px;
+        }
         body.auth-mode .auth-container, body.auth-mode .selection-screen { height: 100dvh; min-height: 100dvh; overflow: hidden; }
-        .auth-shell { width: min(430px, 100%); display: flex; flex-direction: column; align-items: center; gap: 14px; }
-        .selection-screen .auth-shell { width: min(540px, 100%); display: flex; flex-direction: column; align-items: stretch; gap: 14px; }
-        .brand-card { width: 100%; background: linear-gradient(180deg, #202020, #111); border: 1px solid rgba(255,255,255,0.12); border-radius: 24px; padding: 26px 24px 24px; text-align: center; box-shadow: 0 22px 60px rgba(0,0,0,0.46); backdrop-filter: blur(14px); overflow: hidden; }
-        .auth-hero-frame { width: 210px; height: 150px; overflow: visible; background: transparent; border: 0; border-radius: 0; margin: 0 auto -2px; display: flex; align-items: flex-end; justify-content: center; box-shadow: none; }
-        .auth-hero-image { width: 118%; height: 112%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 12px 16px rgba(0,0,0,0.68)); opacity: 1; display: block; mix-blend-mode: normal; transform: translateY(12px); }
+        .auth-shell { width: min(430px, 100%); display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .selection-screen .auth-shell { width: min(500px, 100%); display: flex; flex-direction: column; align-items: stretch; gap: 18px; }
+        .brand-card { width: 100%; background: transparent; border: 0; border-radius: 0; padding: 0 12px 2px; text-align: center; box-shadow: none; backdrop-filter: none; overflow: visible; }
+        .auth-hero-frame { width: 230px; height: 188px; overflow: visible; background: transparent; border: 0; border-radius: 0; margin: 0 auto 8px; display: flex; align-items: flex-end; justify-content: center; box-shadow: none; }
+        .auth-hero-image { width: 122%; height: 118%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 20px 25px rgba(0,0,0,0.74)); opacity: 1; display: block; mix-blend-mode: normal; transform: translateY(18px); }
         .auth-hero-copy { padding: 0; background: transparent; }
         .auth-logo { width: 142px; height: 112px; object-fit: cover; object-position: 72% 34%; border-radius: 20px; border: 1px solid #2f2f2f; box-shadow: 0 14px 35px rgba(0,0,0,0.35); margin: 0 auto 22px; display: block; user-select: none; pointer-events: none; }
         .auth-kicker { color: var(--alliance-red); font-size: 11px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
-        .auth-title { margin: 0; color: #fff; font-size: 34px; line-height: 1.05; letter-spacing: 0; position: relative; z-index: 1; }
-        .auth-subtitle { margin: 12px 0 0; color: #b7b7b7; font-size: 13px; font-weight: 800; text-transform: uppercase; line-height: 1.45; }
+        .auth-title { margin: 0; color: #fff; font-size: clamp(38px, 10vw, 56px); line-height: 0.95; letter-spacing: 0; position: relative; z-index: 1; text-shadow: 0 12px 30px rgba(0,0,0,0.62); }
+        .auth-subtitle { margin: 14px 0 0; color: #b8c0cd; font-size: 15px; font-weight: 600; text-transform: none; line-height: 1.35; }
         .auth-feature-row { display: none; }
         .auth-feature-row span { border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px 10px; color: #fff; font-size: 11px; font-weight: 900; text-transform: uppercase; background: rgba(0,0,0,0.18); }
         .role-grid { width: 100%; display: grid; grid-template-columns: 1fr; gap: 14px; background: transparent; border: 0; border-radius: 0; padding: 0; box-shadow: none; }
         .role-heading { display: none; }
         .role-heading strong { display: block; color: #fff; font-size: 21px; line-height: 1.1; }
         .role-heading small { display: block; margin-top: 6px; color: #9b9b9b; font-size: 11px; font-weight: 800; text-transform: uppercase; line-height: 1.45; }
-        .btn-select { width: 100%; padding: 18px; border-radius: 18px; border: 1px solid #343434; background: #191919; color: white; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: flex-start; gap: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); transition: 0.2s; text-align: left; min-height: 92px; }
-        .btn-select:hover { transform: translateY(-1px); border-color: rgba(52,152,219,0.75); background: #202020; }
-        .btn-select i { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: #262626; color: var(--alliance-red); font-size: 19px; flex: 0 0 auto; }
-        .btn-select strong { display: block; color: #fff; }
-        .btn-select small { display: block; margin-top: 4px; color: #888; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .btn-select { width: 100%; padding: 22px; border-radius: 22px; border: 1px solid rgba(93,154,220,0.46); background: linear-gradient(135deg, rgba(24,34,47,0.9), rgba(12,17,25,0.92)); color: white; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: flex-start; gap: 20px; box-shadow: 0 16px 42px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05); transition: 0.2s; text-align: left; min-height: 112px; }
+        .btn-select:hover { transform: translateY(-1px); border-color: rgba(52,152,219,0.95); background: linear-gradient(135deg, rgba(30,43,61,0.95), rgba(14,22,34,0.95)); }
+        .btn-select i { width: 72px; height: 72px; border-radius: 20px; display: grid; place-items: center; background: transparent; color: var(--alliance-red); font-size: 48px; flex: 0 0 auto; text-shadow: 0 12px 28px rgba(52,152,219,0.42); }
+        .btn-select strong { display: block; color: #fff; font-size: 25px; line-height: 1.05; text-shadow: 0 8px 22px rgba(0,0,0,0.55); }
+        .btn-select small { display: block; margin-top: 8px; color: #b5bdc9; font-size: 15px; font-weight: 500; text-transform: none; }
         .login-box { background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); padding: 26px; border-radius: 24px; width: 100%; text-align: center; box-shadow: 0 18px 45px rgba(0,0,0,0.45); border: 1px solid var(--border-color); cursor: default; transform: translateZ(0); }
         .login-box .auth-hero-frame { width: 210px; height: 150px; border-radius: 0; border: 0; margin-bottom: -2px; }
         .login-box input { display: block; position: relative; z-index: 1; cursor: text; transform: translateZ(0); }
@@ -699,8 +709,8 @@
         }
         @media (max-width: 720px) {
             .selection-screen .auth-shell { grid-template-columns: 1fr; max-width: 430px; }
-            .brand-card { padding: 24px 20px 22px; }
-            .auth-title { font-size: 28px; }
+            .brand-card { padding: 0 10px 2px; }
+            .auth-title { font-size: clamp(34px, 10vw, 46px); }
             .auth-feature-row { margin-top: 22px; }
             .dashboard-split { grid-template-columns: 1fr; }
         }
@@ -708,11 +718,14 @@
             .auth-container, .selection-screen { padding: 14px; }
             .brand-card, .role-grid, .login-box { border-radius: 20px; }
             .auth-logo { width: 120px; height: 96px; }
-            .auth-hero-frame { width: 198px; height: 142px; }
+            .auth-hero-frame { width: 210px; height: 166px; }
             .login-box .auth-hero-frame { width: 198px; height: 142px; }
             .auth-hero-copy { padding: 0; }
             .auth-feature-row { grid-template-columns: 1fr; }
-            .btn-select { min-height: 82px; padding: 14px; }
+            .btn-select { min-height: 104px; padding: 18px; gap: 16px; }
+            .btn-select i { width: 58px; height: 58px; font-size: 38px; }
+            .btn-select strong { font-size: 22px; }
+            .btn-select small { font-size: 13px; }
             .header-main h2 { font-size: 18px; }
             .dashboard-card { min-height: 112px; padding: 14px; }
             .dashboard-split { grid-template-columns: 1fr; }
@@ -721,21 +734,31 @@
 
         /* Dark theme restores the original dark experience when selected */
         body.theme-dark {
-            background: #111;
+            background:
+                radial-gradient(circle at 50% -90px, rgba(52,152,219,0.22), transparent 280px),
+                linear-gradient(180deg, #08111d 0%, #07101a 42%, #05070a 100%);
             color: #e5e5e5;
         }
         body.theme-dark .auth-container, body.theme-dark .selection-screen {
-            background: linear-gradient(145deg, #070707 0%, #151515 45%, #1b1110 100%);
+            background:
+                radial-gradient(circle at 50% 0%, rgba(52,152,219,0.45) 0, rgba(52,152,219,0.16) 18%, transparent 42%),
+                radial-gradient(circle at 50% 34%, rgba(255,255,255,0.08), transparent 30%),
+                linear-gradient(180deg, #07101c 0%, #07101a 34%, #05070a 100%);
         }
-        body.theme-dark .login-box, body.theme-dark .btn-select {
+        body.theme-dark .login-box {
             background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
             border-color: rgba(255,255,255,0.12);
             box-shadow: 0 20px 55px rgba(0,0,0,0.45);
         }
+        body.theme-dark .btn-select {
+            background: linear-gradient(135deg, rgba(24,34,47,0.9), rgba(12,17,25,0.92));
+            border-color: rgba(93,154,220,0.46);
+            box-shadow: 0 16px 42px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
         body.theme-dark .brand-card {
-            background: linear-gradient(180deg, #202020, #111);
-            border-color: rgba(255,255,255,0.12);
-            box-shadow: 0 22px 60px rgba(0,0,0,0.46);
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
         }
         body.theme-dark .role-grid { background: transparent; border-color: transparent; }
         body.theme-dark .brand-card h1, body.theme-dark .login-box h2, body.theme-dark .login-heading,
@@ -765,9 +788,9 @@
         body.theme-dark .dashboard-filters, body.theme-dark .conversation-list, body.theme-dark .conversation-panel,
         body.theme-dark .empty-state, body.theme-dark .parent-detail, body.theme-dark .parent-panel,
         body.theme-dark .graduation-panel, body.theme-dark .modal-content {
-            background: #181818;
-            border-color: #303030;
-            box-shadow: 0 14px 34px rgba(0,0,0,0.26);
+            background: linear-gradient(135deg, rgba(17,25,35,0.96), rgba(8,12,18,0.96));
+            border-color: rgba(93,154,220,0.28);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
         }
         body.theme-dark .summary-item strong, body.theme-dark .dashboard-card strong,
         body.theme-dark .student-info-chip strong, body.theme-dark .conversation-name {
@@ -776,37 +799,37 @@
         body.theme-dark .search-input, body.theme-dark .conversation-search input,
         body.theme-dark .dashboard-filter select, body.theme-dark input,
         body.theme-dark select, body.theme-dark textarea {
-            background: #0e0e0e;
-            border-color: #303030;
+            background: rgba(5,10,17,0.92);
+            border-color: rgba(93,154,220,0.25);
             color: #fff;
         }
         body.theme-dark .filter-btn, body.theme-dark .dashboard-detail-action,
         body.theme-dark .dashboard-clear, body.theme-dark .theme-choice {
-            background: #151515;
-            border-color: #303030;
+            background: rgba(13,20,30,0.92);
+            border-color: rgba(93,154,220,0.26);
             color: #fff;
         }
         body.theme-dark .filter-btn.active, body.theme-dark .dashboard-card.active {
-            background: #202020;
+            background: linear-gradient(135deg, rgba(52,152,219,0.18), rgba(13,20,30,0.98));
             border-color: var(--alliance-red);
             box-shadow: 0 0 0 3px rgba(52,152,219,0.14), 0 12px 28px rgba(0,0,0,0.28);
         }
         body.theme-dark .dashboard-hero {
-            background: linear-gradient(135deg, rgba(52,152,219,0.25), rgba(20,20,20,0.96));
+            background: linear-gradient(135deg, rgba(52,152,219,0.25), rgba(8,16,26,0.96));
         }
         body.theme-dark .dashboard-panel-title, body.theme-dark .parent-panel-title,
         body.theme-dark .chat-header, body.theme-dark .conversation-search {
-            background: #151515;
-            border-bottom-color: #282828;
+            background: rgba(12,19,28,0.96);
+            border-bottom-color: rgba(93,154,220,0.18);
         }
         body.theme-dark .conversation-item {
-            border-bottom-color: #282828;
+            border-bottom-color: rgba(93,154,220,0.14);
         }
         body.theme-dark .conversation-item.active {
-            background: #242424;
+            background: rgba(52,152,219,0.16);
         }
         body.theme-dark .conversation-item:hover {
-            background: #202020;
+            background: rgba(52,152,219,0.10);
         }
         body.theme-dark .conversation-item.unread {
             background: #102016;
@@ -815,27 +838,27 @@
             color: #dfffe9;
         }
         body.theme-dark .chat-msgs {
-            background: #0b0b0b;
+            background: #05080d;
         }
         body.theme-dark .graduation-meta span {
             background: rgba(255,255,255,0.06);
         }
         body.theme-dark .progress-track, body.theme-dark .dashboard-bar,
         body.theme-dark .belt-bar {
-            background: #111;
-            border-color: #303030;
+            background: #05080d;
+            border-color: rgba(93,154,220,0.22);
         }
         body.theme-dark .action-bar {
-            background: rgba(34,34,34,0.95);
-            border-color: #444;
+            background: rgba(13,20,30,0.95);
+            border-color: rgba(93,154,220,0.28);
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
         body.theme-dark .action-item {
             color: #fff;
         }
         body.theme-dark .box-class, body.theme-dark .degree-box {
-            background: #242424;
-            border-color: #303030;
+            background: rgba(17,25,35,0.95);
+            border-color: rgba(93,154,220,0.24);
             color: #555;
         }
         body.theme-dark .box-class.done {
@@ -845,22 +868,22 @@
             box-shadow: 0 4px 12px rgba(46,204,113,0.3);
         }
         body.theme-dark .box-class.locked {
-            background: #202020;
+            background: rgba(10,15,22,0.95);
             color: #444;
         }
         body.theme-dark .student-info-chip {
-            background: #202020;
-            border-color: #303030;
+            background: rgba(12,19,28,0.92);
+            border-color: rgba(93,154,220,0.22);
         }
         body.theme-dark .status-badge {
-            background: #333;
+            background: rgba(52,152,219,0.18);
             color: #fff;
-            border-color: #444;
+            border-color: rgba(52,152,219,0.45);
         }
         body.theme-dark .msg-wrapper.other .msg-bubble {
-            background: #2a2a2a;
+            background: #111923;
             color: #fff;
-            border-color: #2a2a2a;
+            border-color: rgba(93,154,220,0.18);
         }
         .app-splash {
             min-height: 100vh;
@@ -869,31 +892,29 @@
             justify-content: center;
             padding: 22px;
             background:
-                radial-gradient(circle at top, rgba(52,152,219,0.16), transparent 34%),
-                linear-gradient(180deg, #161616, #050505);
+                radial-gradient(circle at 50% 0%, rgba(52,152,219,0.48) 0, rgba(52,152,219,0.16) 20%, transparent 44%),
+                linear-gradient(180deg, #07101c 0%, #06101a 34%, #05070a 100%);
         }
         .app-splash-card {
-            width: min(360px, 100%);
-            min-height: 260px;
-            border: 1px solid #303030;
-            border-radius: 24px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-            box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+            width: min(420px, 100%);
+            min-height: 430px;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            overflow: hidden;
+            overflow: visible;
         }
-        .app-splash-card .auth-hero-frame {
-            margin-bottom: -2px;
-        }
+        .app-splash-card .auth-hero-frame { width: 230px; height: 188px; margin-bottom: 8px; }
         .app-splash-card .auth-title {
             margin: 0;
         }
         .app-splash-card .auth-subtitle {
-            margin: 6px 0 0;
+            margin: 12px 0 0;
         }
         .app-splash-loading {
             width: 118px;
@@ -2310,17 +2331,17 @@
                             </div>
                             <div className="auth-hero-copy">
                                 <h1 className="auth-title">Alliance Mooca Kids</h1>
-                                <p className="auth-subtitle">Sistema de evolucao e graduacao</p>
+                                <p className="auth-subtitle">Sistema de Evolução e Graduação</p>
                             </div>
                         </div>
                         <div className="role-grid">
                             <button className="btn-select" onClick={() => setSubMode("Professor")}>
                                 <i className="fas fa-graduation-cap"></i>
-                                <span><strong>Professor</strong><small>Gestao da turma</small></span>
+                                <span><strong>Professor</strong><small>Gestão da turma</small></span>
                             </button>
                             <button className="btn-select" onClick={() => setSubMode("Pais")}>
                                 <i className="fas fa-home"></i>
-                                <span><strong>Area dos Pais</strong><small>Acompanhar evolucao</small></span>
+                                <span><strong>Área dos Pais</strong><small>Acompanhar evolução</small></span>
                             </button>
                         </div>
                     </div>
