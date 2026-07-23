@@ -171,6 +171,10 @@
         .challenge-panel .check-row { margin: 0 0 12px; }
         .challenge-panel .form-grid { margin-top: 0; }
         .challenge-empty { color: #777; font-size: 12px; font-weight: 800; padding: 4px 2px; }
+        .professor-notes-panel { display: grid; gap: 8px; margin: -8px 0 16px; }
+        .professor-note { border: 1px solid rgba(52,152,219,0.28); background: linear-gradient(135deg, rgba(52,152,219,0.12), rgba(18,18,18,0.96)); border-radius: 14px; padding: 11px 13px; color: #d9e8f7; font-size: 12px; line-height: 1.45; }
+        .professor-note strong { display: flex; align-items: center; gap: 7px; color: #fff; font-size: 10px; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.3px; }
+        .professor-note.internal { border-color: rgba(241,196,15,0.34); background: linear-gradient(135deg, rgba(241,196,15,0.10), rgba(18,18,18,0.96)); color: #f5e6ac; }
         .student-chat-shortcut { border: 1px solid #343434; background: #151515; color: #ddd; border-radius: 14px; padding: 10px 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; margin-right: 6px; transition: 0.2s; }
         .student-chat-shortcut:hover { border-color: var(--alliance-red); color: #fff; background: #202020; }
         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 14px; align-items: end; }
@@ -311,7 +315,7 @@
         .dashboard-hero { background: linear-gradient(135deg, rgba(52,152,219,0.18), rgba(46,204,113,0.08)), #181818; border: 1px solid #303030; border-radius: 24px; padding: 22px; margin-bottom: 16px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
         .dashboard-hero h3 { color: #fff; margin: 0; font-size: 24px; text-transform: uppercase; }
         .dashboard-hero p { color: #a0a0a0; margin: 7px 0 0; font-size: 13px; font-weight: 700; }
-        .dashboard-filters { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 12px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; align-items: end; }
+        .dashboard-filters { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 12px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; align-items: end; }
         .dashboard-filter label { color: #777; display: block; font-size: 10px; font-weight: 900; text-transform: uppercase; margin: 0 0 6px; }
         .dashboard-filter select { width: 100%; margin: 0; border-radius: 12px; padding: 11px 12px; font-size: 12px; background: #101010; border: 1px solid #333; color: #fff; outline: none; }
         .dashboard-filter select:focus { border-color: var(--alliance-red); box-shadow: 0 0 0 3px rgba(52,152,219,0.14); }
@@ -319,6 +323,12 @@
         .dashboard-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
         .dashboard-card { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 16px; min-height: 108px; box-shadow: 0 10px 25px rgba(0,0,0,0.22); cursor: pointer; text-align: left; transition: 0.2s; }
         .dashboard-card:hover, .dashboard-card.active { border-color: var(--alliance-red); background: #202020; transform: translateY(-1px); }
+        .dashboard-card.static { cursor: default; }
+        .dashboard-card.static:hover { border-color: #303030; background: #181818; transform: none; }
+        .dashboard-card.critical { border-left: 4px solid #f1c40f; }
+        .dashboard-card.warning { border-left: 4px solid #e74c3c; }
+        .dashboard-card.success { border-left: 4px solid var(--alliance-green); }
+        .dashboard-card.info { border-left: 4px solid var(--alliance-red); }
         .dashboard-card.active { box-shadow: 0 0 0 3px rgba(52,152,219,0.14), 0 12px 28px rgba(0,0,0,0.28); }
         .dashboard-card strong { display: block; color: #fff; font-size: 28px; line-height: 1; margin-bottom: 8px; }
         .dashboard-card span { color: #8e8e8e; font-size: 11px; font-weight: 900; text-transform: uppercase; }
@@ -348,13 +358,18 @@
         .dashboard-insight { background: linear-gradient(135deg, rgba(52,152,219,0.16), rgba(15,15,15,0.96)); border: 1px solid #303030; border-radius: 20px; padding: 16px; min-height: 150px; }
         .dashboard-insight h4 { margin: 0 0 10px; color: #fff; font-size: 14px; text-transform: uppercase; }
         .dashboard-insight p { margin: 0; color: #a0a0a0; font-size: 12px; font-weight: 800; line-height: 1.5; }
-        .dashboard-kpi-line { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+        .dashboard-decision-summary { margin-top: 12px; border: 1px solid rgba(52,152,219,0.35); background: rgba(52,152,219,0.10); border-radius: 14px; padding: 11px 12px; color: #dbefff; font-size: 12px; font-weight: 900; display: flex; gap: 9px; align-items: flex-start; line-height: 1.45; }
+        .dashboard-decision-summary i { color: var(--alliance-red); margin-top: 2px; }
+        .dashboard-kpi-line { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
         .dashboard-kpi { background: rgba(255,255,255,0.04); border: 1px solid #2f2f2f; border-radius: 14px; padding: 12px; }
         .dashboard-kpi strong { display: block; color: #fff; font-size: 22px; line-height: 1; margin-bottom: 6px; }
         .dashboard-kpi span { color: #888; font-size: 10px; font-weight: 900; text-transform: uppercase; }
         .dashboard-actions { display: grid; gap: 10px; }
         .dashboard-action-btn { width: 100%; border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 14px; padding: 13px 14px; font-size: 11px; font-weight: 900; text-transform: uppercase; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .dashboard-action-btn:hover { border-color: var(--alliance-red); color: #fff; background: #202020; }
+        .dashboard-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin: 6px 0 10px; }
+        .dashboard-section-heading h4 { color: #fff; margin: 0; font-size: 14px; text-transform: uppercase; }
+        .dashboard-section-heading span { color: #777; font-size: 11px; font-weight: 800; }
         .dashboard-priority-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
         .dashboard-priority-card { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 14px; min-height: 150px; }
         .dashboard-priority-card h4 { color: #fff; margin: 0 0 12px; font-size: 12px; text-transform: uppercase; display: flex; justify-content: space-between; gap: 10px; }
@@ -364,6 +379,13 @@
         .dashboard-mini-row b { display: block; font-size: 12px; color: inherit; }
         .dashboard-mini-row small { display: block; color: #777; font-size: 10px; font-weight: 800; margin-top: 3px; }
         .dashboard-mini-row.alert { border-color: rgba(241,196,15,0.55); background: rgba(241,196,15,0.08); }
+        .movement-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 7px; margin-top: 12px; }
+        .movement-day { border: 1px solid #2f2f2f; background: #101010; border-radius: 12px; padding: 8px 6px; color: #aaa; cursor: pointer; text-align: center; }
+        .movement-day:hover, .movement-day.peak { border-color: var(--alliance-red); background: rgba(52,152,219,0.12); color: #fff; }
+        .movement-day b { display: block; color: inherit; font-size: 10px; text-transform: uppercase; margin-bottom: 7px; }
+        .movement-day i { display: block; height: 42px; width: 8px; margin: 0 auto 7px; border-radius: 999px; background: #252525; position: relative; overflow: hidden; }
+        .movement-day i:after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--movement-height, 0%); background: linear-gradient(180deg, #f1c40f, var(--alliance-red)); border-radius: 999px; }
+        .movement-day span { display: block; font-size: 11px; font-weight: 900; color: #fff; }
         .pending-message-alert { max-width: 1180px; margin: -6px auto 16px; border: 1px solid rgba(37,211,102,0.35); background: linear-gradient(135deg, rgba(37,211,102,0.18), rgba(18,18,18,0.96)); color: #dfffe9; border-radius: 18px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
         .pending-message-alert strong { color: #fff; display: block; font-size: 14px; }
         .pending-message-alert span { color: #b8ffd5; font-size: 12px; font-weight: 800; }
@@ -1657,7 +1679,7 @@
         const [expandedSearchStudentId, setExpandedSearchStudentId] = React.useState(null);
         const [summaryDetail, setSummaryDetail] = React.useState(null);
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
-        const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "30" });
+        const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "30", focus: "Todos" });
         const revealDashboardDetail = (detailKey) => {
             setDashboardDetail(detailKey);
             setTimeout(() => {
@@ -2390,7 +2412,7 @@
         const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || null;
         const totalUnreadProfessor = allConversationStudents.reduce((total, s) => total + s.unread, 0);
         const openDashboardStudents = (filters = {}) => {
-            setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: dashboardFilters.period, ...filters });
+            setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: dashboardFilters.period, focus: "Todos", ...filters });
             revealDashboardDetail("alunos");
         };
         const openStudentFromDashboard = (studentName) => {
@@ -2455,15 +2477,39 @@
             a.click();
             URL.revokeObjectURL(url);
         };
+        const dashboardMatchesFocus = (s) => {
+            const unread = s.chat?.filter(m => !(m.readBy || []).includes("Professor")).length || 0;
+            const progress = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
+            const lastPresence = s.ultimaPresenca ? parseLocalDate(s.ultimaPresenca) : null;
+            const daysWithoutPresence = lastPresence ? Math.floor((today - lastPresence) / 86400000) : null;
+            const readyForExam = progress.elegivel && progress.percentual >= 75;
+            const challenge = getBehaviorChallenge(s);
+            const missingData = !s.responsavel || !s.telefone || !s.matricula;
+            switch (dashboardFilters.focus) {
+                case "Mensagens":
+                    return unread > 0;
+                case "Prontos":
+                    return readyForExam;
+                case "Desafios":
+                    return !!challenge?.active;
+                case "Presenca":
+                    return !lastPresence || daysWithoutPresence >= 10;
+                case "BaixaEvolucao":
+                    return progress.elegivel && progress.percentual < 30;
+                default:
+                    return true;
+            }
+        };
         const dashboardStudents = students.filter(s => {
             const group = getAutoCategory(s.nascimento, s.categoriaOverride);
             const status = s.status || "Ativo";
             const matchesGroup = dashboardFilters.group === "Todos" || group === dashboardFilters.group;
             const matchesFaixa = dashboardFilters.faixa === "Todas" || s.faixa === dashboardFilters.faixa;
             const matchesStatus = dashboardFilters.status === "Todos" || status === dashboardFilters.status;
-            return matchesGroup && matchesFaixa && matchesStatus;
+            const matchesFocus = dashboardMatchesFocus(s);
+            return matchesGroup && matchesFaixa && matchesStatus && matchesFocus;
         });
-        const dashboardFilterActive = dashboardFilters.group !== "Todos" || dashboardFilters.faixa !== "Todas" || dashboardFilters.status !== "Todos";
+        const dashboardFilterActive = dashboardFilters.group !== "Todos" || dashboardFilters.faixa !== "Todas" || dashboardFilters.status !== "Todos" || dashboardFilters.focus !== "Todos";
         const activeStudents = dashboardStudents.filter(s => !["Inativo", "Transferido"].includes(s.status || "Ativo"));
         const readyList = dashboardStudents.filter(s => {
             const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
@@ -2486,6 +2532,40 @@
         const maxCategory = Math.max(1, ...dashboardRows.categorias.map(row => row.value));
         const maxBelt = Math.max(1, ...dashboardRows.faixas.map(row => row.value));
         const maxStatus = Math.max(1, ...dashboardRows.status.map(row => row.value));
+        const extractPresenceDate = (entry) => {
+            if (!entry || !String(entry).includes("Aula") || String(entry).toLowerCase().includes("remo")) return null;
+            const match = String(entry).match(/(\d{2}\/\d{2}\/\d{4})/);
+            return match ? match[1] : null;
+        };
+        const weekDayNames = ["Domingo", "Segunda", "Terca", "Quarta", "Quinta", "Sexta", "Sabado"];
+        const presenceDateMap = new Map();
+        dashboardStudents.forEach(s => {
+            const studentPresenceDates = new Set();
+            (s.historico || []).forEach(entry => {
+                const date = extractPresenceDate(entry);
+                if (date) studentPresenceDates.add(date);
+            });
+            if (s.ultimaPresenca) studentPresenceDates.add(formatDateBR(s.ultimaPresenca));
+            studentPresenceDates.forEach(date => {
+                if (!isInDashboardPeriod(date)) return;
+                if (!presenceDateMap.has(date)) presenceDateMap.set(date, new Set());
+                presenceDateMap.get(date).add(s.id);
+            });
+        });
+        const movementByWeekdayOrdered = weekDayNames.map((day, index) => {
+            const dates = [...presenceDateMap.entries()].filter(([date]) => {
+                const parsed = parseDashboardDate(date);
+                return parsed && parsed.getDay() === index;
+            });
+            const count = dates.reduce((total, [, ids]) => total + ids.size, 0);
+            const peakDate = dates
+                .map(([date, ids]) => ({ date, count: ids.size }))
+                .sort((a, b) => b.count - a.count)[0];
+            return { day, count, peakDate };
+        });
+        const movementByWeekday = [...movementByWeekdayOrdered].sort((a, b) => b.count - a.count);
+        const busiestPresenceDay = movementByWeekday[0] || { day: "Sem dados", count: 0, peakDate: null };
+        const maxMovementCount = Math.max(1, ...movementByWeekdayOrdered.map(row => row.count));
         const studentsWithProgress = dashboardStudents.map(s => ({
             ...s,
             progresso: getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride),
@@ -2538,12 +2618,26 @@
         const lowProgressStudents = studentsWithProgress
             .filter(s => s.progresso.elegivel && s.progresso.percentual < 30)
             .sort((a, b) => a.progresso.percentual - b.progresso.percentual);
+        const followUpMap = new Map();
+        topUnread.forEach(s => {
+            followUpMap.set(s.id, { ...s, followReasons: [`${s.unread} mensagem${s.unread === 1 ? "" : "s"} pendente${s.unread === 1 ? "" : "s"}`] });
+        });
+        noRecentPresenceList.forEach(s => {
+            const reason = s.daysWithoutPresence === null ? "sem presenca registrada" : `${s.daysWithoutPresence} dias sem presenca`;
+            const current = followUpMap.get(s.id) || { ...s, followReasons: [] };
+            followUpMap.set(s.id, { ...current, followReasons: [...current.followReasons, reason] });
+        });
+        challengeReachedStudents.forEach(s => {
+            const reason = `desafio atingiu o prazo em ${formatDateBR(s.desafioInfo.end)}`;
+            const current = followUpMap.get(s.id) || { ...s, followReasons: [] };
+            followUpMap.set(s.id, { ...current, desafioInfo: s.desafioInfo, followReasons: [...current.followReasons, reason] });
+        });
+        const followUpStudents = [...followUpMap.values()].sort((a, b) => (b.followReasons.length - a.followReasons.length) || a.nome.localeCompare(b.nome));
         const attentionStudents = [
             ...topUnread.map(s => ({ ...s, priorityReason: `${s.unread} mensagem${s.unread === 1 ? "" : "s"} pendente${s.unread === 1 ? "" : "s"}`, priorityType: "Mensagem" })),
             ...challengeReachedStudents.slice(0, 5).map(s => ({ ...s, priorityReason: `desafio atingiu o prazo em ${formatDateBR(s.desafioInfo.end)}`, priorityType: "Desafio" })),
             ...noRecentPresenceList.slice(0, 5).map(s => ({ ...s, priorityReason: s.daysWithoutPresence === null ? "sem presença registrada" : `${s.daysWithoutPresence} dias sem presença`, priorityType: "Presença" })),
-            ...examCandidates.slice(0, 5).map(s => ({ ...s, priorityReason: `${s.progresso.percentual}% pronto para exame`, priorityType: "Exame" })),
-            ...incompleteStudents.slice(0, 5).map(s => ({ ...s, priorityReason: "cadastro incompleto", priorityType: "Cadastro" }))
+            ...examCandidates.slice(0, 5).map(s => ({ ...s, priorityReason: `${s.progresso.percentual}% pronto para exame`, priorityType: "Exame" }))
         ].filter((item, index, arr) => arr.findIndex(other => other.id === item.id && other.priorityType === item.priorityType) === index);
         const dashboardInsightText = totalUnreadDashboard > 0
             ? `${totalUnreadDashboard} mensagem${totalUnreadDashboard === 1 ? "" : "s"} pendente${totalUnreadDashboard === 1 ? "" : "s"} pedem atenção antes da próxima aula.`
@@ -2552,6 +2646,7 @@
                 : examCandidates.length > 0
                     ? `${examCandidates.length} aluno${examCandidates.length === 1 ? "" : "s"} já aparece${examCandidates.length === 1 ? "" : "m"} perto do exame.`
                     : "A turma não possui alertas críticos no momento.";
+        const dashboardDecisionText = `Hoje a meta de acompanhamento tem ${followUpStudents.length} aluno${followUpStudents.length === 1 ? "" : "s"} para acao, ${examCandidates.length} aluno${examCandidates.length === 1 ? "" : "s"} perto do exame e ${busiestPresenceDay.count > 0 ? busiestPresenceDay.day : "nenhum dia"} como maior movimento no periodo.`;
         const dashboardDetailMap = {
             alunos: {
                 title: "Alunos cadastrados",
@@ -2659,6 +2754,27 @@
                     meta: file.category || file.categoria || file.type || "Arquivo salvo",
                     action: () => setModalOpen("repo"),
                     actionLabel: "Ver"
+                }))
+            },
+            movimento: {
+                title: "Dia com maior movimento",
+                subtitle: "Distribuicao de presencas por dia da semana",
+                rows: movementByWeekday.filter(row => row.count > 0).map(row => ({
+                    id: row.day,
+                    name: row.day,
+                    meta: `${row.count} presenca${row.count === 1 ? "" : "s"} no periodo${row.peakDate ? ` - maior data: ${row.peakDate.date} com ${row.peakDate.count}` : ""}`,
+                    action: () => {},
+                    actionLabel: "Info"
+                }))
+            },
+            meta: {
+                title: "Meta de acompanhamento",
+                subtitle: "Alunos com mensagem pendente, ausencia ou desafio vencido",
+                rows: followUpStudents.map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: s.followReasons.join(" - "),
+                    action: () => s.followReasons.some(reason => reason.includes("mensagem")) ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)
                 }))
             },
             prioridades: {
@@ -2903,7 +3019,18 @@
                                     {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
                                 </select>
                             </div>
-                            <button className="dashboard-clear" onClick={() => { setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: "30" }); setDashboardDetail(null); }}>
+                            <div className="dashboard-filter">
+                                <label>Foco</label>
+                                <select value={dashboardFilters.focus} onChange={e => setDashboardFilters({...dashboardFilters, focus: e.target.value})}>
+                                    <option value="Todos">Todos</option>
+                                    <option value="Mensagens">Mensagens pendentes</option>
+                                    <option value="Prontos">Prontos para exame</option>
+                                    <option value="Desafios">Desafios ativos</option>
+                                    <option value="Presenca">Sem presenca recente</option>
+                                    <option value="BaixaEvolucao">Abaixo de 30%</option>
+                                </select>
+                            </div>
+                            <button className="dashboard-clear" onClick={() => { setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: "30", focus: "Todos" }); setDashboardDetail(null); }}>
                                 Limpar filtros
                             </button>
                         </div>
@@ -2912,10 +3039,24 @@
                             <div className="dashboard-insight">
                                 <h4>Leitura executiva</h4>
                                 <p>{dashboardInsightText} A visão atual considera {dashboardPeriodLabel} e os filtros selecionados de turma, faixa e status.</p>
+                                <div className="dashboard-decision-summary">
+                                    <i className="fas fa-lightbulb"></i>
+                                    <span>{dashboardDecisionText}</span>
+                                </div>
                                 <div className="dashboard-kpi-line">
                                     <div className="dashboard-kpi"><strong>{recentPresenceStudents.length}</strong><span>presenças no período</span></div>
                                     <div className="dashboard-kpi"><strong>{recentMessages}</strong><span>mensagens no período</span></div>
-                                    <div className="dashboard-kpi"><strong>{attentionStudents.length}</strong><span>pontos de atenção</span></div>
+                                    <div className="dashboard-kpi"><strong>{followUpStudents.length}</strong><span>meta de acompanhamento</span></div>
+                                    <div className="dashboard-kpi"><strong>{busiestPresenceDay.count > 0 ? busiestPresenceDay.day : "-"}</strong><span>dia com mais presencas</span></div>
+                                </div>
+                                <div className="movement-strip">
+                                    {movementByWeekdayOrdered.map(row => (
+                                        <button key={row.day} className={`movement-day ${row.day === busiestPresenceDay.day && row.count > 0 ? "peak" : ""}`} onClick={() => revealDashboardDetail("movimento")}>
+                                            <b>{row.day.slice(0, 3)}</b>
+                                            <i style={{"--movement-height": `${Math.max(6, (row.count / maxMovementCount) * 100)}%`}}></i>
+                                            <span>{row.count}</span>
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                             <div className="dashboard-insight dashboard-actions">
@@ -2927,16 +3068,32 @@
                             </div>
                         </div>
 
+                        <div className="dashboard-section-heading">
+                            <div>
+                                <h4>Indicadores principais</h4>
+                                <span>Clique nos cards de decisao para ver os alunos relacionados.</span>
+                            </div>
+                        </div>
+
                         <div className="dashboard-grid">
-                            <div className={`dashboard-card ${dashboardDetail === "alunos" ? "active" : ""}`} onClick={() => revealDashboardDetail("alunos")}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => revealDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusao</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "mensagens" ? "active" : ""}`} onClick={() => revealDashboardDetail("mensagens")}><strong>{totalUnreadDashboard}</strong><span>Mensagens pendentes</span><small>{topUnread.length} aluno{topUnread.length === 1 ? "" : "s"} com alerta de leitura</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => revealDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolucao media</span><small>Baseado no progresso para a proxima faixa</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presenca recente</span><small>Sem data ou ha 10 dias ou mais</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "cadastro" ? "active" : ""}`} onClick={() => revealDashboardDetail("cadastro")}><strong>{missingCoreData}</strong><span>Cadastro incompleto</span><small>Falta responsavel, WhatsApp ou matricula</small></div>
+                            <div className="dashboard-card static"><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
+                            <div className={`dashboard-card critical ${dashboardDetail === "meta" ? "active" : ""}`} onClick={() => revealDashboardDetail("meta")}><strong>{followUpStudents.length}</strong><span>Meta de acompanhamento</span><small>Mensagens, ausencia e desafios vencidos</small></div>
+                            <div className={`dashboard-card critical ${dashboardDetail === "mensagens" ? "active" : ""}`} onClick={() => revealDashboardDetail("mensagens")}><strong>{totalUnreadDashboard}</strong><span>Mensagens pendentes</span><small>{topUnread.length} aluno{topUnread.length === 1 ? "" : "s"} com alerta de leitura</small></div>
+                            <div className={`dashboard-card warning ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presenca recente</span><small>Sem data ou ha 10 dias ou mais</small></div>
+                            <div className={`dashboard-card critical ${dashboardDetail === "desafios" ? "active" : ""}`} onClick={() => revealDashboardDetail("desafios")}><strong>{challengeStudents.length}</strong><span>Desafios comportamentais</span><small>{challengeReachedStudents.length} com prazo atingido</small></div>
+                            <div className={`dashboard-card success ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => revealDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusao</small></div>
+                            <div className={`dashboard-card info ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => revealDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolucao media</span><small>Baseado no progresso para a proxima faixa</small></div>
+                            <div className={`dashboard-card info ${dashboardDetail === "movimento" ? "active" : ""}`} onClick={() => revealDashboardDetail("movimento")}><strong>{busiestPresenceDay.count > 0 ? busiestPresenceDay.day : "-"}</strong><span>Maior movimento</span><small>{busiestPresenceDay.count > 0 ? `${busiestPresenceDay.count} presenca${busiestPresenceDay.count === 1 ? "" : "s"} no periodo` : "Sem presencas no periodo"}</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => revealDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorizacao pendente</span><small>Alunos sem autorizacao de imagem marcada</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "desafios" ? "active" : ""}`} onClick={() => revealDashboardDetail("desafios")}><strong>{challengeStudents.length}</strong><span>Desafios comportamentais</span><small>{challengeReachedStudents.length} com prazo atingido</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => revealDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponiveis no repositorio interno</small></div>
+                        </div>
+
+                        <div className="dashboard-section-heading">
+                            <div>
+                                <h4>Central de atencao</h4>
+                                <span>Atalhos para agir antes que uma pendencia passe despercebida.</span>
+                            </div>
+                            <button className="dashboard-detail-action" onClick={() => revealDashboardDetail("prioridades")}>Ver lista completa</button>
                         </div>
 
                         <div className="dashboard-priority-grid">
@@ -3203,6 +3360,24 @@
                                 )}
                                 {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
+
+                            {mode === "Professor" && (s.necessidades || s.observacoesInternas) && (
+                                <div className="professor-notes-panel">
+                                    {s.necessidades && (
+                                        <div className="professor-note">
+                                            <strong><i className="fas fa-circle-info"></i> Observa&ccedil;&atilde;o familiar / necessidade especial</strong>
+                                            {s.necessidades}
+                                        </div>
+                                    )}
+                                    {s.observacoesInternas && (
+                                        <div className="professor-note internal">
+                                            <strong><i className="fas fa-lock"></i> Observa&ccedil;&atilde;o interna do professor</strong>
+                                            {s.observacoesInternas}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             {mode === "Pais" && (
                                 <div className="parent-jump-nav">
                                     <button className={`parent-jump-btn ${parentSection === "evolucao" ? "active" : ""}`} onClick={() => setParentSection("evolucao")}>
