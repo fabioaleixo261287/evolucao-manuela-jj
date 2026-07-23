@@ -134,6 +134,9 @@
         .search-container { max-width: 1060px; margin: 0 auto 18px; background: rgba(24,24,24,0.86); border: 1px solid rgba(255,255,255,0.08); border-radius: 22px; padding: 14px; box-shadow: 0 18px 42px rgba(0,0,0,0.32); }
         .search-field { position: relative; }
         .search-input { width: 100%; padding: 18px 20px 18px 54px; border-radius: 18px; border: 1px solid #383838; background: #101010; color: white; font-size: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.04); outline: none; margin: 0; }
+        .search-clear-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: 1px solid #333; background: #151515; color: #ddd; border-radius: 999px; padding: 8px 11px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+        .search-clear-btn:hover { border-color: var(--alliance-red); color: #fff; background: #202020; }
+        .search-field.has-clear .search-input { padding-right: 120px; }
         .search-input:focus { background: #151515; border-color: var(--alliance-red); box-shadow: 0 0 0 4px rgba(52,152,219,0.15); }
         .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #777; font-size: 17px; z-index: 1; }
         
@@ -162,6 +165,12 @@
         .student-info-chip strong { display: block; color: #fff; font-size: 12px; margin-bottom: 3px; text-transform: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .status-badge { background: #27372f; color: #9ff0bd; border-color: #355f46; }
         .status-badge.inativo, .status-badge.pausado { background: #35221f; color: #ffad9f; border-color: #68413b; }
+        .challenge-chip { background: rgba(52,152,219,0.12); border-color: rgba(52,152,219,0.38); }
+        .challenge-chip.overdue { background: rgba(241,196,15,0.14); border-color: rgba(241,196,15,0.55); }
+        .challenge-panel { background: #151515; border: 1px solid var(--border-color); border-radius: 15px; padding: 12px; margin: 10px 0 20px; }
+        .challenge-panel .check-row { margin: 0 0 12px; }
+        .challenge-panel .form-grid { margin-top: 0; }
+        .challenge-empty { color: #777; font-size: 12px; font-weight: 800; padding: 4px 2px; }
         .student-chat-shortcut { border: 1px solid #343434; background: #151515; color: #ddd; border-radius: 14px; padding: 10px 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; margin-right: 6px; transition: 0.2s; }
         .student-chat-shortcut:hover { border-color: var(--alliance-red); color: #fff; background: #202020; }
         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 14px; align-items: end; }
@@ -189,17 +198,24 @@
         .hist-details { margin-top: 15px; border: 1px solid var(--border-color); border-radius: 15px; background: #181818; overflow: hidden; }
         .hist-summary { cursor: pointer; font-size: 12px; font-weight: bold; color: #3498db; padding: 12px; display: flex; justify-content: space-between; align-items: center; list-style: none; }
         .hist-content { padding: 12px; font-size: 11px; max-height: 150px; overflow-y: auto; border-top: 1px solid var(--border-color); color: #777; line-height: 1.6; }
-        .belt-history-list { display: grid; gap: 10px; }
-        .belt-history-card { padding: 12px; background: #161616; border: 1px solid #2d2d2d; border-radius: 14px; }
+        .belt-history-list { display: grid; gap: 8px; }
+        .belt-history-card { padding: 12px; background: #161616; border: 1px solid #2d2d2d; border-radius: 14px; display: grid; gap: 9px; }
         .belt-history-card.current { border-color: rgba(52,152,219,0.55); background: linear-gradient(135deg, rgba(52,152,219,0.12), rgba(20,20,20,0.95)); }
-        .belt-history-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+        .belt-history-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
         .belt-history-head strong { color: #fff; font-size: 14px; }
-        .belt-history-head small { color: #9a9a9a; font-weight: 800; text-transform: uppercase; font-size: 10px; }
+        .belt-history-head small { color: #9a9a9a; font-weight: 800; text-transform: uppercase; font-size: 10px; display: block; margin-top: 3px; }
         .belt-history-status { flex-shrink: 0; padding: 4px 8px; border-radius: 999px; background: #242424; color: #aaa; font-size: 9px; font-weight: 900; text-transform: uppercase; }
         .belt-history-card.current .belt-history-status { background: var(--alliance-red); color: #fff; }
-        .belt-history-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
-        .belt-history-meta span { padding: 8px; border-radius: 10px; background: #202020; color: #aaa; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-        .belt-history-meta b { display: block; color: #fff; font-size: 13px; margin-bottom: 2px; text-transform: none; }
+        .belt-history-status.overdue { background: #f1c40f; color: #111; }
+        .belt-history-period { color: #a0a0a0; font-size: 11px; font-weight: 800; display: flex; flex-wrap: wrap; gap: 6px; }
+        .belt-history-period b { color: #fff; }
+        .belt-history-date-input { background: #101923; border: 1px solid rgba(52,152,219,0.45); color: #fff; border-radius: 8px; padding: 5px 7px; font-size: 11px; font-weight: 800; margin-left: 4px; width: auto; min-height: 0; }
+        .belt-history-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+        .belt-history-meta span { padding: 6px 8px; border-radius: 999px; background: #202020; color: #aaa; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .belt-history-meta b { color: #fff; font-size: 11px; margin-right: 4px; text-transform: none; }
+        .belt-history-card.current .belt-history-meta span:nth-child(1),
+        .belt-history-card.current .belt-history-meta span:nth-child(2),
+        .belt-history-card.current .belt-history-meta span:nth-child(6) { display: none; }
         .belt-history-empty { padding: 12px; border: 1px dashed #333; border-radius: 12px; color: #888; font-size: 11px; line-height: 1.5; }
         
         .chat-container { border-radius: 18px; overflow: hidden; margin-top: 20px; border: 1px solid var(--border-color); background: #181818; }
@@ -220,15 +236,37 @@
 
         .chat-img-preview { width: 100%; max-width: 200px; border-radius: 10px; margin-top: 5px; display: block; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
         .parent-card { max-width: 1060px; margin: 0 auto; height: calc(100dvh - 116px); overflow: hidden; display: flex; flex-direction: column; padding: 18px; }
-        .parent-card .student-top { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #303030; flex-shrink: 0; }
+        .parent-card .student-top { align-items: flex-start; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #303030; flex-shrink: 0; }
+        .student-info-toggle { margin-top: 9px; max-width: 100%; }
+        .student-info-toggle summary { width: fit-content; cursor: pointer; list-style: none; border: 1px solid rgba(52,152,219,0.42); background: rgba(52,152,219,0.12); color: #e8f3ff; border-radius: 999px; padding: 7px 11px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: inline-flex; align-items: center; gap: 7px; }
+        .student-info-toggle summary::-webkit-details-marker { display: none; }
+        .student-info-toggle summary:hover { border-color: var(--alliance-blue); background: rgba(52,152,219,0.22); color: #fff; }
+        .parent-header-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 8px; margin-top: 10px; }
         .parent-card .graduation-panel { flex-shrink: 0; margin: 8px 0 12px; }
-        .parent-nav-inline { margin-left: auto; display: flex; align-items: center; gap: 10px; background: rgba(18,18,18,0.82); border: 1px solid #343434; border-radius: 22px; padding: 8px 12px; box-shadow: 0 10px 28px rgba(0,0,0,0.26); }
-        .parent-nav-inline .action-item { min-width: 54px; font-size: 20px; }
-        .parent-nav-inline .action-item span { font-size: 8px; }
+        .parent-nav-inline { margin-left: auto; display: flex; align-items: flex-start; justify-content: flex-end; gap: 10px; background: transparent; border: 0; border-radius: 0; padding: 0; box-shadow: none; }
+        .parent-nav-inline .action-item { width: 46px; min-width: 46px; height: 46px; border: 1px solid rgba(52,152,219,0.30); background: linear-gradient(135deg, rgba(52,152,219,0.16), rgba(6,14,23,0.92)); border-radius: 16px; padding: 0; font-size: 15px; display: grid; place-items: center; opacity: 1; box-shadow: 0 12px 24px rgba(0,0,0,0.20); position: relative; }
+        .parent-nav-inline .action-item i { color: #d9e8f7; font-size: 16px; grid-area: 1 / 1; }
+        .parent-nav-inline .action-item span { position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%); font-size: 8px; color: #8da5bc; margin-top: 0; letter-spacing: 0.3px; white-space: nowrap; }
+        .parent-nav-inline .action-item:hover { border-color: var(--alliance-blue); background: linear-gradient(135deg, rgba(52,152,219,0.30), rgba(8,20,33,0.96)); transform: translateY(-1px); }
+        .parent-nav-inline .action-item:hover i,
+        .parent-nav-inline .action-item:hover span { color: #fff; }
         .parent-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 18px; align-items: stretch; min-height: 0; flex: 1; }
-        .parent-side { min-height: 0; overflow-y: auto; padding-right: 2px; }
+        .parent-grid.chat-only { grid-template-columns: 1fr; }
+        .parent-grid.chat-only .parent-side { display: none; }
+        .parent-side { min-height: 0; overflow-y: auto; padding-right: 2px; display: flex; flex-direction: column; }
         .parent-panel { background: #151515; border: 1px solid #303030; border-radius: 18px; overflow: hidden; }
         .parent-panel-title { padding: 14px 16px; color: #fff; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #303030; }
+        .parent-jump-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0 0 12px; }
+        .parent-jump-btn { border: 1px solid var(--border-color); background: #111923; color: #e8f3ff; border-radius: 12px; padding: 10px 8px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .parent-jump-btn:hover { border-color: var(--alliance-red); background: #172235; color: #fff; }
+        .parent-jump-btn.active { border-color: var(--alliance-blue); background: linear-gradient(135deg, rgba(52,152,219,0.26), rgba(12,24,36,0.96)); color: #fff; box-shadow: 0 10px 24px rgba(52,152,219,0.18); }
+        .parent-challenge-box { margin-bottom: 12px; background: linear-gradient(135deg, rgba(52,152,219,0.12), rgba(17,25,35,0.92)); border-color: rgba(52,152,219,0.34); }
+        .parent-side .parent-detail { order: 1; }
+        .parent-side .parent-challenge-box { order: 2; }
+        .parent-challenge-body { padding: 14px 16px; display: grid; gap: 10px; }
+        .parent-challenge-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .parent-challenge-summary span { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 9px; color: #aaa; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+        .parent-challenge-summary b { display: block; color: #fff; font-size: 12px; margin-bottom: 3px; text-transform: none; }
         .parent-alert { background: rgba(37,211,102,0.12); color: #b8ffd5; border-bottom: 1px solid rgba(37,211,102,0.25); padding: 10px 14px; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .parent-alert button { width: auto; margin: 0; padding: 7px 10px; border-radius: 999px; background: var(--whatsapp-green); color: #fff; border: 0; font-size: 10px; font-weight: 900; cursor: pointer; }
         .parent-detail { background: #151515; border: 1px solid #303030; border-radius: 18px; overflow: hidden; margin-bottom: 12px; }
@@ -317,7 +355,7 @@
         .dashboard-actions { display: grid; gap: 10px; }
         .dashboard-action-btn { width: 100%; border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 14px; padding: 13px 14px; font-size: 11px; font-weight: 900; text-transform: uppercase; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .dashboard-action-btn:hover { border-color: var(--alliance-red); color: #fff; background: #202020; }
-        .dashboard-priority-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+        .dashboard-priority-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
         .dashboard-priority-card { background: #181818; border: 1px solid #303030; border-radius: 18px; padding: 14px; min-height: 150px; }
         .dashboard-priority-card h4 { color: #fff; margin: 0 0 12px; font-size: 12px; text-transform: uppercase; display: flex; justify-content: space-between; gap: 10px; }
         .dashboard-mini-list { display: grid; gap: 8px; }
@@ -325,6 +363,7 @@
         .dashboard-mini-row:hover { border-color: var(--alliance-red); background: #202020; color: #fff; }
         .dashboard-mini-row b { display: block; font-size: 12px; color: inherit; }
         .dashboard-mini-row small { display: block; color: #777; font-size: 10px; font-weight: 800; margin-top: 3px; }
+        .dashboard-mini-row.alert { border-color: rgba(241,196,15,0.55); background: rgba(241,196,15,0.08); }
         .pending-message-alert { max-width: 1180px; margin: -6px auto 16px; border: 1px solid rgba(37,211,102,0.35); background: linear-gradient(135deg, rgba(37,211,102,0.18), rgba(18,18,18,0.96)); color: #dfffe9; border-radius: 18px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
         .pending-message-alert strong { color: #fff; display: block; font-size: 14px; }
         .pending-message-alert span { color: #b8ffd5; font-size: 12px; font-weight: 800; }
@@ -475,7 +514,7 @@
             .parent-grid { grid-template-columns: 1fr; }
             .parent-card { height: calc(100dvh - 96px); padding: 14px; }
             .parent-card .student-top { flex-wrap: wrap; }
-            .parent-nav-inline { width: 100%; justify-content: space-around; margin-left: 0; }
+            .parent-nav-inline { width: auto; justify-content: flex-start; margin-left: 0; flex-wrap: wrap; padding-bottom: 16px; }
             .parent-chat { min-height: 330px; }
             .graduation-head { align-items: flex-start; flex-direction: column; gap: 5px; }
             .graduation-meta { grid-template-columns: 1fr; }
@@ -916,19 +955,51 @@
             overflow-y: auto;
         }
         body.parent-mode .parent-card {
-            height: 100dvh;
-            max-height: 100dvh;
+            height: auto;
+            min-height: 100dvh;
+            max-height: none;
             margin: 0 auto;
             border-radius: 0;
+            overflow: visible;
+        }
+        body.parent-mode {
+            overflow-y: auto;
         }
         body.parent-mode .parent-grid,
         body.parent-mode .parent-side,
         body.parent-mode .parent-chat {
             min-height: 0;
         }
+        body.parent-mode .parent-grid {
+            grid-template-columns: 1fr;
+            overflow: visible;
+        }
+        body.parent-mode .parent-side,
+        body.parent-mode .parent-chat {
+            overflow: visible;
+        }
+        body.parent-mode .parent-chat {
+            height: auto;
+        }
         body.parent-mode .parent-chat .chat-msgs {
-            min-height: 0;
+            height: 420px;
+            min-height: 260px;
+            max-height: 52vh;
+            flex: none;
             overflow-y: auto;
+        }
+        body.parent-mode .parent-card .student-top {
+            flex-wrap: wrap;
+        }
+        body.parent-mode .parent-nav-inline {
+            width: auto;
+            margin-left: 0;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            padding-bottom: 16px;
+        }
+        body.parent-mode .student-info-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
 
         @media (max-width: 560px) {
@@ -970,6 +1041,43 @@
             body.parent-mode .parent-chat .chat-msgs {
                 min-height: 260px;
                 max-height: 360px;
+            }
+        }
+        @media (max-width: 820px) {
+            body.parent-mode {
+                overflow-y: auto;
+                padding: 0;
+            }
+            body.parent-mode .parent-card {
+                height: auto;
+                min-height: 100dvh;
+                max-height: none;
+                overflow: visible;
+                border-radius: 0;
+                padding: 14px;
+                padding-bottom: 18px;
+            }
+            body.parent-mode .parent-grid {
+                grid-template-columns: 1fr;
+                overflow: visible;
+                gap: 12px;
+            }
+            body.parent-mode .parent-side,
+            body.parent-mode .parent-chat {
+                overflow: visible;
+                min-height: 0;
+            }
+            body.parent-mode .parent-chat {
+                height: auto;
+            }
+            body.parent-mode .parent-chat .chat-msgs {
+                height: 360px;
+                min-height: 260px;
+                max-height: 48vh;
+                flex: none;
+            }
+            body.parent-mode .student-info-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
         .app-splash {
@@ -1117,7 +1225,9 @@
         }
     };
 
-    const withTimeout = (promise, timeoutMs = 12000, label = "Tempo limite excedido") => {
+    const HYDRATION_TIMEOUT_MS = 4500;
+
+    const withTimeout = (promise, timeoutMs = HYDRATION_TIMEOUT_MS, label = "Tempo limite excedido") => {
         let timer;
         const timeout = new Promise((_, reject) => {
             timer = setTimeout(() => reject(new Error(label)), timeoutMs);
@@ -1125,7 +1235,7 @@
         return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
     };
 
-    const appwriteFetch = async (config, path, options = {}, timeoutMs = 12000) => {
+    const appwriteFetch = async (config, path, options = {}, timeoutMs = HYDRATION_TIMEOUT_MS) => {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);
         const response = await fetch(`${config.endpoint}${path}`, {
@@ -1263,6 +1373,39 @@
     function formatDateBR(value) {
         const date = parseLocalDate(value);
         return date ? date.toLocaleDateString('pt-BR') : "";
+    }
+
+    function addDaysISO(value, days) {
+        const date = parseLocalDate(value);
+        const safeDays = Math.max(0, Number(days) || 0);
+        if (!date || !safeDays) return "";
+        const end = new Date(date);
+        end.setDate(end.getDate() + safeDays);
+        const year = end.getFullYear();
+        const month = String(end.getMonth() + 1).padStart(2, "0");
+        const day = String(end.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+
+    function getBehaviorChallenge(student = {}) {
+        const start = student.desafioInicio || "";
+        const days = Number(student.desafioDias) || 0;
+        if (!start || days <= 0) return null;
+        const end = addDaysISO(start, days);
+        const startDate = parseLocalDate(start);
+        const endDate = parseLocalDate(end);
+        const today = parseLocalDate(getTodayISO());
+        const remaining = endDate ? Math.ceil((endDate - today) / 86400000) : null;
+        return {
+            title: student.desafioTitulo || "Desafio comportamental",
+            start,
+            days,
+            end,
+            active: !!student.desafioAtivo,
+            reached: !!student.desafioAtivo && !!endDate && today >= endDate,
+            remaining,
+            elapsed: startDate ? Math.max(0, Math.floor((today - startDate) / 86400000) + 1) : 0
+        };
     }
 
     function calculateAge(birthday) {
@@ -1418,7 +1561,7 @@
             aulasFeitas: Math.max(0, Number(student.aulas) || 0),
             aulasNecessarias: progress.total || (rules > 0 ? rules * 9 : 0),
             percentualFinal: progress.percentual || 0,
-            grausBrancos: states.filter(state => state === 1).length,
+            grausBrancos: states.filter(state => state >= 1).length,
             grausVermelhos: states.filter(state => state === 2).length,
             comportamentais: getBehaviorDoneCount(student.comp),
             tipo: changeType
@@ -1441,7 +1584,7 @@
                 aulasFeitas: progress.feitas || 0,
                 aulasNecessarias: progress.total || 0,
                 percentualFinal: progress.percentual || 0,
-                grausBrancos: currentStates.filter(state => state === 1).length,
+                grausBrancos: currentStates.filter(state => state >= 1).length,
                 grausVermelhos: currentStates.filter(state => state === 2).length,
                 comportamentais: getBehaviorDoneCount(student.comp),
                 tipo: "Em andamento",
@@ -1463,6 +1606,12 @@
     }
 
     const statusOptions = ["Ativo", "Experimental", "Pausado", "Transferido", "Inativo"];
+    const behaviorDegreeOptions = [
+        { key: "Rel", label: "Relacionamento" },
+        { key: "Comp", label: "Comportamento" },
+        { key: "Notas", label: "Notas / organização" },
+        { key: "Hab", label: "Hábitos" }
+    ];
     const createEmptyStudentForm = () => ({
         nome: "",
         nascimento: "",
@@ -1477,7 +1626,12 @@
         ultimaPresenca: "",
         necessidades: "",
         observacoesInternas: "",
-        autorizacaoImagem: false
+        autorizacaoImagem: false,
+        desafioAtivo: false,
+        desafioTitulo: "",
+        desafioGrau: "Rel",
+        desafioInicio: "",
+        desafioDias: ""
     });
 
     function App() {
@@ -1499,6 +1653,7 @@
         const [searchTerm, setSearchTerm] = React.useState("");
         const [filterGroup, setFilterGroup] = React.useState("Todos");
         const [professorView, setProfessorView] = React.useState("alunos");
+        const [parentSection, setParentSection] = React.useState("evolucao");
         const [expandedSearchStudentId, setExpandedSearchStudentId] = React.useState(null);
         const [summaryDetail, setSummaryDetail] = React.useState(null);
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
@@ -1555,6 +1710,19 @@
         }, [theme]);
 
         React.useEffect(() => {
+            const hydrationFallback = setTimeout(() => {
+                setIsHydrated(current => {
+                    if (!current) {
+                        setDbStatus(appwriteServices
+                            ? "Appwrite demorou para responder. Usando dados locais."
+                            : (supabaseClient ? "Supabase demorou para responder. Usando dados locais." : "Banco nÃ£o configurado")
+                        );
+                        return true;
+                    }
+                    return current;
+                });
+            }, HYDRATION_TIMEOUT_MS + 800);
+
             const loadRemoteData = async () => {
                 if (appwriteServices) {
                     try {
@@ -1690,6 +1858,7 @@
             };
 
             loadRemoteData();
+            return () => clearTimeout(hydrationFallback);
         }, [appwriteServices, supabaseClient]);
 
         React.useEffect(() => { 
@@ -2007,6 +2176,49 @@
             setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'âœ…':'❌'} ${label}`] } : s));
         };
 
+        const updateBehaviorChallenge = (sid, patch, logMessage = "") => {
+            if(mode !== "Professor") return;
+            setStudents(prev => prev.map(s => {
+                if (s.id !== sid) return s;
+                const historico = logMessage ? [...(s.historico || []), logMessage] : s.historico;
+                return { ...s, ...patch, historico };
+            }));
+        };
+
+        const updateCurrentBeltStart = (sid, dateValue) => {
+            if(mode !== "Professor") return;
+            setStudents(prev => prev.map(s => {
+                if (s.id !== sid) return s;
+                const formatted = dateValue ? formatDateBR(dateValue) : "sem data";
+                return {
+                    ...s,
+                    cicloFaixaInicio: dateValue,
+                    historico: [...(s.historico || []), `INÍCIO DA FAIXA ATUAL ALTERADO: ${formatted} | ${new Date().toLocaleDateString('pt-BR')}`]
+                };
+            }));
+        };
+
+        const toggleMeritoWithChallenge = (sid, key, label) => {
+            if(mode !== "Professor") return;
+            setStudents(prev => prev.map(s => {
+                if (s.id !== sid) return s;
+                const willMark = !s.comp?.[key];
+                const shouldCloseChallenge = willMark && s.desafioAtivo && s.desafioGrau === key;
+                const challengeInfo = shouldCloseChallenge ? getBehaviorChallenge(s) : null;
+                const logs = [`${willMark ? "CONCLUIDO" : "REMOVIDO"} ${label}`];
+                if (shouldCloseChallenge) {
+                    logs.push(`DESAFIO COMPORTAMENTAL ENCERRADO: ${challengeInfo?.title || label} vinculado ao grau ${label} | ${new Date().toLocaleDateString('pt-BR')}`);
+                }
+                return {
+                    ...s,
+                    comp: { ...s.comp, [key]: willMark },
+                    desafioAtivo: shouldCloseChallenge ? false : s.desafioAtivo,
+                    desafioConclusao: shouldCloseChallenge ? getTodayISO() : s.desafioConclusao,
+                    historico: [...(s.historico || []), ...logs]
+                };
+            }));
+        };
+
         const toggleGrauPresenca = (sid, degreeIndex) => {
             if(mode !== "Professor") return;
             const aluno = students.find(s => s.id === sid);
@@ -2293,6 +2505,12 @@
         }).length;
         const missingCoreData = dashboardStudents.filter(s => !s.responsavel || !s.telefone || !s.matricula).length;
         const imageAuthPending = dashboardStudents.filter(s => !s.autorizacaoImagem).length;
+        const challengeStudents = dashboardStudents
+            .map(s => ({ ...s, desafioInfo: getBehaviorChallenge(s) }))
+            .filter(s => s.desafioInfo?.active);
+        const challengeReachedStudents = challengeStudents
+            .filter(s => s.desafioInfo.reached)
+            .sort((a, b) => parseLocalDate(a.desafioInfo.end) - parseLocalDate(b.desafioInfo.end));
         const averageProgress = studentsWithProgress.length ? Math.round(studentsWithProgress.reduce((total, s) => total + (s.progresso.percentual || 0), 0) / studentsWithProgress.length) : 0;
         const totalUnreadDashboard = studentsWithProgress.reduce((total, s) => total + s.unread, 0);
         const unreadConversationCount = studentsWithProgress.filter(s => s.unread > 0).length;
@@ -2322,6 +2540,7 @@
             .sort((a, b) => a.progresso.percentual - b.progresso.percentual);
         const attentionStudents = [
             ...topUnread.map(s => ({ ...s, priorityReason: `${s.unread} mensagem${s.unread === 1 ? "" : "s"} pendente${s.unread === 1 ? "" : "s"}`, priorityType: "Mensagem" })),
+            ...challengeReachedStudents.slice(0, 5).map(s => ({ ...s, priorityReason: `desafio atingiu o prazo em ${formatDateBR(s.desafioInfo.end)}`, priorityType: "Desafio" })),
             ...noRecentPresenceList.slice(0, 5).map(s => ({ ...s, priorityReason: s.daysWithoutPresence === null ? "sem presença registrada" : `${s.daysWithoutPresence} dias sem presença`, priorityType: "Presença" })),
             ...examCandidates.slice(0, 5).map(s => ({ ...s, priorityReason: `${s.progresso.percentual}% pronto para exame`, priorityType: "Exame" })),
             ...incompleteStudents.slice(0, 5).map(s => ({ ...s, priorityReason: "cadastro incompleto", priorityType: "Cadastro" }))
@@ -2421,6 +2640,16 @@
                     action: () => { setEditingStudent({...s}); setModalOpen("edit"); }
                 }))
             },
+            desafios: {
+                title: "Desafios comportamentais",
+                subtitle: "Alunos com desafio ativo e data de termino calculada",
+                rows: challengeStudents.map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: `${s.desafioInfo.title} - ${behaviorDegreeOptions.find(option => option.key === s.desafioGrau)?.label || "Grau nao informado"} - termina em ${formatDateBR(s.desafioInfo.end)}${s.desafioInfo.reached ? " - prazo atingido" : ` - faltam ${Math.max(0, s.desafioInfo.remaining)} dia${s.desafioInfo.remaining === 1 ? "" : "s"}`}`,
+                    action: () => openStudentFromDashboard(s.nome)
+                }))
+            },
             arquivos: {
                 title: "Arquivos",
                 subtitle: "Anexos disponiveis no repositorio interno",
@@ -2471,10 +2700,26 @@
                         <div key={item.id} className={`belt-history-card ${item.current ? "current" : ""}`}>
                             <div className="belt-history-head">
                                 <div>
-                                    <strong>{item.faixa}</strong>
-                                    <small>{item.current ? "Faixa atual" : `${item.tipo || "Concluida"} para ${item.proximaFaixa || "proxima faixa"}`}</small>
+                                    <strong>{item.current ? `Faixa Atual: ${item.faixa}` : `${item.faixa} concluida`}</strong>
+                                    <small>{item.current ? `Turma: ${item.turma || "Turma atual"}` : `${item.tipo || "Concluida"} para ${item.proximaFaixa || "proxima faixa"}`}</small>
                                 </div>
-                                <span className="belt-history-status">{item.current ? `${item.percentualFinal}%` : "Concluida"}</span>
+                                <span className="belt-history-status">{item.current ? `${item.percentualFinal}%` : "Finalizada"}</span>
+                            </div>
+                            <div className="belt-history-period">
+                                <span>
+                                    <b>{item.current ? "Inicio da Faixa Atual:" : "Inicio:"}</b>
+                                    {item.current && mode === "Professor" ? (
+                                        <input
+                                            className="belt-history-date-input"
+                                            type="date"
+                                            value={student.cicloFaixaInicio || student.matricula || ""}
+                                            onChange={e => updateCurrentBeltStart(student.id, e.target.value)}
+                                        />
+                                    ) : (
+                                        <> {item.dataInicio ? formatDateBR(item.dataInicio) : "sem data"}</>
+                                    )}
+                                </span>
+                                <span><b>Conclusao:</b> {item.dataConclusao ? formatDateBR(item.dataConclusao) : "em andamento"}</span>
                             </div>
                             <div className="belt-history-meta">
                                 <span><b>{item.dataInicio ? formatDateBR(item.dataInicio) : "Sem data"}</b>Início</span>
@@ -2587,7 +2832,7 @@
                         )}
                         {professorView === "alunos" && (
                             <div className="search-container">
-                                <div className="search-field">
+                                <div className={`search-field ${searchTerm || filterGroup !== "Todos" ? "has-clear" : ""}`}>
                                     <i className="fas fa-search search-icon"></i>
                                     <input
                                         className="search-input"
@@ -2600,6 +2845,11 @@
                                             setExpandedSearchStudentId(null);
                                         }}
                                     />
+                                    {(searchTerm || filterGroup !== "Todos") && (
+                                        <button className="search-clear-btn" onClick={() => { setSearchTerm(""); setFilterGroup("Todos"); setExpandedSearchStudentId(null); }}>
+                                            <i className="fas fa-times"></i> Limpar
+                                        </button>
+                                    )}
                                 </div>
                                 <div className="filter-bar">
                                     {groups.map(g => (
@@ -2671,6 +2921,7 @@
                             <div className="dashboard-insight dashboard-actions">
                                 <h4>Ações rápidas</h4>
                                 <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("prioridades")}><span>Ver atenção da semana</span><i className="fas fa-bell"></i></button>
+                                <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("desafios")}><span>Desafios de graus comportamentais</span><i className="fas fa-stopwatch"></i></button>
                                 <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("evolucao-baixa")}><span>Alunos abaixo de 30%</span><i className="fas fa-chart-line"></i></button>
                                 <button className="dashboard-action-btn" onClick={exportDashboardCsv}><span>Exportar CSV do painel</span><i className="fas fa-file-export"></i></button>
                             </div>
@@ -2684,6 +2935,7 @@
                             <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presenca recente</span><small>Sem data ou ha 10 dias ou mais</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "cadastro" ? "active" : ""}`} onClick={() => revealDashboardDetail("cadastro")}><strong>{missingCoreData}</strong><span>Cadastro incompleto</span><small>Falta responsavel, WhatsApp ou matricula</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => revealDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorizacao pendente</span><small>Alunos sem autorizacao de imagem marcada</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "desafios" ? "active" : ""}`} onClick={() => revealDashboardDetail("desafios")}><strong>{challengeStudents.length}</strong><span>Desafios comportamentais</span><small>{challengeReachedStudents.length} com prazo atingido</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => revealDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponiveis no repositorio interno</small></div>
                         </div>
 
@@ -2708,6 +2960,17 @@
                                             <small>{s.daysWithoutPresence === null ? "sem presença registrada" : `${s.daysWithoutPresence} dias sem presença`}</small>
                                         </button>
                                     )) : <div className="dashboard-note">Sem ausência recente.</div>}
+                                </div>
+                            </div>
+                            <div className="dashboard-priority-card">
+                                <h4><span>Desafios</span><i className="fas fa-stopwatch"></i></h4>
+                                <div className="dashboard-mini-list">
+                                    {challengeStudents.length > 0 ? challengeStudents.slice(0, 3).map(s => (
+                                        <button className={`dashboard-mini-row ${s.desafioInfo.reached ? "alert" : ""}`} key={`mini-challenge-${s.id}`} onClick={() => openStudentFromDashboard(s.nome)}>
+                                            <b>{s.nome}</b>
+                                            <small>{s.desafioInfo.reached ? "prazo atingido" : `faltam ${Math.max(0, s.desafioInfo.remaining)} dia${s.desafioInfo.remaining === 1 ? "" : "s"}`} - {behaviorDegreeOptions.find(option => option.key === s.desafioGrau)?.label || s.desafioInfo.title}</small>
+                                        </button>
+                                    )) : <div className="dashboard-note">Sem desafios ativos.</div>}
                                 </div>
                             </div>
                             <div className="dashboard-priority-card">
@@ -2877,6 +3140,7 @@
                     const defaultAvatar = s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
                     const progresso = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
                     const currentCycleClasses = rules > 0 ? getCurrentCycleClasses(s.aulas, rules) : 0;
+                    const desafioInfo = getBehaviorChallenge(s);
                     const showCompactStudentCard = useCompactStudentResults && expandedSearchStudentId !== s.id;
 
                     if (showCompactStudentCard) {
@@ -2910,12 +3174,26 @@
                                     </h3>
                                     <div className="cat-badge">{s.faixa}</div><br/>
                                     <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento, s.categoriaOverride)}{s.categoriaOverride && s.categoriaOverride !== "Auto" ? " (MANUAL)" : ""}{ruleInfo.elegivel ? ` • ${rules} AULAS/GRAU` : ''}</small><br/>
+                                    {mode === "Pais" && (
+                                        <details className="student-info-toggle">
+                                            <summary><i className="fas fa-user-edit"></i> Informa&ccedil;&otilde;es do aluno</summary>
+                                            <div className="parent-header-info">
+                                            <div className={`student-info-chip status-badge ${(s.status || "Ativo").toLowerCase()}`}><strong>{s.status || "Ativo"}</strong>Status</div>
+                                            {s.responsavel && <div className="student-info-chip"><strong>{s.responsavel}</strong>Respons&aacute;vel</div>}
+                                            {s.telefone && <div className="student-info-chip"><strong>{s.telefone}</strong>WhatsApp</div>}
+                                            {s.matricula && <div className="student-info-chip"><strong>{formatDateBR(s.matricula)}</strong>Matr&iacute;cula</div>}
+                                            {s.ultimaPresenca && <div className="student-info-chip"><strong>{formatDateBR(s.ultimaPresenca)}</strong>&Uacute;ltima presen&ccedil;a</div>}
+                                            <div className="student-info-chip"><strong>{s.autorizacaoImagem ? "Sim" : "N\u00e3o"}</strong>Autoriza&ccedil;&atilde;o de imagem</div>
+                                            {desafioInfo?.active && <div className={`student-info-chip challenge-chip ${desafioInfo.reached ? "overdue" : ""}`}><strong>{desafioInfo.reached ? "Prazo atingido" : formatDateBR(desafioInfo.end)}</strong>{behaviorDegreeOptions.find(option => option.key === s.desafioGrau)?.label || desafioInfo.title}</div>}
+                                            </div>
+                                        </details>
+                                    )}
                                 </div>
                                 {mode === "Pais" && (
                                     <div className="parent-nav-inline">
-                                        <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/blog/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
-                                        <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
-                                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); setFilterGroup("Todos"); setExpandedSearchStudentId(null); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
+                                        <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/blog/', '_blank')}><i className="fas fa-up-right-from-square"></i><span>Site</span></div>
+                                        <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-tree"></i><span>Arquivos</span></div>
+                                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); setFilterGroup("Todos"); setExpandedSearchStudentId(null); }}><i className="fas fa-right-from-bracket"></i><span>Sair</span></div>
                                     </div>
                                 )}
                                 {mode === "Professor" && (
@@ -2925,20 +3203,21 @@
                                 )}
                                 {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
                             </div>
+                            {mode === "Pais" && (
+                                <div className="parent-jump-nav">
+                                    <button className={`parent-jump-btn ${parentSection === "evolucao" ? "active" : ""}`} onClick={() => setParentSection("evolucao")}>
+                                        <i className="fas fa-route"></i> Evolucao
+                                    </button>
+                                    <button className={`parent-jump-btn ${parentSection === "desafio" ? "active" : ""}`} onClick={() => setParentSection("desafio")}>
+                                        <i className="fas fa-stopwatch"></i> Desafio
+                                    </button>
+                                    <button className={`parent-jump-btn ${parentSection === "conversa" ? "active" : ""}`} onClick={() => setParentSection("conversa")}>
+                                        <i className="fab fa-whatsapp"></i> Conversa
+                                    </button>
+                                </div>
+                            )}
 
-                            <div className="student-info-grid">
-                                <div className={`student-info-chip status-badge ${(s.status || "Ativo").toLowerCase()}`}><strong>{s.status || "Ativo"}</strong>Status</div>
-                                {s.responsavel && <div className="student-info-chip"><strong>{s.responsavel}</strong>Responsável</div>}
-                                {s.telefone && <div className="student-info-chip"><strong>{s.telefone}</strong>WhatsApp</div>}
-                                {s.matricula && <div className="student-info-chip"><strong>{formatDateBR(s.matricula)}</strong>Matrícula</div>}
-                                {s.ultimaPresenca && <div className="student-info-chip"><strong>{formatDateBR(s.ultimaPresenca)}</strong>Última presença</div>}
-                                {mode === "Professor" && s.necessidades && <div className="student-info-chip"><strong>{s.necessidades}</strong>Observação interna</div>}
-                                <div className="student-info-chip"><strong>{s.autorizacaoImagem ? "Sim" : "Não"}</strong>Autorização de imagem</div>
-                                {mode === "Professor" && s.email && <div className="student-info-chip"><strong>{s.email}</strong>E-mail</div>}
-                                {mode === "Professor" && s.observacoesInternas && <div className="student-info-chip"><strong>{s.observacoesInternas}</strong>Obs. professor</div>}
-                            </div>
-
-                            <div className="graduation-panel">
+                            {(mode !== "Pais" || parentSection === "evolucao") && <div className="graduation-panel" id={mode === "Pais" ? `parent-evolution-${s.id}` : undefined}>
                                 <div className="graduation-head">
                                     <div className="graduation-title"><i className="fas fa-route"></i> Caminho até a próxima faixa</div>
                                     <div className="graduation-date"><i className="fas fa-calendar-alt"></i> {progresso.previsao}</div>
@@ -2957,12 +3236,36 @@
                                         <span style={{gridColumn: '1 / -1'}}><strong>Fora da regra</strong>{progresso.aviso}</span>
                                     )}
                                 </div>
-                            </div>
+                            </div>}
 
                             {mode === "Pais" && (
-                                <div className="parent-grid">
+                                <div className={`parent-grid ${parentSection === "conversa" ? "chat-only" : ""}`}>
                                     <div className="parent-side">
-                                        <details className="parent-detail">
+                                        {parentSection === "desafio" && <div className="parent-panel parent-challenge-box" id={`parent-challenge-${s.id}`}>
+                                            <div className="parent-panel-title">
+                                                <span><i className="fas fa-stopwatch"></i> Desafio comportamental</span>
+                                                {desafioInfo?.active && <b className={`belt-history-status ${desafioInfo.reached ? "overdue" : ""}`}>{desafioInfo.reached ? "Atingido" : "Ativo"}</b>}
+                                            </div>
+                                            <div className="parent-challenge-body">
+                                                {desafioInfo?.active ? (
+                                                    <>
+                                                        <div className="parent-challenge-summary">
+                                                            <span><b>{behaviorDegreeOptions.find(option => option.key === s.desafioGrau)?.label || "Grau"}</b>Grau vinculado</span>
+                                                            <span><b>{desafioInfo.title}</b>Desafio</span>
+                                                            <span><b>{formatDateBR(desafioInfo.start)}</b>Inicio</span>
+                                                            <span><b>{formatDateBR(desafioInfo.end)}</b>Termino</span>
+                                                        </div>
+                                                        <div className={`student-info-chip challenge-chip ${desafioInfo.reached ? "overdue" : ""}`}>
+                                                            <strong>{desafioInfo.reached ? "Prazo atingido" : `Faltam ${Math.max(0, desafioInfo.remaining)} dia${desafioInfo.remaining === 1 ? "" : "s"}`}</strong>
+                                                            Acompanhamento do professor
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="belt-history-empty">Nenhum desafio comportamental ativo no momento.</div>
+                                                )}
+                                            </div>
+                                        </div>}
+                                        {(parentSection === "evolucao" || parentSection === "desafio") && <details className="parent-detail">
                                             <summary><span><i className="fas fa-medal"></i> Detalhes da graduação</span><i className="fas fa-chevron-down"></i></summary>
                                             <div className="parent-detail-body">
                                                 <span className="section-label">Aulas de Presença</span>
@@ -2989,15 +3292,15 @@
                                                     })}
                                                 </div>
                                             </div>
-                                        </details>
-                                        <details className="parent-detail">
+                                        </details>}
+                                        {parentSection === "evolucao" && <details className="parent-detail">
                                             <summary><span><i className="fas fa-history"></i> Histórico de evolução</span><i className="fas fa-chevron-down"></i></summary>
                                             <div className="parent-detail-body">
                                                 {renderBeltHistory(s, progresso)}
                                             </div>
-                                        </details>
+                                        </details>}
                                     </div>
-                                    <div className="parent-panel parent-chat">
+                                    {parentSection === "conversa" && <div className="parent-panel parent-chat" id={`parent-chat-${s.id}`}>
                                         <div className="parent-panel-title">
                                             <span><i className="fab fa-whatsapp" style={{color: 'var(--whatsapp-green)'}}></i> Conversa com o professor</span>
                                             {unread > 0 && <b className="unread-dot">{unread}</b>}
@@ -3026,7 +3329,7 @@
                                             <input placeholder="Mensagem..." value={chatInputs[s.id] || ""} onChange={e => setChatInputs({...chatInputs, [s.id]: e.target.value})} onKeyDown={e => e.key === 'Enter' && sendMessage(s.id)}/>
                                             <i className="fas fa-paper-plane" style={{color: 'var(--alliance-green)', cursor:'pointer'}} onClick={() => sendMessage(s.id)}></i>
                                         </div>
-                                    </div>
+                                    </div>}
                                 </div>
                             )}
 
@@ -3069,7 +3372,7 @@
                                         <span style={{ fontSize: '9px', fontWeight: '800', color: '#888', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{m.l}</span>
                                         <div 
                                             className={`degree-box ${s.comp?.[m.k] ? m.c : ''}`} 
-                                            onClick={() => toggleMerito(s.id, m.k, m.l)}
+                                            onClick={() => toggleMeritoWithChallenge(s.id, m.k, m.l)}
                                             style={{ width: '100%', margin: 0, height: '42px' }}
                                         >
                                             <i className={`fas ${m.i}`} style={{ color: s.comp?.[m.k] ? '#000' : '#444', fontSize: '15px' }}></i>
@@ -3077,6 +3380,59 @@
                                     </div>
                                 ))}
                             </div>
+
+                            {mode === "Professor" && (
+                                <>
+                                    <span className="section-label">Desafio de Graus Comportamentais</span>
+                                    <div className="challenge-panel">
+                                        <label className="check-row">
+                                            <input
+                                                type="checkbox"
+                                                checked={!!s.desafioAtivo}
+                                                onChange={e => {
+                                                    const ativo = e.target.checked;
+                                                    updateBehaviorChallenge(
+                                                        s.id,
+                                                        ativo
+                                                            ? {
+                                                                desafioAtivo: true,
+                                                                desafioTitulo: s.desafioTitulo || "Desafio comportamental",
+                                                                desafioGrau: s.desafioGrau || "Rel",
+                                                                desafioInicio: s.desafioInicio || getTodayISO(),
+                                                                desafioDias: s.desafioDias || "7"
+                                                            }
+                                                            : { desafioAtivo: false },
+                                                        `DESAFIO COMPORTAMENTAL: ${ativo ? "ativado" : "desativado"} em ${new Date().toLocaleDateString('pt-BR')}`
+                                                    );
+                                                }}
+                                            />
+                                            Desafio ativo para acompanhar graus comportamentais
+                                        </label>
+                                        {s.desafioAtivo ? (
+                                            <div className="form-grid">
+                                                <input placeholder="Nome do desafio" value={s.desafioTitulo || ""} onChange={e => updateBehaviorChallenge(s.id, { desafioTitulo: e.target.value })} />
+                                                <div>
+                                                    <label className="field-label">Grau vinculado</label>
+                                                    <select value={s.desafioGrau || "Rel"} onChange={e => updateBehaviorChallenge(s.id, { desafioGrau: e.target.value })}>
+                                                        {behaviorDegreeOptions.map(option => <option key={option.key} value={option.key}>{option.label}</option>)}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="field-label">Inicio do desafio</label>
+                                                    <input type="date" value={s.desafioInicio || ""} onChange={e => updateBehaviorChallenge(s.id, { desafioInicio: e.target.value })} />
+                                                </div>
+                                                <input type="number" min="1" placeholder="Quantidade de dias" value={s.desafioDias || ""} onChange={e => updateBehaviorChallenge(s.id, { desafioDias: e.target.value })} />
+                                                <div className={`student-info-chip challenge-chip ${desafioInfo?.reached ? "overdue" : ""}`}>
+                                                    <strong>{desafioInfo?.end ? formatDateBR(desafioInfo.end) : "Informe inicio e dias"}</strong>
+                                                    {desafioInfo?.reached ? "Prazo atingido" : "Termino previsto"}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="challenge-empty">Nenhum desafio ativo para este aluno.</div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
 
                             {mode === "Professor" && pronto && (
                                 <button className="btn-full btn-graduar" onClick={() => graduarAlunoComHistorico(s.id)}><i className="fas fa-medal"></i> GRADUAR PARA {beltOrder[beltOrder.indexOf(s.faixa)+1]}</button>
@@ -3323,6 +3679,17 @@
                                 const statusNovo = alunoAtualizado.status || "Ativo";
                                 if (alunoOriginal && statusAnterior !== statusNovo) {
                                     logs.push(`📌 STATUS ALTERADO: ${statusAnterior} → ${statusNovo} | ${hoje}`);
+                                }
+
+                                const desafioDepois = getBehaviorChallenge(alunoAtualizado);
+                                const desafioMudou = alunoOriginal && (
+                                    !!alunoOriginal.desafioAtivo !== !!alunoAtualizado.desafioAtivo ||
+                                    (alunoOriginal.desafioTitulo || "") !== (alunoAtualizado.desafioTitulo || "") ||
+                                    (alunoOriginal.desafioInicio || "") !== (alunoAtualizado.desafioInicio || "") ||
+                                    String(alunoOriginal.desafioDias || "") !== String(alunoAtualizado.desafioDias || "")
+                                );
+                                if (desafioMudou) {
+                                    logs.push(`DESAFIO COMPORTAMENTAL: ${desafioDepois?.active ? `${desafioDepois.title} de ${formatDateBR(desafioDepois.start)} ate ${formatDateBR(desafioDepois.end)}` : "desativado"} | ${hoje}`);
                                 }
 
                                 if (logs.length) alunoAtualizado = { ...alunoAtualizado, historico: [...(alunoOriginal?.historico || []), ...logs] };
