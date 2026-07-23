@@ -360,13 +360,18 @@
         .dashboard-insight p { margin: 0; color: #a0a0a0; font-size: 12px; font-weight: 800; line-height: 1.5; }
         .dashboard-decision-summary { margin-top: 12px; border: 1px solid rgba(52,152,219,0.35); background: rgba(52,152,219,0.10); border-radius: 14px; padding: 11px 12px; color: #dbefff; font-size: 12px; font-weight: 900; display: flex; gap: 9px; align-items: flex-start; line-height: 1.45; }
         .dashboard-decision-summary i { color: var(--alliance-red); margin-top: 2px; }
-        .dashboard-kpi-line { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+        .dashboard-kpi-line { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
         .dashboard-kpi { background: rgba(255,255,255,0.04); border: 1px solid #2f2f2f; border-radius: 14px; padding: 12px; }
         .dashboard-kpi strong { display: block; color: #fff; font-size: 22px; line-height: 1; margin-bottom: 6px; }
         .dashboard-kpi span { color: #888; font-size: 10px; font-weight: 900; text-transform: uppercase; }
         .dashboard-actions { display: grid; gap: 10px; }
         .dashboard-action-btn { width: 100%; border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 14px; padding: 13px 14px; font-size: 11px; font-weight: 900; text-transform: uppercase; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .dashboard-action-btn:hover { border-color: var(--alliance-red); color: #fff; background: #202020; }
+        .dashboard-sync-box { border: 1px solid rgba(52,152,219,0.28); background: rgba(52,152,219,0.08); border-radius: 14px; padding: 12px; display: grid; gap: 8px; }
+        .dashboard-sync-box strong { color: #fff; font-size: 12px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .dashboard-sync-box span { color: #9fb2c8; font-size: 11px; font-weight: 800; line-height: 1.35; }
+        .dashboard-sync-box.ok { border-color: rgba(46,204,113,0.35); background: rgba(46,204,113,0.08); }
+        .dashboard-sync-box.error { border-color: rgba(231,76,60,0.45); background: rgba(231,76,60,0.08); }
         .dashboard-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin: 6px 0 10px; }
         .dashboard-section-heading h4 { color: #fff; margin: 0; font-size: 14px; text-transform: uppercase; }
         .dashboard-section-heading span { color: #777; font-size: 11px; font-weight: 800; }
@@ -554,6 +559,13 @@
         }
         .container, .conversation-page, .dashboard-page { max-width: 1180px; }
         .header-main { margin: 18px auto 24px; max-width: 1180px; }
+        body.theme-light {
+            background:
+                radial-gradient(circle at 12% -80px, rgba(52,152,219,0.20), transparent 320px),
+                radial-gradient(circle at 92% 40px, rgba(255,201,57,0.18), transparent 300px),
+                linear-gradient(180deg, #f7fbff 0%, #eef4fb 48%, #e9eff7 100%);
+            color: #17202a;
+        }
         .header-main h2 {
             color: #111;
             text-shadow: none;
@@ -576,22 +588,24 @@
         }
         .btn-settings-hidden {
             right: 0;
-            color: #5f6670;
-            background: rgba(255,255,255,0.82);
-            border: 1px solid rgba(17,24,39,0.10);
-            border-radius: 8px;
+            color: #314155;
+            background: rgba(255,255,255,0.74);
+            border: 1px solid rgba(52,92,138,0.14);
+            border-radius: 14px;
+            backdrop-filter: blur(10px);
         }
         .auth-container, .selection-screen {
             background:
                 radial-gradient(circle at 50% 0%, rgba(52,152,219,0.16), transparent 36%),
                 radial-gradient(circle at 88% 10%, rgba(255,201,57,0.18), transparent 30%),
-                linear-gradient(180deg, #ffffff 0%, #f7f7f7 54%, #eef1f5 100%);
+                linear-gradient(180deg, #f7fbff 0%, #eef4fb 54%, #e9eff7 100%);
         }
         .brand-card, .login-box, .btn-select {
-            border-radius: 8px;
-            background: rgba(255,255,255,0.92);
-            border-color: rgba(17,24,39,0.12);
-            box-shadow: 0 24px 60px rgba(15,23,42,0.14);
+            border-radius: 22px;
+            background: rgba(255,255,255,0.78);
+            border-color: rgba(52,92,138,0.14);
+            box-shadow: 0 22px 55px rgba(32,61,96,0.13);
+            backdrop-filter: blur(14px);
         }
         .brand-card h1, .login-box h2, .btn-select strong { color: #111; }
         .brand-card p, .btn-select span { color: #667085; }
@@ -608,10 +622,11 @@
         .summary-item, .search-container, .card, .dashboard-card, .dashboard-panel, .dashboard-detail,
         .dashboard-filters, .conversation-list, .conversation-panel, .empty-state, .parent-detail,
         .parent-panel, .graduation-panel, .modal-content {
-            border-radius: 8px;
-            background: rgba(255,255,255,0.92);
-            border-color: rgba(17,24,39,0.12);
-            box-shadow: 0 18px 45px rgba(15,23,42,0.13);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.82);
+            border-color: rgba(52,92,138,0.14);
+            box-shadow: 0 18px 44px rgba(32,61,96,0.12);
+            backdrop-filter: blur(12px);
         }
         .modal-content { max-width: 560px; }
         .form-grid input, .form-grid select { min-height: 60px; }
@@ -628,27 +643,29 @@
         .dashboard-detail-row small, .empty-state span { color: #667085; }
         .search-container { padding: 12px; }
         .search-input, .conversation-search input, .dashboard-filter select, input, select, textarea {
-            border-radius: 8px;
-            background: #ffffff;
-            border-color: rgba(17,24,39,0.14);
-            color: #111;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.92);
+            border-color: rgba(52,92,138,0.16);
+            color: #17202a;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
         }
         .filter-btn {
-            border-radius: 8px;
-            background: #ffffff;
-            border-color: rgba(17,24,39,0.14);
-            color: #555;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.72);
+            border-color: rgba(52,92,138,0.16);
+            color: #314155;
         }
         .filter-btn.active, .dashboard-card.active {
-            background: linear-gradient(135deg, rgba(52,152,219,0.30), rgba(52,152,219,0.10));
+            background: linear-gradient(135deg, rgba(52,152,219,0.22), rgba(255,255,255,0.82));
             border-color: rgba(52,152,219,0.82);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.62), 0 16px 35px rgba(52,152,219,0.14);
         }
         .dashboard-hero {
-            border-radius: 8px;
+            border-radius: 22px;
             background:
-                linear-gradient(135deg, rgba(52,152,219,0.12), rgba(255,201,57,0.20)),
-                rgba(255,255,255,0.96);
+                linear-gradient(135deg, rgba(52,152,219,0.16), rgba(255,201,57,0.14)),
+                rgba(255,255,255,0.76);
+            border-color: rgba(52,92,138,0.16);
         }
         .dashboard-hero h3, .conversation-title h3, .card h3,
         .dashboard-panel-title, .parent-panel-title, .chat-header,
@@ -658,7 +675,7 @@
         .dashboard-card {
             min-height: 118px;
             padding: 18px;
-            border-top: 2px solid rgba(255,255,255,0.08);
+            border-top: 1px solid rgba(255,255,255,0.70);
         }
         .dashboard-split { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .dashboard-panel { min-width: 0; }
@@ -667,10 +684,10 @@
             border-color: rgba(255,255,255,0.22);
         }
         .dashboard-detail-action, .dashboard-clear {
-            border-radius: 8px;
-            background: #ffffff;
-            color: #111;
-            border-color: rgba(17,24,39,0.16);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.78);
+            color: #17202a;
+            border-color: rgba(52,92,138,0.18);
         }
         .dashboard-panel-title, .parent-panel-title, .chat-header {
             background: rgba(17,24,39,0.04);
@@ -724,14 +741,15 @@
             background: linear-gradient(90deg, #2ecc71, #FFC939);
         }
         .action-bar {
-            border-radius: 16px;
-            background: rgba(255,255,255,0.94);
-            border-color: rgba(17,24,39,0.14);
-            box-shadow: 0 22px 50px rgba(15,23,42,0.20);
+            border-radius: 24px;
+            background: rgba(255,255,255,0.82);
+            border-color: rgba(52,92,138,0.18);
+            box-shadow: 0 24px 60px rgba(32,61,96,0.18);
+            backdrop-filter: blur(18px);
         }
-        .action-item { color: #111; }
+        .action-item { color: #243247; }
         .action-item {
-            border-radius: 8px;
+            border-radius: 16px;
             padding: 4px 6px;
         }
         .action-item:hover {
@@ -741,8 +759,8 @@
         .box-class, .degree-box { background: #f4f6f8; border-color: #d7dce3; color: #6b7280; }
         .box-class.done { color: #fff; }
         .box-class.locked { background: #e9edf2; color: #adb5bd; }
-        .student-info-chip { background: #f7f8fa; border-color: #e0e4ea; }
-        .student-info-chip strong { color: #111; }
+        .student-info-chip { background: rgba(255,255,255,0.64); border-color: rgba(52,92,138,0.14); color: #667085; }
+        .student-info-chip strong { color: #17202a; }
         .status-badge { background: #eaf7ef; color: #217a43; border-color: #bae5c8; }
         .msg-wrapper.other .msg-bubble { background: #ffffff; color: #111; border: 1px solid #e5e7eb; }
         .parent-card {
@@ -755,10 +773,10 @@
             margin: 14px 0 18px;
         }
         .theme-choice {
-            border: 1px solid rgba(17,24,39,0.14);
-            background: #ffffff;
-            color: #111;
-            border-radius: 8px;
+            border: 1px solid rgba(52,92,138,0.16);
+            background: rgba(255,255,255,0.78);
+            color: #17202a;
+            border-radius: 14px;
             padding: 12px;
             font-weight: 900;
             cursor: pointer;
@@ -770,6 +788,34 @@
         .theme-choice.active {
             border-color: var(--alliance-red);
             box-shadow: 0 0 0 3px rgba(52,152,219,0.12);
+        }
+        .dashboard-priority-card, .dashboard-insight, .dashboard-sync-box, .dashboard-decision-summary, .movement-day {
+            background: rgba(255,255,255,0.76);
+            border-color: rgba(52,92,138,0.14);
+            box-shadow: 0 16px 38px rgba(32,61,96,0.10);
+            backdrop-filter: blur(12px);
+        }
+        .dashboard-priority-card h4, .dashboard-insight h4, .dashboard-sync-box strong, .dashboard-decision-summary {
+            color: #111;
+        }
+        .dashboard-action-btn, .dashboard-mini-row {
+            background: rgba(255,255,255,0.76);
+            color: #17202a;
+            border-color: rgba(52,92,138,0.14);
+        }
+        .dashboard-action-btn:hover, .dashboard-mini-row:hover {
+            background: rgba(52,152,219,0.08);
+            border-color: rgba(52,152,219,0.45);
+        }
+        .movement-day i {
+            background: #e9edf2;
+        }
+        .dashboard-sync-box span, .dashboard-insight p, .dashboard-mini-row small, .dashboard-note {
+            color: #667085;
+        }
+        .dashboard-decision-summary {
+            background: rgba(52,152,219,0.10);
+            color: #17324d;
         }
         @media (max-width: 720px) {
             .selection-screen .auth-shell { grid-template-columns: 1fr; max-width: 430px; }
@@ -878,6 +924,29 @@
             border-color: var(--alliance-red);
             box-shadow: 0 0 0 3px rgba(52,152,219,0.14), 0 12px 28px rgba(0,0,0,0.28);
         }
+        body.theme-dark .dashboard-priority-card, body.theme-dark .dashboard-insight,
+        body.theme-dark .dashboard-sync-box, body.theme-dark .dashboard-decision-summary,
+        body.theme-dark .movement-day {
+            background: linear-gradient(135deg, rgba(17,25,35,0.96), rgba(8,12,18,0.96));
+            border-color: rgba(93,154,220,0.28);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        body.theme-dark .dashboard-priority-card h4, body.theme-dark .dashboard-insight h4,
+        body.theme-dark .dashboard-sync-box strong, body.theme-dark .dashboard-decision-summary {
+            color: #fff;
+        }
+        body.theme-dark .dashboard-action-btn, body.theme-dark .dashboard-mini-row {
+            background: rgba(13,20,30,0.92);
+            border-color: rgba(93,154,220,0.26);
+            color: #fff;
+        }
+        body.theme-dark .dashboard-action-btn:hover, body.theme-dark .dashboard-mini-row:hover {
+            background: rgba(52,152,219,0.12);
+            border-color: rgba(52,152,219,0.45);
+        }
+        body.theme-dark .movement-day i {
+            background: #05080d;
+        }
         body.theme-dark .dashboard-hero {
             background: linear-gradient(135deg, rgba(52,152,219,0.25), rgba(8,16,26,0.96));
         }
@@ -934,6 +1003,282 @@
         body.theme-dark .box-class.locked {
             background: rgba(10,15,22,0.95);
             color: #444;
+        }
+
+        .professor-home {
+            max-width: 1180px;
+        }
+        .professor-home .header-main {
+            margin: 18px 0 26px;
+        }
+        .brand-title-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            position: relative;
+        }
+        .brand-title-eagle {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            object-position: center bottom;
+            filter: drop-shadow(0 14px 18px rgba(0,0,0,0.62));
+            transform: translateY(2px);
+            user-select: none;
+            pointer-events: none;
+        }
+        .brand-title-copy {
+            display: grid;
+            gap: 8px;
+            justify-items: start;
+        }
+        .header-main .brand-title-copy h2 {
+            border-bottom: 0;
+            padding: 0;
+            line-height: 1;
+        }
+        .brand-title-line {
+            width: 100%;
+            height: 4px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--alliance-red), #f1c40f, #fff);
+            box-shadow: 0 0 18px rgba(52,152,219,0.38);
+        }
+        .professor-home .summary-grid {
+            max-width: 1180px;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .professor-home .summary-item {
+            min-height: 116px;
+            padding: 20px 22px 18px 112px;
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at 22% 28%, rgba(52,152,219,0.20), transparent 36%),
+                linear-gradient(135deg, rgba(19,31,48,0.96), rgba(7,12,20,0.98));
+            border-color: rgba(93,154,220,0.34);
+        }
+        .professor-home .summary-item::before {
+            width: 5px;
+            background: linear-gradient(180deg, var(--alliance-red), #6fc7ff);
+            box-shadow: 0 0 18px rgba(52,152,219,0.52);
+        }
+        .professor-home .summary-item.clickable::after {
+            content: "\f054";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.55);
+            font-size: 15px;
+        }
+        .professor-home .summary-item-icon {
+            position: absolute;
+            left: 26px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 62px;
+            height: 62px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            color: #dff0ff;
+            background: linear-gradient(135deg, rgba(52,152,219,0.34), rgba(10,18,30,0.94));
+            border: 1px solid rgba(93,154,220,0.38);
+            box-shadow: 0 12px 30px rgba(52,152,219,0.16), inset 0 1px 0 rgba(255,255,255,0.08);
+            font-size: 24px;
+        }
+        .professor-home .summary-item strong {
+            font-size: 34px;
+        }
+        .professor-home .summary-item span {
+            color: #dce8f5;
+            font-size: 12px;
+            letter-spacing: 0;
+        }
+        .professor-home .summary-item small {
+            display: block;
+            margin-top: 7px;
+            color: #8ca1b7;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .professor-home .search-container {
+            max-width: 1060px;
+            padding: 18px;
+            border-radius: 24px;
+            background:
+                linear-gradient(135deg, rgba(18,30,45,0.96), rgba(7,12,20,0.98));
+            border-color: rgba(93,154,220,0.32);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .professor-home .search-field {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+        }
+        .professor-home .search-input {
+            min-height: 62px;
+            border-radius: 18px;
+            background: rgba(4,9,16,0.92);
+            border-color: rgba(93,154,220,0.28);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .professor-home .search-clear-btn {
+            right: 62px;
+        }
+        .home-filter-ghost {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            border: 1px solid rgba(93,154,220,0.34);
+            background: linear-gradient(135deg, rgba(52,152,219,0.18), rgba(8,14,23,0.96));
+            color: #d9ebff;
+            display: grid;
+            place-items: center;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .professor-home .filter-bar {
+            gap: 12px;
+            padding-top: 14px;
+        }
+        .professor-home .filter-btn {
+            border-radius: 15px;
+            padding: 12px 18px;
+            color: #d9e8f7;
+            background: rgba(8,14,23,0.72);
+            border-color: rgba(93,154,220,0.30);
+        }
+        .professor-home .filter-btn.active {
+            background: linear-gradient(135deg, rgba(52,152,219,0.38), rgba(11,26,43,0.96));
+            border-color: rgba(52,152,219,0.95);
+            box-shadow: 0 10px 28px rgba(52,152,219,0.26), inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .professor-home .empty-state {
+            max-width: 1060px;
+            min-height: 270px;
+            margin-top: 34px;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 44%, rgba(52,152,219,0.15), transparent 38%),
+                linear-gradient(135deg, rgba(18,30,45,0.96), rgba(6,11,18,0.98));
+            border-color: rgba(93,154,220,0.32);
+        }
+        .professor-home .empty-state::before,
+        .professor-home .empty-state::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 190px;
+            background: url("eagle-cutout.png") center / contain no-repeat;
+            opacity: 0.055;
+            filter: grayscale(1);
+            pointer-events: none;
+        }
+        .professor-home .empty-state::before {
+            left: 28px;
+            bottom: -38px;
+        }
+        .professor-home .empty-state::after {
+            right: 12px;
+            bottom: -34px;
+            transform: scaleX(-1);
+        }
+        .professor-home .empty-state i {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            color: #fff;
+            background:
+                radial-gradient(circle at 50% 38%, rgba(241,196,15,0.40), transparent 38%),
+                linear-gradient(135deg, rgba(52,152,219,0.30), rgba(7,12,20,0.96));
+            border-color: rgba(93,154,220,0.34);
+            box-shadow: 0 18px 40px rgba(52,152,219,0.18);
+        }
+        .professor-home .action-bar {
+            background: rgba(8,15,25,0.86);
+            border-color: rgba(93,154,220,0.34);
+            border-radius: 24px;
+            padding: 12px 18px;
+            gap: 16px;
+            box-shadow: 0 24px 65px rgba(0,0,0,0.54), inset 0 1px 0 rgba(255,255,255,0.06);
+            backdrop-filter: blur(18px);
+        }
+        .professor-home .action-item {
+            min-width: 72px;
+            border-radius: 18px;
+            padding: 8px 10px;
+        }
+        .professor-home .action-item:hover {
+            background: rgba(52,152,219,0.13);
+            opacity: 1;
+        }
+        .professor-home .action-item i {
+            color: #e4edf7;
+        }
+        .professor-home .action-item span {
+            color: #8ca1b7;
+        }
+
+        body.theme-light .brand-title-eagle {
+            filter: drop-shadow(0 12px 18px rgba(32,61,96,0.22));
+        }
+        body.theme-light .professor-home .summary-item,
+        body.theme-light .professor-home .search-container,
+        body.theme-light .professor-home .empty-state {
+            background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(239,247,255,0.92));
+            border-color: rgba(52,92,138,0.18);
+        }
+        body.theme-light .professor-home .summary-item span,
+        body.theme-light .professor-home .summary-item small,
+        body.theme-light .professor-home .filter-btn,
+        body.theme-light .professor-home .action-item span {
+            color: #667085;
+        }
+        body.theme-light .professor-home .summary-item strong,
+        body.theme-light .professor-home .empty-state strong {
+            color: #111827;
+        }
+        body.theme-light .professor-home .search-input,
+        body.theme-light .professor-home .filter-btn,
+        body.theme-light .home-filter-ghost {
+            background: rgba(255,255,255,0.78);
+            border-color: rgba(52,92,138,0.18);
+            color: #111827;
+        }
+        body.theme-light .professor-home .action-bar {
+            background: rgba(255,255,255,0.86);
+            border-color: rgba(52,92,138,0.18);
+        }
+
+        @media (max-width: 760px) {
+            .brand-title-wrap {
+                gap: 10px;
+            }
+            .brand-title-eagle {
+                width: 46px;
+                height: 46px;
+            }
+            .brand-title-copy {
+                justify-items: center;
+            }
+            .professor-home .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .professor-home .search-field {
+                grid-template-columns: 1fr;
+            }
+            .home-filter-ghost {
+                display: none;
+            }
+            .professor-home .action-item {
+                min-width: 48px;
+            }
         }
         body.theme-dark .student-info-chip {
             background: rgba(12,19,28,0.92);
@@ -1704,7 +2049,10 @@
         const lastSavedAtRef = React.useRef("");
         const lastLocalSignatureRef = React.useRef("");
         const lastRemoteSignatureRef = React.useRef("");
-        const [theme] = React.useState("dark");
+        const [theme, setTheme] = React.useState(() => {
+            const savedTheme = localStorage.getItem(LOCAL_THEME_KEY);
+            return savedTheme === "light" ? "light" : "dark";
+        });
 
         React.useEffect(() => {
             setExpandedSearchStudentId(null);
@@ -1724,7 +2072,8 @@
         React.useEffect(() => {
             document.body.classList.toggle("theme-light", theme === "light");
             document.body.classList.toggle("theme-dark", theme === "dark");
-            localStorage.setItem(LOCAL_THEME_KEY, "dark");
+            localStorage.setItem(LOCAL_THEME_KEY, theme);
+            document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "light" ? "#f7f9fc" : "#07101a");
             return () => {
                 document.body.classList.remove("theme-light");
                 document.body.classList.remove("theme-dark");
@@ -2477,6 +2826,47 @@
             a.click();
             URL.revokeObjectURL(url);
         };
+        const generateDashboardReport = () => {
+            const listItems = (items, emptyText) => items.length
+                ? items.map(item => `<li><strong>${item.name || item.nome}</strong><span>${item.meta || item.followReasons?.join(" - ") || ""}</span></li>`).join("")
+                : `<li><span>${emptyText}</span></li>`;
+            const reportWindow = window.open("", "_blank");
+            if (!reportWindow) return alert("Permita pop-ups para gerar o relatorio.");
+            const readyRows = examCandidates.slice(0, 10).map(s => ({ name: s.nome, meta: `${s.progresso.percentual}% concluido - faltam ${s.progresso.faltantes} aulas` }));
+            const followRows = followUpStudents.slice(0, 12).map(s => ({ name: s.nome, meta: s.followReasons.join(" - ") }));
+            const challengeRows = challengeReachedStudents.slice(0, 10).map(s => ({ name: s.nome, meta: `${s.desafioInfo.title} - prazo ${formatDateBR(s.desafioInfo.end)}` }));
+            const lowRows = lowProgressStudents.slice(0, 10).map(s => ({ name: s.nome, meta: `${s.progresso.percentual}% concluido` }));
+            reportWindow.document.write(`
+                <!doctype html>
+                <html><head><meta charset="utf-8"><title>Relatorio Alliance Mooca Kids</title>
+                <style>
+                    body{font-family:Arial,sans-serif;background:#f6f8fb;color:#17202a;margin:0;padding:28px}
+                    .wrap{max-width:980px;margin:auto;background:#fff;border:1px solid #dbe3ef;border-radius:18px;padding:26px}
+                    h1{margin:0 0 6px;font-size:28px} h2{margin:26px 0 10px;font-size:16px;text-transform:uppercase}
+                    .sub{color:#667085;font-weight:700}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
+                    .kpi{border:1px solid #dbe3ef;border-radius:14px;padding:14px;background:#f9fbff}.kpi b{display:block;font-size:24px}.kpi span{font-size:11px;text-transform:uppercase;color:#667085;font-weight:800}
+                    ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}li{border:1px solid #e4eaf2;border-radius:12px;padding:11px 12px;display:grid;gap:4px}li span{color:#667085;font-size:12px}
+                    .note{border-left:4px solid #3498db;background:#eef7ff;padding:13px 14px;border-radius:12px;margin-top:16px;font-weight:700}
+                    @media print{body{background:#fff;padding:0}.wrap{border:0}}
+                </style></head><body><div class="wrap">
+                    <h1>Alliance Mooca Kids</h1>
+                    <div class="sub">Relatorio do painel - ${new Date().toLocaleDateString("pt-BR")} - ${dashboardPeriodLabel}</div>
+                    <div class="note">${dashboardDecisionText}</div>
+                    <div class="grid">
+                        <div class="kpi"><b>${followUpStudents.length}</b><span>Meta de acompanhamento</span></div>
+                        <div class="kpi"><b>${examCandidates.length}</b><span>Prontos para exame</span></div>
+                        <div class="kpi"><b>${currentMonthPresenceCount}</b><span>Presencas no mes</span></div>
+                        <div class="kpi"><b>${busiestPresenceDay.count > 0 ? busiestPresenceDay.day : "-"}</b><span>Maior movimento</span></div>
+                    </div>
+                    <h2>Alunos para acompanhamento</h2><ul>${listItems(followRows, "Nenhum aluno na meta de acompanhamento.")}</ul>
+                    <h2>Prontos para exame</h2><ul>${listItems(readyRows, "Nenhum aluno pronto para exame.")}</ul>
+                    <h2>Desafios vencidos</h2><ul>${listItems(challengeRows, "Nenhum desafio vencido.")}</ul>
+                    <h2>Baixa evolucao</h2><ul>${listItems(lowRows, "Nenhum aluno abaixo de 30%.")}</ul>
+                </div></body></html>
+            `);
+            reportWindow.document.close();
+            reportWindow.focus();
+        };
         const dashboardMatchesFocus = (s) => {
             const unread = s.chat?.filter(m => !(m.readBy || []).includes("Professor")).length || 0;
             const progress = getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride);
@@ -2566,6 +2956,19 @@
         const movementByWeekday = [...movementByWeekdayOrdered].sort((a, b) => b.count - a.count);
         const busiestPresenceDay = movementByWeekday[0] || { day: "Sem dados", count: 0, peakDate: null };
         const maxMovementCount = Math.max(1, ...movementByWeekdayOrdered.map(row => row.count));
+        const countPresenceBetween = (startDate, endDate) => {
+            return [...presenceDateMap.entries()].reduce((total, [date, ids]) => {
+                const parsed = parseDashboardDate(date);
+                return parsed && parsed >= startDate && parsed <= endDate ? total + ids.size : total;
+            }, 0);
+        };
+        const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const previousMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const previousMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999);
+        const currentMonthPresenceCount = countPresenceBetween(currentMonthStart, today);
+        const previousMonthPresenceCount = countPresenceBetween(previousMonthStart, previousMonthEnd);
+        const monthlyPresenceDiff = currentMonthPresenceCount - previousMonthPresenceCount;
+        const monthlyPresenceTrend = monthlyPresenceDiff === 0 ? "estavel" : monthlyPresenceDiff > 0 ? `+${monthlyPresenceDiff}` : `${monthlyPresenceDiff}`;
         const studentsWithProgress = dashboardStudents.map(s => ({
             ...s,
             progresso: getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride),
@@ -2647,6 +3050,9 @@
                     ? `${examCandidates.length} aluno${examCandidates.length === 1 ? "" : "s"} já aparece${examCandidates.length === 1 ? "" : "m"} perto do exame.`
                     : "A turma não possui alertas críticos no momento.";
         const dashboardDecisionText = `Hoje a meta de acompanhamento tem ${followUpStudents.length} aluno${followUpStudents.length === 1 ? "" : "s"} para acao, ${examCandidates.length} aluno${examCandidates.length === 1 ? "" : "s"} perto do exame e ${busiestPresenceDay.count > 0 ? busiestPresenceDay.day : "nenhum dia"} como maior movimento no periodo.`;
+        const dbProviderLabel = appwriteServices ? "Appwrite" : (supabaseClient ? "Supabase" : "Local");
+        const dbStatusOk = !!(appwriteServices || supabaseClient) && isHydrated && !dbStatus.includes("Erro") && !dbStatus.includes("401") && !dbStatus.includes("400");
+        const lastSyncLabel = lastSavedAtRef.current ? new Date(lastSavedAtRef.current).toLocaleString("pt-BR") : "sem registro nesta sessao";
         const dashboardDetailMap = {
             alunos: {
                 title: "Alunos cadastrados",
@@ -2896,9 +3302,19 @@
         }
 
         return (
-            <div className={`container ${mode === "Professor" && ["conversas", "painel"].includes(professorView) ? "wide-container" : ""}`}>
+            <div className={`container ${mode === "Professor" && ["conversas", "painel"].includes(professorView) ? "wide-container" : ""} ${mode === "Professor" && professorView === "alunos" ? "professor-home" : ""}`}>
                 <header className="header-main">
-                    <h2>Alliance Mooca Kids</h2>
+                    {mode === "Professor" && professorView === "alunos" ? (
+                        <div className="brand-title-wrap">
+                            <img src="eagle-cutout.png" className="brand-title-eagle" alt="" />
+                            <div className="brand-title-copy">
+                                <h2>Alliance Mooca Kids</h2>
+                                <span className="brand-title-line"></span>
+                            </div>
+                        </div>
+                    ) : (
+                        <h2>Alliance Mooca Kids</h2>
+                    )}
                     {/* Botão de backup */}
                     {mode === "Professor" && (
                         <div className="btn-settings-hidden" onClick={() => setModalOpen('backup')}>
@@ -2922,9 +3338,24 @@
                     <>
                         {professorView === "alunos" && (
                             <div className="summary-grid">
-                                <div className="summary-item"><strong>{students.length}</strong><span>alunos</span></div>
-                                <div className={`summary-item clickable ${summaryDetail === "prontos" ? "active" : ""}`} onClick={() => setSummaryDetail(summaryDetail === "prontos" ? null : "prontos")}><strong>{readyStudents}</strong><span>prontos para exame</span></div>
-                                <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
+                                <div className="summary-item">
+                                    <i className="fas fa-users summary-item-icon"></i>
+                                    <strong>{students.length}</strong>
+                                    <span>alunos</span>
+                                    <small>Base em acompanhamento</small>
+                                </div>
+                                <div className={`summary-item clickable ${summaryDetail === "prontos" ? "active" : ""}`} onClick={() => setSummaryDetail(summaryDetail === "prontos" ? null : "prontos")}>
+                                    <i className="fas fa-clipboard-check summary-item-icon"></i>
+                                    <strong>{readyStudents}</strong>
+                                    <span>prontos para exame</span>
+                                    <small>Aguardando avaliação</small>
+                                </div>
+                                <div className="summary-item">
+                                    <i className="fas fa-folder-open summary-item-icon"></i>
+                                    <strong>{repo.length}</strong>
+                                    <span>arquivos</span>
+                                    <small>Documentos enviados</small>
+                                </div>
                             </div>
                         )}
                         {professorView === "alunos" && summaryDetail === "prontos" && (
@@ -2966,6 +3397,7 @@
                                             <i className="fas fa-times"></i> Limpar
                                         </button>
                                     )}
+                                    <span className="home-filter-ghost"><i className="fas fa-sliders"></i></span>
                                 </div>
                                 <div className="filter-bar">
                                     {groups.map(g => (
@@ -3045,6 +3477,7 @@
                                 </div>
                                 <div className="dashboard-kpi-line">
                                     <div className="dashboard-kpi"><strong>{recentPresenceStudents.length}</strong><span>presenças no período</span></div>
+                                    <div className="dashboard-kpi"><strong>{currentMonthPresenceCount}</strong><span>mes atual ({monthlyPresenceTrend})</span></div>
                                     <div className="dashboard-kpi"><strong>{recentMessages}</strong><span>mensagens no período</span></div>
                                     <div className="dashboard-kpi"><strong>{followUpStudents.length}</strong><span>meta de acompanhamento</span></div>
                                     <div className="dashboard-kpi"><strong>{busiestPresenceDay.count > 0 ? busiestPresenceDay.day : "-"}</strong><span>dia com mais presencas</span></div>
@@ -3060,10 +3493,17 @@
                                 </div>
                             </div>
                             <div className="dashboard-insight dashboard-actions">
+                                <div className={`dashboard-sync-box ${dbStatusOk ? "ok" : dbStatus.includes("Erro") ? "error" : ""}`}>
+                                    <strong><span>Sincronizacao</span><i className={`fas ${dbStatusOk ? "fa-circle-check" : "fa-cloud-arrow-up"}`}></i></strong>
+                                    <span>Banco: {dbProviderLabel}</span>
+                                    <span>Status: {dbStatus}{!isHydrated ? "..." : ""}</span>
+                                    <span>Ultimo salvamento: {lastSyncLabel}</span>
+                                </div>
                                 <h4>Ações rápidas</h4>
                                 <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("prioridades")}><span>Ver atenção da semana</span><i className="fas fa-bell"></i></button>
                                 <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("desafios")}><span>Desafios de graus comportamentais</span><i className="fas fa-stopwatch"></i></button>
                                 <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("evolucao-baixa")}><span>Alunos abaixo de 30%</span><i className="fas fa-chart-line"></i></button>
+                                <button className="dashboard-action-btn" onClick={generateDashboardReport}><span>Gerar relatorio do painel</span><i className="fas fa-file-pdf"></i></button>
                                 <button className="dashboard-action-btn" onClick={exportDashboardCsv}><span>Exportar CSV do painel</span><i className="fas fa-file-export"></i></button>
                             </div>
                         </div>
@@ -3689,6 +4129,14 @@
                             <div className="data-status-card">
                                 <span><i className={`fas ${(appwriteServices || supabaseClient) && !dbStatus.includes("Erro") ? "fa-database" : "fa-exclamation-triangle"}`}></i> Banco</span>
                                 <strong>{dbStatus}{!isHydrated ? "..." : ""}</strong>
+                            </div>
+                            <div className="theme-toggle-row">
+                                <button className={`theme-choice ${theme === "dark" ? "active" : ""}`} onClick={() => setTheme("dark")}>
+                                    <i className="fas fa-moon"></i> Escuro
+                                </button>
+                                <button className={`theme-choice ${theme === "light" ? "active" : ""}`} onClick={() => setTheme("light")}>
+                                    <i className="fas fa-sun"></i> Claro
+                                </button>
                             </div>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={downloadBackup}>
                                 <i className="fas fa-download"></i> GERAR BACKUP (.JSON)
