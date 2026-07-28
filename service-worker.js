@@ -1,4 +1,4 @@
-const CACHE_NAME = "alliance-mooca-kids-pwa-v34";
+const CACHE_NAME = "alliance-mooca-kids-pwa-v43";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,8 @@ const APP_SHELL = [
   "./alliance-jiu-jitsu-mooca-logo.png",
   "./alliance-jiu-jitsu-mooca-logo-transparent.png",
   "./alliance-jiu-jitsu-mooca-complete.png",
+  "./alliance-eagle-mark.png",
+  "./alliance-eagle-mark-closed.png",
   "./eagle-cutout.png",
   "./avatar.png",
   "./logo.jpg",

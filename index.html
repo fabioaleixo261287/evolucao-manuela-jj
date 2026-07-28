@@ -475,6 +475,7 @@
         .sync-banner.error { background: #321818; color: #ff9d9d; border-color: #743333; }
         .empty-state { max-width: 1060px; margin: 28px auto; min-height: 240px; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; color: #8d8d8d; padding: 34px; background: linear-gradient(135deg, rgba(31,31,31,0.92), rgba(13,13,13,0.92)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 18px 42px rgba(0,0,0,0.28); }
         .empty-state i { width: 62px; height: 62px; border-radius: 18px; display: grid; place-items: center; font-size: 28px; color: #fff; background: #242424; border: 1px solid #343434; }
+        .empty-eagle-mark { width: 92px; height: 82px; object-fit: contain; filter: drop-shadow(0 12px 22px rgba(0,0,0,0.55)); opacity: 0.96; }
         .empty-state strong { color: #fff; font-size: 20px; }
         .empty-state span { max-width: 360px; font-size: 13px; line-height: 1.5; }
 
@@ -3170,7 +3171,7 @@
 
                 {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && renderedStudents.length === 0 && (
                     <div className="empty-state">
-                        <i className="fas fa-medal"></i>
+                        <img className="empty-eagle-mark" src="alliance-eagle-mark-closed.png" alt="" />
                         <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : (mode === "Professor" && !professorHasQuery ? "Faça uma consulta" : "Nenhum aluno encontrado")}</strong>
                         <span>{mode === "Professor" ? "Digite um nome ou escolha uma categoria para exibir os alunos." : "Confira o nome e a data de nascimento usados no acesso."}</span>
                     </div>
