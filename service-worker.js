@@ -1,4 +1,4 @@
-const CACHE_NAME = "alliance-mooca-kids-pwa-v43";
+const CACHE_NAME = "alliance-mooca-kids-pwa-v44";
 const APP_SHELL = [
   "./",
   "./index.html",

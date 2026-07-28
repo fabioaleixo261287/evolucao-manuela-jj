@@ -8,8 +8,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#07101a",
-  "theme_color": "#3498db",
+  "background_color": "#050505",
+  "theme_color": "#c9a554",
   "categories": ["education", "sports", "productivity"],
   "icons": [
     {
