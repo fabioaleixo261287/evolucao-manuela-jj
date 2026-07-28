@@ -2,14 +2,14 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Alliance Mooca Kids - Sistema Eagle V22</title>
+    <title>Alliance Jiu Jitsu Mooca - Sistema Eagle V22</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#3498db">
-    <meta name="application-name" content="Alliance Mooca Kids">
+    <meta name="application-name" content="Alliance Jiu Jitsu Mooca">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Alliance Mooca Kids">
+    <meta name="apple-mobile-web-app-title" content="Alliance Jiu Jitsu Mooca">
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="apple-touch-icon" href="./pwa-icons/apple-touch-icon-brand.png">
     <link rel="preconnect" href="https://unpkg.com">
@@ -81,21 +81,21 @@
             align-items: center;
             justify-content: center;
             background:
-                radial-gradient(circle at 50% 0%, rgba(52,152,219,0.45) 0, rgba(52,152,219,0.16) 18%, transparent 42%),
-                radial-gradient(circle at 50% 34%, rgba(255,255,255,0.08), transparent 30%),
-                linear-gradient(180deg, #07101c 0%, #07101a 34%, #05070a 100%);
+                radial-gradient(circle at 50% 8%, rgba(52,152,219,0.22) 0, rgba(52,152,219,0.08) 18%, transparent 42%),
+                radial-gradient(circle at 50% 22%, rgba(0,0,0,0.92) 0, rgba(0,0,0,0.72) 26%, transparent 48%),
+                linear-gradient(180deg, #020406 0%, #07101a 48%, #05070a 100%);
             padding: 22px 12px;
         }
         body.auth-mode .auth-container, body.auth-mode .selection-screen { height: 100dvh; min-height: 100dvh; overflow: hidden; }
         .auth-shell { width: min(430px, 100%); display: flex; flex-direction: column; align-items: center; gap: 16px; }
         .selection-screen .auth-shell { width: min(500px, 100%); display: flex; flex-direction: column; align-items: stretch; gap: 18px; }
         .brand-card { width: 100%; background: transparent; border: 0; border-radius: 0; padding: 0 12px 2px; text-align: center; box-shadow: none; backdrop-filter: none; overflow: visible; }
-        .auth-hero-frame { width: 230px; height: 188px; overflow: visible; background: transparent; border: 0; border-radius: 0; margin: 0 auto 8px; display: flex; align-items: flex-end; justify-content: center; box-shadow: none; }
-        .auth-hero-image { width: 122%; height: 118%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 20px 25px rgba(0,0,0,0.74)); opacity: 1; display: block; mix-blend-mode: normal; transform: translateY(18px); }
+        .auth-hero-frame { width: 260px; height: 310px; overflow: visible; background: transparent; border: 0; border-radius: 0; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; box-shadow: none; }
+        .auth-hero-image { width: 100%; height: 100%; object-fit: contain; object-position: center; filter: drop-shadow(0 18px 28px rgba(0,0,0,0.72)); opacity: 1; display: block; mix-blend-mode: normal; transform: none; border-radius: 0; }
         .auth-hero-copy { padding: 0; background: transparent; }
         .auth-logo { width: 142px; height: 112px; object-fit: cover; object-position: 72% 34%; border-radius: 20px; border: 1px solid #2f2f2f; box-shadow: 0 14px 35px rgba(0,0,0,0.35); margin: 0 auto 22px; display: block; user-select: none; pointer-events: none; }
         .auth-kicker { color: var(--alliance-red); font-size: 11px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
-        .auth-title { margin: 0; color: #fff; font-size: clamp(38px, 10vw, 56px); line-height: 0.95; letter-spacing: 0; position: relative; z-index: 1; text-shadow: 0 12px 30px rgba(0,0,0,0.62); }
+        .auth-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
         .auth-subtitle { margin: 14px 0 0; color: #b8c0cd; font-size: 15px; font-weight: 600; text-transform: none; line-height: 1.35; }
         .auth-feature-row { display: none; }
         .auth-feature-row span { border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px 10px; color: #fff; font-size: 11px; font-weight: 900; text-transform: uppercase; background: rgba(0,0,0,0.18); }
@@ -109,7 +109,7 @@
         .btn-select strong { display: block; color: #fff; font-size: 25px; line-height: 1.05; text-shadow: 0 8px 22px rgba(0,0,0,0.55); }
         .btn-select small { display: block; margin-top: 8px; color: #b5bdc9; font-size: 15px; font-weight: 500; text-transform: none; }
         .login-box { background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); padding: 26px; border-radius: 24px; width: 100%; text-align: center; box-shadow: 0 18px 45px rgba(0,0,0,0.45); border: 1px solid var(--border-color); cursor: default; transform: translateZ(0); }
-        .login-box .auth-hero-frame { width: 210px; height: 150px; border-radius: 0; border: 0; margin-bottom: -2px; }
+        .login-box .auth-hero-frame { width: 188px; height: 224px; border-radius: 0; border: 0; margin-bottom: 4px; }
         .login-box input { display: block; position: relative; z-index: 1; cursor: text; transform: translateZ(0); }
         .login-heading { margin: 0 0 18px; color: #fff; font-size: 18px; position: relative; z-index: 1; }
         .back-link { font-size: 11px; margin-top: 18px; cursor: pointer; color: #777; font-weight: 800; text-transform: uppercase; }
@@ -348,7 +348,7 @@
         .dashboard-insight { background: linear-gradient(135deg, rgba(52,152,219,0.16), rgba(15,15,15,0.96)); border: 1px solid #303030; border-radius: 20px; padding: 16px; min-height: 150px; }
         .dashboard-insight h4 { margin: 0 0 10px; color: #fff; font-size: 14px; text-transform: uppercase; }
         .dashboard-insight p { margin: 0; color: #a0a0a0; font-size: 12px; font-weight: 800; line-height: 1.5; }
-        .dashboard-kpi-line { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+        .dashboard-kpi-line { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
         .dashboard-kpi { background: rgba(255,255,255,0.04); border: 1px solid #2f2f2f; border-radius: 14px; padding: 12px; }
         .dashboard-kpi strong { display: block; color: #fff; font-size: 22px; line-height: 1; margin-bottom: 6px; }
         .dashboard-kpi span { color: #888; font-size: 10px; font-weight: 900; text-transform: uppercase; }
@@ -752,7 +752,7 @@
         @media (max-width: 720px) {
             .selection-screen .auth-shell { grid-template-columns: 1fr; max-width: 430px; }
             .brand-card { padding: 0 10px 2px; }
-            .auth-title { font-size: clamp(34px, 10vw, 46px); }
+            .auth-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
             .auth-feature-row { margin-top: 22px; }
             .dashboard-split { grid-template-columns: 1fr; }
         }
@@ -760,8 +760,8 @@
             .auth-container, .selection-screen { padding: 14px; }
             .brand-card, .role-grid, .login-box { border-radius: 20px; }
             .auth-logo { width: 120px; height: 96px; }
-            .auth-hero-frame { width: 210px; height: 166px; }
-            .login-box .auth-hero-frame { width: 198px; height: 142px; }
+            .auth-hero-frame { width: 214px; height: 256px; }
+            .login-box .auth-hero-frame { width: 170px; height: 204px; }
             .auth-hero-copy { padding: 0; }
             .auth-feature-row { grid-template-columns: 1fr; }
             .btn-select { min-height: 104px; padding: 18px; gap: 16px; }
@@ -783,9 +783,9 @@
         }
         body.theme-dark .auth-container, body.theme-dark .selection-screen {
             background:
-                radial-gradient(circle at 50% 0%, rgba(52,152,219,0.45) 0, rgba(52,152,219,0.16) 18%, transparent 42%),
-                radial-gradient(circle at 50% 34%, rgba(255,255,255,0.08), transparent 30%),
-                linear-gradient(180deg, #07101c 0%, #07101a 34%, #05070a 100%);
+                radial-gradient(circle at 50% 8%, rgba(52,152,219,0.22), transparent 34%),
+                radial-gradient(circle at 50% 24%, rgba(0,0,0,0.96), transparent 48%),
+                linear-gradient(180deg, #010203 0%, #07101a 48%, #050505 100%);
         }
         body.theme-dark .login-box {
             background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
@@ -1104,10 +1104,8 @@
             text-align: center;
             overflow: visible;
         }
-        .app-splash-card .auth-hero-frame { width: 230px; height: 188px; margin-bottom: 8px; }
-        .app-splash-card .auth-title {
-            margin: 0;
-        }
+        .app-splash-card .auth-hero-frame { width: 270px; height: 322px; margin-bottom: 8px; }
+        .app-splash-card .auth-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
         .app-splash-card .auth-subtitle {
             margin: 12px 0 0;
         }
@@ -1137,13 +1135,13 @@
 <body class="theme-dark">
 <div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando arquivo...</div>
 <div id="root">
-    <div class="app-splash" aria-label="Carregando Alliance Mooca Kids">
+    <div class="app-splash" aria-label="Carregando Alliance Jiu Jitsu Mooca">
         <div class="app-splash-card">
             <div class="auth-hero-frame">
-                <img src="eagle-cutout.png" class="auth-hero-image" alt="Alliance Mooca Kids">
+                <img src="alliance-jiu-jitsu-mooca-complete.png" class="auth-hero-image" alt="Alliance Jiu Jitsu Mooca">
             </div>
             <div class="auth-hero-copy">
-                <h1 class="auth-title">Alliance Mooca Kids</h1>
+                <h1 class="auth-title">Alliance Jiu Jitsu Mooca</h1>
                 <p class="auth-subtitle">Sistema de evolução e graduação</p>
             </div>
             <div class="app-splash-loading" aria-hidden="true"></div>
@@ -1715,7 +1713,7 @@
                     if (!current) {
                         setDbStatus(appwriteServices
                             ? "Appwrite demorou para responder. Usando dados locais."
-                            : (supabaseClient ? "Supabase demorou para responder. Usando dados locais." : "Banco nÃ£o configurado")
+                            : (supabaseClient ? "Supabase demorou para responder. Usando dados locais." : "Banco não configurado")
                         );
                         return true;
                     }
@@ -2173,7 +2171,7 @@
 
         const toggleMerito = (sid, key, label) => {
             if(mode !== "Professor") return;
-            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'âœ…':'❌'} ${label}`] } : s));
+            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'✅':'❌'} ${label}`] } : s));
         };
 
         const updateBehaviorChallenge = (sid, patch, logMessage = "") => {
@@ -2243,7 +2241,7 @@
                 if (currentState === 0) {
                     nextState = 1;
                     nextDirection = "up";
-                    log = `âœ… Grau de presença branco adicionado (${degreeIndex + 1}) | ${hoje}`;
+                    log = `✅ Grau de presença branco adicionado (${degreeIndex + 1}) | ${hoje}`;
                 } else if (currentState === 1) {
                     if (direction === "down") {
                         nextState = 0;
@@ -2257,7 +2255,7 @@
                 } else {
                     nextState = 1;
                     nextDirection = "down";
-                    log = `â†©ï¸ Grau de presença voltou para branco (${degreeIndex + 1}) | ${hoje}`;
+                    log = `↩️ Grau de presença voltou para branco (${degreeIndex + 1}) | ${hoje}`;
                 }
 
                 const nextStates = states.map((state, i) => i === degreeIndex ? nextState : state);
@@ -2503,7 +2501,6 @@
             const diffDays = Math.floor((today - lastPresence) / 86400000);
             return diffDays >= 10;
         }).length;
-        const missingCoreData = dashboardStudents.filter(s => !s.responsavel || !s.telefone || !s.matricula).length;
         const imageAuthPending = dashboardStudents.filter(s => !s.autorizacaoImagem).length;
         const challengeStudents = dashboardStudents
             .map(s => ({ ...s, desafioInfo: getBehaviorChallenge(s) }))
@@ -2522,6 +2519,15 @@
         const recentMessages = dashboardStudents.reduce((total, s) => {
             return total + (s.chat || []).filter(m => isInDashboardPeriod(m.date)).length;
         }, 0);
+        const presenceByDay = dashboardStudents.reduce((acc, s) => {
+            if (!s.ultimaPresenca || !isInDashboardPeriod(s.ultimaPresenca)) return acc;
+            const label = formatDateBR(s.ultimaPresenca);
+            if (!label) return acc;
+            acc[label] = (acc[label] || 0) + 1;
+            return acc;
+        }, {});
+        const busiestPresenceDay = Object.entries(presenceByDay).sort((a, b) => b[1] - a[1])[0] || null;
+        const busiestPresenceLabel = busiestPresenceDay ? `${busiestPresenceDay[0]} (${busiestPresenceDay[1]} aluno${busiestPresenceDay[1] === 1 ? "" : "s"})` : "Sem presença no período";
         const noRecentPresenceList = dashboardStudents.filter(s => {
             if (!s.ultimaPresenca) return true;
             const lastPresence = parseLocalDate(s.ultimaPresenca);
@@ -2533,7 +2539,6 @@
             const days = lastPresence ? Math.floor((today - lastPresence) / 86400000) : null;
             return { ...s, daysWithoutPresence: days };
         }).sort((a, b) => (b.daysWithoutPresence ?? 9999) - (a.daysWithoutPresence ?? 9999));
-        const incompleteStudents = dashboardStudents.filter(s => !s.responsavel || !s.telefone || !s.matricula);
         const imagePendingStudents = dashboardStudents.filter(s => !s.autorizacaoImagem);
         const lowProgressStudents = studentsWithProgress
             .filter(s => s.progresso.elegivel && s.progresso.percentual < 30)
@@ -2542,9 +2547,11 @@
             ...topUnread.map(s => ({ ...s, priorityReason: `${s.unread} mensagem${s.unread === 1 ? "" : "s"} pendente${s.unread === 1 ? "" : "s"}`, priorityType: "Mensagem" })),
             ...challengeReachedStudents.slice(0, 5).map(s => ({ ...s, priorityReason: `desafio atingiu o prazo em ${formatDateBR(s.desafioInfo.end)}`, priorityType: "Desafio" })),
             ...noRecentPresenceList.slice(0, 5).map(s => ({ ...s, priorityReason: s.daysWithoutPresence === null ? "sem presença registrada" : `${s.daysWithoutPresence} dias sem presença`, priorityType: "Presença" })),
-            ...examCandidates.slice(0, 5).map(s => ({ ...s, priorityReason: `${s.progresso.percentual}% pronto para exame`, priorityType: "Exame" })),
-            ...incompleteStudents.slice(0, 5).map(s => ({ ...s, priorityReason: "cadastro incompleto", priorityType: "Cadastro" }))
+            ...examCandidates.slice(0, 5).map(s => ({ ...s, priorityReason: `${s.progresso.percentual}% pronto para exame`, priorityType: "Exame" }))
         ].filter((item, index, arr) => arr.findIndex(other => other.id === item.id && other.priorityType === item.priorityType) === index);
+        const followUpStudents = [...topUnread, ...noRecentPresenceList, ...challengeReachedStudents]
+            .filter((item, index, arr) => arr.findIndex(other => other.id === item.id) === index);
+        const followUpCount = followUpStudents.length;
         const dashboardInsightText = totalUnreadDashboard > 0
             ? `${totalUnreadDashboard} mensagem${totalUnreadDashboard === 1 ? "" : "s"} pendente${totalUnreadDashboard === 1 ? "" : "s"} pedem atenção antes da próxima aula.`
             : noRecentPresenceList.length > 0
@@ -2585,7 +2592,7 @@
                 }))
             },
             evolucao: {
-                title: "Evolucao media",
+                title: "Evolução média",
                 subtitle: "Ranking de progresso ate a proxima faixa",
                 rows: studentsWithProgress
                     .filter(s => s.progresso.elegivel)
@@ -2613,25 +2620,27 @@
                     action: () => openStudentFromDashboard(s.nome)
                 }))
             },
-            cadastro: {
-                title: "Cadastro incompleto",
-                subtitle: "Faltando responsavel, WhatsApp ou matricula",
-                rows: dashboardStudents.filter(s => !s.responsavel || !s.telefone || !s.matricula).map(s => {
-                    const missing = [
-                        !s.responsavel ? "responsavel" : "",
-                        !s.telefone ? "WhatsApp" : "",
-                        !s.matricula ? "matricula" : ""
-                    ].filter(Boolean).join(", ");
+            meta: {
+                title: "Meta de acompanhamento",
+                subtitle: "Mensagens pendentes, ausência recente e desafios vencidos",
+                rows: followUpStudents.map(s => {
+                    const motivos = [];
+                    const unread = s.unread || ((s.chat || []).filter(m => !(m.readBy || []).includes("Professor")).length);
+                    const absent = noRecentPresenceList.find(item => item.id === s.id);
+                    const challenge = challengeReachedStudents.find(item => item.id === s.id);
+                    if (unread > 0) motivos.push(`${unread} mensagem${unread === 1 ? "" : "s"} pendente${unread === 1 ? "" : "s"}`);
+                    if (absent) motivos.push(absent.daysWithoutPresence === null ? "sem presença registrada" : `${absent.daysWithoutPresence} dias sem presença`);
+                    if (challenge) motivos.push(`desafio vencido em ${formatDateBR(challenge.desafioInfo.end)}`);
                     return {
                         id: s.id,
                         name: s.nome,
-                        meta: `Falta: ${missing}`,
-                        action: () => { setEditingStudent({...s}); setModalOpen("edit"); }
+                        meta: motivos.join(" • "),
+                        action: () => unread > 0 ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)
                     };
                 })
             },
             imagem: {
-                title: "Autorizacao pendente",
+                title: "Autorização pendente",
                 subtitle: "Alunos sem autorizacao de uso de imagem marcada",
                 rows: dashboardStudents.filter(s => !s.autorizacaoImagem).map(s => ({
                     id: s.id,
@@ -2648,6 +2657,17 @@
                     name: s.nome,
                     meta: `${s.desafioInfo.title} - ${behaviorDegreeOptions.find(option => option.key === s.desafioGrau)?.label || "Grau nao informado"} - termina em ${formatDateBR(s.desafioInfo.end)}${s.desafioInfo.reached ? " - prazo atingido" : ` - faltam ${Math.max(0, s.desafioInfo.remaining)} dia${s.desafioInfo.remaining === 1 ? "" : "s"}`}`,
                     action: () => openStudentFromDashboard(s.nome)
+                }))
+            },
+            movimento: {
+                title: "Maior dia de movimento",
+                subtitle: "Data com mais presenças registradas no período selecionado",
+                rows: Object.entries(presenceByDay).sort((a, b) => b[1] - a[1]).map(([date, count]) => ({
+                    id: date,
+                    name: date,
+                    meta: `${count} aluno${count === 1 ? "" : "s"} com presença registrada`,
+                    action: () => revealDashboardDetail("presenca"),
+                    actionLabel: "Ver presenças"
                 }))
             },
             arquivos: {
@@ -2683,6 +2703,30 @@
             }
         };
         const activeDashboardDetail = dashboardDetail ? dashboardDetailMap[dashboardDetail] : null;
+        const generateDashboardReport = () => {
+            const esc = value => String(value ?? "").replace(/[&<>"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[char] || char));
+            const rows = (items, emptyText) => items.length
+                ? items.map(item => `<li><strong>${esc(item.name || item.nome)}</strong><span>${esc(item.meta || item.priorityReason || "")}</span></li>`).join("")
+                : `<li><strong>${esc(emptyText)}</strong><span></span></li>`;
+            const readyRows = examCandidates.map(s => ({ name: s.nome, meta: `${s.progresso.percentual}% concluído - ${s.progresso.faltantes} aulas faltam` }));
+            const followRows = followUpStudents.map(s => {
+                const unread = s.unread || ((s.chat || []).filter(m => !(m.readBy || []).includes("Professor")).length);
+                const absent = noRecentPresenceList.find(item => item.id === s.id);
+                const challenge = challengeReachedStudents.find(item => item.id === s.id);
+                const motivos = [];
+                if (unread > 0) motivos.push(`${unread} mensagem${unread === 1 ? "" : "s"} pendente${unread === 1 ? "" : "s"}`);
+                if (absent) motivos.push(absent.daysWithoutPresence === null ? "sem presença registrada" : `${absent.daysWithoutPresence} dias sem presença`);
+                if (challenge) motivos.push(`desafio vencido em ${formatDateBR(challenge.desafioInfo.end)}`);
+                return { name: s.nome, meta: motivos.join(" • ") };
+            });
+            const challengeRows = challengeReachedStudents.map(s => ({ name: s.nome, meta: `${s.desafioInfo.title} - ${formatDateBR(s.desafioInfo.end)}` }));
+            const report = window.open("", "_blank", "width=980,height=720");
+            if (!report) return alert("Permita pop-ups para gerar o relatório em PDF.");
+            report.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Relatório do Painel</title><style>
+                body{font-family:Arial,sans-serif;margin:32px;color:#151515} h1{margin:0 0 6px;font-size:28px} h2{font-size:16px;margin:24px 0 10px;text-transform:uppercase;border-bottom:2px solid #3498db;padding-bottom:6px}.sub{color:#555;font-weight:700}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}.kpi{border:1px solid #ddd;border-radius:10px;padding:12px}.kpi strong{display:block;font-size:24px}.kpi span{font-size:11px;text-transform:uppercase;color:#666;font-weight:700}ul{list-style:none;padding:0;margin:0}li{display:grid;grid-template-columns:1fr 2fr;gap:10px;border-bottom:1px solid #eee;padding:9px 0}li span{color:#555}.summary{background:#f4f8fb;border:1px solid #d7e8f5;border-radius:12px;padding:14px;line-height:1.45}@media print{button{display:none}body{margin:18mm}}
+            </style></head><body><button onclick="window.print()">Salvar em PDF / Imprimir</button><h1>Alliance Jiu Jitsu Mooca</h1><div class="sub">Relatório do painel - ${esc(new Date().toLocaleDateString("pt-BR"))} - ${esc(dashboardPeriodLabel)}</div><div class="grid"><div class="kpi"><strong>${dashboardStudents.length}</strong><span>alunos filtrados</span></div><div class="kpi"><strong>${readyStudents}</strong><span>prontos para exame</span></div><div class="kpi"><strong>${followUpCount}</strong><span>meta de acompanhamento</span></div><div class="kpi"><strong>${averageProgress}%</strong><span>evolução média</span></div></div><div class="summary"><strong>Resumo executivo:</strong> ${esc(dashboardInsightText)} Maior dia de movimento: ${esc(busiestPresenceLabel)}. Presenças no período: ${recentPresenceStudents.length}. Mensagens no período: ${recentMessages}.</div><h2>Alunos prontos para exame</h2><ul>${rows(readyRows, "Nenhum aluno pronto para exame")}</ul><h2>Alunos que precisam de acompanhamento</h2><ul>${rows(followRows, "Nenhum aluno precisa de ação hoje")}</ul><h2>Desafios vencidos</h2><ul>${rows(challengeRows, "Nenhum desafio vencido")}</ul><h2>Maior dia de movimento</h2><ul><li><strong>${esc(busiestPresenceLabel)}</strong><span>Baseado nas presenças registradas no período selecionado.</span></li></ul><script>setTimeout(() => window.print(), 400)<\/script></body></html>`);
+            report.document.close();
+        };
 
         React.useEffect(() => {
             if (mode === "Professor" && professorView === "conversas" && selectedConversation && selectedConversation.unread > 0) {
@@ -2741,10 +2785,10 @@
                     <div className="auth-shell">
                         <div className="brand-card">
                             <div className="auth-hero-frame">
-                                <img src="eagle-cutout.png" className="auth-hero-image" />
+                                <img src="alliance-jiu-jitsu-mooca-complete.png" className="auth-hero-image" />
                             </div>
                             <div className="auth-hero-copy">
-                                <h1 className="auth-title">Alliance Mooca Kids</h1>
+                                <h1 className="auth-title">Alliance Jiu Jitsu Mooca</h1>
                                 <p className="auth-subtitle">Sistema de Evolução e Graduação</p>
                             </div>
                         </div>
@@ -2766,7 +2810,7 @@
                     <div className="auth-shell">
                         <div className="login-box">
                             <div className="auth-hero-frame">
-                                <img src="eagle-cutout.png" className="auth-hero-image" />
+                                <img src="alliance-jiu-jitsu-mooca-complete.png" className="auth-hero-image" />
                             </div>
                             <h3 className="login-heading">Acesso {subMode === "Pais" ? "dos Pais" : "do Professor"}</h3>
                             <input placeholder={subMode === 'Professor' ? "Usuário" : "Nome do Aluno"} value={auth.user} onChange={e => setAuth({...auth, user: e.target.value})} />
@@ -2782,7 +2826,7 @@
         return (
             <div className={`container ${mode === "Professor" && ["conversas", "painel"].includes(professorView) ? "wide-container" : ""}`}>
                 <header className="header-main">
-                    <h2>Alliance Mooca Kids</h2>
+                    <h2>Alliance Jiu Jitsu Mooca</h2>
                     {/* Botão de backup */}
                     {mode === "Professor" && (
                         <div className="btn-settings-hidden" onClick={() => setModalOpen('backup')}>
@@ -2915,7 +2959,8 @@
                                 <div className="dashboard-kpi-line">
                                     <div className="dashboard-kpi"><strong>{recentPresenceStudents.length}</strong><span>presenças no período</span></div>
                                     <div className="dashboard-kpi"><strong>{recentMessages}</strong><span>mensagens no período</span></div>
-                                    <div className="dashboard-kpi"><strong>{attentionStudents.length}</strong><span>pontos de atenção</span></div>
+                                    <div className="dashboard-kpi"><strong>{followUpCount}</strong><span>meta de acompanhamento</span></div>
+                                    <div className="dashboard-kpi"><strong>{averageProgress}%</strong><span>evolução média no período</span></div>
                                 </div>
                             </div>
                             <div className="dashboard-insight dashboard-actions">
@@ -2923,20 +2968,22 @@
                                 <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("prioridades")}><span>Ver atenção da semana</span><i className="fas fa-bell"></i></button>
                                 <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("desafios")}><span>Desafios de graus comportamentais</span><i className="fas fa-stopwatch"></i></button>
                                 <button className="dashboard-action-btn" onClick={() => revealDashboardDetail("evolucao-baixa")}><span>Alunos abaixo de 30%</span><i className="fas fa-chart-line"></i></button>
+                                <button className="dashboard-action-btn" onClick={generateDashboardReport}><span>Gerar relatório do painel</span><i className="fas fa-file-pdf"></i></button>
                                 <button className="dashboard-action-btn" onClick={exportDashboardCsv}><span>Exportar CSV do painel</span><i className="fas fa-file-export"></i></button>
                             </div>
                         </div>
 
                         <div className="dashboard-grid">
                             <div className={`dashboard-card ${dashboardDetail === "alunos" ? "active" : ""}`} onClick={() => revealDashboardDetail("alunos")}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => revealDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusao</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => revealDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusão</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "mensagens" ? "active" : ""}`} onClick={() => revealDashboardDetail("mensagens")}><strong>{totalUnreadDashboard}</strong><span>Mensagens pendentes</span><small>{topUnread.length} aluno{topUnread.length === 1 ? "" : "s"} com alerta de leitura</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => revealDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolucao media</span><small>Baseado no progresso para a proxima faixa</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presenca recente</span><small>Sem data ou ha 10 dias ou mais</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "cadastro" ? "active" : ""}`} onClick={() => revealDashboardDetail("cadastro")}><strong>{missingCoreData}</strong><span>Cadastro incompleto</span><small>Falta responsavel, WhatsApp ou matricula</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => revealDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorizacao pendente</span><small>Alunos sem autorizacao de imagem marcada</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => revealDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolução média</span><small>Baseado no progresso para a próxima faixa</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presença recente</span><small>Sem data ou há 10 dias ou mais</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "meta" ? "active" : ""}`} onClick={() => revealDashboardDetail("meta")}><strong>{followUpCount}</strong><span>Meta de acompanhamento</span><small>Mensagens, ausência e desafios vencidos</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => revealDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorização pendente</span><small>Alunos sem autorização de imagem marcada</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "desafios" ? "active" : ""}`} onClick={() => revealDashboardDetail("desafios")}><strong>{challengeStudents.length}</strong><span>Desafios comportamentais</span><small>{challengeReachedStudents.length} com prazo atingido</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => revealDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponiveis no repositorio interno</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "movimento" ? "active" : ""}`} onClick={() => revealDashboardDetail("movimento")}><strong>{busiestPresenceDay ? busiestPresenceDay[1] : 0}</strong><span>Maior movimento</span><small>{busiestPresenceLabel}</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => revealDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponíveis no repositório interno</small></div>
                         </div>
 
                         <div className="dashboard-priority-grid">
