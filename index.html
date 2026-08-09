@@ -347,11 +347,11 @@
         .dashboard-detail-head { padding: 15px 16px; display: flex; justify-content: space-between; gap: 12px; align-items: center; border-bottom: 1px solid #2a2a2a; }
         .dashboard-detail-head strong { color: #fff; font-size: 14px; text-transform: uppercase; display: block; }
         .dashboard-detail-head span { color: #777; font-size: 11px; font-weight: 800; display: block; margin-top: 4px; }
-        .dashboard-detail-list { max-height: 300px; overflow-y: auto; }
-        .dashboard-detail-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 13px 16px; border-bottom: 1px solid #252525; }
-        .dashboard-detail-row:last-child { border-bottom: 0; }
-        .dashboard-detail-row b { color: #fff; display: block; font-size: 13px; }
-        .dashboard-detail-row small { color: #777; display: block; margin-top: 4px; font-size: 11px; font-weight: 700; }
+        .dashboard-detail-list { max-height: 340px; overflow-y: auto; padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(245px, 1fr)); gap: 12px; }
+        .dashboard-detail-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid #252525; border-radius: 16px; background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)); cursor: pointer; transition: 0.2s; min-height: 82px; }
+        .dashboard-detail-row:hover { border-color: var(--alliance-red); background: #202020; transform: translateY(-1px); }
+        .dashboard-detail-row b { color: #fff; display: block; font-size: 13px; line-height: 1.2; }
+        .dashboard-detail-row small { color: #777; display: block; margin-top: 4px; font-size: 10px; font-weight: 800; line-height: 1.35; }
         .dashboard-detail-action { border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 999px; padding: 8px 11px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
         .dashboard-split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         .dashboard-panel { background: #181818; border: 1px solid #303030; border-radius: 20px; overflow: hidden; }
@@ -4272,45 +4272,6 @@
                             </div>
                         </div>
 
-                        <div className="dashboard-command-distributions">
-                            <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Distribuicao por turma</span><i className="fas fa-layer-group"></i></div>
-                                <div className="dashboard-compact-list">
-                                    {dashboardRows.categorias.map(row => (
-                                        <button className="dashboard-compact-row" key={`cmd-cat-${row.label}`} onClick={() => openDashboardStudents({ group: row.label })}>
-                                            <span>{row.label}</span>
-                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxCategory) * 100}%`}}></i></div>
-                                            <b>{row.value}</b>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Faixa e idade media</span><i className="fas fa-medal"></i></div>
-                                <div className="dashboard-compact-list">
-                                    {dashboardBeltAgeRows.length > 0 ? dashboardBeltAgeRows.map(row => (
-                                        <button className="dashboard-compact-row" key={`cmd-belt-${row.label}`} onClick={() => openDashboardStudents({ faixa: row.label })}>
-                                            <span>{row.label}<small>{row.ageLabel}</small></span>
-                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxBelt) * 100}%`}}></i></div>
-                                            <b>{row.value}</b>
-                                        </button>
-                                    )) : <div className="dashboard-note">Nenhuma faixa com aluno ainda.</div>}
-                                </div>
-                            </div>
-                            <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Status dos alunos</span><i className="fas fa-toggle-on"></i></div>
-                                <div className="dashboard-compact-list">
-                                    {dashboardRows.status.length > 0 ? dashboardRows.status.map(row => (
-                                        <button className="dashboard-compact-row" key={`cmd-status-${row.label}`} onClick={() => openDashboardStudents({ status: row.label })}>
-                                            <span>{row.label}</span>
-                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxStatus) * 100}%`}}></i></div>
-                                            <b>{row.value}</b>
-                                        </button>
-                                    )) : <div className="dashboard-note">Nenhum status informado.</div>}
-                                </div>
-                            </div>
-                        </div>
-
                         <div className="dashboard-overview-strip">
                             <div className="dashboard-overview-box" onClick={() => revealDashboardDetail("prioridades")} style={{cursor:"pointer"}}>
                                 <div className="dashboard-overview-icon"><i className="fas fa-clipboard-check"></i></div>
@@ -4468,12 +4429,12 @@
                             </div>
                             <div className="dashboard-detail-list">
                                 {activeDashboardDetail.rows.length > 0 ? activeDashboardDetail.rows.map(row => (
-                                    <div className="dashboard-detail-row" key={`${dashboardDetail}-${row.id}`}>
+                                    <div className="dashboard-detail-row" key={`${dashboardDetail}-${row.id}`} onClick={row.action}>
                                         <div>
                                             <b>{row.name}</b>
                                             <small>{row.meta}</small>
                                         </div>
-                                        <button className="dashboard-detail-action" onClick={row.action}>{row.actionLabel || "Abrir"}</button>
+                                        <button className="dashboard-detail-action" onClick={(e) => { e.stopPropagation(); row.action(); }}>{row.actionLabel || "Abrir"}</button>
                                     </div>
                                 )) : (
                                     <div className="dashboard-note">Nenhum item encontrado para este indicador.</div>
@@ -4481,44 +4442,45 @@
                             </div>
                         </div>}
 
-                        <div className="dashboard-split">
-                            <div className="dashboard-panel">
-                                <div className="dashboard-panel-title"><span>Distribuicao por turma</span><i className="fas fa-layer-group"></i></div>
-                                <div className="dashboard-list">
+                        <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
+                            <div className="dashboard-command-card compact-panel">
+                                <div className="dashboard-command-card-title"><span>Distribuicao por turma</span><i className="fas fa-layer-group"></i></div>
+                                <div className="dashboard-compact-list">
                                     {dashboardRows.categorias.map(row => (
-                                        <div className="dashboard-row clickable" key={row.label} onClick={() => openDashboardStudents({ group: row.label })}>
+                                        <button className="dashboard-compact-row" key={`cmd-cat-${row.label}`} onClick={() => openDashboardStudents({ group: row.label })}>
                                             <span>{row.label}</span>
                                             <div className="dashboard-bar"><i style={{width: `${(row.value / maxCategory) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
                             </div>
-                            <div className="dashboard-panel">
-                                <div className="dashboard-panel-title"><span>Distribuicao por faixa</span><i className="fas fa-medal"></i></div>
-                                <div className="dashboard-list">
-                                    {dashboardRows.faixas.length > 0 ? dashboardRows.faixas.map(row => (
-                                        <div className="dashboard-row clickable" key={row.label} onClick={() => openDashboardStudents({ faixa: row.label })}>
-                                            <span>{row.label}</span>
+                            <div className="dashboard-command-card compact-panel">
+                                <div className="dashboard-command-card-title"><span>Faixa e idade media</span><i className="fas fa-medal"></i></div>
+                                <div className="dashboard-compact-list">
+                                    {dashboardBeltAgeRows.length > 0 ? dashboardBeltAgeRows.map(row => (
+                                        <button className="dashboard-compact-row" key={`cmd-belt-${row.label}`} onClick={() => openDashboardStudents({ faixa: row.label })}>
+                                            <span>{row.label}<small>{row.ageLabel}</small></span>
                                             <div className="dashboard-bar"><i style={{width: `${(row.value / maxBelt) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
-                                        </div>
+                                        </button>
                                     )) : <div className="dashboard-note">Nenhuma faixa com aluno ainda.</div>}
                                 </div>
                             </div>
-                            <div className="dashboard-panel">
-                                <div className="dashboard-panel-title"><span>Status dos alunos</span><i className="fas fa-toggle-on"></i></div>
-                                <div className="dashboard-list">
+                            <div className="dashboard-command-card compact-panel">
+                                <div className="dashboard-command-card-title"><span>Status dos alunos</span><i className="fas fa-toggle-on"></i></div>
+                                <div className="dashboard-compact-list">
                                     {dashboardRows.status.length > 0 ? dashboardRows.status.map(row => (
-                                        <div className="dashboard-row clickable" key={row.label} onClick={() => openDashboardStudents({ status: row.label })}>
+                                        <button className="dashboard-compact-row" key={`cmd-status-${row.label}`} onClick={() => openDashboardStudents({ status: row.label })}>
                                             <span>{row.label}</span>
                                             <div className="dashboard-bar"><i style={{width: `${(row.value / maxStatus) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
-                                        </div>
+                                        </button>
                                     )) : <div className="dashboard-note">Nenhum status informado.</div>}
                                 </div>
                             </div>
                         </div>
+
                     </section>
                 )}
 
