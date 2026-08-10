@@ -114,6 +114,8 @@
         .btn-select i { width: 72px; height: 72px; border-radius: 20px; display: grid; place-items: center; background: rgba(201,165,84,0.10); color: var(--alliance-red); font-size: 48px; flex: 0 0 auto; text-shadow: 0 12px 28px rgba(201,165,84,0.42); }
         .btn-select strong { display: block; color: #fff; font-size: 25px; line-height: 1.05; text-shadow: 0 8px 22px rgba(0,0,0,0.55); }
         .btn-select small { display: block; margin-top: 8px; color: #b5bdc9; font-size: 15px; font-weight: 500; text-transform: none; }
+        .install-app-btn { width: 100%; min-height: 52px; border-radius: 18px; border: 1px solid rgba(201,165,84,0.5); background: rgba(201,165,84,0.12); color: #f7d46d; font-size: 13px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
+        .install-app-btn:hover { border-color: rgba(201,165,84,0.95); background: rgba(201,165,84,0.18); transform: translateY(-1px); }
         .login-box { background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); padding: 26px; border-radius: 24px; width: 100%; text-align: center; box-shadow: 0 18px 45px rgba(0,0,0,0.45); border: 1px solid var(--border-color); cursor: default; transform: translateZ(0); }
         .login-box .auth-hero-frame { width: 188px; height: 224px; border-radius: 0; border: 0; margin-bottom: 4px; }
         .login-box input { display: block; position: relative; z-index: 1; cursor: text; transform: translateZ(0); }
@@ -882,6 +884,12 @@
             background: #ffffff;
             border-color: rgba(246,196,0,0.42);
             color: #111827;
+        }
+        body.theme-light .install-app-btn {
+            background: linear-gradient(135deg, #0d2338, #12385c);
+            color: #ffc400;
+            border-color: rgba(201,165,84,0.62);
+            box-shadow: 0 14px 28px rgba(7,24,39,0.18);
         }
         body.theme-light .back-link {
             color: #f6c400;
@@ -2854,6 +2862,10 @@
         const [degreeDirections, setDegreeDirections] = React.useState({});
         const [modalOpen, setModalOpen] = React.useState(null);
         const [viewImage, setViewImage] = React.useState(null);
+        const [installPrompt, setInstallPrompt] = React.useState(null);
+        const [isStandaloneApp, setIsStandaloneApp] = React.useState(() =>
+            window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone === true
+        );
         const [editingStudent, setEditingStudent] = React.useState(null);
         const [storageWarning, setStorageWarning] = React.useState("");
         const [isHydrated, setIsHydrated] = React.useState(false);
@@ -2950,6 +2962,23 @@
                 document.body.classList.remove("theme-dark");
             };
         }, [theme]);
+
+        React.useEffect(() => {
+            const handleInstallPrompt = (event) => {
+                event.preventDefault();
+                setInstallPrompt(event);
+            };
+            const handleAppInstalled = () => {
+                setInstallPrompt(null);
+                setIsStandaloneApp(true);
+            };
+            window.addEventListener("beforeinstallprompt", handleInstallPrompt);
+            window.addEventListener("appinstalled", handleAppInstalled);
+            return () => {
+                window.removeEventListener("beforeinstallprompt", handleInstallPrompt);
+                window.removeEventListener("appinstalled", handleAppInstalled);
+            };
+        }, []);
 
         React.useEffect(() => {
             const hydrationFallback = setTimeout(() => {
@@ -4221,6 +4250,14 @@
                 openProfessorConversation(selectedConversation.id);
             }
         }, [mode, professorView, selectedConversation?.id, selectedConversation?.unread]);
+
+        const installApp = async () => {
+            if (!installPrompt) return;
+            installPrompt.prompt();
+            await installPrompt.userChoice.catch(() => null);
+            setInstallPrompt(null);
+        };
+
         const renderBeltHistory = (student, progress) => {
             const items = getBeltHistory(student, progress).slice().reverse();
             if (!items.length) {
@@ -4290,6 +4327,12 @@
                                 <span><strong>Área dos Pais</strong><small>Acompanhar evolução</small></span>
                             </button>
                         </div>
+                        {installPrompt && !isStandaloneApp && (
+                            <button className="install-app-btn" onClick={installApp}>
+                                <i className="fas fa-download"></i>
+                                Instalar app
+                            </button>
+                        )}
                     </div>
                 </div>
             );
