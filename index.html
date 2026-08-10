@@ -225,25 +225,44 @@
         .hist-details { margin-top: 15px; border: 1px solid var(--border-color); border-radius: 15px; background: #181818; overflow: hidden; }
         .hist-summary { cursor: pointer; font-size: 12px; font-weight: bold; color: #c9a554; padding: 12px; display: flex; justify-content: space-between; align-items: center; list-style: none; }
         .hist-content { padding: 12px; font-size: 11px; max-height: 150px; overflow-y: auto; border-top: 1px solid var(--border-color); color: #777; line-height: 1.6; }
-        .belt-history-list { display: grid; gap: 8px; }
-        .belt-history-card { padding: 12px; background: #161616; border: 1px solid #2d2d2d; border-radius: 14px; display: grid; gap: 9px; }
-        .belt-history-card.current { border-color: rgba(201,165,84,0.55); background: linear-gradient(135deg, rgba(201,165,84,0.12), rgba(20,20,20,0.95)); }
-        .belt-history-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
-        .belt-history-head strong { color: #fff; font-size: 14px; }
-        .belt-history-head small { color: #9a9a9a; font-weight: 800; text-transform: uppercase; font-size: 10px; display: block; margin-top: 3px; }
-        .belt-history-status { flex-shrink: 0; padding: 4px 8px; border-radius: 999px; background: #242424; color: #aaa; font-size: 9px; font-weight: 900; text-transform: uppercase; }
-        .belt-history-card.current .belt-history-status { background: var(--alliance-red); color: #fff; }
+        .belt-history-list { display: grid; gap: 14px; }
+        .belt-history-card { padding: 18px; background: radial-gradient(circle at 85% 12%, rgba(201,165,84,0.18), transparent 34%), linear-gradient(145deg, #101923, #0a1118 68%, #171717); border: 1px solid rgba(201,165,84,0.28); border-radius: 24px; display: grid; gap: 14px; box-shadow: 0 18px 40px rgba(0,0,0,0.28); }
+        .belt-history-card.current { border-color: rgba(246,196,0,0.62); background: radial-gradient(circle at 85% 12%, rgba(246,196,0,0.22), transparent 34%), linear-gradient(145deg, #102032, #09131d 62%, #181818); }
+        .belt-history-head { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; }
+        .belt-history-head strong { color: #fff; font-size: clamp(20px, 2.4vw, 28px); line-height: 1.05; display: block; }
+        .belt-history-head small { color: #f6c400; font-weight: 900; text-transform: uppercase; font-size: 10px; display: block; margin-bottom: 5px; letter-spacing: .02em; }
+        .belt-history-head em { display: inline-flex; gap: 7px; align-items: center; margin-top: 8px; color: #b8c3d1; font-size: 12px; font-style: normal; font-weight: 900; text-transform: uppercase; }
+        .belt-history-status { flex-shrink: 0; min-width: 58px; height: 58px; padding: 0 10px; border-radius: 999px; background: linear-gradient(135deg, rgba(246,196,0,0.95), rgba(201,137,32,0.95)); color: #101923; font-size: 12px; font-weight: 1000; text-transform: uppercase; display: grid; place-items: center; box-shadow: 0 0 0 7px rgba(246,196,0,0.10); }
+        .belt-history-card.current .belt-history-status { background: linear-gradient(135deg, #ffd761, #d89d1a); color: #111; }
         .belt-history-status.overdue { background: #f1c40f; color: #111; }
-        .belt-history-period { color: #a0a0a0; font-size: 11px; font-weight: 800; display: flex; flex-wrap: wrap; gap: 6px; }
-        .belt-history-period b { color: #fff; }
+        .belt-history-progress { height: 12px; border-radius: 999px; background: rgba(255,255,255,0.10); overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+        .belt-history-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #30d274, #f6c400, #d89d1a); box-shadow: 0 0 18px rgba(246,196,0,0.35); }
+        .belt-history-period { color: #b8c3d1; font-size: 12px; font-weight: 800; display: flex; flex-wrap: wrap; gap: 10px; }
+        .belt-history-period span { display: inline-flex; align-items: center; gap: 7px; }
+        .belt-history-period i { color: #f6c400; }
+        .belt-history-period b { color: #fff; margin-right: 2px; }
         .belt-history-date-input { background: #101923; border: 1px solid rgba(201,165,84,0.45); color: #fff; border-radius: 8px; padding: 5px 7px; font-size: 11px; font-weight: 800; margin-left: 4px; width: auto; min-height: 0; }
-        .belt-history-meta { display: flex; flex-wrap: wrap; gap: 6px; }
-        .belt-history-meta span { padding: 6px 8px; border-radius: 999px; background: #202020; color: #aaa; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-        .belt-history-meta b { color: #fff; font-size: 11px; margin-right: 4px; text-transform: none; }
-        .belt-history-card.current .belt-history-meta span:nth-child(1),
-        .belt-history-card.current .belt-history-meta span:nth-child(2),
-        .belt-history-card.current .belt-history-meta span:nth-child(6) { display: none; }
+        .belt-history-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+        .belt-history-meta span { padding: 13px 14px; border-radius: 16px; background: rgba(255,255,255,0.055); border: 1px solid rgba(255,255,255,0.08); color: #b8c3d1; font-size: 10px; font-weight: 900; text-transform: uppercase; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; min-width: 0; }
+        .belt-history-meta i { grid-row: span 2; color: #f6c400; font-size: 15px; }
+        .belt-history-meta b { color: #fff; font-size: 15px; text-transform: none; display: block; }
+        .belt-history-timeline { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; display: grid; gap: 9px; }
+        .timeline-label { color: #f6c400; font-size: 10px; font-weight: 1000; text-transform: uppercase; }
+        .timeline-track { display: grid; grid-template-columns: minmax(82px, auto) 1fr minmax(110px, auto) 1fr minmax(130px, auto) 1fr minmax(92px, auto); gap: 10px; align-items: center; }
+        .timeline-node { padding: 8px 10px; border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #b8c3d1; font-size: 9px; font-weight: 900; text-transform: uppercase; }
+        .timeline-node b { display: block; color: #fff; font-size: 11px; margin-bottom: 2px; }
+        .timeline-node.milestone { border-color: rgba(246,196,0,0.30); background: rgba(246,196,0,0.08); }
+        .timeline-node.current { border-color: rgba(246,196,0,0.45); background: rgba(246,196,0,0.12); }
+        .timeline-line { height: 3px; border-radius: 999px; background: linear-gradient(90deg, rgba(246,196,0,0.25), rgba(246,196,0,0.95)); }
         .belt-history-empty { padding: 12px; border: 1px dashed #333; border-radius: 12px; color: #888; font-size: 11px; line-height: 1.5; }
+        @media (max-width: 640px) {
+            .belt-history-card { padding: 14px; border-radius: 20px; }
+            .belt-history-head { grid-template-columns: 1fr; }
+            .belt-history-status { width: fit-content; min-width: 0; height: auto; padding: 7px 12px; justify-self: flex-start; }
+            .belt-history-meta { grid-template-columns: 1fr; }
+            .timeline-track { grid-template-columns: 1fr; }
+            .timeline-line { height: 2px; }
+        }
         
         .chat-container { border-radius: 18px; overflow: hidden; margin-top: 20px; border: 1px solid var(--border-color); background: #181818; }
         .chat-header { background: #222; color: white; padding: 15px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-bottom: 1px solid var(--border-color); }
@@ -941,8 +960,39 @@
         }
         body.theme-light .hist-content,
         body.theme-light .belt-history-period,
+        body.theme-light .belt-history-head em,
+        body.theme-light .belt-history-meta span,
+        body.theme-light .timeline-node,
         body.theme-light .challenge-empty {
             color: #667085;
+        }
+        body.theme-light .belt-history-card {
+            background: radial-gradient(circle at 85% 12%, rgba(246,196,0,0.16), transparent 34%), linear-gradient(145deg, #ffffff, #f6f8fb 68%, #eef3f8);
+            border-color: rgba(17,48,76,0.14);
+            box-shadow: 0 18px 40px rgba(15,23,42,0.10);
+        }
+        body.theme-light .belt-history-card.current {
+            background: radial-gradient(circle at 85% 12%, rgba(246,196,0,0.24), transparent 34%), linear-gradient(145deg, #ffffff, #fffaf0 62%, #f5f7fb);
+            border-color: rgba(201,165,84,0.48);
+        }
+        body.theme-light .belt-history-progress {
+            background: rgba(17,48,76,0.10);
+            border-color: rgba(17,48,76,0.08);
+        }
+        body.theme-light .belt-history-meta span,
+        body.theme-light .timeline-node {
+            background: rgba(17,48,76,0.045);
+            border-color: rgba(17,48,76,0.10);
+        }
+        body.theme-light .timeline-node.current {
+            background: rgba(246,196,0,0.18);
+            border-color: rgba(201,165,84,0.36);
+        }
+        body.theme-light .timeline-node b {
+            color: #111827;
+        }
+        body.theme-light .timeline-line {
+            background: linear-gradient(90deg, rgba(201,165,84,0.28), rgba(201,137,32,0.95));
         }
         body.theme-light .parent-composer,
         body.theme-light .chat-container div[style*="background:#1a1a1a"] {
@@ -2623,9 +2673,9 @@
 
     function getBeltFamily(faixa = "") {
         const f = faixa.toLowerCase();
-        if (f.includes("branca") || f.includes("cinza")) return "brancaCinza";
         if (f.includes("amarela") || f.includes("laranja")) return "amarelaLaranja";
         if (f.includes("verde")) return "verde";
+        if (f.includes("branca") || f.includes("cinza")) return "brancaCinza";
         return "desconhecida";
     }
 
@@ -4310,18 +4360,28 @@
             }
             return (
                 <div className="belt-history-list">
-                    {items.map(item => (
+                    {items.map((item, index) => {
+                        const previousItem = items[index + 1];
+                        const percent = Math.max(0, Math.min(100, Number(item.percentualFinal || 0)));
+                        const presencaAtual = `${item.grausBrancos || 0}B / ${item.grausVermelhos || 0}V`;
+                        const comportamentalAtual = `${item.comportamentais || 0}/4`;
+                        return (
                         <div key={item.id} className={`belt-history-card ${item.current ? "current" : ""}`}>
                             <div className="belt-history-head">
                                 <div>
-                                    <strong>{item.current ? `Faixa Atual: ${item.faixa}` : `${item.faixa} concluida`}</strong>
-                                    <small>{item.current ? `Turma: ${item.turma || "Turma atual"}` : `${item.tipo || "Concluida"} para ${item.proximaFaixa || "proxima faixa"}`}</small>
+                                    <small>{item.current ? "Faixa atual" : "Faixa finalizada"}</small>
+                                    <strong>{item.faixa}</strong>
+                                    <em><i className="fas fa-users"></i> {item.turma || "Turma atual"}</em>
                                 </div>
-                                <span className="belt-history-status">{item.current ? `${item.percentualFinal}%` : "Finalizada"}</span>
+                                <span className="belt-history-status">{item.current ? `${percent}%` : "Finalizada"}</span>
+                            </div>
+                            <div className="belt-history-progress">
+                                <span style={{width: `${percent}%`}}></span>
                             </div>
                             <div className="belt-history-period">
                                 <span>
-                                    <b>{item.current ? "Inicio da Faixa Atual:" : "Inicio:"}</b>
+                                    <i className="fas fa-calendar-alt"></i>
+                                    <b>{item.current ? "Início da Faixa Atual:" : "Início:"}</b>
                                     {item.current && mode === "Professor" ? (
                                         <input
                                             className="belt-history-date-input"
@@ -4333,18 +4393,40 @@
                                         <> {item.dataInicio ? formatDateBR(item.dataInicio) : "sem data"}</>
                                     )}
                                 </span>
-                                <span><b>Conclusao:</b> {item.dataConclusao ? formatDateBR(item.dataConclusao) : "em andamento"}</span>
+                                <span><i className="fas fa-circle-check"></i><b>Conclusão:</b> {item.dataConclusao ? formatDateBR(item.dataConclusao) : "em andamento"}</span>
                             </div>
                             <div className="belt-history-meta">
-                                <span><b>{item.dataInicio ? formatDateBR(item.dataInicio) : "Sem data"}</b>Início</span>
-                                <span><b>{item.dataConclusao ? formatDateBR(item.dataConclusao) : "Em andamento"}</b>Conclusão</span>
-                                <span><b>{item.aulasFeitas}/{item.aulasNecessarias || 0}</b>Aulas</span>
-                                <span><b>{item.grausBrancos || 0}B / {item.grausVermelhos || 0}V</b>Presença</span>
-                                <span><b>{item.comportamentais || 0}/4</b>Comport.</span>
-                                <span><b>{item.turma || "-"}</b>Turma</span>
+                                <span><i className="fas fa-graduation-cap"></i><b>{item.aulasFeitas}/{item.aulasNecessarias || 0}</b>Aulas</span>
+                                <span><i className="fas fa-clipboard-check"></i><b>{item.grausBrancos || 0}B / {item.grausVermelhos || 0}V</b>Grau de Presença</span>
+                                <span><i className="fas fa-star"></i><b>{item.comportamentais || 0}/4</b>Graus Comportamentais</span>
+                            </div>
+                            <div className="belt-history-timeline">
+                                <span className="timeline-label">Linha do tempo</span>
+                                <div className="timeline-track">
+                                    <div className="timeline-node previous">
+                                        <b>{previousItem?.faixa || "Início"}</b>
+                                        <small>{previousItem ? "Anterior" : "Base"}</small>
+                                    </div>
+                                    <div className="timeline-line"></div>
+                                    <div className="timeline-node milestone">
+                                        <b>{presencaAtual}</b>
+                                        <small>Grau de Presença</small>
+                                    </div>
+                                    <div className="timeline-line"></div>
+                                    <div className="timeline-node milestone">
+                                        <b>{comportamentalAtual}</b>
+                                        <small>Graus Comportamentais</small>
+                                    </div>
+                                    <div className="timeline-line"></div>
+                                    <div className="timeline-node current">
+                                        <b>{item.faixa}</b>
+                                        <small>{item.current ? "Atual" : "Finalizada"}</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
             );
         };
@@ -5116,6 +5198,22 @@
                                                         else if (presenceDegreeStates[i] === 1) c = "bg-white";
                                                         return <div key={i} className={`degree-box ${c}`} style={{cursor:'default'}}></div>;
                                                     })}
+                                                </div>
+                                                <span className="section-label">Graus Comportamentais</span>
+                                                <div className="degree-row" style={{ alignItems: 'flex-end', padding: '15px 12px' }}>
+                                                    {[
+                                                        {k:'Rel', i:'fa-users', c:'bg-yellow', l:'Relacionamento'}, 
+                                                        {k:'Comp', i:'fa-brain', c:'bg-blue', l:'Comportamento'}, 
+                                                        {k:'Notas', i:'fa-graduation-cap', c:'bg-red', l:'Notas'}, 
+                                                        {k:'Hab', i:'fa-apple-alt', c:'bg-green', l:'Hábitos'}
+                                                    ].map(m => (
+                                                        <div key={m.k} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                                                            <div className={`merit-bar ${s.comp?.[m.k] ? m.c : ''}`} style={{ cursor: 'default', opacity: s.comp?.[m.k] ? 1 : 0.45 }}>
+                                                                <i className={`fas ${m.i}`}></i>
+                                                            </div>
+                                                            <small style={{ color: '#aaa', fontWeight: '900', textTransform: 'uppercase', fontSize: '10px', textAlign: 'center' }}>{m.l}</small>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </details>}
