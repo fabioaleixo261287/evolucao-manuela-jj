@@ -2329,6 +2329,7 @@
     const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
     const LOCAL_STUDENTS_KEY = "all_eagle_v22_s";
     const LOCAL_REPO_KEY = "all_eagle_v22_r";
+    const LOCAL_USERS_KEY = "all_eagle_v22_users";
     const LOCAL_THEME_KEY = "all_eagle_v22_theme";
     const LOCAL_PENDING_SYNC_KEY = "all_eagle_v22_pending_sync";
     const LOCAL_AUTO_BACKUP_KEY = "all_eagle_v22_auto_backup";
@@ -2339,6 +2340,9 @@
     const APPWRITE_DATABASE_ID = "alliance_db";
     const APPWRITE_TABLE_ID = "app_state";
     const APPWRITE_BUCKET_ID = "alliance_files";
+    const createDefaultSystemUsers = () => ([
+        { id: 1, nome: "Administrador", login: "admin", senha: "admin", perfil: "Administrador", status: "Ativo", createdAt: new Date().toISOString() }
+    ]);
 
     // Preencha aqui se quiser deixar fixo no arquivo, ou defina window.SUPABASE_CONFIG antes deste script.
     const SUPABASE_URL = "https://oozzhujtyqsaxhkluxer.supabase.co";
@@ -2486,18 +2490,19 @@
         }
     };
 
-    const buildBackupPayload = (students, repo, source = "manual") => ({
+    const buildBackupPayload = (students, repo, source = "manual", users = []) => ({
         source,
         app: "Alliance Jiu Jitsu Mooca",
         version: "alliance_mooca_kids_v22",
         timestamp: new Date().toISOString(),
         students: students || [],
-        repo: repo || []
+        repo: repo || [],
+        users: users || []
     });
 
-    const saveAutomaticLocalBackup = (students, repo, source = "auto-local") => {
+    const saveAutomaticLocalBackup = (students, repo, source = "auto-local", users = []) => {
         try {
-            localStorage.setItem(LOCAL_AUTO_BACKUP_KEY, JSON.stringify(buildBackupPayload(students, repo, source)));
+            localStorage.setItem(LOCAL_AUTO_BACKUP_KEY, JSON.stringify(buildBackupPayload(students, repo, source, users)));
         } catch (e) {
             console.warn("Não foi possível salvar o backup local automático.", e);
         }
@@ -2837,6 +2842,15 @@
             try { return JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]"); }
             catch(e) { return []; }
         });
+        const [users, setUsers] = React.useState(() => {
+            try {
+                const stored = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || "[]");
+                return Array.isArray(stored) && stored.length ? stored : createDefaultSystemUsers();
+            } catch(e) {
+                return createDefaultSystemUsers();
+            }
+        });
+        const [currentUser, setCurrentUser] = React.useState(null);
 
         const [searchTerm, setSearchTerm] = React.useState("");
         const [filterGroup, setFilterGroup] = React.useState("Todos");
@@ -2847,6 +2861,7 @@
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
         const [dashboardStudentDetailFilters, setDashboardStudentDetailFilters] = React.useState(null);
         const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" });
+        const [dashboardDraftFilters, setDashboardDraftFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" });
         const revealDashboardDetail = (detailKey, options = {}) => {
             if (!options.keepStudentFilters) setDashboardStudentDetailFilters(null);
             setDashboardDetail(detailKey);
@@ -2857,6 +2872,7 @@
         const [selectedChatId, setSelectedChatId] = React.useState(null);
         const [conversationSearch, setConversationSearch] = React.useState("");
         const [form, setForm] = React.useState(createEmptyStudentForm);
+        const [userForm, setUserForm] = React.useState({ nome: "", login: "", senha: "", perfil: "Professor", status: "Ativo" });
         const [chatInputs, setChatInputs] = React.useState({});
         const [openChats, setOpenChats] = React.useState({});
         const [degreeDirections, setDegreeDirections] = React.useState({});
@@ -2882,6 +2898,9 @@
         const lastLocalSignatureRef = React.useRef("");
         const lastRemoteSignatureRef = React.useRef("");
         const [theme, setTheme] = React.useState("dark");
+        const currentProfile = currentUser?.perfil || "Administrador";
+        const canAccessDashboard = currentProfile !== "Recepção";
+        const canManageUsers = currentProfile === "Administrador";
 
         const markPendingSync = React.useCallback((message = "Banco offline. Alterações salvas localmente e pendentes de sincronização.") => {
             pendingLocalSaveRef.current = true;
@@ -2940,6 +2959,12 @@
         React.useEffect(() => {
             setExpandedSearchStudentId(null);
         }, [searchTerm, filterGroup]);
+
+        React.useEffect(() => {
+            if (mode === "Professor" && !canAccessDashboard && professorView === "painel") {
+                setProfessorView("alunos");
+            }
+        }, [mode, canAccessDashboard, professorView]);
 
         React.useEffect(() => {
             document.body.classList.toggle("auth-mode", !mode);
@@ -3140,7 +3165,7 @@
                 if (signatureChanged) {
                     localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(students));
                     localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(repo));
-                    saveAutomaticLocalBackup(students, repo);
+                    saveAutomaticLocalBackup(students, repo, "auto-local", users);
                     const backupStamp = new Date().toISOString();
                     const storedBackup = JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "{}");
                     setLastAutoBackupAt(storedBackup.timestamp || backupStamp);
@@ -3205,6 +3230,14 @@
 
             return () => clearTimeout(syncTimer);
         }, [students, repo, isHydrated, appwriteServices, supabaseClient, markPendingSync, clearPendingSync]);
+
+        React.useEffect(() => {
+            try {
+                localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
+            } catch (e) {
+                console.warn("Não foi possível salvar os usuários locais.", e);
+            }
+        }, [users]);
 
         React.useEffect(() => {
             if (!isHydrated || !pendingSync) return;
@@ -3294,8 +3327,19 @@
 
         const handleLogin = () => {
             if (subMode === 'Professor') {
-                if (auth.user === 'admin' && auth.pass === 'admin') setMode('Professor');
-                else alert('Senha incorreta.');
+                const typedUser = auth.user.toLowerCase().trim();
+                const typedPass = auth.pass.trim();
+                const legacyAdmin = typedUser === "admin" && typedPass === "admin";
+                const systemUser = users.find(user =>
+                    (user.status || "Ativo") === "Ativo" &&
+                    String(user.login || "").toLowerCase().trim() === typedUser &&
+                    String(user.senha || "") === typedPass
+                );
+                if (legacyAdmin || systemUser) {
+                    setCurrentUser(systemUser || { id: 1, nome: "Administrador", login: "admin", perfil: "Administrador", status: "Ativo" });
+                    setMode('Professor');
+                }
+                else alert('Usuário ou senha incorretos.');
             } else {
                 const aluno = students.find(s => {
                     const nomeMatch = s.nome.toLowerCase().trim() === auth.user.toLowerCase().trim();
@@ -3586,7 +3630,7 @@
         };
 
         const downloadBackup = () => {
-            const data = buildBackupPayload(students, repo, "manual-json");
+            const data = buildBackupPayload(students, repo, "manual-json", users);
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -3598,7 +3642,7 @@
 
         const downloadAutomaticLocalBackup = () => {
             try {
-                const data = JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "null") || buildBackupPayload(students, repo, "auto-local");
+                const data = JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "null") || buildBackupPayload(students, repo, "auto-local", users);
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -3621,6 +3665,7 @@
                     if (Array.isArray(data.students)) {
                         setStudents(data.students);
                         setRepo(Array.isArray(data.repo) ? data.repo : []);
+                        if (Array.isArray(data.users) && data.users.length) setUsers(data.users);
                         alert("Backup restaurado com sucesso!");
                         setModalOpen(null);
                     } else {
@@ -3693,11 +3738,11 @@
             setDashboardStudentDetailFilters(filters);
             revealDashboardDetail("alunos", { keepStudentFilters: true });
         };
-        const openDashboardFilteredStudents = () => {
+        const openDashboardFilteredStudents = (sourceFilters = dashboardFilters) => {
             const filters = {};
-            if (dashboardFilters.group !== "Todos") filters.group = dashboardFilters.group;
-            if (dashboardFilters.faixa !== "Todas") filters.faixa = dashboardFilters.faixa;
-            if (dashboardFilters.status !== "Todos") filters.status = dashboardFilters.status;
+            if (sourceFilters.group !== "Todos") filters.group = sourceFilters.group;
+            if (sourceFilters.faixa !== "Todas") filters.faixa = sourceFilters.faixa;
+            if (sourceFilters.status !== "Todos") filters.status = sourceFilters.status;
             openDashboardStudents(filters);
         };
         const openStudentFromDashboard = (studentName) => {
@@ -4469,7 +4514,7 @@
                         <div className="dashboard-filters dashboard-filters-command">
                             <div className="dashboard-filter">
                                 <label>Período</label>
-                                <select value={dashboardFilters.period} onChange={e => setDashboardFilters({...dashboardFilters, period: e.target.value})}>
+                                <select value={dashboardDraftFilters.period} onChange={e => setDashboardDraftFilters({...dashboardDraftFilters, period: e.target.value})}>
                                     <option value="day">Hoje</option>
                                     <option value="7">Semana</option>
                                     <option value="month">Mês</option>
@@ -4479,29 +4524,29 @@
                             </div>
                             <div className="dashboard-filter">
                                 <label>Turma</label>
-                                <select value={dashboardFilters.group} onChange={e => setDashboardFilters({...dashboardFilters, group: e.target.value})}>
+                                <select value={dashboardDraftFilters.group} onChange={e => setDashboardDraftFilters({...dashboardDraftFilters, group: e.target.value})}>
                                     <option value="Todos">Todas</option>
                                     {groups.map(group => <option key={group} value={group}>{group}</option>)}
                                 </select>
                             </div>
                             <div className="dashboard-filter">
                                 <label>Faixa</label>
-                                <select value={dashboardFilters.faixa} onChange={e => setDashboardFilters({...dashboardFilters, faixa: e.target.value})}>
+                                <select value={dashboardDraftFilters.faixa} onChange={e => setDashboardDraftFilters({...dashboardDraftFilters, faixa: e.target.value})}>
                                     <option value="Todas">Todas</option>
                                     {beltOrder.map(faixa => <option key={faixa} value={faixa}>{faixa}</option>)}
                                 </select>
                             </div>
                             <div className="dashboard-filter">
                                 <label>Status</label>
-                                <select value={dashboardFilters.status} onChange={e => setDashboardFilters({...dashboardFilters, status: e.target.value})}>
+                                <select value={dashboardDraftFilters.status} onChange={e => setDashboardDraftFilters({...dashboardDraftFilters, status: e.target.value})}>
                                     <option value="Todos">Todos</option>
                                     {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
                                 </select>
                             </div>
-                            <button className="dashboard-search-action" onClick={openDashboardFilteredStudents}>
+                            <button className="dashboard-search-action" onClick={() => { setDashboardFilters(dashboardDraftFilters); openDashboardFilteredStudents(dashboardDraftFilters); }}>
                                 <i className="fas fa-search"></i> Consultar
                             </button>
-                            <button className="dashboard-clear" onClick={() => { setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" }); setDashboardDetail(null); }}>
+                            <button className="dashboard-clear" onClick={() => { const cleanFilters = { group: "Todos", faixa: "Todas", status: "Todos", period: "month" }; setDashboardDraftFilters(cleanFilters); setDashboardFilters(cleanFilters); setDashboardDetail(null); setDashboardStudentDetailFilters(null); }}>
                                 Limpar filtros
                             </button>
                         </div>
@@ -4974,7 +5019,7 @@
                                     <div className="parent-nav-inline">
                                         <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/blog/', '_blank')}><i className="fas fa-up-right-from-square"></i><span>Site</span></div>
                                         <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-tree"></i><span>Arquivos</span></div>
-                                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); setFilterGroup("Todos"); setExpandedSearchStudentId(null); }}><i className="fas fa-right-from-bracket"></i><span>Sair</span></div>
+                                        <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setCurrentUser(null); setAuth({user:'', pass:''}); setSearchTerm(""); setFilterGroup("Todos"); setExpandedSearchStudentId(null); }}><i className="fas fa-right-from-bracket"></i><span>Sair</span></div>
                                     </div>
                                 )}
                                 {mode === "Professor" && (
@@ -5282,19 +5327,19 @@
                         <>
                             <div className="action-item" onClick={() => { setProfessorView("alunos"); setModalOpen('add'); }}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
-                            <div className="action-item" onClick={() => setProfessorView("painel")}><i className="fas fa-chart-pie"></i><span>PAINEL</span></div>
+                            {canAccessDashboard && <div className="action-item" onClick={() => setProfessorView("painel")}><i className="fas fa-chart-pie"></i><span>PAINEL</span></div>}
                             <div className="action-item" onClick={() => setProfessorView("conversas")}>
                                 {totalUnreadProfessor > 0 && <b className="nav-badge">{totalUnreadProfessor > 99 ? "99+" : totalUnreadProfessor}</b>}
                                 <i className="fab fa-whatsapp"></i><span>CONVERSAS</span>
                             </div>
                             <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/blog/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
-                            <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
+                            <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setCurrentUser(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
                     ) : (
                         <>
                             <div className="action-item" onClick={() => window.open('https://alliancemooca.com.br/blog/', '_blank')}><i className="fas fa-globe"></i><span>SITE</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
-                            <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
+                            <div className="action-item" onClick={() => { setMode(null); setSubMode(null); setCurrentUser(null); setAuth({user:'', pass:''}); setSearchTerm(""); }}><i className="fas fa-sign-out-alt"></i><span>SAIR</span></div>
                         </>
                     )}
                 </div>}
@@ -5333,10 +5378,91 @@
                             <button className="btn-full" style={{background: '#3498db', color:'white'}} onClick={syncLocalChangesNow}>
                                 <i className="fas fa-sync-alt"></i> SINCRONIZAR PENDÊNCIAS AGORA
                             </button>
+                            {canManageUsers && (
+                                <button className="btn-full" style={{background: '#0f2438', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={() => setModalOpen('users')}>
+                                    <i className="fas fa-users-gear"></i> USUÁRIOS DO SISTEMA
+                                </button>
+                            )}
                             <label className="btn-full" style={{background: 'var(--alliance-red)', color:'white', display:'block', textAlign:'center', cursor:'pointer', marginTop:'15px'}}>
                                 <i className="fas fa-upload"></i> IMPORTAR BACKUP
                                 <input type="file" style={{display:'none'}} accept=".json" onChange={importBackup} />
                             </label>
+                            <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
+                        </div>
+                    </div>
+                )}
+
+                {modalOpen === 'users' && canManageUsers && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Usuários do Sistema</h3>
+                            <p style={{color:'#9aa6b2', marginTop:'-8px', fontSize:'13px'}}>Crie acessos para professores, recepção ou administradores. O acesso dos pais continua pelo nome do aluno e nascimento.</p>
+                            <label className="field-label">Nome</label>
+                            <input placeholder="Nome do usuário" value={userForm.nome} onChange={e => setUserForm({...userForm, nome: e.target.value})} />
+                            <div className="form-grid">
+                                <div>
+                                    <label className="field-label">Login</label>
+                                    <input placeholder="Login" value={userForm.login} onChange={e => setUserForm({...userForm, login: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">Senha</label>
+                                    <input type="password" placeholder="Senha" value={userForm.senha} onChange={e => setUserForm({...userForm, senha: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">Perfil</label>
+                                    <select value={userForm.perfil} onChange={e => setUserForm({...userForm, perfil: e.target.value})}>
+                                        <option value="Administrador">Administrador</option>
+                                        <option value="Professor">Professor</option>
+                                        <option value="Recepção">Recepção (sem painel)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="field-label">Status</label>
+                                    <select value={userForm.status} onChange={e => setUserForm({...userForm, status: e.target.value})}>
+                                        <option value="Ativo">Ativo</option>
+                                        <option value="Inativo">Inativo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button className="btn-full" style={{background:'var(--alliance-green)', color:'#fff'}} onClick={() => {
+                                const nome = userForm.nome.trim();
+                                const login = userForm.login.trim();
+                                const senha = userForm.senha.trim();
+                                if (!nome || !login || !senha) return alert("Preencha nome, login e senha.");
+                                if (users.some(user => String(user.login || "").toLowerCase().trim() === login.toLowerCase())) return alert("Já existe um usuário com este login.");
+                                setUsers([...users, { ...userForm, nome, login, senha, id: Date.now(), createdAt: new Date().toISOString() }]);
+                                setUserForm({ nome: "", login: "", senha: "", perfil: "Professor", status: "Ativo" });
+                            }}>
+                                <i className="fas fa-user-plus"></i> ADICIONAR USUÁRIO
+                            </button>
+                            <div style={{display:'grid', gap:'10px', margin:'18px 0'}}>
+                                {users.map(user => (
+                                    <div key={user.id} style={{display:'grid', gridTemplateColumns:'1fr auto auto auto', gap:'10px', alignItems:'center', padding:'12px', border:'1px solid var(--border-color)', borderRadius:'14px', background:'rgba(255,255,255,0.03)'}}>
+                                        <div>
+                                            <strong style={{display:'block', color:'#fff'}}>{user.nome}</strong>
+                                            <small style={{color:'#9aa6b2'}}>{user.login} • {user.perfil} • {user.status || "Ativo"}</small>
+                                        </div>
+                                        <button className="filter-btn" onClick={() => {
+                                            const novaSenha = prompt(`Nova senha para ${user.nome}:`, "");
+                                            if (novaSenha === null) return;
+                                            if (!novaSenha.trim()) return alert("Informe uma senha válida.");
+                                            setUsers(users.map(item => item.id === user.id ? { ...item, senha: novaSenha.trim(), senhaAtualizadaEm: new Date().toISOString() } : item));
+                                            alert("Senha alterada com sucesso.");
+                                        }}>
+                                            Senha
+                                        </button>
+                                        <button className="filter-btn" onClick={() => setUsers(users.map(item => item.id === user.id ? { ...item, status: (item.status || "Ativo") === "Ativo" ? "Inativo" : "Ativo" } : item))}>
+                                            {(user.status || "Ativo") === "Ativo" ? "Inativar" : "Ativar"}
+                                        </button>
+                                        {user.login !== "admin" && (
+                                            <button className="filter-btn" onClick={() => confirm("Remover este usuário?") && setUsers(users.filter(item => item.id !== user.id))}>
+                                                <i className="fas fa-trash"></i>
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                            <button className="btn-full" onClick={() => setModalOpen('backup')}>VOLTAR</button>
                             <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
                         </div>
                     </div>
