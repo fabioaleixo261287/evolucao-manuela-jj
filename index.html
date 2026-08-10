@@ -69,8 +69,11 @@
         body { 
             font-family: 'Segoe UI', system-ui, -apple-system; 
             background:
-                radial-gradient(circle at 50% -90px, rgba(201,165,84,0.22), transparent 280px),
-                linear-gradient(180deg, #0b0b0b 0%, #050505 42%, #05070a 100%);
+                radial-gradient(circle at 50% 0%, rgba(201,165,84,0.14), transparent 330px),
+                linear-gradient(180deg, #050505 0%, #050505 100%);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
             color: var(--text-color); 
             margin:0; 
             padding: 14px; 
@@ -117,8 +120,12 @@
         .login-heading { margin: 0 0 18px; color: #fff; font-size: 18px; position: relative; z-index: 1; }
         .back-link { font-size: 11px; margin-top: 18px; cursor: pointer; color: #777; font-weight: 800; text-transform: uppercase; }
 
-        .header-main { text-align: center; margin: 18px 0 18px; position: relative; display: flex; justify-content: center; align-items: center; }
-        .header-main h2 { color: white; font-weight: 900; text-transform: uppercase; border-bottom: 3px solid var(--alliance-red); display: inline-block; padding: 0 8px 9px; letter-spacing: 1px; margin: 0; text-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+        .header-main { text-align: center; margin: 16px auto 18px; max-width: 1180px; position: relative; display: flex; justify-content: center; align-items: center; min-height: 64px; }
+        .app-brand-header { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 8px 18px; border-radius: 16px; background: transparent; }
+        .app-brand-header img { width: 42px; height: 42px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.54)); }
+        .app-brand-header strong { display: block; color: #fff; font-size: 22px; line-height: 1; font-weight: 950; text-transform: uppercase; letter-spacing: 1.4px; text-shadow: 0 10px 30px rgba(0,0,0,0.48); }
+        .app-brand-header small { display: block; margin-top: 5px; color: #f6c400; font-size: 8px; line-height: 1; font-weight: 950; text-transform: uppercase; letter-spacing: 0.8px; text-align: center; }
+        .header-main h2 { display: none; }
         
         /* Botão de backup */
         .btn-settings-hidden { 
@@ -541,7 +548,7 @@
 
         @media (max-width: 560px) {
             body { padding: 8px; padding-bottom: 110px; }
-            .header-main h2 { font-size: 19px; max-width: calc(100% - 70px); }
+            .header-main h2 { display: none; }
             .card { padding: 16px; border-radius: 18px; }
             .student-top { align-items: flex-start; gap: 12px; }
             .avatar-container, .avatar { width: 68px; height: 68px; }
@@ -597,24 +604,10 @@
         .container, .conversation-page, .dashboard-page { max-width: 1180px; }
         .header-main { margin: 18px auto 24px; max-width: 1180px; }
         .header-main h2 {
-            color: #111;
-            text-shadow: none;
-            border-bottom: 0;
-            padding-bottom: 0;
-            position: relative;
-            font-size: 25px;
-            letter-spacing: 1.5px;
+            display: none;
         }
         .header-main h2::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            bottom: -12px;
-            width: 150px;
-            height: 3px;
-            transform: translateX(-50%);
-            background: linear-gradient(90deg, #f6c400, #ffc400, #ffffff);
-            border-radius: 999px;
+            content: none;
         }
         .btn-settings-hidden {
             right: 0;
@@ -899,6 +892,16 @@
         body.theme-light .field-label {
             color: #223449;
         }
+        body.theme-light .app-brand-header strong {
+            color: #071827;
+            text-shadow: 0 10px 24px rgba(7,24,39,0.10);
+        }
+        body.theme-light .app-brand-header small {
+            color: #806000;
+        }
+        body.theme-light .app-brand-header img {
+            filter: drop-shadow(0 10px 18px rgba(7,24,39,0.18));
+        }
         body.theme-light .cat-badge,
         body.theme-light .hist-details,
         body.theme-light .hist-content,
@@ -980,10 +983,7 @@
             border-left: 4px solid rgba(246,196,0,0.96);
             border-top: 0;
         }
-        body.theme-light .header-main h2 {
-            color: #071827;
-            text-shadow: none;
-        }
+        body.theme-light .header-main h2 { display: none; }
         body.theme-light .action-bar {
             background: rgba(255,255,255,0.94);
             border-color: rgba(17,48,76,0.18);
@@ -1147,7 +1147,12 @@
             .btn-select i { width: 58px; height: 58px; font-size: 38px; }
             .btn-select strong { font-size: 22px; }
             .btn-select small { font-size: 13px; }
-            .header-main h2 { font-size: 18px; }
+            .header-main { min-height: 54px; margin: 12px auto 16px; }
+            .app-brand-header { gap: 8px; padding: 6px 42px 6px 10px; }
+            .app-brand-header img { width: 32px; height: 32px; }
+            .app-brand-header strong { font-size: 15px; letter-spacing: 0.8px; }
+            .app-brand-header small { font-size: 6.5px; letter-spacing: 0.4px; }
+            .header-main h2 { display: none; }
             .dashboard-card { min-height: 112px; padding: 14px; }
             .dashboard-split { grid-template-columns: 1fr; }
             .action-bar { border-radius: 14px; }
@@ -1156,8 +1161,10 @@
         /* Dark theme restores the original dark experience when selected */
         body.theme-dark {
             background:
-                radial-gradient(circle at 50% -90px, rgba(201,165,84,0.22), transparent 280px),
-                linear-gradient(180deg, #0b0b0b 0%, #050505 42%, #05070a 100%);
+                radial-gradient(circle at 50% 0%, rgba(201,165,84,0.14), transparent 330px),
+                linear-gradient(180deg, #050505 0%, #050505 100%);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             color: #e5e5e5;
         }
         body.theme-dark .auth-container, body.theme-dark .selection-screen {
@@ -1557,12 +1564,13 @@
             justify-content: center;
             padding: 22px;
             background:
-                radial-gradient(circle at 50% 0%, rgba(201,165,84,0.48) 0, rgba(201,165,84,0.16) 20%, transparent 44%),
-                linear-gradient(180deg, #07101c 0%, #06101a 34%, #05070a 100%);
+                radial-gradient(circle at 50% 8%, rgba(201,165,84,0.22) 0, rgba(201,165,84,0.08) 18%, transparent 42%),
+                radial-gradient(circle at 50% 22%, rgba(0,0,0,0.92) 0, rgba(0,0,0,0.72) 26%, transparent 48%),
+                linear-gradient(180deg, #020406 0%, #050505 48%, #05070a 100%);
         }
         .app-splash-card {
-            width: min(420px, 100%);
-            min-height: 430px;
+            width: min(500px, 100%);
+            min-height: 520px;
             border: 0;
             border-radius: 0;
             background: transparent;
@@ -1574,10 +1582,19 @@
             text-align: center;
             overflow: visible;
         }
-        .app-splash-card .auth-hero-frame { width: 270px; height: 322px; margin-bottom: 8px; }
+        .app-splash-card .auth-hero-frame {
+            width: 260px;
+            height: 310px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 20px 36px rgba(0,0,0,0.66));
+        }
         .app-splash-card .auth-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
         .app-splash-card .auth-subtitle {
-            margin: 12px 0 0;
+            margin: 14px 0 0;
+            color: #b8c0cd;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.35;
         }
         .app-splash-loading {
             width: 118px;
@@ -1585,7 +1602,8 @@
             margin-top: 22px;
             border-radius: 999px;
             overflow: hidden;
-            background: #2c2c2c;
+            background: rgba(255,255,255,0.14);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.38);
         }
         .app-splash-loading::after {
             content: "";
@@ -1673,7 +1691,7 @@
         }
         .dashboard-filters-command {
             display: grid !important;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(6, minmax(0, 1fr));
             gap: 10px;
             padding: 10px;
             margin: 0 0 12px;
@@ -1688,11 +1706,20 @@
             margin-bottom: 5px;
         }
         .dashboard-filters-command .dashboard-filter select,
-        .dashboard-filters-command .dashboard-clear {
+        .dashboard-filters-command .dashboard-clear,
+        .dashboard-filters-command .dashboard-search-action {
             height: 38px;
             border-radius: 8px;
             padding: 0 10px;
             font-size: 10px;
+        }
+        .dashboard-filters-command .dashboard-search-action {
+            border: 1px solid rgba(255,196,0,0.58);
+            background: rgba(255,196,0,0.12);
+            color: #ffc400;
+            font-weight: 950;
+            text-transform: uppercase;
+            cursor: pointer;
         }
         .dashboard-pdf-btn,
         .dashboard-back-btn {
@@ -1844,7 +1871,7 @@
         }
         .dashboard-command-kpis {
             display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 12px;
             margin-bottom: 12px;
         }
@@ -1992,7 +2019,7 @@
             min-height: 50px;
             padding: 5px 2px;
             display: grid;
-            grid-template-columns: 38px minmax(0, 1fr) auto 18px;
+            grid-template-columns: 38px minmax(0, 1fr) minmax(110px, auto) 18px;
             gap: 10px;
             align-items: center;
             text-align: left;
@@ -2039,6 +2066,17 @@
             font-style: normal;
             text-transform: uppercase;
             white-space: nowrap;
+        }
+        .dashboard-action-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+        .dashboard-action-tags em {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .dashboard-command-row .fa-chevron-right {
             color: #5e7186;
@@ -2144,22 +2182,35 @@
             display: grid;
             gap: 8px;
         }
+        .dashboard-compact-summary {
+            display: block;
+            padding: 10px 12px 0;
+            color: #7e8da0;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
         .dashboard-compact-row {
             width: 100%;
-            border: 0;
-            background: transparent;
+            border: 1px solid rgba(70,94,123,0.42);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.025);
             color: #d5dde7;
             display: grid;
             grid-template-columns: minmax(100px, 1fr) minmax(95px, 1.1fr) auto;
             gap: 10px;
             align-items: center;
-            padding: 5px 0;
+            padding: 9px 10px;
             text-align: left;
             font: inherit;
             cursor: pointer;
+            transition: 0.18s ease;
         }
         .dashboard-compact-row:hover {
             color: #fff;
+            border-color: rgba(255,196,0,0.58);
+            background: rgba(255,196,0,0.075);
+            transform: translateY(-1px);
         }
         .dashboard-compact-row span {
             font-size: 11px;
@@ -2176,6 +2227,21 @@
             color: #fff;
             font-size: 12px;
         }
+        .dashboard-bar.tall {
+            height: 9px;
+            border-radius: 999px;
+            background: rgba(0,0,0,0.48);
+            border: 1px solid rgba(255,196,0,0.22);
+            overflow: hidden;
+        }
+        .dashboard-bar.tall i {
+            height: 100%;
+            border-radius: inherit;
+            display: block;
+        }
+        .dashboard-bar.tall.normal i { background: linear-gradient(90deg, #2ecc71, #ffcc00); }
+        .dashboard-bar.tall.info i { background: linear-gradient(90deg, #3498db, #7dd3fc); }
+        .dashboard-bar.tall.alert i { background: linear-gradient(90deg, #ef4444, #ffcc00); }
         body.theme-light .dashboard-command-brand h3,
         body.theme-light .dashboard-command-focus strong,
         body.theme-light .dashboard-command-goal strong,
@@ -2256,6 +2322,8 @@
     const LOCAL_STUDENTS_KEY = "all_eagle_v22_s";
     const LOCAL_REPO_KEY = "all_eagle_v22_r";
     const LOCAL_THEME_KEY = "all_eagle_v22_theme";
+    const LOCAL_PENDING_SYNC_KEY = "all_eagle_v22_pending_sync";
+    const LOCAL_AUTO_BACKUP_KEY = "all_eagle_v22_auto_backup";
     const SUPABASE_STATE_ID = "alliance_mooca_kids_v22";
     const APPWRITE_ROW_ID = SUPABASE_STATE_ID;
     const APPWRITE_ENDPOINT = "https://nyc.cloud.appwrite.io/v1";
@@ -2407,6 +2475,23 @@
             });
         } catch (e) {
             return `${Date.now()}`;
+        }
+    };
+
+    const buildBackupPayload = (students, repo, source = "manual") => ({
+        source,
+        app: "Alliance Jiu Jitsu Mooca",
+        version: "alliance_mooca_kids_v22",
+        timestamp: new Date().toISOString(),
+        students: students || [],
+        repo: repo || []
+    });
+
+    const saveAutomaticLocalBackup = (students, repo, source = "auto-local") => {
+        try {
+            localStorage.setItem(LOCAL_AUTO_BACKUP_KEY, JSON.stringify(buildBackupPayload(students, repo, source)));
+        } catch (e) {
+            console.warn("Não foi possível salvar o backup local automático.", e);
         }
     };
 
@@ -2752,8 +2837,10 @@
         const [expandedSearchStudentId, setExpandedSearchStudentId] = React.useState(null);
         const [summaryDetail, setSummaryDetail] = React.useState(null);
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
+        const [dashboardStudentDetailFilters, setDashboardStudentDetailFilters] = React.useState(null);
         const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" });
-        const revealDashboardDetail = (detailKey) => {
+        const revealDashboardDetail = (detailKey, options = {}) => {
+            if (!options.keepStudentFilters) setDashboardStudentDetailFilters(null);
             setDashboardDetail(detailKey);
             setTimeout(() => {
                 document.getElementById("dashboard-detail-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -2771,6 +2858,11 @@
         const [storageWarning, setStorageWarning] = React.useState("");
         const [isHydrated, setIsHydrated] = React.useState(false);
         const [dbStatus, setDbStatus] = React.useState(appwriteServices ? "Conectando ao Appwrite..." : (supabaseClient ? "Conectando ao Supabase..." : "Banco não configurado"));
+        const [pendingSync, setPendingSync] = React.useState(() => localStorage.getItem(LOCAL_PENDING_SYNC_KEY) === "1");
+        const [lastAutoBackupAt, setLastAutoBackupAt] = React.useState(() => {
+            try { return JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "{}").timestamp || ""; }
+            catch(e) { return ""; }
+        });
         const applyingRemoteRef = React.useRef(false);
         const pendingLocalSaveRef = React.useRef(false);
         const lastLocalChangeRef = React.useRef(0);
@@ -2778,6 +2870,60 @@
         const lastLocalSignatureRef = React.useRef("");
         const lastRemoteSignatureRef = React.useRef("");
         const [theme, setTheme] = React.useState("dark");
+
+        const markPendingSync = React.useCallback((message = "Banco offline. Alterações salvas localmente e pendentes de sincronização.") => {
+            pendingLocalSaveRef.current = true;
+            localStorage.setItem(LOCAL_PENDING_SYNC_KEY, "1");
+            setPendingSync(true);
+            setDbStatus(message);
+        }, []);
+
+        const clearPendingSync = React.useCallback((message) => {
+            pendingLocalSaveRef.current = false;
+            localStorage.removeItem(LOCAL_PENDING_SYNC_KEY);
+            setPendingSync(false);
+            if (message) setDbStatus(message);
+        }, []);
+
+        const syncLocalChangesNow = React.useCallback(async () => {
+            const currentSignature = getDataSignature(students, repo);
+            if (!appwriteServices && !supabaseClient) {
+                markPendingSync("Banco não configurado. Backup local automático mantido.");
+                return false;
+            }
+            try {
+                const updatedAt = new Date().toISOString();
+                if (appwriteServices) {
+                    await saveAppwriteState(appwriteServices.config, students, repo, updatedAt);
+                    lastSavedAtRef.current = updatedAt;
+                    lastRemoteSignatureRef.current = currentSignature;
+                    clearPendingSync("Pendências sincronizadas com Appwrite");
+                    return true;
+                }
+                const { error } = await withTimeout(
+                    supabaseClient.from("app_state").upsert({
+                        id: SUPABASE_STATE_ID,
+                        students,
+                        repo,
+                        updated_at: updatedAt
+                    }),
+                    12000,
+                    "Tempo limite ao salvar no Supabase"
+                );
+                if (error) throw error;
+                lastSavedAtRef.current = updatedAt;
+                lastRemoteSignatureRef.current = currentSignature;
+                clearPendingSync("Pendências sincronizadas com Supabase");
+                return true;
+            } catch (err) {
+                console.error(err);
+                markPendingSync(appwriteServices
+                    ? `${getAppwriteErrorMessage(err)} Alterações mantidas localmente.`
+                    : "Erro ao salvar no Supabase. Alterações mantidas localmente."
+                );
+                return false;
+            }
+        }, [students, repo, appwriteServices, supabaseClient, markPendingSync, clearPendingSync]);
 
         React.useEffect(() => {
             setExpandedSearchStudentId(null);
@@ -2965,6 +3111,10 @@
                 if (signatureChanged) {
                     localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(students));
                     localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(repo));
+                    saveAutomaticLocalBackup(students, repo);
+                    const backupStamp = new Date().toISOString();
+                    const storedBackup = JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "{}");
+                    setLastAutoBackupAt(storedBackup.timestamp || backupStamp);
                     lastLocalSignatureRef.current = currentSignature;
                 }
                 setStorageWarning("");
@@ -2980,6 +3130,8 @@
             if (!signatureChanged || currentSignature === lastRemoteSignatureRef.current) return;
 
             pendingLocalSaveRef.current = true;
+            localStorage.setItem(LOCAL_PENDING_SYNC_KEY, "1");
+            setPendingSync(true);
             lastLocalChangeRef.current = Date.now();
             if (appwriteServices) {
                 const syncTimer = setTimeout(async () => {
@@ -2988,12 +3140,10 @@
                         await saveAppwriteState(appwriteServices.config, students, repo, updatedAt);
                         lastSavedAtRef.current = updatedAt;
                         lastRemoteSignatureRef.current = currentSignature;
-                        pendingLocalSaveRef.current = false;
-                        setDbStatus("Sincronizado com Appwrite");
+                        clearPendingSync("Sincronizado com Appwrite");
                     } catch (err) {
                         console.error(err);
-                        pendingLocalSaveRef.current = false;
-                        setDbStatus(getAppwriteErrorMessage(err));
+                        markPendingSync(`${getAppwriteErrorMessage(err)} Alterações mantidas localmente.`);
                     }
                 }, 1800);
 
@@ -3017,17 +3167,27 @@
                     if (error) throw error;
                     lastSavedAtRef.current = updatedAt;
                     lastRemoteSignatureRef.current = currentSignature;
-                    pendingLocalSaveRef.current = false;
-                    setDbStatus("Sincronizado com Supabase");
+                    clearPendingSync("Sincronizado com Supabase");
                 } catch (err) {
                     console.error(err);
-                    pendingLocalSaveRef.current = false;
-                    setDbStatus("Erro ao salvar no Supabase");
+                    markPendingSync("Erro ao salvar no Supabase. Alterações mantidas localmente.");
                 }
             }, 1800);
 
             return () => clearTimeout(syncTimer);
-        }, [students, repo, isHydrated, appwriteServices, supabaseClient]);
+        }, [students, repo, isHydrated, appwriteServices, supabaseClient, markPendingSync, clearPendingSync]);
+
+        React.useEffect(() => {
+            if (!isHydrated || !pendingSync) return;
+            const retry = () => syncLocalChangesNow();
+            const retryTimer = setInterval(retry, 20000);
+            window.addEventListener("online", retry);
+            retry();
+            return () => {
+                clearInterval(retryTimer);
+                window.removeEventListener("online", retry);
+            };
+        }, [isHydrated, pendingSync, syncLocalChangesNow]);
 
         React.useEffect(() => {
             if (appwriteServices && isHydrated) {
@@ -3397,7 +3557,7 @@
         };
 
         const downloadBackup = () => {
-            const data = { students, repo, timestamp: new Date().toISOString() };
+            const data = buildBackupPayload(students, repo, "manual-json");
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -3405,6 +3565,21 @@
             a.download = `backup_eagle_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
             a.click();
             URL.revokeObjectURL(url);
+        };
+
+        const downloadAutomaticLocalBackup = () => {
+            try {
+                const data = JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "null") || buildBackupPayload(students, repo, "auto-local");
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `backup_auto_alliance_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert("Não foi possível baixar o backup automático local.");
+            }
         };
 
         const importBackup = (e) => {
@@ -3486,8 +3661,15 @@
         const selectedConversation = conversationStudents.find(s => s.id === selectedChatId) || null;
         const totalUnreadProfessor = allConversationStudents.reduce((total, s) => total + s.unread, 0);
         const openDashboardStudents = (filters = {}) => {
-            setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: dashboardFilters.period, ...filters });
-            revealDashboardDetail("alunos");
+            setDashboardStudentDetailFilters(filters);
+            revealDashboardDetail("alunos", { keepStudentFilters: true });
+        };
+        const openDashboardFilteredStudents = () => {
+            const filters = {};
+            if (dashboardFilters.group !== "Todos") filters.group = dashboardFilters.group;
+            if (dashboardFilters.faixa !== "Todas") filters.faixa = dashboardFilters.faixa;
+            if (dashboardFilters.status !== "Todos") filters.status = dashboardFilters.status;
+            openDashboardStudents(filters);
         };
         const openStudentFromDashboard = (studentName) => {
             const targetStudent = students.find(s => s.nome === studentName);
@@ -3527,7 +3709,7 @@
             : dashboardFilters.period === "day"
                 ? "hoje"
                 : dashboardFilters.period === "month"
-                    ? "mes atual"
+                    ? "mês atual"
                     : dashboardFilters.period === "7"
                         ? "semana atual"
                         : `ultimos ${dashboardFilters.period} dias`;
@@ -3567,7 +3749,20 @@
             return matchesGroup && matchesFaixa && matchesStatus;
         });
         const dashboardFilterActive = dashboardFilters.group !== "Todos" || dashboardFilters.faixa !== "Todas" || dashboardFilters.status !== "Todos";
+        const applyStudentDetailFilters = (list, filters = {}) => list.filter(s => {
+            const group = getAutoCategory(s.nascimento, s.categoriaOverride);
+            const status = s.status || "Ativo";
+            const matchesGroup = !filters.group || group === filters.group;
+            const matchesFaixa = !filters.faixa || s.faixa === filters.faixa;
+            const matchesStatus = !filters.status || status === filters.status;
+            return matchesGroup && matchesFaixa && matchesStatus;
+        });
+        const dashboardDetailStudents = dashboardStudentDetailFilters ? applyStudentDetailFilters(dashboardStudents, dashboardStudentDetailFilters) : dashboardStudents;
+        const dashboardDetailFilterLabel = dashboardStudentDetailFilters
+            ? Object.entries(dashboardStudentDetailFilters).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join(" - ")
+            : null;
         const activeStudents = dashboardStudents.filter(s => !["Inativo", "Transferido"].includes(s.status || "Ativo"));
+        const inactiveStudents = dashboardStudents.filter(s => (s.status || "Ativo") === "Inativo");
         const readyList = dashboardStudents.filter(s => {
             const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
             return rules > 0 && s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
@@ -3595,6 +3790,15 @@
             const averageAge = ages.length ? Math.round(ages.reduce((total, age) => total + age, 0) / ages.length) : null;
             return { ...row, averageAge, ageLabel: averageAge === null ? "sem idade" : `${averageAge} anos media` };
         });
+        const dashboardTotal = Math.max(1, dashboardStudents.length);
+        const groupRowsWithPercent = dashboardRows.categorias.map(row => ({
+            ...row,
+            percent: Math.round((row.value / dashboardTotal) * 100)
+        }));
+        const beltRowsWithPercent = dashboardBeltAgeRows.map(row => ({
+            ...row,
+            percent: Math.round((row.value / dashboardTotal) * 100)
+        }));
         const studentsWithProgress = dashboardStudents.map(s => ({
             ...s,
             progresso: getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride),
@@ -3605,7 +3809,7 @@
             .sort((a, b) => b.progresso.percentual - a.progresso.percentual);
         const nearGraduation = examCandidates
             .slice(0, 5);
-        const studentsWithoutRecentPresence = dashboardStudents.filter(s => {
+        const studentsWithoutRecentPresence = activeStudents.filter(s => {
             if (!s.ultimaPresenca) return true;
             const lastPresence = parseLocalDate(s.ultimaPresenca);
             if (!lastPresence) return true;
@@ -3619,6 +3823,32 @@
         const challengeReachedStudents = challengeStudents
             .filter(s => s.desafioInfo.reached)
             .sort((a, b) => parseLocalDate(a.desafioInfo.end) - parseLocalDate(b.desafioInfo.end));
+        const operationalStatusRows = [
+            {
+                label: "Ativos",
+                value: activeStudents.length,
+                percent: Math.round((activeStudents.length / dashboardTotal) * 100),
+                type: "normal",
+                filter: { status: "Ativo" },
+                note: `${Math.round((activeStudents.length / dashboardTotal) * 100)}% ativos`
+            },
+            {
+                label: "Sem presença recente",
+                value: studentsWithoutRecentPresence,
+                percent: Math.round((studentsWithoutRecentPresence / dashboardTotal) * 100),
+                type: studentsWithoutRecentPresence > 0 ? "alert" : "normal",
+                detail: "presenca",
+                note: "10 dias ou mais"
+            },
+            {
+                label: "Inativos",
+                value: inactiveStudents.length,
+                percent: Math.round((inactiveStudents.length / dashboardTotal) * 100),
+                type: inactiveStudents.length > 0 ? "alert" : "info",
+                filter: { status: "Inativo" },
+                note: `${Math.round((inactiveStudents.length / dashboardTotal) * 100)}% inativos`
+            }
+        ];
         const getChallengeStatus = (info) => {
             if (!info?.active) return { label: "Concluído", type: "done" };
             if (info.remaining === 0) return { label: "Vence hoje", type: "today" };
@@ -3690,6 +3920,34 @@
         const recentMessages = dashboardStudents.reduce((total, s) => {
             return total + (s.chat || []).filter(m => isInDashboardPeriod(m.date)).length;
         }, 0);
+        const getBirthdayThisYear = (student) => {
+            const birthday = parseLocalDate(student.nascimento);
+            if (!birthday) return null;
+            const date = new Date(today.getFullYear(), birthday.getMonth(), birthday.getDate());
+            date.setHours(0, 0, 0, 0);
+            return date;
+        };
+        const getBirthdayPeriodRange = () => {
+            const start = new Date(today);
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(start);
+            if (dashboardFilters.period === "day") {
+                return { start, end, label: "hoje" };
+            }
+            if (dashboardFilters.period === "7") {
+                end.setDate(start.getDate() + 6);
+                return { start, end, label: "semana atual" };
+            }
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            monthEnd.setHours(0, 0, 0, 0);
+            return { start: monthStart, end: monthEnd, label: "mês atual" };
+        };
+        const birthdayPeriod = getBirthdayPeriodRange();
+        const birthdayStudents = dashboardStudents
+            .map(s => ({ ...s, birthdayThisYear: getBirthdayThisYear(s) }))
+            .filter(s => s.birthdayThisYear && s.birthdayThisYear >= birthdayPeriod.start && s.birthdayThisYear <= birthdayPeriod.end)
+            .sort((a, b) => a.birthdayThisYear - b.birthdayThisYear);
         const presenceByDay = dashboardStudents.reduce((acc, s) => {
             getStudentPresenceDates(s).forEach(dateValue => {
                 if (!isInDashboardPeriod(dateValue)) return;
@@ -3712,8 +3970,8 @@
                 return weekdayOrder.indexOf(a.weekday) - weekdayOrder.indexOf(b.weekday);
             });
         const busiestPresenceDay = presenceByWeekdayRows[0] ? [presenceByWeekdayRows[0].label, presenceByWeekdayRows[0].count] : null;
-        const busiestPresenceLabel = busiestPresenceDate ? `${busiestPresenceDate.weekday} ${busiestPresenceDate.displayDate} (${busiestPresenceDate.count} presenca${busiestPresenceDate.count === 1 ? "" : "s"})` : "Sem presenca no periodo";
-        const noRecentPresenceList = dashboardStudents.filter(s => {
+        const busiestPresenceLabel = busiestPresenceDate ? `${busiestPresenceDate.weekday} ${busiestPresenceDate.displayDate} (${busiestPresenceDate.count} presença${busiestPresenceDate.count === 1 ? "" : "s"})` : "Sem presença no período";
+        const noRecentPresenceList = activeStudents.filter(s => {
             if (!s.ultimaPresenca) return true;
             const lastPresence = parseLocalDate(s.ultimaPresenca);
             if (!lastPresence) return true;
@@ -3734,9 +3992,16 @@
             ...noRecentPresenceList.slice(0, 5).map(s => ({ ...s, priorityReason: s.daysWithoutPresence === null ? "sem presença registrada" : `${s.daysWithoutPresence} dias sem presença`, priorityType: "Presença" })),
             ...examCandidates.slice(0, 5).map(s => ({ ...s, priorityReason: `${s.progresso.percentual}% pronto para exame`, priorityType: "Exame" }))
         ].filter((item, index, arr) => arr.findIndex(other => other.id === item.id && other.priorityType === item.priorityType) === index);
+        const attentionRows = Object.values(attentionStudents.reduce((acc, item) => {
+            if (!acc[item.id]) acc[item.id] = { ...item, priorityTypes: [], priorityReasons: [] };
+            if (!acc[item.id].priorityTypes.includes(item.priorityType)) acc[item.id].priorityTypes.push(item.priorityType);
+            acc[item.id].priorityReasons.push(item.priorityReason);
+            return acc;
+        }, {}));
         const followUpStudents = [...topUnread, ...noRecentPresenceList, ...challengeReachedStudents]
             .filter((item, index, arr) => arr.findIndex(other => other.id === item.id) === index);
         const followUpCount = followUpStudents.length;
+        const todayActionCount = attentionRows.length;
         const dashboardInsightText = totalUnreadDashboard > 0
             ? `${totalUnreadDashboard} mensagem${totalUnreadDashboard === 1 ? "" : "s"} pendente${totalUnreadDashboard === 1 ? "" : "s"} pedem atenção antes da próxima aula.`
             : noRecentPresenceList.length > 0
@@ -3747,8 +4012,8 @@
         const dashboardDetailMap = {
             alunos: {
                 title: "Alunos cadastrados",
-                subtitle: dashboardFilterActive ? "Lista filtrada da base atual" : "Lista completa da base atual",
-                rows: dashboardStudents.map(s => ({
+                subtitle: dashboardDetailFilterLabel || (dashboardFilterActive ? "Lista filtrada da base atual" : "Lista completa da base atual"),
+                rows: dashboardDetailStudents.map(s => ({
                     id: s.id,
                     name: s.nome,
                     meta: `${calculateAge(s.nascimento)} anos • ${getAutoCategory(s.nascimento, s.categoriaOverride)} • ${s.status || "Ativo"}`,
@@ -3806,8 +4071,8 @@
                 }))
             },
             "presencas-periodo": {
-                title: "Presencas no periodo",
-                subtitle: `Alunos com presenca registrada em ${dashboardPeriodLabel}`,
+                title: "Presenças no período",
+                subtitle: `Alunos com presença registrada em ${dashboardPeriodLabel}`,
                 rows: recentPresenceStudents
                     .sort((a, b) => (parseDashboardDate(b.date) || 0) - (parseDashboardDate(a.date) || 0))
                     .map(item => ({
@@ -3819,7 +4084,7 @@
                     }))
             },
             meta: {
-                title: "Meta de acompanhamento",
+                title: "Evolução média da turma",
                 subtitle: "Alunos que precisam de ação hoje: mensagens, ausência ou desafio vencido",
                 rows: followUpStudents.map(s => {
                     const motivos = [];
@@ -3870,9 +4135,20 @@
                     actionLabel: "Aluno"
                 }))
             },
+            aniversariantes: {
+                title: "Aniversariantes",
+                subtitle: `Alunos com aniversario em ${birthdayPeriod.label}`,
+                rows: birthdayStudents.map(s => ({
+                    id: s.id,
+                    name: s.nome,
+                    meta: `${s.birthdayThisYear.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })} - ${calculateAge(s.nascimento)} anos - ${getAutoCategory(s.nascimento, s.categoriaOverride)} - ${s.faixa}`,
+                    action: () => openStudentFromDashboard(s.nome),
+                    actionLabel: "Aluno"
+                }))
+            },
             movimento: {
                 title: "Maior dia de movimento",
-                subtitle: busiestPresenceDate ? `${busiestPresenceDate.weekday}, ${busiestPresenceDate.displayDate} - ${busiestPresenceDate.count} presencas` : "Sem presencas no periodo selecionado",
+                subtitle: busiestPresenceDate ? `${busiestPresenceDate.weekday}, ${busiestPresenceDate.displayDate} - ${busiestPresenceDate.count} presenças` : "Sem presenças no período selecionado",
                 rows: busiestPresenceDate ? busiestPresenceDate.students.map(student => ({
                     id: student.id,
                     name: student.name,
@@ -4038,7 +4314,13 @@
         return (
             <div className={`container ${mode === "Professor" && ["conversas", "painel"].includes(professorView) ? "wide-container" : ""}`}>
                 <header className="header-main">
-                    <h2>Alliance Jiu Jitsu Mooca</h2>
+                    <div className="app-brand-header" aria-label="Alliance Jiu Jitsu Mooca">
+                        <img src="alliance-jiu-jitsu-mooca-complete.png" alt="" />
+                        <span>
+                            <strong>Alliance Jiu Jitsu Mooca</strong>
+                            <small>Sistema de evolução e graduação</small>
+                        </span>
+                    </div>
                     {/* Botão de backup */}
                     {mode === "Professor" && (
                         <div className="btn-settings-hidden" onClick={() => setModalOpen('backup')}>
@@ -4173,6 +4455,9 @@
                                     {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
                                 </select>
                             </div>
+                            <button className="dashboard-search-action" onClick={openDashboardFilteredStudents}>
+                                <i className="fas fa-search"></i> Consultar
+                            </button>
                             <button className="dashboard-clear" onClick={() => { setDashboardFilters({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" }); setDashboardDetail(null); }}>
                                 Limpar filtros
                             </button>
@@ -4182,20 +4467,20 @@
                             <button className="dashboard-command-focus" onClick={() => revealDashboardDetail("prioridades")}>
                                 <span className="dashboard-command-icon"><i className="fas fa-calendar-check"></i></span>
                                 <span>
-                                    <small>Acoes de hoje</small>
-                                    <strong>{followUpCount}</strong>
-                                    <em>pendencias</em>
+                                    <small>Ações de hoje</small>
+                                    <strong>{todayActionCount}</strong>
+                                    <em>pendências</em>
                                 </span>
                             </button>
                             <div className="dashboard-command-breakdown">
-                                <div><i className="dashboard-dot yellow"></i><span>Confirmar presenca</span><b>{studentsWithoutRecentPresence}</b></div>
+                                <div><i className="dashboard-dot yellow"></i><span>Confirmar presença</span><b>{studentsWithoutRecentPresence}</b></div>
                                 <div><i className="dashboard-dot blue"></i><span>Responder mensagens</span><b>{unreadConversationCount}</b></div>
-                                <div><i className="dashboard-dot red"></i><span>Alunos sem presenca</span><b>{studentsWithoutRecentPresence}</b></div>
+                                <div><i className="dashboard-dot red"></i><span>Desafios vencidos</span><b>{challengeReachedStudents.length}</b></div>
                             </div>
                             <button className="dashboard-command-goal" onClick={() => revealDashboardDetail("meta")}>
                                 <span className="dashboard-command-icon target"><i className="fas fa-bullseye"></i></span>
                                 <span>
-                                    <small>Meta de acompanhamento</small>
+                                    <small>Evolução média da turma</small>
                                     <strong>{averageProgress}%</strong>
                                     <em>da turma acompanhada</em>
                                 </span>
@@ -4206,23 +4491,28 @@
                         <div className="dashboard-command-kpis">
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("presencas-periodo")}>
                                 <span className="dashboard-command-kpi-icon blue"><i className="fas fa-users"></i></span>
-                                <span><b>{recentPresenceStudents.length}</b><small>Presencas no periodo</small><em>{dashboardPeriodLabel}</em></span>
+                                <span><b>{recentPresenceStudents.length}</b><small>Presenças no período</small><em>{dashboardPeriodLabel}</em></span>
                                 <i className="sparkline blue"></i>
                             </button>
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("mensagens")}>
                                 <span className="dashboard-command-kpi-icon blue"><i className="fas fa-comment-dots"></i></span>
-                                <span><b>{recentMessages}</b><small>Mensagens no periodo</small><em>{unreadConversationCount} pendente{unreadConversationCount === 1 ? "" : "s"}</em></span>
+                                <span><b>{recentMessages}</b><small>Mensagens no período</small><em>{unreadConversationCount} pendente{unreadConversationCount === 1 ? "" : "s"}</em></span>
                                 <i className="sparkline blue"></i>
                             </button>
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("presenca")}>
                                 <span className="dashboard-command-kpi-icon red"><i className="fas fa-user-clock"></i></span>
-                                <span><b>{studentsWithoutRecentPresence}</b><small>Alunos sem presenca</small><em>10 dias ou mais</em></span>
+                                <span><b>{studentsWithoutRecentPresence}</b><small>Alunos sem presença</small><em>10 dias ou mais</em></span>
                                 <i className="sparkline red"></i>
                             </button>
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("desafios")}>
                                 <span className="dashboard-command-kpi-icon green"><i className="fas fa-trophy"></i></span>
                                 <span><b>{challengeReachedStudents.length}</b><small>Desafios vencidos</small><em>prazo atingido</em></span>
                                 <i className="sparkline green"></i>
+                            </button>
+                            <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("aniversariantes")}>
+                                <span className="dashboard-command-kpi-icon yellow"><i className="fas fa-cake-candles"></i></span>
+                                <span><b>{birthdayStudents.length}</b><small>Aniversariantes</small><em>{birthdayPeriod.label}</em></span>
+                                <i className="sparkline blue"></i>
                             </button>
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("desafios-ativos")}>
                                 <span className="dashboard-command-kpi-icon yellow"><i className="fas fa-stopwatch"></i></span>
@@ -4233,22 +4523,22 @@
 
                         <div className="dashboard-command-grid">
                             <div className="dashboard-command-card action-card">
-                                <div className="dashboard-command-card-title"><span>Acoes de hoje</span><b>{followUpCount}</b></div>
+                                <div className="dashboard-command-card-title"><span>Ações de hoje</span><b>{todayActionCount}</b></div>
                                 <div className="dashboard-command-list">
-                                    {attentionStudents.length > 0 ? attentionStudents.slice(0, 5).map((s, index) => (
-                                        <button className="dashboard-command-row" key={`command-${s.id}-${s.priorityType}-${index}`} onClick={() => s.priorityType === "Mensagem" ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)}>
+                                    {attentionRows.length > 0 ? attentionRows.slice(0, 5).map((s, index) => (
+                                        <button className="dashboard-command-row" key={`command-${s.id}-${index}`} onClick={() => s.priorityTypes.includes("Mensagem") ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)}>
                                             <span className="mini-avatar">{(s.nome || "?").slice(0, 1)}</span>
-                                            <span><b>{s.nome}</b><small>{s.priorityReason}</small></span>
-                                            <em>{s.priorityType}</em>
+                                            <span><b>{s.nome}</b><small>{s.priorityReasons.join(" • ")}</small></span>
+                                            <span className="dashboard-action-tags">{s.priorityTypes.map(type => <em key={`${s.id}-${type}`}>{type}</em>)}</span>
                                             <i className="fas fa-chevron-right"></i>
                                         </button>
-                                    )) : <div className="dashboard-note">Nenhuma acao pendente para hoje.</div>}
+                                    )) : <div className="dashboard-note">Nenhuma ação pendente para hoje.</div>}
                                 </div>
-                                <button className="dashboard-command-link" onClick={() => revealDashboardDetail("prioridades")}>Ver todas as acoes <i className="fas fa-chevron-right"></i></button>
+                                <button className="dashboard-command-link" onClick={() => revealDashboardDetail("prioridades")}>Ver todas as ações <i className="fas fa-chevron-right"></i></button>
                             </div>
                             <div className="dashboard-command-card chart-card">
                                 <div className="dashboard-command-card-title">
-                                    <span>Presencas no periodo</span>
+                                    <span>Presenças no período</span>
                                     <select
                                         className="dashboard-period-select"
                                         value={dashboardFilters.period}
@@ -4256,17 +4546,17 @@
                                     >
                                         <option value="day">hoje</option>
                                         <option value="7">semana atual</option>
-                                        <option value="month">mes atual</option>
+                                        <option value="month">mês atual</option>
                                     </select>
                                 </div>
                                 <div className="dashboard-bars-chart">
                                     {dailyPresenceRows.length > 0 ? dailyPresenceRows.map(row => (
-                                        <span key={row.key} className={row.count === 0 ? "empty" : ""} title={`${row.label}: ${row.count} presenca${row.count === 1 ? "" : "s"}`} style={{height: row.count === 0 ? "6%" : `${18 + (row.count / maxDailyPresence) * 82}%`}}><i>{row.label}</i></span>
-                                    )) : <div className="dashboard-note">Sem presencas no periodo.</div>}
+                                        <span key={row.key} className={row.count === 0 ? "empty" : ""} title={`${row.label}: ${row.count} presença${row.count === 1 ? "" : "s"}`} style={{height: row.count === 0 ? "6%" : `${18 + (row.count / maxDailyPresence) * 82}%`}}><i>{row.label}</i></span>
+                                    )) : <div className="dashboard-note">Sem presenças no período.</div>}
                                 </div>
                                 <div className="dashboard-command-best-day" onClick={() => revealDashboardDetail("movimento")}>
                                     <span className="dashboard-command-icon"><i className="fas fa-calendar-day"></i></span>
-                                    <span><small>Dia de maior presenca</small><strong>{busiestPresenceDate ? `${busiestPresenceDate.weekday} - ${busiestPresenceDate.displayDate}` : "Sem dados"}</strong><em>{busiestPresenceDate ? `${busiestPresenceDate.count} presencas - clique para ver alunos` : "Sem presenca no periodo"}</em></span>
+                                    <span><small>Dia de maior presença</small><strong>{busiestPresenceDate ? `${busiestPresenceDate.weekday} - ${busiestPresenceDate.displayDate}` : "Sem dados"}</strong><em>{busiestPresenceDate ? `${busiestPresenceDate.count} presenças - clique para ver alunos` : "Sem presença no período"}</em></span>
                                     <i className="sparkline green"></i>
                                 </div>
                             </div>
@@ -4292,7 +4582,7 @@
                                 <div className="dashboard-overview-icon"><i className="fas fa-bullseye"></i></div>
                                 <div style={{flex:1}}>
                                     <strong className="dashboard-overview-value">{averageProgress}%</strong>
-                                    <span className="dashboard-overview-label">Meta de acompanhamento</span>
+                                    <span className="dashboard-overview-label">Evolução média da turma</span>
                                     <small className="dashboard-overview-note">Evolução média no período</small>
                                     <div className="dashboard-goal-bar"><i style={{width: `${Math.min(100, averageProgress)}%`}}></i></div>
                                 </div>
@@ -4303,10 +4593,10 @@
                             <div className="dashboard-action-queue">
                                 <div className="dashboard-panel-title"><span>Ações de hoje</span><i className="fas fa-bell"></i></div>
                                 <div className="dashboard-action-list">
-                                    {attentionStudents.length > 0 ? attentionStudents.slice(0, 6).map((s, index) => (
-                                        <button className="dashboard-action-row" key={`queue-${s.id}-${s.priorityType}-${index}`} onClick={() => s.priorityType === "Mensagem" ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)}>
-                                            <span><b>{s.nome}</b><small>{s.priorityReason}</small></span>
-                                            <em className="dashboard-action-tag">{s.priorityType}</em>
+                                    {attentionRows.length > 0 ? attentionRows.slice(0, 6).map((s, index) => (
+                                        <button className="dashboard-action-row" key={`queue-${s.id}-${index}`} onClick={() => s.priorityTypes.includes("Mensagem") ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)}>
+                                            <span><b>{s.nome}</b><small>{s.priorityReasons.join(" • ")}</small></span>
+                                            <span className="dashboard-action-tags">{s.priorityTypes.map(type => <em className="dashboard-action-tag" key={`${s.id}-${type}`}>{type}</em>)}</span>
                                         </button>
                                     )) : <div className="dashboard-note">Nenhuma ação pendente para hoje.</div>}
                                 </div>
@@ -4354,7 +4644,7 @@
 
                         <div className="dashboard-section-title">Ações do dia</div>
                         <div className="dashboard-grid">
-                            <div className={`dashboard-card ${dashboardDetail === "meta" ? "active" : ""}`} onClick={() => revealDashboardDetail("meta")}><strong>{followUpCount}</strong><span>Meta de acompanhamento</span><small>Mensagens, ausência e desafios vencidos</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "meta" ? "active" : ""}`} onClick={() => revealDashboardDetail("meta")}><strong>{followUpCount}</strong><span>Evolução média da turma</span><small>Mensagens, ausência e desafios vencidos</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => revealDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusão</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "desafios" ? "active" : ""}`} onClick={() => revealDashboardDetail("desafios")}><strong>{challengeReachedStudents.length}</strong><span>Desafios vencidos</span><small>{challengeStudents.length} desafio{challengeStudents.length === 1 ? "" : "s"} ativo{challengeStudents.length === 1 ? "" : "s"}</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presença recente</span><small>Sem data ou há 10 dias ou mais</small></div>
@@ -4407,6 +4697,17 @@
                                 </div>
                             </div>
                             <div className="dashboard-priority-card">
+                                <h4><span>Aniversariantes</span><i className="fas fa-cake-candles"></i></h4>
+                                <div className="dashboard-mini-list">
+                                    {birthdayStudents.length > 0 ? birthdayStudents.slice(0, 3).map(s => (
+                                        <button className="dashboard-mini-row" key={`mini-birthday-${s.id}`} onClick={() => openStudentFromDashboard(s.nome)}>
+                                            <b>{s.nome}</b>
+                                            <small>{s.birthdayThisYear.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })} - {calculateAge(s.nascimento)} anos</small>
+                                        </button>
+                                    )) : <div className="dashboard-note">Sem aniversariantes no período.</div>}
+                                </div>
+                            </div>
+                            <div className="dashboard-priority-card">
                                 <h4><span>Exame</span><i className="fas fa-medal"></i></h4>
                                 <div className="dashboard-mini-list">
                                     {examCandidates.length > 0 ? examCandidates.slice(0, 3).map(s => (
@@ -4425,7 +4726,7 @@
                                     <strong>{activeDashboardDetail.title}</strong>
                                     <span>{activeDashboardDetail.subtitle}</span>
                                 </div>
-                                <button className="dashboard-detail-action" onClick={() => setDashboardDetail(null)}>Limpar</button>
+                                <button className="dashboard-detail-action" onClick={() => { setDashboardDetail(null); setDashboardStudentDetailFilters(null); }}>Limpar</button>
                             </div>
                             <div className="dashboard-detail-list">
                                 {activeDashboardDetail.rows.length > 0 ? activeDashboardDetail.rows.map(row => (
@@ -4445,35 +4746,38 @@
                         <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
                             <div className="dashboard-command-card compact-panel">
                                 <div className="dashboard-command-card-title"><span>Distribuicao por turma</span><i className="fas fa-layer-group"></i></div>
+                                <small className="dashboard-compact-summary">{dashboardStudents.length} alunos em {dashboardRows.categorias.filter(row => row.value > 0).length} turma{dashboardRows.categorias.filter(row => row.value > 0).length === 1 ? "" : "s"}</small>
                                 <div className="dashboard-compact-list">
-                                    {dashboardRows.categorias.map(row => (
+                                    {groupRowsWithPercent.map(row => (
                                         <button className="dashboard-compact-row" key={`cmd-cat-${row.label}`} onClick={() => openDashboardStudents({ group: row.label })}>
-                                            <span>{row.label}</span>
-                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxCategory) * 100}%`}}></i></div>
+                                            <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} - {row.percent}%</small></span>
+                                            <div className="dashboard-bar tall normal"><i style={{width: `${(row.value / maxCategory) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
                                         </button>
                                     ))}
                                 </div>
                             </div>
                             <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Faixa e idade media</span><i className="fas fa-medal"></i></div>
+                                <div className="dashboard-command-card-title"><span>Distribuicao por faixa</span><i className="fas fa-medal"></i></div>
+                                <small className="dashboard-compact-summary">{dashboardBeltAgeRows.length} faixa{dashboardBeltAgeRows.length === 1 ? "" : "s"} cadastrada{dashboardBeltAgeRows.length === 1 ? "" : "s"}</small>
                                 <div className="dashboard-compact-list">
-                                    {dashboardBeltAgeRows.length > 0 ? dashboardBeltAgeRows.map(row => (
+                                    {beltRowsWithPercent.length > 0 ? beltRowsWithPercent.map(row => (
                                         <button className="dashboard-compact-row" key={`cmd-belt-${row.label}`} onClick={() => openDashboardStudents({ faixa: row.label })}>
-                                            <span>{row.label}<small>{row.ageLabel}</small></span>
-                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxBelt) * 100}%`}}></i></div>
+                                            <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} - media {row.averageAge ?? "-"} anos - {row.percent}%</small></span>
+                                            <div className="dashboard-bar tall info"><i style={{width: `${(row.value / maxBelt) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
                                         </button>
                                     )) : <div className="dashboard-note">Nenhuma faixa com aluno ainda.</div>}
                                 </div>
                             </div>
                             <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Status dos alunos</span><i className="fas fa-toggle-on"></i></div>
+                                <div className="dashboard-command-card-title"><span>Situacao da base</span><i className="fas fa-circle-check"></i></div>
+                                <small className="dashboard-compact-summary">{activeStudents.length} de {dashboardStudents.length} aluno{dashboardStudents.length === 1 ? "" : "s"} ativo{activeStudents.length === 1 ? "" : "s"}</small>
                                 <div className="dashboard-compact-list">
-                                    {dashboardRows.status.length > 0 ? dashboardRows.status.map(row => (
-                                        <button className="dashboard-compact-row" key={`cmd-status-${row.label}`} onClick={() => openDashboardStudents({ status: row.label })}>
-                                            <span>{row.label}</span>
-                                            <div className="dashboard-bar"><i style={{width: `${(row.value / maxStatus) * 100}%`}}></i></div>
+                                    {operationalStatusRows.length > 0 ? operationalStatusRows.map(row => (
+                                        <button className="dashboard-compact-row" key={`cmd-status-${row.label}`} onClick={() => row.detail ? revealDashboardDetail(row.detail) : openDashboardStudents(row.filter)}>
+                                            <span>{row.label}<small>{row.note}</small></span>
+                                            <div className={`dashboard-bar tall ${row.type}`}><i style={{width: `${Math.max(4, row.percent)}%`}}></i></div>
                                             <b>{row.value}</b>
                                         </button>
                                     )) : <div className="dashboard-note">Nenhum status informado.</div>}
@@ -4640,7 +4944,7 @@
                             {mode === "Pais" && (
                                 <div className="parent-jump-nav">
                                     <button className={`parent-jump-btn ${parentSection === "evolucao" ? "active" : ""}`} onClick={() => setParentSection("evolucao")}>
-                                        <i className="fas fa-route"></i> Evolucao
+                                        <i className="fas fa-route"></i> Evolução
                                     </button>
                                     <button className={`parent-jump-btn ${parentSection === "desafio" ? "active" : ""}`} onClick={() => setParentSection("desafio")}>
                                         <i className="fas fa-stopwatch"></i> Desafio
@@ -4961,6 +5265,14 @@
                                 <span><i className={`fas ${(appwriteServices || supabaseClient) && !dbStatus.includes("Erro") ? "fa-database" : "fa-exclamation-triangle"}`}></i> Banco</span>
                                 <strong>{dbStatus}{!isHydrated ? "..." : ""}</strong>
                             </div>
+                            <div className="data-status-card">
+                                <span><i className={`fas ${pendingSync ? "fa-cloud-upload-alt" : "fa-check-circle"}`}></i> Sincronização</span>
+                                <strong>{pendingSync ? "Alterações pendentes no navegador" : "Sem pendências locais"}</strong>
+                            </div>
+                            <div className="data-status-card">
+                                <span><i className="fas fa-shield-alt"></i> Backup local</span>
+                                <strong>{lastAutoBackupAt ? new Date(lastAutoBackupAt).toLocaleString("pt-BR") : "Ainda não gerado"}</strong>
+                            </div>
                             <div className="theme-toggle-row">
                                 <button type="button" className={`theme-choice ${theme === "dark" ? "active" : ""}`} onClick={() => setTheme("dark")}>
                                     <i className="fas fa-moon"></i> Tema escuro
@@ -4971,6 +5283,12 @@
                             </div>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={downloadBackup}>
                                 <i className="fas fa-download"></i> GERAR BACKUP (.JSON)
+                            </button>
+                            <button className="btn-full" style={{background: '#f6c400', color:'#071827'}} onClick={downloadAutomaticLocalBackup}>
+                                <i className="fas fa-save"></i> BAIXAR BACKUP AUTOMÁTICO LOCAL
+                            </button>
+                            <button className="btn-full" style={{background: '#3498db', color:'white'}} onClick={syncLocalChangesNow}>
+                                <i className="fas fa-sync-alt"></i> SINCRONIZAR PENDÊNCIAS AGORA
                             </button>
                             <label className="btn-full" style={{background: 'var(--alliance-red)', color:'white', display:'block', textAlign:'center', cursor:'pointer', marginTop:'15px'}}>
                                 <i className="fas fa-upload"></i> IMPORTAR BACKUP
@@ -4986,12 +5304,21 @@
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <h3>Novo Aluno</h3>
+                            <label className="field-label">Nome completo</label>
                             <input placeholder="Nome Completo" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />
-                            <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
-                            <select value={form.sexo} onChange={e => setForm({...form, sexo: e.target.value})}>
-                                <option value="M">Masculino</option>
-                                <option value="F">Feminino</option>
-                            </select>
+                            <div className="form-grid">
+                                <div>
+                                    <label className="field-label">Data de nascimento</label>
+                                    <input type="date" value={form.nascimento} onChange={e => setForm({...form, nascimento: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">Sexo</label>
+                                    <select value={form.sexo} onChange={e => setForm({...form, sexo: e.target.value})}>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Feminino</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div className="form-grid">
                                 <div>
                                     <label className="field-label">Status</label>
@@ -5003,9 +5330,18 @@
                                     <label className="field-label">Matrícula</label>
                                     <input type="date" value={form.matricula} onChange={e => setForm({...form, matricula: e.target.value})} />
                                 </div>
-                                <input placeholder="Responsável" value={form.responsavel} onChange={e => setForm({...form, responsavel: e.target.value})} />
-                                <input placeholder="WhatsApp do responsável" value={form.telefone} onChange={e => setForm({...form, telefone: e.target.value})} />
-                                <input placeholder="E-mail do responsável" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                                <div>
+                                    <label className="field-label">Responsável</label>
+                                    <input placeholder="Nome do responsável" value={form.responsavel} onChange={e => setForm({...form, responsavel: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">WhatsApp do responsável</label>
+                                    <input placeholder="WhatsApp do responsável" value={form.telefone} onChange={e => setForm({...form, telefone: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">E-mail do responsável</label>
+                                    <input placeholder="E-mail do responsável" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                                </div>
                             </div>
                             <textarea placeholder="Observação interna / necessidade especial" value={form.necessidades} onChange={e => setForm({...form, necessidades: e.target.value})}></textarea>
                             <textarea placeholder="Observações internas do professor" value={form.observacoesInternas} onChange={e => setForm({...form, observacoesInternas: e.target.value})}></textarea>
@@ -5074,12 +5410,21 @@
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <h3>Editar Aluno</h3>
+                            <label className="field-label">Nome completo</label>
                             <input placeholder="Nome" value={editingStudent.nome} onChange={e => setEditingStudent({...editingStudent, nome: e.target.value})} />
-                            <input type="date" value={editingStudent.nascimento} onChange={e => setEditingStudent({...editingStudent, nascimento: e.target.value})} />
-                            <select value={editingStudent.sexo || "M"} onChange={e => setEditingStudent({...editingStudent, sexo: e.target.value})}>
-                                <option value="M">Masculino</option>
-                                <option value="F">Feminino</option>
-                            </select>
+                            <div className="form-grid">
+                                <div>
+                                    <label className="field-label">Data de nascimento</label>
+                                    <input type="date" value={editingStudent.nascimento} onChange={e => setEditingStudent({...editingStudent, nascimento: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">Sexo</label>
+                                    <select value={editingStudent.sexo || "M"} onChange={e => setEditingStudent({...editingStudent, sexo: e.target.value})}>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Feminino</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div className="form-grid">
                                 <div>
                                     <label className="field-label">Status</label>
@@ -5091,10 +5436,22 @@
                                     <label className="field-label">Matrícula</label>
                                     <input type="date" value={editingStudent.matricula || ""} onChange={e => setEditingStudent({...editingStudent, matricula: e.target.value})} />
                                 </div>
-                                <input placeholder="Última presença" type="date" value={editingStudent.ultimaPresenca || ""} onChange={e => setEditingStudent({...editingStudent, ultimaPresenca: e.target.value})} />
-                                <input placeholder="Responsável" value={editingStudent.responsavel || ""} onChange={e => setEditingStudent({...editingStudent, responsavel: e.target.value})} />
-                                <input placeholder="WhatsApp do responsável" value={editingStudent.telefone || ""} onChange={e => setEditingStudent({...editingStudent, telefone: e.target.value})} />
-                                <input placeholder="E-mail do responsável" value={editingStudent.email || ""} onChange={e => setEditingStudent({...editingStudent, email: e.target.value})} />
+                                <div>
+                                    <label className="field-label">Última presença</label>
+                                    <input type="date" value={editingStudent.ultimaPresenca || ""} onChange={e => setEditingStudent({...editingStudent, ultimaPresenca: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">Responsável</label>
+                                    <input placeholder="Nome do responsável" value={editingStudent.responsavel || ""} onChange={e => setEditingStudent({...editingStudent, responsavel: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">WhatsApp do responsável</label>
+                                    <input placeholder="WhatsApp do responsável" value={editingStudent.telefone || ""} onChange={e => setEditingStudent({...editingStudent, telefone: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">E-mail do responsável</label>
+                                    <input placeholder="E-mail do responsável" value={editingStudent.email || ""} onChange={e => setEditingStudent({...editingStudent, email: e.target.value})} />
+                                </div>
                             </div>
                             <textarea placeholder="Observação interna / necessidade especial" value={editingStudent.necessidades || ""} onChange={e => setEditingStudent({...editingStudent, necessidades: e.target.value})}></textarea>
                             <textarea placeholder="Observações internas do professor" value={editingStudent.observacoesInternas || ""} onChange={e => setEditingStudent({...editingStudent, observacoesInternas: e.target.value})}></textarea>
