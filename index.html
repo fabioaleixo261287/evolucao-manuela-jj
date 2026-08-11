@@ -225,31 +225,31 @@
         .hist-details { margin-top: 15px; border: 1px solid var(--border-color); border-radius: 15px; background: #181818; overflow: hidden; }
         .hist-summary { cursor: pointer; font-size: 12px; font-weight: bold; color: #c9a554; padding: 12px; display: flex; justify-content: space-between; align-items: center; list-style: none; }
         .hist-content { padding: 12px; font-size: 11px; max-height: 150px; overflow-y: auto; border-top: 1px solid var(--border-color); color: #777; line-height: 1.6; }
-        .belt-history-list { display: grid; gap: 14px; }
-        .belt-history-card { padding: 18px; background: radial-gradient(circle at 85% 12%, rgba(201,165,84,0.18), transparent 34%), linear-gradient(145deg, #101923, #0a1118 68%, #171717); border: 1px solid rgba(201,165,84,0.28); border-radius: 24px; display: grid; gap: 14px; box-shadow: 0 18px 40px rgba(0,0,0,0.28); }
-        .belt-history-card.current { border-color: rgba(246,196,0,0.62); background: radial-gradient(circle at 85% 12%, rgba(246,196,0,0.22), transparent 34%), linear-gradient(145deg, #102032, #09131d 62%, #181818); }
-        .belt-history-head { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; }
-        .belt-history-head strong { color: #fff; font-size: clamp(20px, 2.4vw, 28px); line-height: 1.05; display: block; }
-        .belt-history-head small { color: #f6c400; font-weight: 900; text-transform: uppercase; font-size: 10px; display: block; margin-bottom: 5px; letter-spacing: .02em; }
-        .belt-history-head em { display: inline-flex; gap: 7px; align-items: center; margin-top: 8px; color: #b8c3d1; font-size: 12px; font-style: normal; font-weight: 900; text-transform: uppercase; }
-        .belt-history-status { flex-shrink: 0; min-width: 58px; height: 58px; padding: 0 10px; border-radius: 999px; background: linear-gradient(135deg, rgba(246,196,0,0.95), rgba(201,137,32,0.95)); color: #101923; font-size: 12px; font-weight: 1000; text-transform: uppercase; display: grid; place-items: center; box-shadow: 0 0 0 7px rgba(246,196,0,0.10); }
+        .belt-history-list { display: grid; gap: 10px; }
+        .belt-history-card { padding: 14px; background: radial-gradient(circle at 92% 10%, rgba(246,196,0,0.13), transparent 30%), linear-gradient(145deg, rgba(13,28,41,0.96), rgba(8,18,27,0.98)); border: 1px solid rgba(201,165,84,0.34); border-radius: 18px; display: grid; gap: 11px; box-shadow: 0 14px 32px rgba(0,0,0,0.24); }
+        .belt-history-card.current { border-color: rgba(246,196,0,0.58); background: radial-gradient(circle at 92% 10%, rgba(246,196,0,0.18), transparent 32%), linear-gradient(145deg, #0f2234, #08131d 70%); }
+        .belt-history-head { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+        .belt-history-head strong { color: #fff; font-size: clamp(18px, 2vw, 23px); line-height: 1.05; display: block; }
+        .belt-history-head small { color: #f6c400; font-weight: 950; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 4px; letter-spacing: .04em; }
+        .belt-history-head em { display: inline-flex; gap: 7px; align-items: center; margin-top: 6px; color: #b8c3d1; font-size: 11px; font-style: normal; font-weight: 900; text-transform: uppercase; }
+        .belt-history-status { flex-shrink: 0; min-width: 44px; height: 44px; padding: 0 9px; border-radius: 999px; background: linear-gradient(135deg, rgba(246,196,0,0.95), rgba(201,137,32,0.95)); color: #101923; font-size: 11px; font-weight: 1000; text-transform: uppercase; display: grid; place-items: center; box-shadow: 0 0 0 6px rgba(246,196,0,0.10); }
         .belt-history-card.current .belt-history-status { background: linear-gradient(135deg, #ffd761, #d89d1a); color: #111; }
         .belt-history-status.overdue { background: #f1c40f; color: #111; }
-        .belt-history-progress { height: 12px; border-radius: 999px; background: rgba(255,255,255,0.10); overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+        .belt-history-progress { height: 9px; border-radius: 999px; background: rgba(255,255,255,0.10); overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
         .belt-history-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #30d274, #f6c400, #d89d1a); box-shadow: 0 0 18px rgba(246,196,0,0.35); }
         .belt-history-period { color: #b8c3d1; font-size: 12px; font-weight: 800; display: flex; flex-wrap: wrap; gap: 10px; }
         .belt-history-period span { display: inline-flex; align-items: center; gap: 7px; }
         .belt-history-period i { color: #f6c400; }
         .belt-history-period b { color: #fff; margin-right: 2px; }
         .belt-history-date-input { background: #101923; border: 1px solid rgba(201,165,84,0.45); color: #fff; border-radius: 8px; padding: 5px 7px; font-size: 11px; font-weight: 800; margin-left: 4px; width: auto; min-height: 0; }
-        .belt-history-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-        .belt-history-meta span { padding: 13px 14px; border-radius: 16px; background: rgba(255,255,255,0.055); border: 1px solid rgba(255,255,255,0.08); color: #b8c3d1; font-size: 10px; font-weight: 900; text-transform: uppercase; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; min-width: 0; }
+        .belt-history-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .belt-history-meta span { padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: #b8c3d1; font-size: 9px; font-weight: 900; text-transform: uppercase; display: grid; grid-template-columns: auto 1fr; gap: 1px 9px; align-items: center; min-width: 0; }
         .belt-history-meta i { grid-row: span 2; color: #f6c400; font-size: 15px; }
         .belt-history-meta b { color: #fff; font-size: 15px; text-transform: none; display: block; }
-        .belt-history-timeline { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; display: grid; gap: 9px; }
+        .belt-history-timeline { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; display: grid; gap: 8px; }
         .timeline-label { color: #f6c400; font-size: 10px; font-weight: 1000; text-transform: uppercase; }
-        .timeline-track { display: grid; grid-template-columns: minmax(82px, auto) 1fr minmax(110px, auto) 1fr minmax(130px, auto) 1fr minmax(92px, auto); gap: 10px; align-items: center; }
-        .timeline-node { padding: 8px 10px; border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #b8c3d1; font-size: 9px; font-weight: 900; text-transform: uppercase; }
+        .timeline-track { display: grid; grid-template-columns: minmax(74px, auto) 1fr minmax(96px, auto) 1fr minmax(114px, auto) 1fr minmax(86px, auto); gap: 8px; align-items: center; }
+        .timeline-node { padding: 7px 9px; border-radius: 12px; background: rgba(255,255,255,0.055); border: 1px solid rgba(255,255,255,0.08); color: #b8c3d1; font-size: 8px; font-weight: 900; text-transform: uppercase; }
         .timeline-node b { display: block; color: #fff; font-size: 11px; margin-bottom: 2px; }
         .timeline-node.milestone { border-color: rgba(246,196,0,0.30); background: rgba(246,196,0,0.08); }
         .timeline-node.current { border-color: rgba(246,196,0,0.45); background: rgba(246,196,0,0.12); }
@@ -2849,6 +2849,14 @@
     }
 
     const statusOptions = ["Ativo", "Experimental", "Pausado", "Transferido", "Inativo"];
+    const DEFAULT_UNIT_ID = "alliance-mooca";
+    const DEFAULT_UNIT_NAME = "Alliance Mooca";
+    const unitOptions = [
+        { id: DEFAULT_UNIT_ID, nome: DEFAULT_UNIT_NAME, status: "Ativa" }
+    ];
+    const getStudentUnitId = (student) => student?.unidadeId || DEFAULT_UNIT_ID;
+    const getStudentUnitName = (student) => unitOptions.find(unit => unit.id === getStudentUnitId(student))?.nome || DEFAULT_UNIT_NAME;
+    const normalizeStudent = (student) => ({ ...student, unidadeId: getStudentUnitId(student) });
     const behaviorDegreeOptions = [
         { key: "Rel", label: "Relacionamento", short: "Relac.", className: "degree-rel" },
         { key: "Comp", label: "Comportamento", short: "Comp.", className: "degree-comp" },
@@ -2861,6 +2869,7 @@
         faixa: "Branca",
         sexo: "M",
         categoriaOverride: "Auto",
+        unidadeId: DEFAULT_UNIT_ID,
         status: "Ativo",
         responsavel: "",
         telefone: "",
@@ -2885,7 +2894,7 @@
         const supabaseClient = React.useMemo(() => createSupabaseClient(), []);
         
         const [students, setStudents] = React.useState(() => {
-            try { return JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]"); } 
+            try { return JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]").map(normalizeStudent); } 
             catch(e) { return []; }
         });
         const [repo, setRepo] = React.useState(() => {
@@ -3072,7 +3081,7 @@
             const loadRemoteData = async () => {
                 if (appwriteServices) {
                     try {
-                        const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
+                        const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]").map(normalizeStudent);
                         const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
                         const localSignature = getDataSignature(localStudents, localRepo);
                         lastLocalSignatureRef.current = localSignature;
@@ -3085,7 +3094,7 @@
                         }
 
                         if (data) {
-                            const remoteStudents = parseRemoteJson(data.students, []);
+                            const remoteStudents = parseRemoteJson(data.students, []).map(normalizeStudent);
                             const remoteRepo = parseRemoteJson(data.repo, []);
                             const remoteIsEmpty = remoteStudents.length === 0 && remoteRepo.length === 0;
                             const localHasData = localStudents.length > 0 || localRepo.length > 0;
@@ -3130,7 +3139,7 @@
                 }
 
                 try {
-                    const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]");
+                    const localStudents = JSON.parse(localStorage.getItem(LOCAL_STUDENTS_KEY) || "[]").map(normalizeStudent);
                     const localRepo = JSON.parse(localStorage.getItem(LOCAL_REPO_KEY) || "[]");
                     const localSignature = getDataSignature(localStudents, localRepo);
                     lastLocalSignatureRef.current = localSignature;
@@ -3147,7 +3156,7 @@
                     if (error) throw error;
 
                     if (data) {
-                        const remoteStudents = Array.isArray(data.students) ? data.students : [];
+                        const remoteStudents = (Array.isArray(data.students) ? data.students : []).map(normalizeStudent);
                         const remoteRepo = Array.isArray(data.repo) ? data.repo : [];
                         const remoteIsEmpty = remoteStudents.length === 0 && remoteRepo.length === 0;
                         const localHasData = localStudents.length > 0 || localRepo.length > 0;
@@ -3314,7 +3323,7 @@
                         if (lastSavedAtRef.current && new Date(remoteUpdatedAt) <= new Date(lastSavedAtRef.current)) return;
                         lastSavedAtRef.current = remoteUpdatedAt;
                         applyingRemoteRef.current = true;
-                        const remoteStudents = parseRemoteJson(data.students, []);
+                        const remoteStudents = parseRemoteJson(data.students, []).map(normalizeStudent);
                         const remoteRepo = parseRemoteJson(data.repo, []);
                         lastRemoteSignatureRef.current = getDataSignature(remoteStudents, remoteRepo);
                         lastLocalSignatureRef.current = lastRemoteSignatureRef.current;
@@ -3360,10 +3369,11 @@
                     if (error) throw error;
                     if (!data) return;
                     lastSavedAtRef.current = data.updated_at || lastSavedAtRef.current;
-                    lastRemoteSignatureRef.current = getDataSignature(data.students || [], data.repo || []);
+                    const remoteStudents = (Array.isArray(data.students) ? data.students : []).map(normalizeStudent);
+                    lastRemoteSignatureRef.current = getDataSignature(remoteStudents, data.repo || []);
                     lastLocalSignatureRef.current = lastRemoteSignatureRef.current;
                     applyingRemoteRef.current = true;
-                    setStudents(Array.isArray(data.students) ? data.students : []);
+                    setStudents(remoteStudents);
                     setRepo(Array.isArray(data.repo) ? data.repo : []);
                     setDbStatus("Sincronizado com Supabase");
                 } catch (err) {
@@ -3713,7 +3723,7 @@
                 try {
                     const data = JSON.parse(event.target.result);
                     if (Array.isArray(data.students)) {
-                        setStudents(data.students);
+                        setStudents(data.students.map(normalizeStudent));
                         setRepo(Array.isArray(data.repo) ? data.repo : []);
                         if (Array.isArray(data.users) && data.users.length) setUsers(data.users);
                         alert("Backup restaurado com sucesso!");
@@ -4401,21 +4411,21 @@
                                 <span><i className="fas fa-star"></i><b>{item.comportamentais || 0}/4</b>Graus Comportamentais</span>
                             </div>
                             <div className="belt-history-timeline">
-                                <span className="timeline-label">Linha do tempo</span>
+                                <span className="timeline-label">Resumo da faixa</span>
                                 <div className="timeline-track">
                                     <div className="timeline-node previous">
                                         <b>{previousItem?.faixa || "Início"}</b>
-                                        <small>{previousItem ? "Anterior" : "Base"}</small>
+                                        <small>{previousItem ? "Faixa anterior" : "Base"}</small>
                                     </div>
                                     <div className="timeline-line"></div>
                                     <div className="timeline-node milestone">
                                         <b>{presencaAtual}</b>
-                                        <small>Grau de Presença</small>
+                                        <small>Presença</small>
                                     </div>
                                     <div className="timeline-line"></div>
                                     <div className="timeline-node milestone">
                                         <b>{comportamentalAtual}</b>
-                                        <small>Graus Comportamentais</small>
+                                        <small>Comportamental</small>
                                     </div>
                                     <div className="timeline-line"></div>
                                     <div className="timeline-node current">
@@ -5086,6 +5096,7 @@
                                         <details className="student-info-toggle">
                                             <summary><i className="fas fa-user-edit"></i> Informações do aluno</summary>
                                             <div className="parent-header-info">
+                                            <div className="student-info-chip"><strong>{getStudentUnitName(s)}</strong>Unidade</div>
                                             <div className={`student-info-chip status-badge ${(s.status || "Ativo").toLowerCase()}`}><strong>{s.status || "Ativo"}</strong>Status</div>
                                             {s.responsavel && <div className="student-info-chip"><strong>{s.responsavel}</strong>Respons&aacute;vel</div>}
                                             {s.telefone && <div className="student-info-chip"><strong>{s.telefone}</strong>WhatsApp</div>}
@@ -5585,6 +5596,12 @@
                                         <option value="F">Feminino</option>
                                     </select>
                                 </div>
+                                <div>
+                                    <label className="field-label">Unidade</label>
+                                    <select value={form.unidadeId || DEFAULT_UNIT_ID} onChange={e => setForm({...form, unidadeId: e.target.value})}>
+                                        {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
+                                    </select>
+                                </div>
                             </div>
                             <div className="form-grid">
                                 <div>
@@ -5630,7 +5647,7 @@
                                 const exists = students.some(s => s.nome.toLowerCase().trim() === nome.toLowerCase() && s.nascimento === form.nascimento);
                                 if (exists) return alert("Este aluno já está cadastrado.");
                                 const categoriaTexto = form.categoriaOverride === "Auto" ? getAutoCategory(form.nascimento) : `${form.categoriaOverride} (manual)`;
-                                setStudents([...students, { ...form, nome, id: Date.now(), aulas: 0, cicloFaixaInicio: form.matricula || getTodayISO(), beltHistory: [], historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`] }]);
+                                setStudents([...students, normalizeStudent({ ...form, nome, id: Date.now(), aulas: 0, cicloFaixaInicio: form.matricula || getTodayISO(), beltHistory: [], historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`, `Unidade inicial: ${getStudentUnitName(form)}`] })]);
                                 setModalOpen(null);
                                 setForm(createEmptyStudentForm());
                             }}>SALVAR</button>
@@ -5691,6 +5708,12 @@
                                         <option value="F">Feminino</option>
                                     </select>
                                 </div>
+                                <div>
+                                    <label className="field-label">Unidade</label>
+                                    <select value={editingStudent.unidadeId || DEFAULT_UNIT_ID} onChange={e => setEditingStudent({...editingStudent, unidadeId: e.target.value})}>
+                                        {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
+                                    </select>
+                                </div>
                             </div>
                             <div className="form-grid">
                                 <div>
@@ -5739,7 +5762,7 @@
                                 const alunoOriginal = students.find(s => s.id === editingStudent.id);
                                 const hoje = new Date().toLocaleDateString('pt-BR');
                                 const logs = [];
-                                let alunoAtualizado = { ...editingStudent, nome: editingStudent.nome.trim() };
+                                let alunoAtualizado = normalizeStudent({ ...editingStudent, nome: editingStudent.nome.trim() });
 
                                 if (alunoOriginal && alunoOriginal.faixa !== alunoAtualizado.faixa) {
                                     logs.push(`FAIXA ALTERADA MANUALMENTE: ${alunoOriginal.faixa} → ${alunoAtualizado.faixa} | ${hoje}`);
@@ -5751,6 +5774,10 @@
                                 const categoriaNova = alunoAtualizado.categoriaOverride || "Auto";
                                 if (alunoOriginal && categoriaAnterior !== categoriaNova) {
                                     logs.push(`TURMA ALTERADA: ${categoriaAnterior === "Auto" ? "Automática" : categoriaAnterior} → ${categoriaNova === "Auto" ? "Automática" : categoriaNova} | ${hoje}`);
+                                }
+
+                                if (alunoOriginal && getStudentUnitId(alunoOriginal) !== getStudentUnitId(alunoAtualizado)) {
+                                    logs.push(`UNIDADE ALTERADA: ${getStudentUnitName(alunoOriginal)} -> ${getStudentUnitName(alunoAtualizado)} | ${hoje}`);
                                 }
 
                                 const statusAnterior = alunoOriginal?.status || "Ativo";
