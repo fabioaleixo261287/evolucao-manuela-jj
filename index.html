@@ -54,6 +54,44 @@
             --card-bg: #111111;
             --text-color: #e0e0e0;
             --border-color: rgba(201,165,84,0.24);
+            --font-ui: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+            --page-bg: radial-gradient(circle at 50% 0%, rgba(201,165,84,0.14), transparent 330px), linear-gradient(180deg, #050505 0%, #050505 100%);
+            --panel-bg: linear-gradient(145deg, rgba(13,28,41,0.96), rgba(8,18,27,0.98));
+            --panel-bg-soft: rgba(17,24,39,0.94);
+            --panel-border: rgba(201,165,84,0.24);
+            --text-primary: #f8fafc;
+            --text-secondary: #b8c3d1;
+            --text-muted: #8ea0b6;
+            --input-bg: #0b1320;
+            --input-border: rgba(201,165,84,0.3);
+            --input-text: #f8fafc;
+            --shadow-panel: 0 18px 42px rgba(0,0,0,0.28);
+        }
+        body.theme-dark {
+            --page-bg: radial-gradient(circle at 50% 0%, rgba(201,165,84,0.14), transparent 330px), linear-gradient(180deg, #050505 0%, #050505 100%);
+            --panel-bg: linear-gradient(145deg, rgba(13,28,41,0.96), rgba(8,18,27,0.98));
+            --panel-bg-soft: rgba(17,24,39,0.94);
+            --panel-border: rgba(201,165,84,0.24);
+            --text-primary: #f8fafc;
+            --text-secondary: #b8c3d1;
+            --text-muted: #8ea0b6;
+            --input-bg: #0b1320;
+            --input-border: rgba(201,165,84,0.3);
+            --input-text: #f8fafc;
+            --shadow-panel: 0 18px 42px rgba(0,0,0,0.28);
+        }
+        body.theme-light {
+            --page-bg: radial-gradient(circle at 50% 0%, rgba(240,199,94,0.18), transparent 340px), linear-gradient(180deg, #f7f4eb 0%, #eef4fb 100%);
+            --panel-bg: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(246,248,252,0.98));
+            --panel-bg-soft: rgba(255,255,255,0.94);
+            --panel-border: rgba(201,165,84,0.2);
+            --text-primary: #142033;
+            --text-secondary: #42546c;
+            --text-muted: #6d7f95;
+            --input-bg: rgba(255,255,255,0.98);
+            --input-border: rgba(201,165,84,0.28);
+            --input-text: #142033;
+            --shadow-panel: 0 18px 40px rgba(15,23,42,0.1);
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -67,10 +105,8 @@
         html { scroll-behavior: smooth; }
 
         body { 
-            font-family: 'Segoe UI', system-ui, -apple-system; 
-            background:
-                radial-gradient(circle at 50% 0%, rgba(201,165,84,0.14), transparent 330px),
-                linear-gradient(180deg, #050505 0%, #050505 100%);
+            font-family: var(--font-ui); 
+            background: var(--page-bg);
             background-attachment: fixed;
             background-repeat: no-repeat;
             min-height: 100vh;
@@ -919,11 +955,6 @@
         body.theme-light .login-heading {
             color: #fff;
         }
-        body.theme-light .login-box input {
-            background: #ffffff;
-            border-color: rgba(246,196,0,0.42);
-            color: #111827;
-        }
         body.theme-light .install-app-btn {
             background: linear-gradient(135deg, #0d2338, #12385c);
             color: #ffc400;
@@ -1085,9 +1116,6 @@
             border-color: rgba(17,48,76,0.14) !important;
             box-shadow: 0 10px 24px rgba(8,28,48,0.06) !important;
         }
-        body.theme-light .graduation-meta strong {
-            color: #0f172a !important;
-        }
         body.theme-light .graduation-panel .box-class,
         body.theme-light .graduation-panel .degree-box {
             background: #ffffff !important;
@@ -1174,25 +1202,6 @@
         body.theme-light .dashboard-panel-title {
             background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%) !important;
             border-bottom-color: rgba(17,48,76,0.12) !important;
-        }
-        body.theme-light .conversation-search input,
-        body.theme-light .modal-content input,
-        body.theme-light .modal-content select,
-        body.theme-light .modal-content textarea,
-        body.theme-light .login-box input {
-            background: #ffffff !important;
-            color: #071827 !important;
-            -webkit-text-fill-color: #071827 !important;
-            border-color: rgba(17,48,76,0.16) !important;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.92) !important;
-        }
-        body.theme-light .conversation-search input::placeholder,
-        body.theme-light .modal-content input::placeholder,
-        body.theme-light .modal-content textarea::placeholder,
-        body.theme-light .login-box input::placeholder {
-            color: #98a2b3 !important;
-            -webkit-text-fill-color: #98a2b3 !important;
-            opacity: 1;
         }
         body.theme-light .conversation-search i {
             color: #667085 !important;
@@ -3244,14 +3253,6 @@
         body.theme-light .dashboard-command-best-day strong {
             color: #071827 !important;
         }
-        body.theme-light .dashboard-command-summary,
-        body.theme-light .dashboard-command-kpi,
-        body.theme-light .dashboard-command-card,
-        body.theme-light .dashboard-filters-command {
-            background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%) !important;
-            border-color: rgba(128,96,0,0.22) !important;
-            box-shadow: 0 18px 42px rgba(8,28,48,0.12) !important;
-        }
         body.theme-light .dashboard-command-distributions .dashboard-command-card.compact-panel {
             background:
                 radial-gradient(circle at top right, rgba(240,199,94,0.12), transparent 34%),
@@ -3422,6 +3423,148 @@
             .dashboard-pdf-btn, .dashboard-back-btn { flex: 1; }
             .dashboard-command-best-day { grid-template-columns: auto minmax(0, 1fr); }
             .dashboard-command-best-day .sparkline { display: none; }
+        }
+        /* Camada final de hardening visual para reduzir regressões entre tema claro e escuro. */
+        body.theme-dark,
+        body.theme-light {
+            color: var(--text-primary);
+            background: var(--page-bg);
+        }
+        body.theme-dark input,
+        body.theme-dark select,
+        body.theme-dark textarea,
+        body.theme-light input,
+        body.theme-light select,
+        body.theme-light textarea {
+            background: var(--input-bg);
+            color: var(--input-text);
+            border-color: var(--input-border);
+            box-shadow: none;
+        }
+        body.theme-dark input::placeholder,
+        body.theme-dark textarea::placeholder,
+        body.theme-light input::placeholder,
+        body.theme-light textarea::placeholder {
+            color: var(--text-muted);
+            opacity: 1;
+        }
+        body.theme-dark .graduation-panel,
+        body.theme-dark .parent-panel,
+        body.theme-dark .modal-content,
+        body.theme-dark .belt-history-card,
+        body.theme-dark .belt-history-meta span,
+        body.theme-dark .top-card,
+        body.theme-dark .student-card,
+        body.theme-dark .repo-card,
+        body.theme-dark .settings-card,
+        body.theme-dark details,
+        body.theme-light .graduation-panel,
+        body.theme-light .parent-panel,
+        body.theme-light .modal-content,
+        body.theme-light .belt-history-card,
+        body.theme-light .belt-history-meta span,
+        body.theme-light .top-card,
+        body.theme-light .student-card,
+        body.theme-light .repo-card,
+        body.theme-light .settings-card,
+        body.theme-light details {
+            background: var(--panel-bg);
+            border-color: var(--panel-border);
+            box-shadow: var(--shadow-panel);
+        }
+        body.theme-dark .graduation-panel *,
+        body.theme-dark .parent-panel *,
+        body.theme-dark .modal-content *,
+        body.theme-light .graduation-panel *,
+        body.theme-light .parent-panel *,
+        body.theme-light .modal-content * {
+            border-color: inherit;
+        }
+        body.theme-dark .dashboard-command-kpi b,
+        body.theme-dark .graduation-meta strong,
+        body.theme-dark .belt-history-head strong,
+        body.theme-dark .belt-history-meta b,
+        body.theme-dark .app-brand-header strong,
+        body.theme-light .dashboard-command-kpi b,
+        body.theme-light .graduation-meta strong,
+        body.theme-light .belt-history-head strong,
+        body.theme-light .belt-history-meta b,
+        body.theme-light .app-brand-header strong {
+            color: var(--text-primary);
+        }
+        body.theme-dark .dashboard-command-kpi small,
+        body.theme-dark .graduation-title,
+        body.theme-dark .belt-history-period,
+        body.theme-dark .belt-history-head em,
+        body.theme-dark .belt-history-meta span,
+        body.theme-dark .app-brand-header small,
+        body.theme-light .dashboard-command-kpi small,
+        body.theme-light .graduation-title,
+        body.theme-light .belt-history-period,
+        body.theme-light .belt-history-head em,
+        body.theme-light .belt-history-meta span,
+        body.theme-light .app-brand-header small {
+            color: var(--text-secondary);
+        }
+        body.theme-dark .dashboard-command-card .muted,
+        body.theme-dark .top-card-subtitle,
+        body.theme-dark .student-card small,
+        body.theme-light .dashboard-command-card .muted,
+        body.theme-light .top-card-subtitle,
+        body.theme-light .student-card small {
+            color: var(--text-muted);
+        }
+        body.theme-light .auth-container,
+        body.theme-light .selection-screen {
+            background:
+                radial-gradient(circle at 50% 8%, rgba(240,199,94,0.2) 0, rgba(240,199,94,0.08) 18%, transparent 42%),
+                radial-gradient(circle at 50% 22%, rgba(255,255,255,0.92) 0, rgba(255,255,255,0.72) 26%, transparent 48%),
+                linear-gradient(180deg, #f7f4eb 0%, #eef4fb 48%, #edf2f8 100%);
+        }
+        body.theme-light .login-box,
+        body.theme-light .btn-select,
+        body.theme-light .install-app-btn {
+            box-shadow: 0 18px 40px rgba(15,23,42,0.12);
+        }
+        body.theme-light .conversation-search input,
+        body.theme-light .modal-content input,
+        body.theme-light .modal-content select,
+        body.theme-light .modal-content textarea,
+        body.theme-light .login-box input {
+            background: #ffffff !important;
+            color: var(--input-text) !important;
+            -webkit-text-fill-color: var(--input-text) !important;
+            border-color: rgba(17,48,76,0.16) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.92) !important;
+        }
+        body.theme-light .conversation-search input::placeholder,
+        body.theme-light .modal-content input::placeholder,
+        body.theme-light .modal-content textarea::placeholder,
+        body.theme-light .login-box input::placeholder {
+            color: #98a2b3 !important;
+            -webkit-text-fill-color: #98a2b3 !important;
+            opacity: 1;
+        }
+        body.theme-light .dashboard-command-summary,
+        body.theme-light .dashboard-command-kpi,
+        body.theme-light .dashboard-command-card,
+        body.theme-light .dashboard-filters-command {
+            background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%) !important;
+            border-color: rgba(128,96,0,0.22) !important;
+            box-shadow: 0 18px 42px rgba(8,28,48,0.12) !important;
+        }
+        body.theme-light .dashboard-command-summary *,
+        body.theme-light .dashboard-command-kpi *,
+        body.theme-light .dashboard-command-card *,
+        body.theme-light .dashboard-filters-command * {
+            border-color: inherit;
+        }
+        body.theme-light .btn-select strong,
+        body.theme-light .btn-select small,
+        body.theme-light .login-heading,
+        body.theme-light .auth-subtitle,
+        body.theme-light .back-link {
+            color: var(--text-primary);
         }
     </style>
 </head>
@@ -3737,7 +3880,7 @@
         const idade = calculateAge(nascimento);
         if (idade < 3 || idade > 15) return "Fora da regra";
         if (idade >= 3 && idade <= 5) return "Baby Eagle";
-        if (idade >= 5 && idade <= 7) return "Little Eagle";
+        if (idade >= 6 && idade <= 7) return "Little Eagle";
         if (idade >= 8 && idade <= 12) return "Eagle Warrior";
         if (idade >= 13 && idade <= 15) return "Eagle Youth";
         return "Fora da regra";
@@ -5379,9 +5522,7 @@
             if (lastPresence) {
                 return Math.floor((today - lastPresence) / 86400000);
             }
-            const baseDate = parseLocalDate(student.matricula || student.cicloFaixaInicio || "");
-            if (!baseDate) return null;
-            return Math.floor((today - baseDate) / 86400000);
+            return null;
         };
         const noRecentPresenceList = activeStudents.filter(s => {
             const days = getStudentPresenceAlertDays(s);
