@@ -4459,6 +4459,24 @@
             });
         const busiestPresenceDay = presenceByWeekdayRows[0] ? [presenceByWeekdayRows[0].label, presenceByWeekdayRows[0].count] : null;
         const busiestPresenceLabel = busiestPresenceDate ? `${busiestPresenceDate.weekday} ${busiestPresenceDate.displayDate} (${busiestPresenceDate.count} presença${busiestPresenceDate.count === 1 ? "" : "s"})` : "Sem presença no período";
+        const studentPresenceRanking = Object.values(recentPresenceStudents.reduce((acc, item) => {
+            if (!acc[item.studentId]) {
+                acc[item.studentId] = {
+                    id: item.studentId,
+                    nome: item.studentName,
+                    turma: item.group,
+                    faixa: item.faixa,
+                    count: 0
+                };
+            }
+            acc[item.studentId].count += 1;
+            return acc;
+        }, {})).sort((a, b) => {
+            const countDiff = b.count - a.count;
+            if (countDiff) return countDiff;
+            return a.nome.localeCompare(b.nome);
+        });
+        const highestPresenceCount = studentPresenceRanking[0]?.count || 0;
         const noRecentPresenceList = activeStudents.filter(s => {
             if (!s.ultimaPresenca) return true;
             const lastPresence = parseLocalDate(s.ultimaPresenca);
@@ -4570,6 +4588,17 @@
                         action: () => openStudentFromDashboard(item.studentName),
                         actionLabel: "Aluno"
                     }))
+            },
+            frequencia: {
+                title: "Top frequência no período",
+                subtitle: studentPresenceRanking.length ? `Alunos com maior assiduidade em ${dashboardPeriodLabel}` : "Sem frequência registrada no período",
+                rows: studentPresenceRanking.map((item, index) => ({
+                    id: item.id,
+                    name: `${index + 1}º ${item.nome}`,
+                    meta: `${item.count} presença${item.count === 1 ? "" : "s"} • ${item.turma} • ${item.faixa}`,
+                    action: () => openStudentFromDashboard(item.nome),
+                    actionLabel: "Aluno"
+                }))
             },
             meta: {
                 title: "Evolução média da turma",
@@ -5148,6 +5177,7 @@
                         <div className="dashboard-grid">
                             <div className={`dashboard-card ${dashboardDetail === "evolucao" ? "active" : ""}`} onClick={() => revealDashboardDetail("evolucao")}><strong>{averageProgress}%</strong><span>Evolução média</span><small>Baseado no progresso para a próxima faixa</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "movimento" ? "active" : ""}`} onClick={() => revealDashboardDetail("movimento")}><strong>{busiestPresenceDay ? busiestPresenceDay[1] : 0}</strong><span>Maior movimento</span><small>{busiestPresenceLabel}</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "frequencia" ? "active" : ""}`} onClick={() => revealDashboardDetail("frequencia")}><strong>{highestPresenceCount}</strong><span>Top frequência</span><small>{studentPresenceRanking[0] ? `${studentPresenceRanking[0].nome} lidera no ${dashboardPeriodLabel}` : "Sem presenças no período"}</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "alunos" ? "active" : ""}`} onClick={() => revealDashboardDetail("alunos")}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => revealDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorização pendente</span><small>Alunos sem autorização de imagem marcada</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => revealDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponíveis no repositório interno</small></div>
@@ -5202,6 +5232,17 @@
                                 </div>
                             </div>
                             <div className="dashboard-priority-card">
+                                <h4><span>Top frequência</span><i className="fas fa-ranking-star"></i></h4>
+                                <div className="dashboard-mini-list">
+                                    {studentPresenceRanking.length > 0 ? studentPresenceRanking.slice(0, 3).map((s, index) => (
+                                        <button className="dashboard-mini-row" key={`mini-frequency-${s.id}`} onClick={() => openStudentFromDashboard(s.nome)}>
+                                            <b>{index + 1}º {s.nome}</b>
+                                            <small>{s.count} presença{s.count === 1 ? "" : "s"} • {s.turma}</small>
+                                        </button>
+                                    )) : <div className="dashboard-note">Sem frequência registrada no período.</div>}
+                                </div>
+                            </div>
+                            <div className="dashboard-priority-card">
                                 <h4><span>Exame</span><i className="fas fa-medal"></i></h4>
                                 <div className="dashboard-mini-list">
                                     {examCandidates.length > 0 ? examCandidates.slice(0, 3).map(s => (
@@ -5239,7 +5280,7 @@
 
                         <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
                             <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Distribuicao por turma</span><i className="fas fa-layer-group"></i></div>
+                                <div className="dashboard-command-card-title"><span>Distribuição por turma</span><i className="fas fa-layer-group"></i></div>
                                 <small className="dashboard-compact-summary">{dashboardStudents.length} alunos em {dashboardRows.categorias.filter(row => row.value > 0).length} turma{dashboardRows.categorias.filter(row => row.value > 0).length === 1 ? "" : "s"}</small>
                                 <div className="dashboard-compact-list">
                                     {groupRowsWithPercent.map(row => (
@@ -5252,12 +5293,12 @@
                                 </div>
                             </div>
                             <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Distribuicao por faixa</span><i className="fas fa-medal"></i></div>
+                                <div className="dashboard-command-card-title"><span>Distribuição por faixa</span><i className="fas fa-medal"></i></div>
                                 <small className="dashboard-compact-summary">{dashboardBeltAgeRows.length} faixa{dashboardBeltAgeRows.length === 1 ? "" : "s"} cadastrada{dashboardBeltAgeRows.length === 1 ? "" : "s"}</small>
                                 <div className="dashboard-compact-list">
                                     {beltRowsWithPercent.length > 0 ? beltRowsWithPercent.map(row => (
                                         <button className="dashboard-compact-row" key={`cmd-belt-${row.label}`} onClick={() => openDashboardStudents({ faixa: row.label })}>
-                                            <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} - media {row.averageAge ?? "-"} anos - {row.percent}%</small></span>
+                                            <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} - média {row.averageAge ?? "-"} anos - {row.percent}%</small></span>
                                             <div className="dashboard-bar tall info"><i style={{width: `${(row.value / maxBelt) * 100}%`}}></i></div>
                                             <b>{row.value}</b>
                                         </button>
@@ -5265,7 +5306,23 @@
                                 </div>
                             </div>
                             <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Situacao da base</span><i className="fas fa-circle-check"></i></div>
+                                <div className="dashboard-command-card-title"><span>Top frequência</span><i className="fas fa-ranking-star"></i></div>
+                                <small className="dashboard-compact-summary">{studentPresenceRanking.length > 0 ? `${studentPresenceRanking.length} aluno${studentPresenceRanking.length === 1 ? "" : "s"} com presenças no ${dashboardPeriodLabel}` : `Sem presenças em ${dashboardPeriodLabel}`}</small>
+                                <div className="dashboard-compact-list">
+                                    {studentPresenceRanking.length > 0 ? studentPresenceRanking.slice(0, 5).map((student, index) => (
+                                        <button className="dashboard-compact-row" key={`cmd-frequency-${student.id}`} onClick={() => openStudentFromDashboard(student.nome)}>
+                                            <span>{index + 1}º {student.nome}<small>{student.turma} - {student.faixa} - {student.count} presença{student.count === 1 ? "" : "s"}</small></span>
+                                            <div className="dashboard-bar tall info"><i style={{width: `${highestPresenceCount > 0 ? (student.count / highestPresenceCount) * 100 : 0}%`}}></i></div>
+                                            <b>{student.count}</b>
+                                        </button>
+                                    )) : <div className="dashboard-note">Sem frequência registrada no período.</div>}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
+                            <div className="dashboard-command-card compact-panel">
+                                <div className="dashboard-command-card-title"><span>Situação da base</span><i className="fas fa-circle-check"></i></div>
                                 <small className="dashboard-compact-summary">{activeStudents.length} de {dashboardStudents.length} aluno{dashboardStudents.length === 1 ? "" : "s"} ativo{activeStudents.length === 1 ? "" : "s"}</small>
                                 <div className="dashboard-compact-list">
                                     {operationalStatusRows.length > 0 ? operationalStatusRows.map(row => (
