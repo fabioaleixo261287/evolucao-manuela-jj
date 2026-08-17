@@ -375,12 +375,32 @@
         .dashboard-detail-head { padding: 15px 16px; display: flex; justify-content: space-between; gap: 12px; align-items: center; border-bottom: 1px solid #2a2a2a; }
         .dashboard-detail-head strong { color: #fff; font-size: 14px; text-transform: uppercase; display: block; }
         .dashboard-detail-head span { color: #777; font-size: 11px; font-weight: 800; display: block; margin-top: 4px; }
-        .dashboard-detail-list { max-height: 340px; overflow-y: auto; padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(245px, 1fr)); gap: 12px; }
+        .dashboard-detail-list { max-height: 340px; overflow-y: auto; padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+        .dashboard-detail-list.compact-presence-list,
+        .dashboard-detail-list.compact-mini-list { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 8px; }
         .dashboard-detail-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid #252525; border-radius: 16px; background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)); cursor: pointer; transition: 0.2s; min-height: 82px; }
         .dashboard-detail-row:hover { border-color: var(--alliance-red); background: #202020; transform: translateY(-1px); }
         .dashboard-detail-row b { color: #fff; display: block; font-size: 13px; line-height: 1.2; }
         .dashboard-detail-row small { color: #777; display: block; margin-top: 4px; font-size: 10px; font-weight: 800; line-height: 1.35; }
-        .dashboard-detail-action { border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 999px; padding: 8px 11px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .dashboard-detail-student-card { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px; border: 1px solid #252525; border-radius: 14px; background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)); cursor: pointer; transition: 0.2s; min-height: 78px; }
+        .dashboard-detail-student-card:hover { border-color: var(--alliance-red); background: #202020; transform: translateY(-1px); }
+        .dashboard-detail-student-card.presence-compact { grid-template-columns: 40px minmax(0, 1fr); gap: 10px; padding: 10px 12px; min-height: 64px; }
+        .dashboard-detail-student-card.mini-compact { grid-template-columns: 40px minmax(0, 1fr); gap: 10px; padding: 10px 12px; min-height: 68px; }
+        .dashboard-detail-student-main { min-width: 0; }
+        .dashboard-detail-student-card .student-compact-avatar { width: 42px; height: 42px; border-width: 2px; }
+        .dashboard-detail-student-card.presence-compact .student-compact-avatar { width: 40px; height: 40px; }
+        .dashboard-detail-student-card.mini-compact .student-compact-avatar { width: 40px; height: 40px; }
+        .dashboard-detail-student-main strong { color: #fff; display: block; font-size: 12px; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: normal; }
+        .dashboard-detail-student-main span { display: block; color: #8c98a7; font-size: 9px; font-weight: 800; margin-top: 2px; line-height: 1.3; }
+        .dashboard-detail-student-meta { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+        .dashboard-detail-student-meta b { background: #242424; color: #ddd; border: 1px solid #333; border-radius: 999px; padding: 3px 7px; font-size: 8px; text-transform: uppercase; }
+        .dashboard-detail-action { border: 1px solid #3a3a3a; background: #111; color: #ddd; border-radius: 999px; padding: 7px 9px; font-size: 9px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .dashboard-detail-student-card.presence-compact .dashboard-detail-student-main { display: flex; flex-direction: column; gap: 4px; }
+        .dashboard-detail-student-card.presence-compact .dashboard-detail-student-main strong { font-size: 11px; line-height: 1.2; white-space: normal; overflow: visible; text-overflow: clip; display: block; }
+        .dashboard-detail-student-card.presence-compact .dashboard-detail-student-main small { display: block; margin-top: 0; font-size: 10px; line-height: 1.25; word-break: break-word; }
+        .dashboard-detail-student-card.mini-compact .dashboard-detail-student-main { display: flex; flex-direction: column; gap: 4px; }
+        .dashboard-detail-student-card.mini-compact .dashboard-detail-student-main strong { font-size: 11px; line-height: 1.2; white-space: normal; overflow: visible; text-overflow: clip; display: block; }
+        .dashboard-detail-student-card.mini-compact .dashboard-detail-student-main small { display: block; margin-top: 0; font-size: 10px; line-height: 1.25; word-break: break-word; }
         .dashboard-split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         .dashboard-panel { background: #181818; border: 1px solid #303030; border-radius: 20px; overflow: hidden; }
         .dashboard-panel-title { padding: 14px 16px; border-bottom: 1px solid #2a2a2a; color: #fff; font-size: 12px; font-weight: 900; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
@@ -2349,38 +2369,38 @@
         }
         .dashboard-command-row {
             width: 100%;
-            border: 0;
-            border-bottom: 1px solid rgba(70,94,123,0.38);
-            background: transparent;
+            border: 1px solid rgba(70,94,123,0.42);
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015));
             color: inherit;
             font: inherit;
             cursor: pointer;
-            min-height: 50px;
-            padding: 5px 2px;
+            min-height: 64px;
+            padding: 8px 10px;
             display: grid;
-            grid-template-columns: 38px minmax(0, 1fr) minmax(110px, auto) 18px;
-            gap: 10px;
+            grid-template-columns: 42px minmax(0, 1fr) auto 14px;
+            gap: 8px;
             align-items: center;
             text-align: left;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.14);
         }
         .dashboard-command-row:hover {
-            background: rgba(255,255,255,0.035);
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            border-color: rgba(212,166,42,0.34);
         }
         .mini-avatar {
-            width: 34px;
-            height: 34px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            display: grid;
-            place-items: center;
-            color: #06111d;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.14);
             background: linear-gradient(135deg, #fff, #dce7f3);
-            font-size: 14px;
-            font-weight: 900;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
         }
         .dashboard-command-row b {
             display: block;
             color: #fff;
-            font-size: 12px;
+            font-size: 13px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -2388,7 +2408,7 @@
         .dashboard-command-row small {
             display: block;
             color: #8898aa;
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 800;
             margin-top: 2px;
             white-space: nowrap;
@@ -2408,7 +2428,7 @@
         }
         .dashboard-action-tags {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             justify-content: flex-end;
             gap: 5px;
         }
@@ -2420,6 +2440,9 @@
         .dashboard-command-row .fa-chevron-right {
             color: #5e7186;
             font-size: 11px;
+        }
+        .dashboard-command-row .dashboard-action-copy {
+            min-width: 0;
         }
         .dashboard-command-link {
             border: 0;
@@ -2514,63 +2537,230 @@
             margin-bottom: 14px;
         }
         .compact-panel {
-            min-height: 180px;
+            min-height: 220px;
+        }
+        .dashboard-command-distributions .dashboard-command-card.compact-panel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at top right, rgba(240,199,94,0.10), transparent 34%),
+                linear-gradient(180deg, rgba(17,28,44,0.98) 0%, rgba(10,17,28,0.99) 100%);
+            border: 1px solid rgba(240,199,94,0.16);
+            box-shadow: 0 22px 42px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+        .dashboard-command-distributions .dashboard-command-card.compact-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 28%);
+        }
+        .dashboard-insight-panel {
+            position: relative;
+            z-index: 1;
+            padding: 14px;
+            display: grid;
+            gap: 14px;
+        }
+        .dashboard-insight-head {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+        }
+        .dashboard-insight-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: var(--alliance-yellow-strong, #f0c75e);
+            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border: 1px solid rgba(240,199,94,0.22);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 24px rgba(0,0,0,0.16);
+            font-size: 18px;
+        }
+        .dashboard-belt-glyph {
+            position: relative;
+            width: 26px;
+            height: 18px;
+            display: inline-block;
+            color: inherit;
+            flex-shrink: 0;
+        }
+        .dashboard-belt-glyph::before {
+            content: "";
+            position: absolute;
+            left: 2px;
+            right: 2px;
+            top: 4px;
+            height: 8px;
+            border-radius: 999px;
+            border: 2px solid currentColor;
+            background: transparent;
+            box-sizing: border-box;
+        }
+        .dashboard-belt-glyph::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 5px;
+            width: 6px;
+            height: 6px;
+            transform: translateX(-50%);
+            background: currentColor;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            box-shadow:
+                -8px 7px 0 -2px currentColor,
+                8px 7px 0 -2px currentColor;
+        }
+        .dashboard-insight-copy strong {
+            display: block;
+            color: #f7fbff;
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+        .dashboard-insight-copy span {
+            display: block;
+            margin-top: 3px;
+            color: #8ea0b5;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+        .dashboard-insight-menu {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            color: #a4b0bf;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.18s ease;
+        }
+        .dashboard-insight-menu:hover {
+            color: #fff;
+            border-color: rgba(240,199,94,0.32);
+            background: rgba(240,199,94,0.08);
+        }
+        .dashboard-insight-menu-wrap {
+            position: relative;
+        }
+        .dashboard-insight-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 168px;
+            padding: 8px;
+            border-radius: 14px;
+            border: 1px solid rgba(240,199,94,0.18);
+            background: linear-gradient(180deg, rgba(15,24,38,0.98), rgba(10,16,27,0.98));
+            box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+            display: grid;
+            gap: 6px;
+            z-index: 30;
+            backdrop-filter: blur(10px);
+        }
+        .dashboard-insight-dropdown button {
+            width: 100%;
+            border: 1px solid rgba(99,122,154,0.22);
+            background: rgba(255,255,255,0.03);
+            color: #dbe7f4;
+            border-radius: 10px;
+            padding: 9px 11px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.18s ease;
+        }
+        .dashboard-insight-dropdown button:hover {
+            color: #fff;
+            border-color: rgba(240,199,94,0.34);
+            background: rgba(240,199,94,0.08);
         }
         .dashboard-compact-list {
-            padding: 10px 12px 12px;
             display: grid;
-            gap: 8px;
+            gap: 10px;
         }
         .dashboard-compact-summary {
             display: block;
-            padding: 10px 12px 0;
-            color: #7e8da0;
+            color: #8ea0b5;
             font-size: 10px;
             font-weight: 900;
             text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
         .dashboard-compact-row {
             width: 100%;
-            border: 1px solid rgba(70,94,123,0.42);
-            border-radius: 10px;
-            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(99,122,154,0.22);
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
             color: #d5dde7;
             display: grid;
-            grid-template-columns: minmax(100px, 1fr) minmax(95px, 1.1fr) auto;
-            gap: 10px;
+            grid-template-columns: minmax(150px, 1.2fr) minmax(90px, 1fr) minmax(54px, auto);
+            gap: 12px;
             align-items: center;
-            padding: 9px 10px;
+            padding: 14px 14px;
             text-align: left;
             font: inherit;
             cursor: pointer;
             transition: 0.18s ease;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
         }
         .dashboard-compact-row:hover {
             color: #fff;
-            border-color: rgba(255,196,0,0.58);
-            background: rgba(255,196,0,0.075);
-            transform: translateY(-1px);
+            border-color: rgba(240,199,94,0.42);
+            background: linear-gradient(180deg, rgba(240,199,94,0.10), rgba(255,255,255,0.03));
+            transform: translateY(-2px);
+            box-shadow: 0 14px 24px rgba(0,0,0,0.18);
         }
         .dashboard-compact-row span {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 900;
+            color: #f7fbff;
+            line-height: 1.2;
         }
         .dashboard-compact-row small {
             display: block;
-            color: #7e8da0;
-            font-size: 9px;
+            color: #8ea0b5;
+            font-size: 11px;
             font-weight: 800;
-            margin-top: 2px;
+            margin-top: 4px;
+            line-height: 1.35;
         }
         .dashboard-compact-row b {
             color: #fff;
+            font-size: 16px;
+            font-weight: 900;
+        }
+        .dashboard-compact-row .dashboard-compact-metric {
+            display: inline-grid;
+            grid-auto-flow: column;
+            align-items: baseline;
+            gap: 8px;
+            justify-self: end;
+            min-width: 0;
+        }
+        .dashboard-compact-row .dashboard-compact-percent {
+            color: #8ea0b5;
             font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
         }
         .dashboard-bar.tall {
-            height: 9px;
+            height: 12px;
             border-radius: 999px;
-            background: rgba(0,0,0,0.48);
-            border: 1px solid rgba(255,196,0,0.22);
+            background: rgba(6,11,18,0.65);
+            border: 1px solid rgba(240,199,94,0.12);
             overflow: hidden;
         }
         .dashboard-bar.tall i {
@@ -2581,6 +2771,422 @@
         .dashboard-bar.tall.normal i { background: linear-gradient(90deg, #2ecc71, #ffcc00); }
         .dashboard-bar.tall.info i { background: linear-gradient(90deg, #3498db, #7dd3fc); }
         .dashboard-bar.tall.alert i { background: linear-gradient(90deg, #ef4444, #ffcc00); }
+        .dashboard-command-card-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 14px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .dashboard-command-card-title span {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 900;
+            color: #f5f7fb;
+            letter-spacing: 0.02em;
+        }
+        .dashboard-command-card-title i {
+            width: 36px;
+            height: 36px;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 12px;
+            color: var(--alliance-yellow-strong, #f0c75e);
+            background: linear-gradient(180deg, rgba(240,199,94,0.10), rgba(255,255,255,0.03));
+            border: 1px solid rgba(240,199,94,0.18);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .dashboard-compact-row.featured {
+            grid-template-columns: 1fr;
+            gap: 10px;
+            padding: 16px 16px;
+            border-color: rgba(240,199,94,0.35);
+            background:
+                radial-gradient(circle at right center, rgba(240,199,94,0.16), transparent 34%),
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025));
+        }
+        .dashboard-compact-row.featured > span {
+            font-size: 14px;
+        }
+        .dashboard-compact-row.featured > .dashboard-bar,
+        .dashboard-compact-row.featured > .dashboard-compact-metric {
+            display: none;
+        }
+        .dashboard-rank-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 78px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(240,199,94,0.14);
+            border: 1px solid rgba(240,199,94,0.26);
+            color: var(--alliance-yellow-strong, #f0c75e);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .dashboard-frequency-featured {
+            display: grid;
+            grid-template-columns: 46px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+        }
+        .dashboard-frequency-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(240,199,94,0.32);
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+        }
+        .dashboard-frequency-content {
+            min-width: 0;
+        }
+        .dashboard-frequency-card {
+            display: grid;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(240,199,94,0.18);
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .dashboard-frequency-card-top {
+            display: grid;
+            grid-template-columns: 52px minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+        }
+        .dashboard-frequency-card .dashboard-frequency-avatar {
+            width: 52px;
+            height: 52px;
+        }
+        .dashboard-frequency-card-score {
+            display: grid;
+            justify-items: end;
+            gap: 2px;
+            min-width: 74px;
+        }
+        .dashboard-frequency-card-score strong {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .dashboard-frequency-card-score small {
+            color: #8ea0b5;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .dashboard-frequency-footer {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(120px, auto);
+            gap: 12px;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+        }
+        .dashboard-frequency-footer > div {
+            min-width: 0;
+        }
+        .dashboard-frequency-footer > div:last-child {
+            text-align: right;
+            justify-self: end;
+        }
+        .dashboard-frequency-footer strong,
+        .dashboard-frequency-footer b {
+            color: #fff;
+        }
+        .dashboard-frequency-footer strong {
+            display: block;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .dashboard-frequency-footer small {
+            display: block;
+            margin-top: 4px;
+            color: #8ea0b5;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .dashboard-frequency-footer b {
+            display: block;
+            font-size: 18px;
+            font-weight: 900;
+            line-height: 1;
+            margin-top: 4px;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+        .dashboard-frequency-footer span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+            color: #7ed957;
+            font-size: 10px;
+            font-weight: 800;
+        }
+        .dashboard-frequency-footer.dashboard-belt-footer {
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 16px;
+        }
+        .dashboard-belt-footer-main {
+            display: grid;
+            grid-template-columns: 46px minmax(0, 1fr);
+            gap: 12px;
+            align-items: center;
+            min-width: 0;
+        }
+        .dashboard-belt-footer-badge {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: #d4a62a;
+            border: 1px solid rgba(212,166,42,0.2);
+            background: linear-gradient(180deg, rgba(212,166,42,0.12), rgba(255,255,255,0.03));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .dashboard-belt-footer-copy {
+            min-width: 0;
+        }
+        .dashboard-belt-footer-copy strong,
+        .dashboard-belt-footer-copy b {
+            display: block;
+        }
+        .dashboard-belt-footer-copy b {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+        .dashboard-belt-footer-share {
+            display: grid;
+            justify-items: end;
+            align-content: center;
+            gap: 4px;
+            min-width: 92px;
+        }
+        .dashboard-belt-footer-share small {
+            display: block;
+            margin: 0;
+            color: #8ea0b5;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .dashboard-belt-footer-share-ring {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background:
+                conic-gradient(#d4a62a 0deg calc(var(--share, 0) * 3.6deg), rgba(255,255,255,0.1) calc(var(--share, 0) * 3.6deg) 360deg);
+        }
+        .dashboard-belt-footer-share-ring::after {
+            content: "";
+            position: absolute;
+            inset: 7px;
+            border-radius: 50%;
+            background: #182232;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .dashboard-belt-footer-share-ring b {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            font-size: 13px;
+            line-height: 1;
+        }
+        .dashboard-frequency-name {
+            display: block;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 2px;
+            white-space: normal;
+            word-break: break-word;
+        }
+        .dashboard-frequency-meta,
+        .dashboard-frequency-extra {
+            display: block;
+            color: #8ea0b5;
+            font-size: 10px;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+        .dashboard-frequency-meta {
+            white-space: normal;
+            word-break: break-word;
+        }
+        .dashboard-status-card {
+            display: grid;
+            gap: 14px;
+        }
+        .dashboard-status-headline {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(240,199,94,0.18);
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+        }
+        .dashboard-status-headline i {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: var(--alliance-yellow-strong, #f0c75e);
+            background: rgba(240,199,94,0.09);
+            border: 1px solid rgba(240,199,94,0.18);
+            font-size: 17px;
+        }
+        .dashboard-status-headline strong {
+            display: block;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+        .dashboard-status-headline span {
+            display: block;
+            color: #8ca0b8;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .dashboard-status-headline b {
+            color: #fff;
+            font-size: 26px;
+            font-weight: 900;
+        }
+        .dashboard-status-list {
+            display: grid;
+            gap: 10px;
+        }
+        .dashboard-status-row {
+            width: 100%;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto auto;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+            cursor: pointer;
+            transition: .2s ease;
+            text-align: left;
+        }
+        .dashboard-status-row:hover {
+            transform: translateY(-1px);
+            border-color: rgba(240,199,94,0.28);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+        }
+        .dashboard-status-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            border: 1px solid currentColor;
+            background: rgba(255,255,255,0.02);
+            font-size: 14px;
+        }
+        .dashboard-status-row.normal .dashboard-status-icon { color: #7ed957; }
+        .dashboard-status-row.warning .dashboard-status-icon { color: #f0c75e; }
+        .dashboard-status-row.alert .dashboard-status-icon { color: #ff6b6b; }
+        .dashboard-status-row.info .dashboard-status-icon { color: #58a6ff; }
+        .dashboard-status-copy strong {
+            display: block;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        .dashboard-status-copy small {
+            display: block;
+            color: #8ca0b8;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .dashboard-status-metric,
+        .dashboard-status-percent {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+        .dashboard-status-progress {
+            grid-column: 2 / 5;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+        .dashboard-status-progress i {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+        }
+        .dashboard-status-row.normal .dashboard-status-progress i { background: linear-gradient(90deg, #7ed957, #b7dd53); }
+        .dashboard-status-row.warning .dashboard-status-progress i { background: linear-gradient(90deg, #f0c75e, #ffd761); }
+        .dashboard-status-row.alert .dashboard-status-progress i { background: linear-gradient(90deg, #ff6b6b, #ff9b4d); }
+        .dashboard-status-row.info .dashboard-status-progress i { background: linear-gradient(90deg, #58a6ff, #8fd3ff); }
+        .dashboard-status-footer {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+        }
+        .dashboard-status-footer small {
+            display: block;
+            color: #8ca0b8;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .dashboard-status-footer strong {
+            display: block;
+            color: #fff;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .dashboard-status-footer span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 5px;
+            color: #8ca0b8;
+            font-size: 11px;
+            font-weight: 700;
+        }
         .dashboard-operational-panel {
             padding: 0 !important;
             overflow: hidden;
@@ -2652,6 +3258,60 @@
             border-color: rgba(128,96,0,0.22) !important;
             box-shadow: 0 18px 42px rgba(8,28,48,0.12) !important;
         }
+        body.theme-light .dashboard-command-distributions .dashboard-command-card.compact-panel {
+            background:
+                radial-gradient(circle at top right, rgba(240,199,94,0.12), transparent 34%),
+                linear-gradient(180deg, #ffffff 0%, #f7fafc 100%) !important;
+            border-color: rgba(128,96,0,0.18) !important;
+            box-shadow: 0 18px 40px rgba(15,23,42,0.10) !important;
+        }
+        body.theme-light .dashboard-insight-icon,
+        body.theme-light .dashboard-insight-menu,
+        body.theme-light .dashboard-frequency-card,
+        body.theme-light .dashboard-frequency-footer {
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,247,251,0.96));
+            border-color: rgba(108,130,158,0.18);
+        }
+        body.theme-light .dashboard-insight-dropdown {
+            background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(247,249,252,0.98));
+            border-color: rgba(108,130,158,0.18);
+            box-shadow: 0 18px 40px rgba(15,23,42,0.12);
+        }
+        body.theme-light .dashboard-insight-dropdown button {
+            background: rgba(255,255,255,0.92);
+            border-color: rgba(108,130,158,0.18);
+            color: #223045;
+        }
+        body.theme-light .dashboard-insight-dropdown button:hover {
+            color: #111827;
+            border-color: rgba(212,166,42,0.32);
+            background: rgba(240,199,94,0.14);
+        }
+        body.theme-light .dashboard-insight-copy strong,
+        body.theme-light .dashboard-frequency-card-score strong,
+        body.theme-light .dashboard-frequency-footer strong,
+        body.theme-light .dashboard-frequency-footer b,
+        body.theme-light .dashboard-compact-row .dashboard-compact-percent {
+            color: #071827;
+        }
+        body.theme-light .dashboard-belt-footer-badge {
+            color: #d29a18;
+            border-color: rgba(210,154,24,0.18);
+            background: linear-gradient(180deg, rgba(210,154,24,0.10), rgba(255,255,255,0.96));
+        }
+        body.theme-light .dashboard-belt-footer-share-ring {
+            background:
+                conic-gradient(#d29a18 0deg calc(var(--share, 0) * 3.6deg), rgba(15,23,42,0.12) calc(var(--share, 0) * 3.6deg) 360deg);
+        }
+        body.theme-light .dashboard-belt-footer-share-ring::after {
+            background: #ffffff;
+        }
+        body.theme-light .dashboard-insight-copy span,
+        body.theme-light .dashboard-insight-menu,
+        body.theme-light .dashboard-frequency-card-score small,
+        body.theme-light .dashboard-frequency-footer small {
+            color: #5d6c7e;
+        }
         body.theme-light .dashboard-command-breakdown {
             border-left-color: rgba(17,48,76,0.14) !important;
             border-right-color: rgba(17,48,76,0.14) !important;
@@ -2667,6 +3327,55 @@
         body.theme-light .dashboard-note-chip span,
         body.theme-light .dashboard-note-block p {
             color: #071827;
+        }
+        body.theme-light .dashboard-compact-row {
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,247,251,0.96));
+            border-color: rgba(108,130,158,0.24);
+        }
+        body.theme-light .dashboard-compact-row:hover {
+            background: linear-gradient(180deg, rgba(255,248,224,0.98), rgba(255,255,255,0.96));
+            border-color: rgba(212,166,42,0.38);
+        }
+        body.theme-light .dashboard-compact-row small,
+        body.theme-light .dashboard-compact-summary {
+            color: #5d6c7e;
+        }
+        body.theme-light .dashboard-command-card-title span {
+            color: #071827;
+        }
+        body.theme-light .dashboard-bar.tall {
+            background: rgba(219,228,238,0.92);
+            border-color: rgba(196,164,88,0.18);
+        }
+        body.theme-light .dashboard-frequency-name {
+            color: #071827;
+        }
+        body.theme-light .dashboard-frequency-meta,
+        body.theme-light .dashboard-frequency-extra {
+            color: #5d6c7e;
+        }
+        body.theme-light .dashboard-status-headline,
+        body.theme-light .dashboard-status-row,
+        body.theme-light .dashboard-status-footer {
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,247,251,0.96));
+            border-color: rgba(108,130,158,0.18);
+        }
+        body.theme-light .dashboard-status-headline strong,
+        body.theme-light .dashboard-status-headline b,
+        body.theme-light .dashboard-status-copy strong,
+        body.theme-light .dashboard-status-metric,
+        body.theme-light .dashboard-status-percent,
+        body.theme-light .dashboard-status-footer strong {
+            color: #071827;
+        }
+        body.theme-light .dashboard-status-headline span,
+        body.theme-light .dashboard-status-copy small,
+        body.theme-light .dashboard-status-footer small,
+        body.theme-light .dashboard-status-footer span {
+            color: #5d6c7e;
+        }
+        body.theme-light .dashboard-status-progress {
+            background: rgba(219,228,238,0.92);
         }
         @media (max-width: 900px) {
             .dashboard-command-top,
@@ -2692,6 +3401,21 @@
             }
             .dashboard-command-progress {
                 grid-column: 1 / -1;
+            }
+            .dashboard-status-row {
+                grid-template-columns: auto minmax(0, 1fr) auto;
+            }
+            .dashboard-status-percent {
+                grid-column: 3;
+                grid-row: 1;
+            }
+            .dashboard-status-metric {
+                grid-column: 2 / 4;
+                grid-row: 2;
+                justify-self: end;
+            }
+            .dashboard-status-progress {
+                grid-column: 2 / 4;
             }
         }
         @media (max-width: 620px) {
@@ -3018,9 +3742,9 @@
         if (categoriaOverride && categoriaOverride !== "Auto") return categoriaOverride;
         const idade = calculateAge(nascimento);
         if (idade < 3 || idade > 15) return "Fora da regra";
-        if (idade >= 3 && idade <= 6) return "Baby Eagle";
-        if (idade >= 7 && idade <= 10) return "Little Eagle";
-        if (idade >= 11 && idade <= 12) return "Eagle Warrior";
+        if (idade >= 3 && idade <= 5) return "Baby Eagle";
+        if (idade >= 5 && idade <= 7) return "Little Eagle";
+        if (idade >= 8 && idade <= 12) return "Eagle Warrior";
         if (idade >= 13 && idade <= 15) return "Eagle Youth";
         return "Fora da regra";
     }
@@ -3272,6 +3996,7 @@
         const [expandedSearchStudentId, setExpandedSearchStudentId] = React.useState(null);
         const [summaryDetail, setSummaryDetail] = React.useState(null);
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
+        const [dashboardInsightMenu, setDashboardInsightMenu] = React.useState(null);
         const [dashboardStudentDetailFilters, setDashboardStudentDetailFilters] = React.useState(null);
         const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" });
         const [dashboardDraftFilters, setDashboardDraftFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" });
@@ -4228,6 +4953,40 @@
             a.click();
             URL.revokeObjectURL(url);
         };
+        const downloadDelimitedFile = (filename, headers, rows) => {
+            const safeRows = Array.isArray(rows) ? rows : [];
+            const lines = [headers, ...safeRows].map(row =>
+                row.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(";")
+            );
+            const blob = new Blob([`\uFEFF${lines.join("\n")}`], { type: "text/csv;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+        const escapeTableValue = (value) => String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        const downloadExcelTable = (filename, headers, rows) => {
+            const safeRows = Array.isArray(rows) ? rows : [];
+            const table = `
+                <table>
+                    <thead><tr>${headers.map(header => `<th>${escapeTableValue(header)}</th>`).join("")}</tr></thead>
+                    <tbody>${safeRows.map(row => `<tr>${row.map(value => `<td>${escapeTableValue(value)}</td>`).join("")}</tr>`).join("")}</tbody>
+                </table>
+            `;
+            const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>${table}</body></html>`;
+            const blob = new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
         const dashboardStudents = students.filter(s => {
             const group = getAutoCategory(s.nascimento, s.categoriaOverride);
             const status = s.status || "Ativo";
@@ -4242,15 +5001,17 @@
             const status = s.status || "Ativo";
             const matchesGroup = !filters.group || group === filters.group;
             const matchesFaixa = !filters.faixa || s.faixa === filters.faixa;
-            const matchesStatus = !filters.status || status === filters.status;
+            const matchesStatus = !filters.status || (Array.isArray(filters.status) ? filters.status.includes(status) : status === filters.status);
             return matchesGroup && matchesFaixa && matchesStatus;
         });
         const dashboardDetailStudents = dashboardStudentDetailFilters ? applyStudentDetailFilters(dashboardStudents, dashboardStudentDetailFilters) : dashboardStudents;
         const dashboardDetailFilterLabel = dashboardStudentDetailFilters
             ? Object.entries(dashboardStudentDetailFilters).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join(" - ")
             : null;
-        const activeStudents = dashboardStudents.filter(s => !["Inativo", "Transferido"].includes(s.status || "Ativo"));
+        const activeStudents = dashboardStudents.filter(s => (s.status || "Ativo") === "Ativo");
         const inactiveStudents = dashboardStudents.filter(s => (s.status || "Ativo") === "Inativo");
+        const experimentalStudents = dashboardStudents.filter(s => (s.status || "Ativo") === "Experimental");
+        const disconnectedStudents = dashboardStudents.filter(s => ["Pausado", "Transferido"].includes(s.status || "Ativo"));
         const readyList = dashboardStudents.filter(s => {
             const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
             return rules > 0 && s.aulas >= rules * 9 && s.comp?.Rel && s.comp?.Comp && s.comp?.Notas && s.comp?.Hab;
@@ -4287,6 +5048,98 @@
             ...row,
             percent: Math.round((row.value / dashboardTotal) * 100)
         }));
+        const topBeltRow = beltRowsWithPercent.length
+            ? [...beltRowsWithPercent].sort((a, b) => {
+                const valueDiff = b.value - a.value;
+                if (valueDiff) return valueDiff;
+                return b.percent - a.percent;
+            })[0]
+            : null;
+        const previousMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+        previousMonthEnd.setHours(23, 59, 59, 999);
+        const previousMonthDashboardStudents = dashboardStudents.filter(student => {
+            const enrollmentDate = parseLocalDate(student.matricula || student.cicloFaixaInicio || "");
+            return !enrollmentDate || enrollmentDate <= previousMonthEnd;
+        });
+        const previousMonthDashboardCount = previousMonthDashboardStudents.length;
+        const dashboardStudentDelta = dashboardStudents.length - previousMonthDashboardCount;
+        const dashboardStudentDeltaPercent = previousMonthDashboardCount > 0
+            ? Math.round((dashboardStudentDelta / previousMonthDashboardCount) * 100)
+            : (dashboardStudents.length > 0 ? 100 : 0);
+        const dashboardStudentDeltaLabel = previousMonthDashboardCount <= 0
+            ? (dashboardStudents.length > 0 ? "Nova base no período" : "Sem base anterior")
+            : dashboardStudentDelta === 0
+                ? "Estável vs mês anterior"
+                : `${dashboardStudentDelta > 0 ? "+" : ""}${dashboardStudentDeltaPercent}% vs mês anterior`;
+        const getDashboardInsightExportData = (type) => {
+            switch (type) {
+                case "turmas":
+                    return {
+                        title: "distribuicao-por-turma",
+                        headers: ["Turma", "Alunos", "Percentual"],
+                        rows: groupRowsWithPercent.map(row => [row.label, row.value, `${row.percent}%`])
+                    };
+                case "faixas":
+                    return {
+                        title: "distribuicao-por-faixa",
+                        headers: ["Faixa", "Alunos", "Idade média", "Percentual"],
+                        rows: beltRowsWithPercent.map(row => [row.label, row.value, row.averageAge ?? "-", `${row.percent}%`])
+                    };
+                case "frequencia":
+                    return {
+                        title: "top-frequencia",
+                        headers: ["Posição", "Aluno", "Turma", "Faixa", "Presenças", "Percentual do líder"],
+                        rows: studentPresenceRanking.map((student, index) => [
+                            index + 1,
+                            student.nome,
+                            student.turma,
+                            student.faixa,
+                            student.count,
+                            `${highestPresenceCount > 0 ? Math.round((student.count / highestPresenceCount) * 100) : 0}%`
+                        ])
+                    };
+                default:
+                    return null;
+            }
+        };
+        const exportDashboardInsight = (type, format = "csv") => {
+            const data = getDashboardInsightExportData(type);
+            if (!data) return;
+            const filenameBase = `${data.title}-${getTodayISO()}`;
+            if (format === "excel") {
+                downloadExcelTable(`${filenameBase}.xls`, data.headers, data.rows);
+            } else {
+                downloadDelimitedFile(`${filenameBase}.csv`, data.headers, data.rows);
+            }
+            setDashboardInsightMenu(null);
+        };
+        const renderDashboardInsightMenu = (type) => (
+            <div className="dashboard-insight-menu-wrap">
+                <button
+                    type="button"
+                    className="dashboard-insight-menu"
+                    aria-label="Exportar dados do card"
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        setDashboardInsightMenu(current => current === type ? null : type);
+                    }}
+                >
+                    <i className="fas fa-ellipsis"></i>
+                </button>
+                {dashboardInsightMenu === type && (
+                    <div className="dashboard-insight-dropdown" onClick={event => event.stopPropagation()}>
+                        <button type="button" onClick={() => exportDashboardInsight(type, "csv")}>
+                            <i className="fas fa-file-csv"></i>
+                            <span>Exportar CSV</span>
+                        </button>
+                        <button type="button" onClick={() => exportDashboardInsight(type, "excel")}>
+                            <i className="fas fa-file-excel"></i>
+                            <span>Exportar Excel</span>
+                        </button>
+                    </div>
+                )}
+            </div>
+        );
         const studentsWithProgress = dashboardStudents.map(s => ({
             ...s,
             progresso: getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride),
@@ -4302,7 +5155,7 @@
             const lastPresence = parseLocalDate(s.ultimaPresenca);
             if (!lastPresence) return true;
             const diffDays = Math.floor((today - lastPresence) / 86400000);
-            return diffDays >= 10;
+            return diffDays >= 7;
         }).length;
         const imageAuthPending = dashboardStudents.filter(s => !s.autorizacaoImagem).length;
         const challengeStudents = dashboardStudents
@@ -4311,6 +5164,7 @@
         const challengeReachedStudents = challengeStudents
             .filter(s => s.desafioInfo.reached)
             .sort((a, b) => parseLocalDate(a.desafioInfo.end) - parseLocalDate(b.desafioInfo.end));
+        const retentionRate = dashboardStudents.length ? Math.round((activeStudents.length / dashboardStudents.length) * 100) : 0;
         const operationalStatusRows = [
             {
                 label: "Ativos",
@@ -4321,20 +5175,28 @@
                 note: `${Math.round((activeStudents.length / dashboardTotal) * 100)}% ativos`
             },
             {
-                label: "Sem presença recente",
-                value: studentsWithoutRecentPresence,
-                percent: Math.round((studentsWithoutRecentPresence / dashboardTotal) * 100),
-                type: studentsWithoutRecentPresence > 0 ? "alert" : "normal",
-                detail: "presenca",
-                note: "10 dias ou mais"
-            },
-            {
                 label: "Inativos",
                 value: inactiveStudents.length,
                 percent: Math.round((inactiveStudents.length / dashboardTotal) * 100),
-                type: inactiveStudents.length > 0 ? "alert" : "info",
+                type: "warning",
                 filter: { status: "Inativo" },
-                note: `${Math.round((inactiveStudents.length / dashboardTotal) * 100)}% inativos`
+                note: `${inactiveStudents.length} aluno${inactiveStudents.length === 1 ? "" : "s"}`
+            },
+            {
+                label: "Desligados",
+                value: disconnectedStudents.length,
+                percent: Math.round((disconnectedStudents.length / dashboardTotal) * 100),
+                type: "alert",
+                filter: { status: ["Pausado", "Transferido"] },
+                note: `${disconnectedStudents.length} aluno${disconnectedStudents.length === 1 ? "" : "s"}`
+            },
+            {
+                label: "Experimentais",
+                value: experimentalStudents.length,
+                percent: Math.round((experimentalStudents.length / dashboardTotal) * 100),
+                type: "info",
+                filter: { status: "Experimental" },
+                note: `${experimentalStudents.length} aluno${experimentalStudents.length === 1 ? "" : "s"}`
             }
         ];
         const getChallengeStatus = (info) => {
@@ -4436,6 +5298,11 @@
             .map(s => ({ ...s, birthdayThisYear: getBirthdayThisYear(s) }))
             .filter(s => s.birthdayThisYear && s.birthdayThisYear >= birthdayPeriod.start && s.birthdayThisYear <= birthdayPeriod.end)
             .sort((a, b) => a.birthdayThisYear - b.birthdayThisYear);
+        const todayBirthdayStudents = birthdayStudents.filter(s =>
+            s.birthdayThisYear &&
+            s.birthdayThisYear.getDate() === today.getDate() &&
+            s.birthdayThisYear.getMonth() === today.getMonth()
+        );
         const presenceByDay = dashboardStudents.reduce((acc, s) => {
             getStudentPresenceDates(s).forEach(dateValue => {
                 if (!isInDashboardPeriod(dateValue)) return;
@@ -4459,14 +5326,50 @@
             });
         const busiestPresenceDay = presenceByWeekdayRows[0] ? [presenceByWeekdayRows[0].label, presenceByWeekdayRows[0].count] : null;
         const busiestPresenceLabel = busiestPresenceDate ? `${busiestPresenceDate.weekday} ${busiestPresenceDate.displayDate} (${busiestPresenceDate.count} presença${busiestPresenceDate.count === 1 ? "" : "s"})` : "Sem presença no período";
-        const studentPresenceRanking = Object.values(recentPresenceStudents.reduce((acc, item) => {
+        const groupedRecentPresenceStudents = Object.values(recentPresenceStudents.reduce((acc, item) => {
             if (!acc[item.studentId]) {
+                const sourceStudent = dashboardStudents.find(student => student.id === item.studentId) || {};
                 acc[item.studentId] = {
                     id: item.studentId,
                     nome: item.studentName,
                     turma: item.group,
                     faixa: item.faixa,
-                    count: 0
+                    nascimento: sourceStudent.nascimento || "",
+                    sexo: sourceStudent.sexo || "M",
+                    avatar: sourceStudent.avatar || "",
+                    status: sourceStudent.status || "Ativo",
+                    count: 0,
+                    lastDate: "",
+                    lastDateParsed: null
+                };
+            }
+            acc[item.studentId].count += 1;
+            const parsedDate = parseDashboardDate(item.date);
+            if (parsedDate && (!acc[item.studentId].lastDateParsed || parsedDate > acc[item.studentId].lastDateParsed)) {
+                acc[item.studentId].lastDate = item.date;
+                acc[item.studentId].lastDateParsed = parsedDate;
+            }
+            return acc;
+        }, {})).sort((a, b) => {
+            const countDiff = b.count - a.count;
+            if (countDiff) return countDiff;
+            const dateDiff = (b.lastDateParsed?.getTime?.() || 0) - (a.lastDateParsed?.getTime?.() || 0);
+            if (dateDiff) return dateDiff;
+            return a.nome.localeCompare(b.nome, "pt-BR");
+        });
+        const studentPresenceRanking = Object.values(recentPresenceStudents.reduce((acc, item) => {
+            if (!acc[item.studentId]) {
+                const sourceStudent = dashboardStudents.find(student => student.id === item.studentId) || {};
+                acc[item.studentId] = {
+                    id: item.studentId,
+                    nome: item.studentName,
+                    turma: item.group,
+                    faixa: item.faixa,
+                    count: 0,
+                    nascimento: sourceStudent.nascimento || "",
+                    sexo: sourceStudent.sexo || "M",
+                    avatar: sourceStudent.avatar || "",
+                    status: sourceStudent.status || "Ativo"
                 };
             }
             acc[item.studentId].count += 1;
@@ -4477,16 +5380,22 @@
             return a.nome.localeCompare(b.nome);
         });
         const highestPresenceCount = studentPresenceRanking[0]?.count || 0;
+        const getStudentPresenceAlertDays = (student) => {
+            const lastPresence = parseLocalDate(student.ultimaPresenca);
+            if (lastPresence) {
+                return Math.floor((today - lastPresence) / 86400000);
+            }
+            const baseDate = parseLocalDate(student.matricula || student.cicloFaixaInicio || "");
+            if (!baseDate) return null;
+            return Math.floor((today - baseDate) / 86400000);
+        };
         const noRecentPresenceList = activeStudents.filter(s => {
-            if (!s.ultimaPresenca) return true;
-            const lastPresence = parseLocalDate(s.ultimaPresenca);
-            if (!lastPresence) return true;
-            const diffDays = Math.floor((today - lastPresence) / 86400000);
-            return diffDays >= 10;
+            const days = getStudentPresenceAlertDays(s);
+            return days !== null && days >= 7;
         }).map(s => {
             const lastPresence = parseLocalDate(s.ultimaPresenca);
-            const days = lastPresence ? Math.floor((today - lastPresence) / 86400000) : null;
-            return { ...s, daysWithoutPresence: days };
+            const days = getStudentPresenceAlertDays(s);
+            return { ...s, daysWithoutPresence: days, missingPresenceSinceEnrollment: !lastPresence };
         }).sort((a, b) => (b.daysWithoutPresence ?? 9999) - (a.daysWithoutPresence ?? 9999));
         const imagePendingStudents = dashboardStudents.filter(s => !s.autorizacaoImagem);
         const lowProgressStudents = studentsWithProgress
@@ -4494,6 +5403,7 @@
             .sort((a, b) => a.progresso.percentual - b.progresso.percentual);
         const attentionStudents = [
             ...topUnread.map(s => ({ ...s, priorityReason: `${s.unread} mensagem${s.unread === 1 ? "" : "s"} pendente${s.unread === 1 ? "" : "s"}`, priorityType: "Mensagem" })),
+            ...todayBirthdayStudents.map(s => ({ ...s, priorityReason: `aniversaria hoje • ${calculateAge(s.nascimento)} anos`, priorityType: "Aniversário" })),
             ...challengeReachedStudents.slice(0, 5).map(s => ({ ...s, priorityReason: `desafio atingiu o prazo em ${formatDateBR(s.desafioInfo.end)}`, priorityType: "Desafio" })),
             ...noRecentPresenceList.slice(0, 5).map(s => ({ ...s, priorityReason: s.daysWithoutPresence === null ? "sem presença registrada" : `${s.daysWithoutPresence} dias sem presença`, priorityType: "Presença" })),
             ...examCandidates.slice(0, 5).map(s => ({ ...s, priorityReason: `${s.progresso.percentual}% pronto para exame`, priorityType: "Exame" }))
@@ -4522,7 +5432,15 @@
                 rows: dashboardDetailStudents.map(s => ({
                     id: s.id,
                     name: s.nome,
-                    meta: `${calculateAge(s.nascimento)} anos • ${getAutoCategory(s.nascimento, s.categoriaOverride)} • ${s.status || "Ativo"}`,
+                    meta: `${calculateAge(s.nascimento)} anos • ${getAutoCategory(s.nascimento, s.categoriaOverride)}`,
+                    studentCard: true,
+                    compactMiniCard: true,
+                    avatar: s.avatar,
+                    sexo: s.sexo,
+                    nascimento: s.nascimento,
+                    faixa: s.faixa,
+                    turma: getAutoCategory(s.nascimento, s.categoriaOverride),
+                    status: s.status || "Ativo",
                     action: () => openStudentFromDashboard(s.nome)
                 }))
             },
@@ -4533,6 +5451,13 @@
                     id: s.id,
                     name: s.nome,
                     meta: `${s.progresso.percentual}% concluído - faltam ${s.progresso.faltantes} aula${s.progresso.faltantes === 1 ? "" : "s"}`,
+                    studentCard: true,
+                    avatar: s.avatar,
+                    sexo: s.sexo,
+                    nascimento: s.nascimento,
+                    faixa: s.faixa,
+                    turma: getAutoCategory(s.nascimento, s.categoriaOverride),
+                    status: s.status || "Ativo",
                     action: () => openStudentFromDashboard(s.nome)
                 }))
             },
@@ -4543,6 +5468,13 @@
                     id: s.id,
                     name: s.nome,
                     meta: `${s.unread} mensagem${s.unread === 1 ? "" : "s"} sem leitura`,
+                    studentCard: true,
+                    avatar: s.avatar,
+                    sexo: s.sexo,
+                    nascimento: s.nascimento,
+                    faixa: s.faixa,
+                    turma: getAutoCategory(s.nascimento, s.categoriaOverride),
+                    status: s.status || "Ativo",
                     action: () => { setProfessorView("conversas"); openProfessorConversation(s.id); },
                     actionLabel: "Abrir"
                 }))
@@ -4557,35 +5489,53 @@
                         id: s.id,
                         name: s.nome,
                         meta: `${s.progresso.percentual}% concluído • ${s.progresso.faltantes} aulas faltam`,
+                        studentCard: true,
+                        avatar: s.avatar,
+                        sexo: s.sexo,
+                        nascimento: s.nascimento,
+                        faixa: s.faixa,
+                        turma: getAutoCategory(s.nascimento, s.categoriaOverride),
+                        status: s.status || "Ativo",
                         action: () => openStudentFromDashboard(s.nome)
                     }))
             },
             presenca: {
                 title: "Sem presença recente",
-                subtitle: "Alunos sem data de presença ou há 10 dias ou mais",
-                rows: dashboardStudents.filter(s => {
-                    if (!s.ultimaPresenca) return true;
-                    const lastPresence = parseLocalDate(s.ultimaPresenca);
-                    if (!lastPresence) return true;
-                    const diffDays = Math.floor((today - lastPresence) / 86400000);
-                    return diffDays >= 10;
-                }).map(s => ({
+                subtitle: "Alunos sem data de presença ou há 7 dias ou mais",
+                rows: noRecentPresenceList.map(s => ({
                     id: s.id,
                     name: s.nome,
-                    meta: s.ultimaPresenca ? `Última presença: ${formatDateBR(s.ultimaPresenca)}` : "Sem presença registrada",
+                    meta: s.ultimaPresenca
+                        ? `Última presença: ${formatDateBR(s.ultimaPresenca)}`
+                        : (s.daysWithoutPresence !== null ? `${s.daysWithoutPresence} dias sem presença registrada` : "Sem presença registrada"),
+                    studentCard: true,
+                    compactPresenceCard: true,
+                    avatar: s.avatar,
+                    sexo: s.sexo,
+                    nascimento: s.nascimento,
+                    faixa: s.faixa,
+                    turma: getAutoCategory(s.nascimento, s.categoriaOverride),
+                    status: s.status || "Ativo",
                     action: () => openStudentFromDashboard(s.nome)
                 }))
             },
             "presencas-periodo": {
                 title: "Presenças no período",
                 subtitle: `Alunos com presença registrada em ${dashboardPeriodLabel}`,
-                rows: recentPresenceStudents
-                    .sort((a, b) => (parseDashboardDate(b.date) || 0) - (parseDashboardDate(a.date) || 0))
+                rows: groupedRecentPresenceStudents
                     .map(item => ({
-                        id: `${item.studentId}-${item.date}`,
-                        name: item.studentName,
-                        meta: `${formatDateBR(item.date)} - ${item.group} - ${item.faixa}`,
-                        action: () => openStudentFromDashboard(item.studentName),
+                        id: item.id,
+                        name: item.nome,
+                        meta: `${item.count} presença${item.count === 1 ? "" : "s"} • última presença ${formatDateBR(item.lastDate) || "-"}`,
+                        studentCard: true,
+                        compactMiniCard: true,
+                        avatar: item.avatar,
+                        sexo: item.sexo,
+                        nascimento: item.nascimento,
+                        faixa: item.faixa,
+                        turma: item.turma,
+                        status: item.status,
+                        action: () => openStudentFromDashboard(item.nome),
                         actionLabel: "Aluno"
                     }))
             },
@@ -4594,8 +5544,17 @@
                 subtitle: studentPresenceRanking.length ? `Alunos com maior assiduidade em ${dashboardPeriodLabel}` : "Sem frequência registrada no período",
                 rows: studentPresenceRanking.map((item, index) => ({
                     id: item.id,
-                    name: `${index + 1}º ${item.nome}`,
-                    meta: `${item.count} presença${item.count === 1 ? "" : "s"} • ${item.turma} • ${item.faixa}`,
+                    name: item.nome,
+                    meta: `${item.count} presença${item.count === 1 ? "" : "s"} • ${item.turma}`,
+                    studentCard: true,
+                    compactMiniCard: true,
+                    ranking: index + 1,
+                    avatar: item.avatar,
+                    sexo: item.sexo,
+                    nascimento: item.nascimento,
+                    faixa: item.faixa,
+                    turma: item.turma,
+                    status: item.status || "Ativo",
                     action: () => openStudentFromDashboard(item.nome),
                     actionLabel: "Aluno"
                 }))
@@ -4615,6 +5574,13 @@
                         id: s.id,
                         name: s.nome,
                         meta: motivos.join(" • "),
+                        studentCard: true,
+                        avatar: s.avatar,
+                        sexo: s.sexo,
+                        nascimento: s.nascimento,
+                        faixa: s.faixa,
+                        turma: getAutoCategory(s.nascimento, s.categoriaOverride),
+                        status: s.status || "Ativo",
                         action: () => unread > 0 ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome),
                         actionLabel: unread > 0 ? "Conversa" : "Aluno"
                     };
@@ -4627,6 +5593,13 @@
                     id: s.id,
                     name: s.nome,
                     meta: `${s.responsavel || "Responsável não informado"} • autorização não marcada`,
+                    studentCard: true,
+                    avatar: s.avatar,
+                    sexo: s.sexo,
+                    nascimento: s.nascimento,
+                    faixa: s.faixa,
+                    turma: getAutoCategory(s.nascimento, s.categoriaOverride),
+                    status: s.status || "Ativo",
                     action: () => { setEditingStudent({...s}); setModalOpen("edit"); }
                 }))
             },
@@ -4659,6 +5632,14 @@
                     id: s.id,
                     name: s.nome,
                     meta: `${s.birthdayThisYear.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })} - ${calculateAge(s.nascimento)} anos - ${getAutoCategory(s.nascimento, s.categoriaOverride)} - ${s.faixa}`,
+                    studentCard: true,
+                    compactMiniCard: true,
+                    avatar: s.avatar,
+                    sexo: s.sexo,
+                    nascimento: s.nascimento,
+                    faixa: s.faixa,
+                    turma: getAutoCategory(s.nascimento, s.categoriaOverride),
+                    status: s.status || "Ativo",
                     action: () => openStudentFromDashboard(s.nome),
                     actionLabel: "Aluno"
                 }))
@@ -4666,13 +5647,24 @@
             movimento: {
                 title: "Maior dia de movimento",
                 subtitle: busiestPresenceDate ? `${busiestPresenceDate.weekday}, ${busiestPresenceDate.displayDate} - ${busiestPresenceDate.count} presenças` : "Sem presenças no período selecionado",
-                rows: busiestPresenceDate ? busiestPresenceDate.students.map(student => ({
-                    id: student.id,
-                    name: student.name,
-                    meta: `${student.group} - ${student.faixa} - presente em ${busiestPresenceDate.displayDate}`,
-                    action: () => openStudentFromDashboard(student.name),
-                    actionLabel: "Aluno"
-                })) : []
+                rows: busiestPresenceDate ? busiestPresenceDate.students.map(student => {
+                    const sourceStudent = dashboardStudents.find(s => s.id === student.id) || {};
+                    return {
+                        id: student.id,
+                        name: student.name,
+                        meta: `${student.group} • ${student.faixa} • presente em ${busiestPresenceDate.displayDate}`,
+                        studentCard: true,
+                        compactMiniCard: true,
+                        avatar: sourceStudent.avatar,
+                        sexo: sourceStudent.sexo,
+                        nascimento: sourceStudent.nascimento,
+                        faixa: student.faixa || sourceStudent.faixa,
+                        turma: student.group || getAutoCategory(sourceStudent.nascimento, sourceStudent.categoriaOverride),
+                        status: sourceStudent.status || "Ativo",
+                        action: () => openStudentFromDashboard(student.name),
+                        actionLabel: "Aluno"
+                    };
+                }) : []
             },
             arquivos: {
                 title: "Arquivos",
@@ -4725,11 +5717,15 @@
                 return { name: s.nome, meta: motivos.join(" • ") };
             });
             const challengeRows = challengeReachedStudents.map(s => ({ name: s.nome, meta: `${s.desafioInfo.title} - ${formatDateBR(s.desafioInfo.end)}` }));
+            const birthdayRows = birthdayStudents.map(s => ({
+                name: s.nome,
+                meta: `${s.birthdayThisYear.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })} • ${calculateAge(s.nascimento)} anos • ${getAutoCategory(s.nascimento, s.categoriaOverride)}`
+            }));
             const report = window.open("", "_blank", "width=980,height=720");
             if (!report) return alert("Permita pop-ups para gerar o relatório em PDF.");
             report.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Relatório do Painel</title><style>
                 body{font-family:Arial,sans-serif;margin:32px;color:#151515} h1{margin:0 0 6px;font-size:28px} h2{font-size:16px;margin:24px 0 10px;text-transform:uppercase;border-bottom:2px solid #c9a554;padding-bottom:6px}.sub{color:#555;font-weight:700}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}.kpi{border:1px solid #ddd;border-radius:10px;padding:12px}.kpi strong{display:block;font-size:24px}.kpi span{font-size:11px;text-transform:uppercase;color:#666;font-weight:700}ul{list-style:none;padding:0;margin:0}li{display:grid;grid-template-columns:1fr 2fr;gap:10px;border-bottom:1px solid #eee;padding:9px 0}li span{color:#555}.summary{background:#f4f8fb;border:1px solid #d7e8f5;border-radius:12px;padding:14px;line-height:1.45}@media print{button{display:none}body{margin:18mm}}
-            </style></head><body><button onclick="window.print()">Salvar em PDF / Imprimir</button><h1>Alliance Jiu Jitsu Mooca</h1><div class="sub">Relatório do painel - ${esc(new Date().toLocaleDateString("pt-BR"))} - ${esc(dashboardPeriodLabel)}</div><div class="grid"><div class="kpi"><strong>${dashboardStudents.length}</strong><span>alunos filtrados</span></div><div class="kpi"><strong>${readyStudents}</strong><span>prontos para exame</span></div><div class="kpi"><strong>${followUpCount}</strong><span>meta de acompanhamento</span></div><div class="kpi"><strong>${averageProgress}%</strong><span>evolução média</span></div></div><div class="summary"><strong>Resumo executivo:</strong> ${esc(dashboardInsightText)} Maior dia de movimento: ${esc(busiestPresenceLabel)}. Presenças no período: ${recentPresenceStudents.length}. Mensagens no período: ${recentMessages}.</div><h2>Alunos prontos para exame</h2><ul>${rows(readyRows, "Nenhum aluno pronto para exame")}</ul><h2>Alunos que precisam de acompanhamento</h2><ul>${rows(followRows, "Nenhum aluno precisa de ação hoje")}</ul><h2>Desafios vencidos</h2><ul>${rows(challengeRows, "Nenhum desafio vencido")}</ul><h2>Maior dia de movimento</h2><ul><li><strong>${esc(busiestPresenceLabel)}</strong><span>Baseado nas presenças registradas no período selecionado.</span></li></ul><script>setTimeout(() => window.print(), 400)<\/script></body></html>`);
+            </style></head><body><button onclick="window.print()">Salvar em PDF / Imprimir</button><h1>Alliance Jiu Jitsu Mooca</h1><div class="sub">Relatório do painel - ${esc(new Date().toLocaleDateString("pt-BR"))} - ${esc(dashboardPeriodLabel)}</div><div class="grid"><div class="kpi"><strong>${dashboardStudents.length}</strong><span>alunos filtrados</span></div><div class="kpi"><strong>${readyStudents}</strong><span>prontos para exame</span></div><div class="kpi"><strong>${followUpCount}</strong><span>meta de acompanhamento</span></div><div class="kpi"><strong>${averageProgress}%</strong><span>evolução média</span></div></div><div class="summary"><strong>Resumo executivo:</strong> ${esc(dashboardInsightText)} Maior dia de movimento: ${esc(busiestPresenceLabel)}. Presenças no período: ${recentPresenceStudents.length}. Mensagens no período: ${recentMessages}. Aniversariantes no período: ${birthdayStudents.length}.</div><h2>Alunos prontos para exame</h2><ul>${rows(readyRows, "Nenhum aluno pronto para exame")}</ul><h2>Alunos que precisam de acompanhamento</h2><ul>${rows(followRows, "Nenhum aluno precisa de ação hoje")}</ul><h2>Aniversariantes do período</h2><ul>${rows(birthdayRows, "Nenhum aniversariante no período selecionado")}</ul><h2>Desafios vencidos</h2><ul>${rows(challengeRows, "Nenhum desafio vencido")}</ul><h2>Maior dia de movimento</h2><ul><li><strong>${esc(busiestPresenceLabel)}</strong><span>Baseado nas presenças registradas no período selecionado.</span></li></ul><script>setTimeout(() => window.print(), 400)<\/script></body></html>`);
             report.document.close();
         };
 
@@ -5067,7 +6063,7 @@
                             </button>
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("presenca")}>
                                 <span className="dashboard-command-kpi-icon red"><i className="fas fa-user-clock"></i></span>
-                                <span><b>{studentsWithoutRecentPresence}</b><small>Alunos sem presença</small><em>10 dias ou mais</em></span>
+                                <span><b>{studentsWithoutRecentPresence}</b><small>Alunos sem presença</small><em>7 dias ou mais</em></span>
                                 <i className="sparkline red"></i>
                             </button>
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("desafios")}>
@@ -5093,9 +6089,12 @@
                                 <div className="dashboard-command-list">
                                     {attentionRows.length > 0 ? attentionRows.slice(0, 5).map((s, index) => (
                                         <button className="dashboard-command-row" key={`command-${s.id}-${index}`} onClick={() => s.priorityTypes.includes("Mensagem") ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)}>
-                                            <span className="mini-avatar">{(s.nome || "?").slice(0, 1)}</span>
-                                            <span><b>{s.nome}</b><small>{s.priorityReasons.join(" • ")}</small></span>
-                                            <span className="dashboard-action-tags">{s.priorityTypes.map(type => <em key={`${s.id}-${type}`}>{type}</em>)}</span>
+                                            <img className="mini-avatar" src={s.avatar || (s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY)} alt={s.nome} />
+                                            <span className="dashboard-action-copy">
+                                                <b>{s.nome}</b>
+                                                <small>{s.priorityReasons?.[0] || (s.ultimaPresenca ? `Última presença: ${formatDateBR(s.ultimaPresenca)}` : "Sem presença registrada")}</small>
+                                            </span>
+                                            <span className="dashboard-action-tags"><em>{s.priorityTypes[0] || "Ação"}</em></span>
                                             <i className="fas fa-chevron-right"></i>
                                         </button>
                                     )) : <div className="dashboard-note">Nenhuma ação pendente para hoje.</div>}
@@ -5170,7 +6169,7 @@
                             <div className={`dashboard-card ${dashboardDetail === "meta" ? "active" : ""}`} onClick={() => revealDashboardDetail("meta")}><strong>{followUpCount}</strong><span>Evolução média da turma</span><small>Mensagens, ausência e desafios vencidos</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "prontos" ? "active" : ""}`} onClick={() => revealDashboardDetail("prontos")}><strong>{readyStudents}</strong><span>Prontos para exame</span><small>{examCandidates.length} acima de 75% de conclusão</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "desafios" ? "active" : ""}`} onClick={() => revealDashboardDetail("desafios")}><strong>{challengeReachedStudents.length}</strong><span>Desafios vencidos</span><small>{challengeStudents.length} desafio{challengeStudents.length === 1 ? "" : "s"} ativo{challengeStudents.length === 1 ? "" : "s"}</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presença recente</span><small>Sem data ou há 10 dias ou mais</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "presenca" ? "active" : ""}`} onClick={() => revealDashboardDetail("presenca")}><strong>{studentsWithoutRecentPresence}</strong><span>Sem presença recente</span><small>Sem data ou há 7 dias ou mais</small></div>
                         </div>
 
                         <div className="dashboard-section-title">Base e gestão</div>
@@ -5263,15 +6262,35 @@
                                 </div>
                                 <button className="dashboard-detail-action" onClick={() => { setDashboardDetail(null); setDashboardStudentDetailFilters(null); }}>Limpar</button>
                             </div>
-                            <div className="dashboard-detail-list">
+                            <div className={`dashboard-detail-list ${dashboardDetail === "presenca" ? "compact-presence-list" : ""} ${["alunos", "frequencia", "aniversariantes"].includes(dashboardDetail) ? "compact-mini-list" : ""}`}>
                                 {activeDashboardDetail.rows.length > 0 ? activeDashboardDetail.rows.map(row => (
-                                    <div className="dashboard-detail-row" key={`${dashboardDetail}-${row.id}`} onClick={row.action}>
-                                        <div>
-                                            <b>{row.name}</b>
-                                            <small>{row.meta}</small>
+                                    row.studentCard ? (
+                                        <div className={`dashboard-detail-student-card ${row.compactPresenceCard ? "presence-compact" : ""} ${row.compactMiniCard ? "mini-compact" : ""}`} key={`${dashboardDetail}-${row.id}`} onClick={row.action}>
+                                            <img
+                                                className="student-compact-avatar"
+                                                src={row.avatar || (row.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY)}
+                                                alt={row.name}
+                                            />
+                                            <div className="dashboard-detail-student-main">
+                                                <b>{row.ranking ? `${row.ranking}º lugar • ${row.name}` : row.name}</b>
+                                                <small>{row.meta}</small>
+                                                {!row.compactPresenceCard && !row.compactMiniCard && <div className="dashboard-detail-student-meta">
+                                                    {row.status ? <b>{row.status}</b> : null}
+                                                    {row.nascimento ? <b>{calculateAge(row.nascimento)} anos</b> : null}
+                                                    {row.turma ? <b>{row.turma}</b> : null}
+                                                    {row.faixa ? <b>{row.faixa}</b> : null}
+                                                </div>}
+                                            </div>
                                         </div>
-                                        <button className="dashboard-detail-action" onClick={(e) => { e.stopPropagation(); row.action(); }}>{row.actionLabel || "Abrir"}</button>
-                                    </div>
+                                    ) : (
+                                        <div className="dashboard-detail-row" key={`${dashboardDetail}-${row.id}`} onClick={row.action}>
+                                            <div>
+                                                <b>{row.name}</b>
+                                                <small>{row.meta}</small>
+                                            </div>
+                                            <button className="dashboard-detail-action" onClick={(e) => { e.stopPropagation(); row.action(); }}>{row.actionLabel || "Abrir"}</button>
+                                        </div>
+                                    )
                                 )) : (
                                     <div className="dashboard-note">Nenhum item encontrado para este indicador.</div>
                                 )}
@@ -5280,42 +6299,126 @@
 
                         <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
                             <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Distribuição por turma</span><i className="fas fa-layer-group"></i></div>
-                                <small className="dashboard-compact-summary">{dashboardStudents.length} alunos em {dashboardRows.categorias.filter(row => row.value > 0).length} turma{dashboardRows.categorias.filter(row => row.value > 0).length === 1 ? "" : "s"}</small>
-                                <div className="dashboard-compact-list">
-                                    {groupRowsWithPercent.map(row => (
-                                        <button className="dashboard-compact-row" key={`cmd-cat-${row.label}`} onClick={() => openDashboardStudents({ group: row.label })}>
-                                            <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} - {row.percent}%</small></span>
-                                            <div className="dashboard-bar tall normal"><i style={{width: `${(row.value / maxCategory) * 100}%`}}></i></div>
-                                            <b>{row.value}</b>
-                                        </button>
-                                    ))}
+                                <div className="dashboard-insight-panel">
+                                    <div className="dashboard-insight-head">
+                                        <span className="dashboard-insight-icon"><i className="fas fa-layer-group"></i></span>
+                                        <div className="dashboard-insight-copy">
+                                            <strong>Distribuição por turma</strong>
+                                            <span>Alunos matriculados por turma</span>
+                                        </div>
+                                        {renderDashboardInsightMenu("turmas")}
+                                    </div>
+                                    <div className="dashboard-compact-list">
+                                        {groupRowsWithPercent.map(row => (
+                                            <button className="dashboard-compact-row" key={`cmd-cat-${row.label}`} onClick={() => openDashboardStudents({ group: row.label })}>
+                                                <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} • {row.percent}%</small></span>
+                                                <div className="dashboard-bar tall normal"><i style={{width: `${maxCategory > 0 ? (row.value / maxCategory) * 100 : 0}%`}}></i></div>
+                                                <span className="dashboard-compact-metric"><b>{row.value}</b><small className="dashboard-compact-percent">{row.percent}%</small></span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="dashboard-frequency-footer">
+                                        <div>
+                                            <strong>Total de alunos</strong>
+                                            <b>{dashboardStudents.length}</b>
+                                            <span><i className={`fas ${dashboardStudentDelta > 0 ? "fa-arrow-trend-up" : dashboardStudentDelta < 0 ? "fa-arrow-trend-down" : "fa-minus"}`}></i>{dashboardStudentDeltaLabel}</span>
+                                        </div>
+                                        <div>
+                                            <strong>Turmas ativas</strong>
+                                            <b>{dashboardRows.categorias.filter(row => row.value > 0).length}</b>
+                                            <span><i className="fas fa-arrow-trend-up"></i>{dashboardStudents.length > 0 ? `${Math.max(...groupRowsWithPercent.map(row => row.percent))}% na turma` : "Sem base ativa"}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Distribuição por faixa</span><i className="fas fa-medal"></i></div>
-                                <small className="dashboard-compact-summary">{dashboardBeltAgeRows.length} faixa{dashboardBeltAgeRows.length === 1 ? "" : "s"} cadastrada{dashboardBeltAgeRows.length === 1 ? "" : "s"}</small>
-                                <div className="dashboard-compact-list">
-                                    {beltRowsWithPercent.length > 0 ? beltRowsWithPercent.map(row => (
-                                        <button className="dashboard-compact-row" key={`cmd-belt-${row.label}`} onClick={() => openDashboardStudents({ faixa: row.label })}>
-                                            <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} - média {row.averageAge ?? "-"} anos - {row.percent}%</small></span>
-                                            <div className="dashboard-bar tall info"><i style={{width: `${(row.value / maxBelt) * 100}%`}}></i></div>
-                                            <b>{row.value}</b>
-                                        </button>
-                                    )) : <div className="dashboard-note">Nenhuma faixa com aluno ainda.</div>}
+                                <div className="dashboard-insight-panel">
+                                    <div className="dashboard-insight-head">
+                                        <span className="dashboard-insight-icon"><span className="dashboard-belt-glyph" aria-hidden="true"></span></span>
+                                        <div className="dashboard-insight-copy">
+                                            <strong>Distribuição por faixa</strong>
+                                            <span>Base atual por graduação</span>
+                                        </div>
+                                        {renderDashboardInsightMenu("faixas")}
+                                    </div>
+                                    <div className="dashboard-compact-list">
+                                        {beltRowsWithPercent.length > 0 ? beltRowsWithPercent.map(row => (
+                                            <button className="dashboard-compact-row" key={`cmd-belt-${row.label}`} onClick={() => openDashboardStudents({ faixa: row.label })}>
+                                                <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} • média {row.averageAge ?? "-"} anos • {row.percent}%</small></span>
+                                                <div className="dashboard-bar tall info"><i style={{width: `${maxBelt > 0 ? (row.value / maxBelt) * 100 : 0}%`}}></i></div>
+                                                <span className="dashboard-compact-metric"><b>{row.value}</b><small className="dashboard-compact-percent">{row.percent}%</small></span>
+                                            </button>
+                                        )) : <div className="dashboard-note">Nenhuma faixa com aluno ainda.</div>}
+                                    </div>
+                                    <div className="dashboard-frequency-footer dashboard-belt-footer">
+                                        <div className="dashboard-belt-footer-main">
+                                            <span className="dashboard-belt-footer-badge"><span className="dashboard-belt-glyph" aria-hidden="true"></span></span>
+                                            <div className="dashboard-belt-footer-copy">
+                                                <strong>Maior faixa</strong>
+                                                <b>{topBeltRow?.label || "-"}</b>
+                                                <small>{topBeltRow ? `${topBeltRow.value} aluno${topBeltRow.value === 1 ? "" : "s"}` : "Sem alunos cadastrados"}</small>
+                                            </div>
+                                        </div>
+                                        <div className="dashboard-belt-footer-share">
+                                            <div className="dashboard-belt-footer-share-ring" style={{"--share": topBeltRow?.percent || 0}}>
+                                                <b>{topBeltRow?.percent || 0}%</b>
+                                            </div>
+                                            <small>do total</small>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Top frequência</span><i className="fas fa-ranking-star"></i></div>
-                                <small className="dashboard-compact-summary">{studentPresenceRanking.length > 0 ? `${studentPresenceRanking.length} aluno${studentPresenceRanking.length === 1 ? "" : "s"} com presenças no ${dashboardPeriodLabel}` : `Sem presenças em ${dashboardPeriodLabel}`}</small>
-                                <div className="dashboard-compact-list">
-                                    {studentPresenceRanking.length > 0 ? studentPresenceRanking.slice(0, 5).map((student, index) => (
-                                        <button className="dashboard-compact-row" key={`cmd-frequency-${student.id}`} onClick={() => openStudentFromDashboard(student.nome)}>
-                                            <span>{index + 1}º {student.nome}<small>{student.turma} - {student.faixa} - {student.count} presença{student.count === 1 ? "" : "s"}</small></span>
-                                            <div className="dashboard-bar tall info"><i style={{width: `${highestPresenceCount > 0 ? (student.count / highestPresenceCount) * 100 : 0}%`}}></i></div>
-                                            <b>{student.count}</b>
-                                        </button>
-                                    )) : <div className="dashboard-note">Sem frequência registrada no período.</div>}
+                                <div className="dashboard-insight-panel">
+                                    <div className="dashboard-insight-head">
+                                        <span className="dashboard-insight-icon"><i className="fas fa-trophy"></i></span>
+                                        <div className="dashboard-insight-copy">
+                                            <strong>Top frequência</strong>
+                                            <span>Aluno com maior frequência no período</span>
+                                        </div>
+                                        {renderDashboardInsightMenu("frequencia")}
+                                    </div>
+                                    <div className="dashboard-compact-list">
+                                    {studentPresenceRanking.length > 0 ? studentPresenceRanking.slice(0, 5).map((student, index) => {
+                                        const defaultAvatar = student.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY;
+                                        return (
+                                            <button className={`dashboard-compact-row ${index === 0 ? "featured" : ""}`} key={`cmd-frequency-${student.id}`} onClick={() => openStudentFromDashboard(student.nome)}>
+                                                {index === 0 ? (
+                                                    <span className="dashboard-frequency-card">
+                                                        <span className="dashboard-frequency-card-top">
+                                                            <img src={student.avatar || defaultAvatar} className="dashboard-frequency-avatar" alt={student.nome} />
+                                                            <span className="dashboard-frequency-content">
+                                                                <em className="dashboard-rank-chip">1º lugar</em>
+                                                                <strong className="dashboard-frequency-name">{student.nome}</strong>
+                                                                <small className="dashboard-frequency-meta">{student.turma} • {student.faixa}</small>
+                                                            </span>
+                                                            <span className="dashboard-frequency-card-score">
+                                                                <strong>{highestPresenceCount > 0 ? Math.round((student.count / highestPresenceCount) * 100) : 0}%</strong>
+                                                                <small>no período</small>
+                                                            </span>
+                                                        </span>
+                                                        <small className="dashboard-frequency-extra">{student.count} presença{student.count === 1 ? "" : "s"} registradas no {dashboardPeriodLabel}</small>
+                                                    </span>
+                                                ) : (
+                                                    <span>{index + 1}º {student.nome}<small>{student.turma} - {student.faixa} - {student.count} presença{student.count === 1 ? "" : "s"}</small></span>
+                                                )}
+                                                <div className="dashboard-bar tall info"><i style={{width: `${highestPresenceCount > 0 ? (student.count / highestPresenceCount) * 100 : 0}%`}}></i></div>
+                                                <span className="dashboard-compact-metric"><b>{student.count}</b><small className="dashboard-compact-percent">{highestPresenceCount > 0 ? Math.round((student.count / highestPresenceCount) * 100) : 0}%</small></span>
+                                            </button>
+                                        );
+                                    }) : <div className="dashboard-note">Sem frequência registrada no período.</div>}
+                                    </div>
+                                    <div className="dashboard-frequency-footer">
+                                        <div>
+                                            <strong>Frequência média</strong>
+                                            <b>{studentPresenceRanking.length > 0 ? Math.round(studentPresenceRanking.reduce((sum, student) => sum + student.count, 0) / studentPresenceRanking.length) : 0}</b>
+                                        </div>
+                                        <div>
+                                            <strong>No período</strong>
+                                            <b>{recentPresenceStudents.length}</b>
+                                            <span><i className="fas fa-arrow-trend-up"></i>{dashboardPeriodLabel}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -5323,15 +6426,44 @@
                         <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
                             <div className="dashboard-command-card compact-panel">
                                 <div className="dashboard-command-card-title"><span>Situação da base</span><i className="fas fa-circle-check"></i></div>
-                                <small className="dashboard-compact-summary">{activeStudents.length} de {dashboardStudents.length} aluno{dashboardStudents.length === 1 ? "" : "s"} ativo{activeStudents.length === 1 ? "" : "s"}</small>
-                                <div className="dashboard-compact-list">
-                                    {operationalStatusRows.length > 0 ? operationalStatusRows.map(row => (
-                                        <button className="dashboard-compact-row" key={`cmd-status-${row.label}`} onClick={() => row.detail ? revealDashboardDetail(row.detail) : openDashboardStudents(row.filter)}>
-                                            <span>{row.label}<small>{row.note}</small></span>
-                                            <div className={`dashboard-bar tall ${row.type}`}><i style={{width: `${Math.max(4, row.percent)}%`}}></i></div>
-                                            <b>{row.value}</b>
-                                        </button>
-                                    )) : <div className="dashboard-note">Nenhum status informado.</div>}
+                                <div className="dashboard-status-card">
+                                    <div className="dashboard-status-headline">
+                                        <i className="fas fa-database"></i>
+                                        <div>
+                                            <strong>Situação da base</strong>
+                                            <span>Visão geral da base de alunos</span>
+                                        </div>
+                                        <b>{dashboardStudents.length}</b>
+                                    </div>
+                                    <div className="dashboard-status-list">
+                                        {operationalStatusRows.length > 0 ? operationalStatusRows.map(row => (
+                                            <button
+                                                className={`dashboard-status-row ${row.type}`}
+                                                key={`cmd-status-${row.label}`}
+                                                onClick={() => row.detail ? revealDashboardDetail(row.detail) : openDashboardStudents(row.filter)}
+                                            >
+                                                <i className={`dashboard-status-icon fas ${row.label === "Ativos" ? "fa-circle-check" : row.label === "Inativos" ? "fa-clock" : row.label === "Desligados" ? "fa-circle-minus" : "fa-user-astronaut"}`}></i>
+                                                <span className="dashboard-status-copy">
+                                                    <strong>{row.label}</strong>
+                                                    <small>{row.note}</small>
+                                                </span>
+                                                <b className="dashboard-status-metric">{row.value} aluno{row.value === 1 ? "" : "s"}</b>
+                                                <b className="dashboard-status-percent">{row.percent}%</b>
+                                                <span className="dashboard-status-progress"><i style={{width: `${Math.max(4, row.percent)}%`}}></i></span>
+                                            </button>
+                                        )) : <div className="dashboard-note">Nenhum status informado.</div>}
+                                    </div>
+                                    <div className="dashboard-status-footer">
+                                        <div>
+                                            <small>Total na base</small>
+                                            <strong>{dashboardStudents.length}</strong>
+                                        </div>
+                                        <div>
+                                            <small>Taxa de retenção</small>
+                                            <strong>{retentionRate}%</strong>
+                                            <span><i className="fas fa-arrow-trend-up"></i> base ativa atual</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
