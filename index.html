@@ -3567,6 +3567,7 @@
             color: var(--text-primary);
         }
     </style>
+    <link rel="stylesheet" href="./alliance-premium-v2.css?v=4">
 </head>
 <body class="theme-dark">
 <div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando arquivo...</div>
@@ -5287,13 +5288,6 @@
             .sort((a, b) => b.progresso.percentual - a.progresso.percentual);
         const nearGraduation = examCandidates
             .slice(0, 5);
-        const studentsWithoutRecentPresence = activeStudents.filter(s => {
-            if (!s.ultimaPresenca) return true;
-            const lastPresence = parseLocalDate(s.ultimaPresenca);
-            if (!lastPresence) return true;
-            const diffDays = Math.floor((today - lastPresence) / 86400000);
-            return diffDays >= 7;
-        }).length;
         const imageAuthPending = dashboardStudents.filter(s => !s.autorizacaoImagem).length;
         const challengeStudents = dashboardStudents
             .map(s => ({ ...s, desafioInfo: getBehaviorChallenge(s) }))
@@ -5532,6 +5526,7 @@
             const days = getStudentPresenceAlertDays(s);
             return { ...s, daysWithoutPresence: days, missingPresenceSinceEnrollment: !lastPresence };
         }).sort((a, b) => (b.daysWithoutPresence ?? 9999) - (a.daysWithoutPresence ?? 9999));
+        const studentsWithoutRecentPresence = noRecentPresenceList.length;
         const imagePendingStudents = dashboardStudents.filter(s => !s.autorizacaoImagem);
         const lowProgressStudents = studentsWithProgress
             .filter(s => s.progresso.elegivel && s.progresso.percentual < 30)
