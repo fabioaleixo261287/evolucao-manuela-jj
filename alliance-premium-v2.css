@@ -478,7 +478,69 @@ body.theme-dark .login-box input::placeholder {
 .dashboard-belt-themed .dashboard-belt-footer-badge {
   color: var(--belt-primary) !important;
   border-color: var(--belt-primary) !important;
-  background: rgba(255,255,255,.04) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.025)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 10px 24px rgba(0,0,0,.18) !important;
+}
+.dashboard-tied-belt-icon {
+  position: relative;
+  display: block;
+  width: 27px;
+  height: 23px;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.24));
+}
+.dashboard-header-belt-icon {
+  --belt-primary: #f0c75e;
+  --belt-secondary: #d4a62a;
+}
+.dashboard-header-belt-icon .dashboard-tied-belt-icon {
+  transform: scale(.88);
+  filter: drop-shadow(0 3px 8px rgba(212,166,42,.28));
+}
+.dashboard-header-belt-icon .dashboard-tied-belt-band,
+.dashboard-header-belt-icon .dashboard-tied-belt-knot,
+.dashboard-header-belt-icon .dashboard-tied-belt-tail {
+  border-color: rgba(255,255,255,.18);
+}
+.dashboard-tied-belt-band {
+  position: absolute;
+  top: 4px;
+  left: 1px;
+  width: 25px;
+  height: 7px;
+  border: 1px solid rgba(0,0,0,.25);
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--belt-primary) 0 64%, var(--belt-secondary) 64% 100%);
+}
+.dashboard-tied-belt-knot {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(0,0,0,.28);
+  border-radius: 2px;
+  background: var(--belt-primary);
+  transform: rotate(45deg);
+  z-index: 2;
+}
+.dashboard-tied-belt-tail {
+  position: absolute;
+  top: 13px;
+  width: 6px;
+  height: 10px;
+  border: 1px solid rgba(0,0,0,.24);
+  border-radius: 1px 1px 3px 3px;
+  transform-origin: top center;
+}
+.dashboard-tied-belt-tail.tail-left {
+  left: 9px;
+  background: var(--belt-primary);
+  transform: rotate(19deg);
+}
+.dashboard-tied-belt-tail.tail-right {
+  right: 8px;
+  background: var(--belt-secondary);
+  transform: rotate(-19deg);
 }
 .dashboard-belt-themed .dashboard-belt-footer-share-ring {
   background: conic-gradient(
