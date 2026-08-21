@@ -3599,6 +3599,8 @@
     const LOCAL_THEME_KEY = "all_eagle_v22_theme";
     const LOCAL_PENDING_SYNC_KEY = "all_eagle_v22_pending_sync";
     const LOCAL_AUTO_BACKUP_KEY = "all_eagle_v22_auto_backup";
+    const LOCAL_BACKUP_HISTORY_KEY = "all_eagle_v22_backup_history";
+    const LOCAL_AUDIT_KEY = "all_eagle_v22_audit";
     const SUPABASE_STATE_ID = "alliance_mooca_kids_v22";
     const APPWRITE_ROW_ID = SUPABASE_STATE_ID;
     const APPWRITE_ENDPOINT = "https://nyc.cloud.appwrite.io/v1";
@@ -3763,14 +3765,34 @@
         timestamp: new Date().toISOString(),
         students: students || [],
         repo: repo || [],
-        users: users || []
+        users: users || [],
+        audit: (() => {
+            try { return JSON.parse(localStorage.getItem(LOCAL_AUDIT_KEY) || "[]"); }
+            catch(e) { return []; }
+        })()
     });
 
     const saveAutomaticLocalBackup = (students, repo, source = "auto-local", users = []) => {
         try {
-            localStorage.setItem(LOCAL_AUTO_BACKUP_KEY, JSON.stringify(buildBackupPayload(students, repo, source, users)));
+            const payload = buildBackupPayload(students, repo, source, users);
+            localStorage.setItem(LOCAL_AUTO_BACKUP_KEY, JSON.stringify(payload));
+
+            const dayKey = payload.timestamp.slice(0, 10);
+            const history = JSON.parse(localStorage.getItem(LOCAL_BACKUP_HISTORY_KEY) || "[]");
+            const dailyHistory = Array.isArray(history) ? history.filter(item => item?.timestamp?.slice(0, 10) !== dayKey) : [];
+            dailyHistory.unshift(payload);
+            localStorage.setItem(LOCAL_BACKUP_HISTORY_KEY, JSON.stringify(dailyHistory.slice(0, 7)));
         } catch (e) {
             console.warn("Não foi possível salvar o backup local automático.", e);
+        }
+    };
+
+    const getStoredArrayCount = (key) => {
+        try {
+            const value = JSON.parse(localStorage.getItem(key) || "[]");
+            return Array.isArray(value) ? value.length : 0;
+        } catch (e) {
+            return 0;
         }
     };
 
@@ -4022,6 +4044,38 @@
         return ["Rel", "Comp", "Notas", "Hab"].filter(key => comp?.[key]).length;
     }
 
+    function runAllianceRuleTests() {
+        const results = [];
+        const assertEqual = (name, actual, expected) => {
+            const passed = actual === expected;
+            results.push({ name, passed, actual, expected });
+            if (!passed) throw new Error(`${name}: esperado ${expected}, recebido ${actual}`);
+        };
+        const birthdayForAge = (age) => {
+            const date = new Date();
+            date.setFullYear(date.getFullYear() - age);
+            date.setDate(date.getDate() - 1);
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        };
+
+        assertEqual("3 a 4 anos: Baby Eagle", getAutoCategory(birthdayForAge(3)), "Baby Eagle");
+        assertEqual("5 a 7 anos: Little Eagle", getAutoCategory(birthdayForAge(5)), "Little Eagle");
+        assertEqual("8 a 12 anos: Eagle Warrior", getAutoCategory(birthdayForAge(8)), "Eagle Warrior");
+        assertEqual("13 a 15 anos: Eagle Youth", getAutoCategory(birthdayForAge(13)), "Eagle Youth");
+        assertEqual("16 anos: fora da regra", getAutoCategory(birthdayForAge(16)), "Fora da regra");
+        assertEqual("Baby Branca/Cinza: 12 aulas", getRules(birthdayForAge(3), "Branca"), 12);
+        assertEqual("Little Branca/Cinza: 15 aulas", getRules(birthdayForAge(5), "Cinza/Preta"), 15);
+        assertEqual("Little Amarela/Laranja: 20 aulas", getRules(birthdayForAge(5), "Amarela/Branca"), 20);
+        assertEqual("Youth Verde: 25 aulas", getRules(birthdayForAge(13), "Verde/Branca"), 25);
+        assertEqual("Progresso completo Little: 100%", getGraduationProgress(135, birthdayForAge(5), "Branca", {Rel:true, Comp:true, Notas:true, Hab:true}).percentual, 100);
+        assertEqual("Graus preservam brancos ao iniciar vermelhos", getPresenceDegreeStates(5 * 15, 15).join(","), "2,1,1,1");
+
+        return { passed: results.length, results };
+    }
+
+    window.__ALLIANCE_RULES__ = { getAutoCategory, getRuleInfo, getRules, getGraduationProgress, getPresenceDegreeStates };
+    window.__runAllianceRuleTests = runAllianceRuleTests;
+
     function buildBeltCycleRecord(student, nextBelt, changeType = "Graduacao") {
         const rules = getRules(student.nascimento, student.faixa, student.categoriaOverride);
         const progress = getGraduationProgress(student.aulas, student.nascimento, student.faixa, student.comp, student.categoriaOverride);
@@ -4194,6 +4248,25 @@
         const currentProfile = currentUser?.perfil || "Administrador";
         const canAccessDashboard = currentProfile !== "Recepção";
         const canManageUsers = currentProfile === "Administrador";
+        const auditValue = (value) => {
+            if (value === undefined || value === null || value === "") return "não informado";
+            if (typeof value === "object") return JSON.stringify(value);
+            return String(value);
+        };
+        const createAuditLog = (action, field, before, after) => {
+            const actor = currentUser?.nome || currentUser?.login || (mode === "Professor" ? "Professor" : "Sistema");
+            const timestamp = new Date().toLocaleString("pt-BR");
+            const entry = `AUDITORIA | ${timestamp} | Usuário: ${actor} | ${action} | ${field}: ${auditValue(before)} -> ${auditValue(after)}`;
+            try {
+                const stored = JSON.parse(localStorage.getItem(LOCAL_AUDIT_KEY) || "[]");
+                const audit = Array.isArray(stored) ? stored : [];
+                audit.unshift(entry);
+                localStorage.setItem(LOCAL_AUDIT_KEY, JSON.stringify(audit.slice(0, 1000)));
+            } catch (e) {
+                console.warn("Não foi possível registrar a auditoria local.", e);
+            }
+            return entry;
+        };
 
         const markPendingSync = React.useCallback((message = "Banco offline. Alterações salvas localmente e pendentes de sincronização.") => {
             pendingLocalSaveRef.current = true;
@@ -4774,13 +4847,14 @@
                     const rules = getRules(s.nascimento, s.faixa, s.categoriaOverride);
                     const currentRemainder = getCurrentCycleClasses(s.aulas, rules);
                     if (boxIndex === currentRemainder - 1 && clickCount >= 2) {
+                        if (!window.confirm(`Remover a última presença de ${s.nome}? Esta ação ficará registrada no histórico.`)) return s;
                         const novaAula = s.aulas - 1;
                         const { presenceDegrees, ...rest } = s;
-                        return { ...rest, aulas: Math.max(0, novaAula), ultimaPresenca: hojeIso, historico: [...(s.historico || []), `Remoção de Presença | Aula ${s.aulas} | ${new Date().toLocaleDateString('pt-BR')}`] };
+                        return { ...rest, aulas: Math.max(0, novaAula), ultimaPresenca: hojeIso, historico: [...(s.historico || []), createAuditLog("Remoção de presença", "Aulas", s.aulas, Math.max(0, novaAula))] };
                     } else if (boxIndex === currentRemainder) {
                         if (s.aulas >= rules * 9) return s;
                         const novaAula = s.aulas + 1;
-                        const log = [`Aula ${novaAula} | ${new Date().toLocaleDateString('pt-BR')}`];
+                        const log = [createAuditLog("Presença registrada", "Aulas", s.aulas, novaAula)];
                         if (novaAula % rules === 0) {
                             const n = novaAula / rules;
                             log.push(n <= 4 ? `GRAU DE PRESENÇA BRANCO (${n}º)` : `GRAU DE PRESENÇA VERMELHO (${n-4}º)`);
@@ -4796,14 +4870,21 @@
 
         const toggleMerito = (sid, key, label) => {
             if(mode !== "Professor") return;
-            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), `${!s.comp?.[key]?'Marcado':'Removido'} ${label}`] } : s));
+            setStudents(prev => prev.map(s => s.id === sid ? { ...s, comp: { ...s.comp, [key]: !s.comp?.[key] }, historico: [...(s.historico || []), createAuditLog("Grau comportamental alterado", label, !!s.comp?.[key], !s.comp?.[key])] } : s));
         };
 
         const updateBehaviorChallenge = (sid, patch, logMessage = "") => {
             if(mode !== "Professor") return;
+            const target = students.find(s => s.id === sid);
+            if (Object.prototype.hasOwnProperty.call(patch, "desafioAtivo") && target) {
+                if (target.desafioAtivo && patch.desafioAtivo === false && !window.confirm(`Finalizar o desafio de ${target.nome}?`)) return;
+                if (!target.desafioAtivo && patch.desafioAtivo === true && target.desafioConclusao && !window.confirm(`Reabrir o desafio concluído de ${target.nome}?`)) return;
+            }
             setStudents(prev => prev.map(s => {
                 if (s.id !== sid) return s;
-                const historico = logMessage ? [...(s.historico || []), logMessage] : s.historico;
+                const changedChallengeState = Object.prototype.hasOwnProperty.call(patch, "desafioAtivo") && !!s.desafioAtivo !== !!patch.desafioAtivo;
+                const audit = changedChallengeState ? createAuditLog(patch.desafioAtivo ? (s.desafioConclusao ? "Desafio reaberto" : "Desafio iniciado") : "Desafio finalizado", "Status do desafio", s.desafioAtivo ? "Ativo" : "Inativo", patch.desafioAtivo ? "Ativo" : "Concluído") : "";
+                const historico = logMessage || audit ? [...(s.historico || []), logMessage || audit] : s.historico;
                 return { ...s, ...patch, historico };
             }));
         };
@@ -4812,17 +4893,19 @@
             if(mode !== "Professor") return;
             setStudents(prev => prev.map(s => {
                 if (s.id !== sid) return s;
-                const formatted = dateValue ? formatDateBR(dateValue) : "sem data";
                 return {
                     ...s,
                     cicloFaixaInicio: dateValue,
-                    historico: [...(s.historico || []), `INÍCIO DA FAIXA ATUAL ALTERADO: ${formatted} | ${new Date().toLocaleDateString('pt-BR')}`]
+                    historico: [...(s.historico || []), createAuditLog("Início da faixa alterado", "Data", s.cicloFaixaInicio ? formatDateBR(s.cicloFaixaInicio) : "sem data", dateValue ? formatDateBR(dateValue) : "sem data")]
                 };
             }));
         };
 
         const toggleMeritoWithChallenge = (sid, key, label) => {
             if(mode !== "Professor") return;
+            const target = students.find(s => s.id === sid);
+            const willClose = target && !target.comp?.[key] && target.desafioAtivo && target.desafioGrau === key;
+            if (willClose && !window.confirm(`Marcar ${label} e finalizar o desafio de ${target.nome}?`)) return;
             setStudents(prev => prev.map(s => {
                 if (s.id !== sid) return s;
                 const willMark = !s.comp?.[key];
@@ -4905,6 +4988,10 @@
 
         const graduarAlunoComHistorico = (sid) => {
             if(mode !== "Professor") return;
+            const target = students.find(s => s.id === sid);
+            if (!target) return;
+            const targetBelt = beltOrder[beltOrder.indexOf(target.faixa) + 1] || target.faixa;
+            if (!window.confirm(`Confirmar graduação de ${target.nome}: ${target.faixa} para ${targetBelt}?`)) return;
             setStudents(prev => prev.map(s => {
                 if (s.id !== sid) return s;
                 const cur = beltOrder.indexOf(s.faixa);
@@ -4918,7 +5005,7 @@
                     comp: {},
                     cicloFaixaInicio: getTodayISO(),
                     beltHistory: [...(s.beltHistory || []), beltRecord],
-                    historico: [...(s.historico || []), `GRADUADO: ${s.faixa} -> ${prox}`]
+                    historico: [...(s.historico || []), createAuditLog("Graduação concluída", "Faixa", s.faixa, prox)]
                 };
             }));
         };
@@ -5086,6 +5173,30 @@
             const date = parseDashboardDate(value);
             return !!date && date >= dashboardPeriodStart && date <= today;
         };
+        const getPreviousDashboardPeriod = () => {
+            if (!dashboardPeriodStart) return null;
+            const currentStart = new Date(dashboardPeriodStart);
+            const currentEnd = new Date(today);
+            currentStart.setHours(0, 0, 0, 0);
+            currentEnd.setHours(23, 59, 59, 999);
+            const duration = currentEnd.getTime() - currentStart.getTime() + 1;
+            const previousEnd = new Date(currentStart.getTime() - 1);
+            const previousStart = new Date(previousEnd.getTime() - duration + 1);
+            return { start: previousStart, end: previousEnd };
+        };
+        const previousDashboardPeriod = getPreviousDashboardPeriod();
+        const isInPreviousDashboardPeriod = (value) => {
+            if (!previousDashboardPeriod) return false;
+            const date = parseDashboardDate(value);
+            return !!date && date >= previousDashboardPeriod.start && date <= previousDashboardPeriod.end;
+        };
+        const formatPeriodComparison = (current, previous) => {
+            if (!previousDashboardPeriod) return "Histórico completo";
+            if (previous === 0) return current > 0 ? "Novo no período" : "Sem alteração";
+            const delta = Math.round(((current - previous) / previous) * 100);
+            if (delta === 0) return "Estável vs período anterior";
+            return `${delta > 0 ? "+" : ""}${delta}% vs período anterior`;
+        };
         const exportDashboardCsv = () => {
             const headers = ["Aluno", "Turma", "Faixa", "Status", "Ultima presenca", "Progresso", "Aulas faltam", "Mensagens pendentes", "Responsavel", "WhatsApp"];
             const lines = [headers, ...studentsWithProgress.map(s => [
@@ -5107,6 +5218,30 @@
             a.download = `dashboard-alliance-${getTodayISO()}.csv`;
             a.click();
             URL.revokeObjectURL(url);
+        };
+
+        const downloadAuditTrail = () => {
+            let audit = [];
+            try { audit = JSON.parse(localStorage.getItem(LOCAL_AUDIT_KEY) || "[]"); } catch(e) {}
+            const blob = new Blob([JSON.stringify({ generatedAt: new Date().toISOString(), audit }, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `auditoria_alliance_${getTodayISO()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        const generateStudentReport = (student) => {
+            const reportWindow = window.open("", "_blank", "width=900,height=900");
+            if (!reportWindow) return alert("Permita pop-ups para gerar o relatório do aluno.");
+            const progress = getGraduationProgress(student.aulas, student.nascimento, student.faixa, student.comp, student.categoriaOverride);
+            const challenge = getBehaviorChallenge(student);
+            const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+            const historyRows = (student.beltHistory || []).map(item => `<li><strong>${esc(item.faixa || item.belt || "Faixa")}</strong><span>${esc(item.inicio ? formatDateBR(item.inicio) : "Sem data")} - ${esc(item.conclusao ? formatDateBR(item.conclusao) : "Em andamento")}</span></li>`).join("");
+            const auditRows = (student.historico || []).slice().reverse().slice(0, 30).map(item => `<li>${esc(item)}</li>`).join("");
+            reportWindow.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório - ${esc(student.nome)}</title><style>body{font-family:Arial,sans-serif;color:#172033;margin:36px}h1{margin-bottom:4px}h2{margin-top:28px;border-bottom:2px solid #d4a62a;padding-bottom:6px}.sub{color:#657084}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.kpi{border:1px solid #d9dee8;border-radius:8px;padding:14px}.kpi strong{display:block;font-size:24px}.kpi span,li span{display:block;color:#657084;font-size:12px;margin-top:4px}ul{padding:0;list-style:none}li{padding:9px 0;border-bottom:1px solid #e5e8ef}button{background:#172033;color:#fff;border:0;border-radius:6px;padding:10px 16px}@media print{button{display:none}}</style></head><body><button onclick="window.print()">Salvar em PDF / Imprimir</button><h1>${esc(student.nome)}</h1><div class="sub">Relatório individual gerado em ${esc(new Date().toLocaleString("pt-BR"))}</div><div class="grid"><div class="kpi"><strong>${esc(student.faixa)}</strong><span>Faixa atual</span></div><div class="kpi"><strong>${esc(getAutoCategory(student.nascimento, student.categoriaOverride))}</strong><span>Turma</span></div><div class="kpi"><strong>${esc(progress.percentual || 0)}%</strong><span>Evolução</span></div><div class="kpi"><strong>${esc(student.aulas || 0)}</strong><span>Aulas realizadas</span></div><div class="kpi"><strong>${Object.values(student.comp || {}).filter(Boolean).length}/4</strong><span>Graus comportamentais</span></div><div class="kpi"><strong>${challenge?.active ? "Ativo" : "Sem desafio ativo"}</strong><span>Desafio</span></div></div><h2>Desafio comportamental</h2><p>${challenge?.active ? `${esc(challenge.title)} - ${esc(formatDateBR(challenge.start))} até ${esc(formatDateBR(challenge.end))}` : "Nenhum desafio ativo."}</p><h2>Histórico de faixas</h2><ul>${historyRows || "<li>Nenhum ciclo anterior registrado.</li>"}</ul><h2>Histórico operacional recente</h2><ul>${auditRows || "<li>Nenhuma alteração registrada.</li>"}</ul></body></html>`);
+            reportWindow.document.close();
         };
         const downloadDelimitedFile = (filename, headers, rows) => {
             const safeRows = Array.isArray(rows) ? rows : [];
@@ -5378,6 +5513,7 @@
             return historyDates.length ? historyDates : (student.ultimaPresenca ? [student.ultimaPresenca] : []);
         };
         const recentPresenceStudents = dashboardStudents.flatMap(s => getStudentPresenceDates(s).filter(dateValue => isInDashboardPeriod(dateValue)).map(dateValue => ({ studentId: s.id, studentName: s.nome, group: getAutoCategory(s.nascimento, s.categoriaOverride), faixa: s.faixa, date: dateValue })));
+        const previousPresenceCount = dashboardStudents.reduce((total, student) => total + getStudentPresenceDates(student).filter(isInPreviousDashboardPeriod).length, 0);
         const dailyPresenceMap = recentPresenceStudents.reduce((acc, item) => {
             const parsedDate = parseDashboardDate(item.date);
             if (!parsedDate) return acc;
@@ -5418,6 +5554,11 @@
         const recentMessages = dashboardStudents.reduce((total, s) => {
             return total + (s.chat || []).filter(m => isInDashboardPeriod(m.date)).length;
         }, 0);
+        const previousMessages = dashboardStudents.reduce((total, s) => {
+            return total + (s.chat || []).filter(m => isInPreviousDashboardPeriod(m.date)).length;
+        }, 0);
+        const presenceComparisonLabel = formatPeriodComparison(recentPresenceStudents.length, previousPresenceCount);
+        const messageComparisonLabel = formatPeriodComparison(recentMessages, previousMessages);
         const getBirthdayThisYear = (student) => {
             const birthday = parseLocalDate(student.nascimento);
             if (!birthday) return null;
@@ -6189,7 +6330,7 @@
                             <button className="dashboard-command-goal" onClick={() => revealDashboardDetail("meta")}>
                                 <span className="dashboard-command-icon target"><i className="fas fa-bullseye"></i></span>
                                 <span>
-                                    <small>Evolução média da turma</small>
+                                    <small>Evolução média da turma <i className="fas fa-circle-info" title="Média do progresso dos alunos exibidos pelos filtros atuais, calculada conforme aulas e requisitos da faixa vigente."></i></small>
                                     <strong>{averageProgress}%</strong>
                                     <em>da turma acompanhada</em>
                                 </span>
@@ -6200,12 +6341,12 @@
                         <div className="dashboard-command-kpis">
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("presencas-periodo")}>
                                 <span className="dashboard-command-kpi-icon blue"><i className="fas fa-users"></i></span>
-                                <span><b>{recentPresenceStudents.length}</b><small>Presenças no período</small><em>{dashboardPeriodLabel}</em></span>
+                                <span><b>{recentPresenceStudents.length}</b><small>Presenças no período</small><em>{presenceComparisonLabel}</em></span>
                                 <i className="sparkline blue"></i>
                             </button>
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("mensagens")}>
                                 <span className="dashboard-command-kpi-icon blue"><i className="fas fa-comment-dots"></i></span>
-                                <span><b>{recentMessages}</b><small>Mensagens no período</small><em>{unreadConversationCount} pendente{unreadConversationCount === 1 ? "" : "s"}</em></span>
+                                <span><b>{recentMessages}</b><small>Mensagens no período</small><em>{messageComparisonLabel}</em></span>
                                 <i className="sparkline blue"></i>
                             </button>
                             <button className="dashboard-command-kpi" onClick={() => revealDashboardDetail("presenca")}>
@@ -6753,6 +6894,7 @@
                                     <h3 style={{margin:0, fontSize:'19px', color: 'white'}}>
                                         {s.nome} 
                                         {mode === "Professor" && <i className="fas fa-edit btn-edit-info" onClick={() => { setEditingStudent({...s}); setModalOpen('edit'); }}></i>}
+                                        {(mode === "Professor" || mode === "Pais") && <i className="fas fa-file-pdf btn-edit-info" title="Gerar relatório individual" onClick={() => generateStudentReport(s)}></i>}
                                     </h3>
                                     <div className="cat-badge">{s.faixa}</div><br/>
                                     <small style={{color:'#666', fontWeight:'bold'}}>{calculateAge(s.nascimento)} ANOS • {getAutoCategory(s.nascimento, s.categoriaOverride)}{s.categoriaOverride && s.categoriaOverride !== "Auto" ? " (MANUAL)" : ""}{ruleInfo.elegivel ? ` • ${rules} AULAS/GRAU` : ''}</small><br/>
@@ -6784,7 +6926,11 @@
                                         <i className="fab fa-whatsapp"></i> Conversa
                                     </button>
                                 )}
-                                {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => confirm("Remover?") && setStudents(students.filter(x => x.id !== s.id))}></i>}
+                                {mode === "Professor" && <i className="fas fa-trash-alt" style={{color:'#333', padding:'10px'}} onClick={() => {
+                                    if (!window.confirm(`Excluir definitivamente o aluno ${s.nome}? Esta ação não poderá ser desfeita.`)) return;
+                                    createAuditLog("Aluno excluído", "Cadastro", s.nome, "Excluído");
+                                    setStudents(students.filter(x => x.id !== s.id));
+                                }}></i>}
                             </div>
                             {mode === "Pais" && (
                                 <div className="parent-jump-nav">
@@ -7002,7 +7148,7 @@
                                                                 desafioDias: s.desafioDias || "7"
                                                             }
                                                             : { desafioAtivo: false },
-                                                        `DESAFIO COMPORTAMENTAL: ${ativo ? "ativado" : "desativado"} em ${new Date().toLocaleDateString('pt-BR')}`
+                                                        ""
                                                     );
                                                 }}
                                             />
@@ -7124,7 +7270,7 @@
                             <h3>Gestão de Dados</h3>
                             <div className="data-status-card">
                                 <span><i className={`fas ${(appwriteServices || supabaseClient) && !dbStatus.includes("Erro") ? "fa-database" : "fa-exclamation-triangle"}`}></i> Banco</span>
-                                <strong>{dbStatus}{!isHydrated ? "..." : ""}</strong>
+                                <strong>{appwriteServices ? "Appwrite" : (supabaseClient ? "Supabase" : "Somente navegador")} · {dbStatus}{!isHydrated ? "..." : ""}</strong>
                             </div>
                             <div className="data-status-card">
                                 <span><i className={`fas ${pendingSync ? "fa-cloud-upload-alt" : "fa-check-circle"}`}></i> Sincronização</span>
@@ -7132,7 +7278,11 @@
                             </div>
                             <div className="data-status-card">
                                 <span><i className="fas fa-shield-alt"></i> Backup local</span>
-                                <strong>{lastAutoBackupAt ? new Date(lastAutoBackupAt).toLocaleString("pt-BR") : "Ainda não gerado"}</strong>
+                                <strong>{lastAutoBackupAt ? new Date(lastAutoBackupAt).toLocaleString("pt-BR") : "Ainda não gerado"} · {getStoredArrayCount(LOCAL_BACKUP_HISTORY_KEY)} versão(ões) diária(s)</strong>
+                            </div>
+                            <div className="data-status-card">
+                                <span><i className="fas fa-clock-rotate-left"></i> Auditoria</span>
+                                <strong>{getStoredArrayCount(LOCAL_AUDIT_KEY)} alteração(ões) registrada(s)</strong>
                             </div>
                             <div className="theme-toggle-row">
                                 <button type="button" className={`theme-choice ${theme === "dark" ? "active" : ""}`} onClick={() => setTheme("dark")}>
@@ -7150,6 +7300,9 @@
                             </button>
                             <button className="btn-full" style={{background: '#3498db', color:'white'}} onClick={syncLocalChangesNow}>
                                 <i className="fas fa-sync-alt"></i> SINCRONIZAR PENDÊNCIAS AGORA
+                            </button>
+                            <button className="btn-full" style={{background: '#172033', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={downloadAuditTrail}>
+                                <i className="fas fa-file-shield"></i> BAIXAR AUDITORIA
                             </button>
                             {canManageUsers && (
                                 <button className="btn-full" style={{background: '#0f2438', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={() => setModalOpen('users')}>
@@ -7429,7 +7582,8 @@
                                 let alunoAtualizado = normalizeStudent({ ...editingStudent, nome: editingStudent.nome.trim() });
 
                                 if (alunoOriginal && alunoOriginal.faixa !== alunoAtualizado.faixa) {
-                                    logs.push(`FAIXA ALTERADA MANUALMENTE: ${alunoOriginal.faixa} → ${alunoAtualizado.faixa} | ${hoje}`);
+                                    if (!window.confirm(`Alterar a faixa de ${alunoOriginal.nome} de ${alunoOriginal.faixa} para ${alunoAtualizado.faixa}? O ciclo atual será encerrado e os contadores serão reiniciados.`)) return;
+                                    logs.push(createAuditLog("Faixa alterada manualmente", "Faixa", alunoOriginal.faixa, alunoAtualizado.faixa));
                                     const { presenceDegrees, ...semGrausPresenca } = alunoAtualizado;
                                     alunoAtualizado = { ...semGrausPresenca, aulas: 0, comp: {}, cicloFaixaInicio: getTodayISO(), beltHistory: [...(alunoOriginal.beltHistory || []), buildBeltCycleRecord(alunoOriginal, alunoAtualizado.faixa, "Alteracao manual")] };
                                 }
@@ -7437,17 +7591,17 @@
                                 const categoriaAnterior = alunoOriginal?.categoriaOverride || "Auto";
                                 const categoriaNova = alunoAtualizado.categoriaOverride || "Auto";
                                 if (alunoOriginal && categoriaAnterior !== categoriaNova) {
-                                    logs.push(`TURMA ALTERADA: ${categoriaAnterior === "Auto" ? "Automática" : categoriaAnterior} → ${categoriaNova === "Auto" ? "Automática" : categoriaNova} | ${hoje}`);
+                                    logs.push(createAuditLog("Turma alterada", "Turma", categoriaAnterior === "Auto" ? "Automática" : categoriaAnterior, categoriaNova === "Auto" ? "Automática" : categoriaNova));
                                 }
 
                                 if (alunoOriginal && getStudentUnitId(alunoOriginal) !== getStudentUnitId(alunoAtualizado)) {
-                                    logs.push(`UNIDADE ALTERADA: ${getStudentUnitName(alunoOriginal)} -> ${getStudentUnitName(alunoAtualizado)} | ${hoje}`);
+                                    logs.push(createAuditLog("Unidade alterada", "Unidade", getStudentUnitName(alunoOriginal), getStudentUnitName(alunoAtualizado)));
                                 }
 
                                 const statusAnterior = alunoOriginal?.status || "Ativo";
                                 const statusNovo = alunoAtualizado.status || "Ativo";
                                 if (alunoOriginal && statusAnterior !== statusNovo) {
-                                    logs.push(`STATUS ALTERADO: ${statusAnterior} → ${statusNovo} | ${hoje}`);
+                                    logs.push(createAuditLog("Status alterado", "Status", statusAnterior, statusNovo));
                                 }
 
                                 const desafioDepois = getBehaviorChallenge(alunoAtualizado);
