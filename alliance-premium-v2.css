@@ -466,3 +466,46 @@ body.theme-dark .login-box input::placeholder {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* Belt identity: each graduation family keeps its real visual color. */
+.dashboard-belt-themed {
+  --belt-primary: #58a6ff;
+  --belt-secondary: #58a6ff;
+}
+.dashboard-belt-themed .dashboard-bar.info > i {
+  background: linear-gradient(90deg, var(--belt-primary), var(--belt-secondary)) !important;
+}
+.dashboard-belt-themed .dashboard-belt-footer-badge {
+  color: var(--belt-primary) !important;
+  border-color: var(--belt-primary) !important;
+  background: rgba(255,255,255,.04) !important;
+}
+.dashboard-belt-themed .dashboard-belt-footer-share-ring {
+  background: conic-gradient(
+    var(--belt-primary) 0deg calc(var(--share, 0) * 3.6deg),
+    rgba(255,255,255,0.1) calc(var(--share, 0) * 3.6deg) 360deg) !important;
+}
+.dashboard-belt-footer-copy b {
+  display: block !important;
+  max-width: 100% !important;
+  font-size: clamp(14px, 1.2vw, 19px) !important;
+  line-height: 1.08 !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.dashboard-command-distributions-after-detail .dashboard-belt-footer {
+  grid-template-columns: minmax(0, 1fr) 66px !important;
+  gap: 10px !important;
+}
+.dashboard-command-distributions-after-detail .dashboard-belt-footer-main {
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  gap: 9px !important;
+  min-width: 0 !important;
+}
+.dashboard-command-distributions-after-detail .dashboard-belt-footer-share {
+  min-width: 66px !important;
+}

@@ -3567,7 +3567,7 @@
             color: var(--text-primary);
         }
     </style>
-    <link rel="stylesheet" href="./alliance-premium-v2.css?v=4">
+    <link rel="stylesheet" href="./alliance-premium-v2.css?v=5">
 </head>
 <body class="theme-dark">
 <div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando arquivo...</div>
@@ -3880,8 +3880,8 @@
         if (categoriaOverride && categoriaOverride !== "Auto") return categoriaOverride;
         const idade = calculateAge(nascimento);
         if (idade < 3 || idade > 15) return "Fora da regra";
-        if (idade >= 3 && idade <= 5) return "Baby Eagle";
-        if (idade >= 6 && idade <= 7) return "Little Eagle";
+        if (idade >= 3 && idade <= 4) return "Baby Eagle";
+        if (idade >= 5 && idade <= 7) return "Little Eagle";
         if (idade >= 8 && idade <= 12) return "Eagle Warrior";
         if (idade >= 13 && idade <= 15) return "Eagle Youth";
         return "Fora da regra";
@@ -3893,6 +3893,23 @@
         if (f.includes("verde")) return "verde";
         if (f.includes("branca") || f.includes("cinza")) return "brancaCinza";
         return "desconhecida";
+    }
+
+    function getBeltVisualStyle(faixa = "") {
+        const normalized = String(faixa).toLowerCase();
+        const primary = normalized.startsWith("branca") ? "#f5f5f2"
+            : normalized.startsWith("cinza") ? "#9ca3af"
+            : normalized.startsWith("amarela") ? "#f4c430"
+            : normalized.startsWith("laranja") ? "#f97316"
+            : normalized.startsWith("verde") ? "#22a866"
+            : "#58a6ff";
+        const secondary = normalized.includes("/branca") ? "#f5f5f2"
+            : normalized.includes("/preta") ? "#171717"
+            : primary;
+        return {
+            "--belt-primary": primary,
+            "--belt-secondary": secondary
+        };
     }
 
     function getRuleInfo(nascimento, faixa, categoriaOverride = "Auto") {
@@ -6483,14 +6500,14 @@
                                     </div>
                                     <div className="dashboard-compact-list">
                                         {beltRowsWithPercent.length > 0 ? beltRowsWithPercent.map(row => (
-                                            <button className="dashboard-compact-row" key={`cmd-belt-${row.label}`} onClick={() => openDashboardStudents({ faixa: row.label })}>
+                                            <button className="dashboard-compact-row dashboard-belt-themed" style={getBeltVisualStyle(row.label)} key={`cmd-belt-${row.label}`} onClick={() => openDashboardStudents({ faixa: row.label })}>
                                                 <span>{row.label}<small>{row.value} aluno{row.value === 1 ? "" : "s"} • média {row.averageAge ?? "-"} anos • {row.percent}%</small></span>
                                                 <div className="dashboard-bar tall info"><i style={{width: `${maxBelt > 0 ? (row.value / maxBelt) * 100 : 0}%`}}></i></div>
                                                 <span className="dashboard-compact-metric"><b>{row.value}</b><small className="dashboard-compact-percent">{row.percent}%</small></span>
                                             </button>
                                         )) : <div className="dashboard-note">Nenhuma faixa com aluno ainda.</div>}
                                     </div>
-                                    <div className="dashboard-frequency-footer dashboard-belt-footer">
+                                    <div className="dashboard-frequency-footer dashboard-belt-footer dashboard-belt-themed" style={getBeltVisualStyle(topBeltRow?.label)}>
                                         <div className="dashboard-belt-footer-main">
                                             <span className="dashboard-belt-footer-badge">
                                                 <span className="dashboard-belt-glyph" aria-hidden="true">
