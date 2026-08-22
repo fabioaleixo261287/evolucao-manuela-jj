@@ -2,14 +2,14 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Alliance Jiu Jitsu Mooca - Sistema Eagle V22</title>
+    <title>Alliance Jiu Jitsu Kids - Sistema Eagle V22</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#c9a554">
-    <meta name="application-name" content="Alliance Jiu Jitsu Mooca">
+    <meta name="application-name" content="Alliance Jiu Jitsu Kids">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Alliance Jiu Jitsu Mooca">
+    <meta name="apple-mobile-web-app-title" content="Alliance Jiu Jitsu Kids">
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="apple-touch-icon" href="./pwa-icons/apple-touch-icon-brand.png">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -134,6 +134,28 @@
         .brand-card { width: 100%; background: transparent; border: 0; border-radius: 0; padding: 0 12px 2px; text-align: center; box-shadow: none; backdrop-filter: none; overflow: visible; }
         .auth-hero-frame { width: 260px; height: 310px; overflow: visible; background: transparent; border: 0; border-radius: 0; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; box-shadow: none; }
         .auth-hero-image { width: 100%; height: 100%; object-fit: contain; object-position: center; filter: drop-shadow(0 18px 28px rgba(0,0,0,0.72)); opacity: 1; display: block; mix-blend-mode: normal; transform: none; border-radius: 0; }
+        .brand-lockup { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; color: #fff; line-height: 1; }
+        .brand-lockup-mark { width: 176px; height: 152px; object-fit: contain; display: block; filter: drop-shadow(0 16px 28px rgba(0,0,0,.64)); }
+        .brand-lockup-name { margin-top: -2px; font-family: var(--font-ui); font-size: 36px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; }
+        .brand-lockup-line { margin-top: 7px; display: flex; align-items: baseline; justify-content: center; gap: 5px; font-family: var(--font-ui); font-size: 20px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; white-space: nowrap; }
+        .brand-lockup-line .brand-kids { display: inline-flex; font-size: inherit; font-weight: 900; letter-spacing: 0; text-transform: none; }
+        .brand-kids .kids-k { color: #f5a400; }
+        .brand-kids .kids-i { color: #268ee8; }
+        .brand-kids .kids-d { color: #e3262e; }
+        .brand-kids .kids-s { color: #8bc91e; }
+        .brand-lockup.compact { flex-direction: row; width: auto; gap: 12px; }
+        .brand-lockup.compact .brand-lockup-mark { width: 46px; height: 40px; flex: 0 0 auto; }
+        .brand-lockup.compact .brand-lockup-copy { text-align: left; }
+        .brand-lockup.compact .brand-lockup-name { margin: 0; font-size: 20px; letter-spacing: 1.1px; }
+        .brand-lockup.compact .brand-lockup-line { justify-content: flex-start; margin-top: 4px; gap: 4px; font-size: 10px; letter-spacing: 2px; }
+        .brand-unit-label { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; color: #f0c75e; font-size: 9px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; }
+        @media (max-width: 650px) {
+            .brand-lockup.compact { gap: 8px; max-width: calc(100vw - 78px); }
+            .brand-lockup.compact .brand-lockup-mark { width: 34px; height: 32px; }
+            .brand-lockup.compact .brand-lockup-name { font-size: 15px; letter-spacing: .8px; }
+            .brand-lockup.compact .brand-lockup-line { margin-top: 3px; gap: 3px; font-size: 8px; letter-spacing: 1.25px; }
+            .brand-unit-label { max-width: 100%; margin-top: 4px; font-size: 7px; letter-spacing: .35px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        }
         .auth-hero-copy { padding: 0; background: transparent; }
         .auth-logo { width: 142px; height: 112px; object-fit: cover; object-position: 72% 34%; border-radius: 20px; border: 1px solid #2f2f2f; box-shadow: 0 14px 35px rgba(0,0,0,0.35); margin: 0 auto 22px; display: block; user-select: none; pointer-events: none; }
         .auth-kicker { color: var(--alliance-red); font-size: 11px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
@@ -203,7 +225,26 @@
         
         .student-top { display: flex; gap: 18px; align-items: center; margin-bottom: 20px; }
         .avatar-container { position: relative; width: 85px; height: 85px; flex-shrink: 0; }
-        .avatar { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: cover; background: #222; }
+        .avatar-preset { display: block; background-image: url('./kids-avatar-options.png') !important; background-repeat: no-repeat !important; background-size: 375% 250% !important; background-color: #f5f7fa !important; }
+        .avatar-preset.preset-girl-1 { background-position: 11% 15% !important; }
+        .avatar-preset.preset-girl-2 { background-position: 50% 15% !important; }
+        .avatar-preset.preset-girl-3 { background-position: 89% 15% !important; }
+        .avatar-preset.preset-boy-1 { background-position: 11% 96% !important; }
+        .avatar-preset.preset-boy-2 { background-position: 50% 96% !important; }
+        .avatar-preset.preset-boy-3 { background-position: 89% 96% !important; }
+        .avatar-picker-modal { width: min(560px, calc(100vw - 28px)); }
+        .avatar-picker-modal > p { margin: -4px 0 18px; color: #9aa8b8; }
+        .avatar-options-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+        .avatar-option { min-width: 0; padding: 10px; border: 1px solid rgba(212,166,42,.3); border-radius: 8px; background: #111827; color: #fff; cursor: pointer; }
+        .avatar-option:hover, .avatar-option.selected { border-color: #f0c75e; box-shadow: 0 0 0 2px rgba(240,199,94,.14); }
+        .avatar-option .avatar-preset { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(255,255,255,.8); }
+        .avatar-option span:last-child { display: block; margin-top: 8px; font-weight: 800; font-size: 12px; }
+        .avatar-picker-inline { margin: 12px 0 16px; padding: 14px; border: 1px solid rgba(212,166,42,.22); border-radius: 8px; background: rgba(17,24,39,.55); }
+        .avatar-picker-inline .avatar-options-grid { margin: 10px 0 0; }
+        .avatar-upload-button { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        body.theme-light .avatar-option, body.theme-light .avatar-picker-inline { background: #fff; color: #172033; border-color: #d8c58f; }
+        @media(max-width:520px){.avatar-options-grid{gap:8px}.avatar-option{padding:7px}.avatar-option span:last-child{font-size:10px}}
+        .avatar { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: cover; background-color: #222; }
         .edit-badge { position:absolute; bottom:2px; right:2px; background:#c9a554; color:white; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid #1e1e1e; font-size: 11px; z-index: 2; }
         
         .cat-badge { background: #333; color: #fff; padding: 5px 12px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: 6px; display: inline-block; border: 1px solid #444; }
@@ -979,6 +1020,15 @@
         }
         body.theme-light .app-brand-header img {
             filter: drop-shadow(0 10px 18px rgba(7,24,39,0.18));
+        }
+        body.theme-light .brand-lockup {
+            color: #071827;
+        }
+        body.theme-light .brand-lockup-mark {
+            filter: invert(1) drop-shadow(0 10px 18px rgba(7,24,39,0.16));
+        }
+        body.theme-light .brand-unit-label {
+            color: #806000;
         }
         body.theme-light .cat-badge,
         body.theme-light .hist-details,
@@ -3545,6 +3595,21 @@
             -webkit-text-fill-color: #98a2b3 !important;
             opacity: 1;
         }
+
+        /* Hardening de acessibilidade e auditoria */
+        button:focus-visible, [role="button"]:focus-visible, input:focus-visible,
+        select:focus-visible, textarea:focus-visible, .action-item:focus-visible {
+            outline: 3px solid #58a6ff;
+            outline-offset: 3px;
+        }
+        .audit-toolbar { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin: 12px 0; }
+        .audit-toolbar input { margin: 0; }
+        .audit-list { display: grid; gap: 8px; max-height: 52vh; overflow-y: auto; padding-right: 4px; }
+        .audit-entry { padding: 12px 14px; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(255,255,255,.035); color: var(--text-main); font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+        .audit-empty { padding: 26px; text-align: center; color: var(--text-muted); border: 1px dashed var(--border-color); border-radius: 12px; }
+        body.theme-light .audit-entry { background: #fff; color: #172033; border-color: #d8dee8; }
+        body.theme-light .audit-empty { color: #5f6b7a; border-color: #c9d1dc; }
+        @media (max-width: 620px) { .audit-toolbar { grid-template-columns: 1fr; } }
         body.theme-light .dashboard-command-summary,
         body.theme-light .dashboard-command-kpi,
         body.theme-light .dashboard-command-card,
@@ -3566,19 +3631,100 @@
         body.theme-light .back-link {
             color: var(--text-primary);
         }
+
+        /* Multiunidade: camada visual central sem alterar regras operacionais */
+        .unit-context-bar { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:0 0 18px; padding:13px 16px; border:1px solid rgba(212,166,42,.28); border-radius:16px; background:linear-gradient(135deg,rgba(17,26,39,.92),rgba(8,13,21,.94)); box-shadow:0 14px 34px rgba(0,0,0,.2); }
+        .unit-context-info { display:flex; align-items:center; gap:12px; min-width:0; }
+        .unit-context-icon { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; color:#f0c75e; background:rgba(212,166,42,.11); border:1px solid rgba(212,166,42,.3); }
+        .unit-context-info small,.unit-context-info strong { display:block; }
+        .unit-context-info small { color:var(--text-muted); font-size:10px; text-transform:uppercase; font-weight:800; }
+        .unit-context-info strong { color:var(--text-main); font-size:15px; }
+        .unit-context-actions { display:flex; align-items:center; gap:9px; }
+        .unit-context-actions select { min-width:190px; margin:0; padding:10px 34px 10px 12px; }
+        .central-page { display:grid; gap:18px; }
+        .central-hero { position:relative; overflow:hidden; display:flex; align-items:center; justify-content:space-between; gap:18px; padding:28px; border-radius:20px; border:1px solid rgba(212,166,42,.28); background:linear-gradient(135deg,rgba(22,32,46,.98),rgba(8,13,21,.98)); box-shadow:0 24px 60px rgba(0,0,0,.3); }
+        .central-hero::after { content:""; position:absolute; width:220px; height:220px; right:-72px; top:-110px; border-radius:50%; border:42px solid rgba(212,166,42,.045); pointer-events:none; }
+        .central-hero-copy { position:relative; z-index:1; display:flex; align-items:center; gap:16px; }
+        .central-hero-icon { width:54px; height:54px; flex:0 0 54px; display:grid; place-items:center; border-radius:15px; color:#f0c75e; font-size:21px; background:rgba(212,166,42,.1); border:1px solid rgba(212,166,42,.28); box-shadow:inset 0 1px 0 rgba(255,255,255,.08); }
+        .central-hero h2 { margin:0 0 6px; color:#fff; font-size:27px; }
+        .central-hero p { margin:0; color:var(--text-muted); }
+        .central-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+        .central-kpi { position:relative; overflow:hidden; min-height:118px; padding:18px; border:1px solid var(--border-color); border-radius:17px; background:linear-gradient(145deg,rgba(17,26,39,.96),rgba(8,13,21,.98)); transition:transform .18s ease,border-color .18s ease; }
+        .central-kpi:hover { transform:translateY(-2px); border-color:rgba(212,166,42,.38); }
+        .central-kpi i { width:34px; height:34px; display:grid; place-items:center; color:#f0c75e; margin-bottom:12px; border-radius:10px; background:rgba(212,166,42,.09); }
+        .central-kpi strong { display:block; color:#fff; font-size:28px; line-height:1; }
+        .central-kpi span { display:block; margin-top:7px; color:var(--text-muted); font-size:11px; font-weight:800; text-transform:uppercase; }
+        .central-kpi small { display:block; margin-top:8px; color:#7f8da1; font-size:10px; font-weight:700; }
+        .central-network-health { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr); gap:12px; }
+        .central-health-card { display:flex; align-items:center; gap:18px; padding:18px 20px; border-radius:17px; border:1px solid var(--border-color); background:linear-gradient(145deg,rgba(17,26,39,.96),rgba(8,13,21,.98)); }
+        .central-health-ring { --value:0; width:74px; height:74px; flex:0 0 74px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(#f0c75e calc(var(--value) * 1%),rgba(255,255,255,.08) 0); }
+        .central-health-ring::before { content:""; width:56px; height:56px; border-radius:50%; background:#0d1520; grid-area:1/1; }
+        .central-health-ring strong { position:relative; grid-area:1/1; color:#fff; font-size:17px; }
+        .central-health-copy { min-width:0; flex:1; }
+        .central-health-copy small,.central-health-copy h3,.central-health-copy p { display:block; }
+        .central-health-copy small { color:#f0c75e; font-size:10px; font-weight:900; text-transform:uppercase; }
+        .central-health-copy h3 { margin:4px 0 0; color:#fff; font-size:17px; }
+        .central-health-copy p { margin:5px 0 0; color:var(--text-muted); font-size:11px; line-height:1.45; }
+        .central-health-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; flex:0 0 220px; }
+        .central-health-stats>span { padding:11px; border-radius:11px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.07); }
+        .central-health-stats b,.central-health-stats small { display:block; }
+        .central-health-stats b { color:#fff; font-size:18px; }
+        .central-health-stats small { margin-top:3px; color:var(--text-muted); font-size:9px; font-weight:800; text-transform:uppercase; }
+        .central-attention-card { display:flex; align-items:center; gap:14px; padding:18px 20px; border-radius:17px; border:1px solid var(--border-color); background:linear-gradient(145deg,rgba(17,26,39,.96),rgba(8,13,21,.98)); }
+        .central-attention-card>i { width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center; border-radius:12px; color:#2ecc71; background:rgba(46,204,113,.1); }
+        .central-attention-card.has-alert>i { color:#ff7777; background:rgba(255,119,119,.1); }
+        .central-attention-card small,.central-attention-card strong,.central-attention-card span { display:block; }
+        .central-attention-card small { color:var(--text-muted); font-size:9px; font-weight:800; text-transform:uppercase; }
+        .central-attention-card strong { margin-top:4px; color:#fff; font-size:13px; }
+        .central-attention-card span { margin-top:4px; color:var(--text-muted); font-size:10px; line-height:1.4; }
+        .central-units-head { display:flex; align-items:end; justify-content:space-between; gap:12px; }
+        .central-units-head h3 { margin:0; color:var(--text-main); }
+        .central-units-head p { margin:4px 0 0; color:var(--text-muted); font-size:12px; }
+        .central-unit-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+        .central-unit-card { position:relative; overflow:hidden; padding:18px; border:1px solid var(--border-color); border-radius:18px; background:linear-gradient(145deg,rgba(17,26,39,.96),rgba(8,13,21,.98)); box-shadow:0 18px 40px rgba(0,0,0,.22); transition:transform .18s ease,border-color .18s ease; }
+        .central-unit-card:hover { transform:translateY(-2px); border-color:rgba(212,166,42,.38); }
+        .central-unit-card::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:linear-gradient(180deg,#f0c75e,rgba(212,166,42,.1)); }
+        .central-unit-card.inactive { opacity:.62; }
+        .central-unit-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        .central-unit-title { display:flex; align-items:center; gap:11px; min-width:0; }
+        .central-unit-title i { width:42px; height:42px; border-radius:12px; display:grid; place-items:center; color:#f0c75e; background:rgba(212,166,42,.1); border:1px solid rgba(212,166,42,.26); }
+        .central-unit-title strong,.central-unit-title small { display:block; }
+        .central-unit-title strong { color:#fff; font-size:16px; }
+        .central-unit-title small { color:var(--text-muted); margin-top:3px; }
+        .central-unit-status { padding:5px 8px; border-radius:999px; font-size:9px; font-weight:900; text-transform:uppercase; color:#2ecc71; background:rgba(46,204,113,.1); }
+        .central-unit-status.off { color:#ff7777; background:rgba(255,119,119,.1); }
+        .central-unit-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:17px 0; }
+        .central-unit-metric { padding:11px; border-radius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.07); }
+        .central-unit-metric b,.central-unit-metric span { display:block; }
+        .central-unit-metric b { color:#fff; font-size:19px; }
+        .central-unit-metric span { color:var(--text-muted); font-size:9px; text-transform:uppercase; font-weight:800; margin-top:3px; }
+        .central-unit-progress { margin:-3px 0 16px; }
+        .central-unit-progress-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:7px; color:var(--text-muted); font-size:9px; font-weight:800; text-transform:uppercase; }
+        .central-unit-progress-head b { color:#f0c75e; }
+        .central-unit-progress-track { height:6px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.07); }
+        .central-unit-progress-track span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#58a6ff,#f0c75e); }
+        .central-unit-open { width:100%; border:1px solid rgba(212,166,42,.38); color:#f0c75e; background:rgba(212,166,42,.08); border-radius:12px; padding:11px; font-weight:900; cursor:pointer; }
+        body.theme-light .unit-context-bar,body.theme-light .central-hero,body.theme-light .central-kpi,body.theme-light .central-health-card,body.theme-light .central-attention-card,body.theme-light .central-unit-card { background:linear-gradient(145deg,#fff,#f6f8fb); color:#172033; box-shadow:0 14px 34px rgba(18,38,63,.09); }
+        body.theme-light .central-hero h2,body.theme-light .central-kpi strong,body.theme-light .central-health-copy h3,body.theme-light .central-health-stats b,body.theme-light .central-attention-card strong,body.theme-light .central-unit-title strong,body.theme-light .central-unit-metric b { color:#172033; }
+        body.theme-light .central-health-ring::before { background:#fff; }
+        body.theme-light .central-health-stats>span { background:#f5f7fa; border-color:#dce2ea; }
+        body.theme-light .central-unit-metric { background:#f5f7fa; border-color:#dce2ea; }
+        @media(max-width:900px){.central-network-health{grid-template-columns:1fr}.central-health-stats{flex:0 0 210px}}
+        @media(max-width:760px){.central-kpis{grid-template-columns:repeat(2,1fr)}.central-hero,.unit-context-bar{align-items:stretch;flex-direction:column}.central-hero-copy{align-items:flex-start}.unit-context-actions{width:100%}.unit-context-actions select{flex:1;min-width:0}.central-unit-metrics{grid-template-columns:repeat(3,1fr)}.central-health-card{align-items:flex-start;flex-wrap:wrap}.central-health-stats{width:100%;flex:1 1 100%}}
+        @media(max-width:430px){.central-kpis{grid-template-columns:1fr 1fr}.central-kpi{min-height:96px;padding:14px}.central-unit-grid{grid-template-columns:1fr}.unit-context-actions{flex-direction:column}.unit-context-actions>*{width:100%}}
     </style>
     <link rel="stylesheet" href="./alliance-premium-v2.css?v=8">
 </head>
 <body class="theme-dark">
 <div id="compress-loader"><i class="fas fa-spinner fa-spin"></i><br><br>Otimizando arquivo...</div>
 <div id="root">
-    <div class="app-splash" aria-label="Carregando Alliance Jiu Jitsu Mooca">
+    <div class="app-splash" aria-label="Carregando Alliance Jiu Jitsu Kids">
         <div class="app-splash-card">
             <div class="auth-hero-frame">
-                <img src="alliance-jiu-jitsu-mooca-complete.png" class="auth-hero-image" alt="Alliance Jiu Jitsu Mooca">
+                <div class="brand-lockup" aria-label="Alliance Jiu Jitsu Kids"><img src="alliance-eagle-mark-closed.png" class="brand-lockup-mark" alt=""><div class="brand-lockup-copy"><div class="brand-lockup-name">Alliance</div><div class="brand-lockup-line"><span>Jiu Jitsu</span><span class="brand-kids" aria-label="Kids"><span class="kids-k">K</span><span class="kids-i">i</span><span class="kids-d">d</span><span class="kids-s">s</span></span></div></div></div>
             </div>
             <div class="auth-hero-copy">
-                <h1 class="auth-title">Alliance Jiu Jitsu Mooca</h1>
+                <h1 class="auth-title">Alliance Jiu Jitsu Kids</h1>
                 <p class="auth-subtitle">Sistema de evolução e graduação</p>
             </div>
             <div class="app-splash-loading" aria-hidden="true"></div>
@@ -3593,9 +3739,36 @@
     const classDays = [1, 3, 5, 6]; // Segunda, quarta, sexta e sábado.
     const AVATAR_BOY = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
     const AVATAR_GIRL = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"; 
+    const AVATAR_PRESETS = [
+        { id: "preset-girl-1", sexo: "F", label: "Menina 1" },
+        { id: "preset-girl-2", sexo: "F", label: "Menina 2" },
+        { id: "preset-girl-3", sexo: "F", label: "Menina 3" },
+        { id: "preset-boy-1", sexo: "M", label: "Menino 1" },
+        { id: "preset-boy-2", sexo: "M", label: "Menino 2" },
+        { id: "preset-boy-3", sexo: "M", label: "Menino 3" }
+    ];
+    const getAvatarPreset = (avatar) => AVATAR_PRESETS.find(option => option.id === avatar);
+    const getDefaultPresetForSex = (sexo) => sexo === "F" ? "preset-girl-1" : "preset-boy-1";
+    const StudentAvatar = ({ src, sexo, className = "", alt = "" }) => {
+        const preset = getAvatarPreset(src);
+        if (preset) return <span role="img" aria-label={alt || preset.label} className={`${className} avatar-preset ${preset.id}`}></span>;
+        return <img src={src || (sexo === "F" ? AVATAR_GIRL : AVATAR_BOY)} className={className} alt={alt} />;
+    };
+    const AvatarOptions = ({ sexo, value, onSelect }) => (
+        <div className="avatar-options-grid">
+            {AVATAR_PRESETS.filter(option => option.sexo === sexo).map(option => (
+                <button type="button" key={option.id} className={`avatar-option ${value === option.id ? "selected" : ""}`} onClick={() => onSelect(option.id)}>
+                    <StudentAvatar src={option.id} sexo={sexo} alt={option.label} />
+                    <span>{option.label}</span>
+                </button>
+            ))}
+        </div>
+    );
     const LOCAL_STUDENTS_KEY = "all_eagle_v22_s";
     const LOCAL_REPO_KEY = "all_eagle_v22_r";
     const LOCAL_USERS_KEY = "all_eagle_v22_users";
+    const LOCAL_UNITS_KEY = "all_eagle_v22_units";
+    const LOCAL_SELECTED_UNIT_KEY = "all_eagle_v22_selected_unit";
     const LOCAL_THEME_KEY = "all_eagle_v22_theme";
     const LOCAL_PENDING_SYNC_KEY = "all_eagle_v22_pending_sync";
     const LOCAL_AUTO_BACKUP_KEY = "all_eagle_v22_auto_backup";
@@ -3609,7 +3782,7 @@
     const APPWRITE_TABLE_ID = "app_state";
     const APPWRITE_BUCKET_ID = "alliance_files";
     const createDefaultSystemUsers = () => ([
-        { id: 1, nome: "Administrador", login: "admin", senha: "admin", perfil: "Administrador", status: "Ativo", createdAt: new Date().toISOString() }
+        { id: 1, nome: "Administrador", login: "admin", senha: "admin", perfil: "Administrador", unidadeId: "all", status: "Ativo", createdAt: new Date().toISOString() }
     ]);
 
     // Preencha aqui se quiser deixar fixo no arquivo, ou defina window.SUPABASE_CONFIG antes deste script.
@@ -3760,7 +3933,7 @@
 
     const buildBackupPayload = (students, repo, source = "manual", users = []) => ({
         source,
-        app: "Alliance Jiu Jitsu Mooca",
+        app: "Alliance Jiu Jitsu Kids",
         version: "alliance_mooca_kids_v22",
         timestamp: new Date().toISOString(),
         students: students || [],
@@ -4138,11 +4311,11 @@
     const statusOptions = ["Ativo", "Experimental", "Pausado", "Transferido", "Inativo"];
     const DEFAULT_UNIT_ID = "alliance-mooca";
     const DEFAULT_UNIT_NAME = "Alliance Mooca";
-    const unitOptions = [
+    const defaultUnitOptions = [
         { id: DEFAULT_UNIT_ID, nome: DEFAULT_UNIT_NAME, status: "Ativa" }
     ];
     const getStudentUnitId = (student) => student?.unidadeId || DEFAULT_UNIT_ID;
-    const getStudentUnitName = (student) => unitOptions.find(unit => unit.id === getStudentUnitId(student))?.nome || DEFAULT_UNIT_NAME;
+    const getStudentUnitName = (student, units = defaultUnitOptions) => units.find(unit => unit.id === getStudentUnitId(student))?.nome || DEFAULT_UNIT_NAME;
     const normalizeStudent = (student) => ({ ...student, unidadeId: getStudentUnitId(student) });
     const behaviorDegreeOptions = [
         { key: "Rel", label: "Relacionamento", short: "Relac.", className: "degree-rel" },
@@ -4165,6 +4338,7 @@
         ultimaPresenca: "",
         necessidades: "",
         observacoesInternas: "",
+        avatar: "preset-boy-1",
         autorizacaoImagem: false,
         desafioAtivo: false,
         desafioTitulo: "",
@@ -4196,6 +4370,16 @@
                 return createDefaultSystemUsers();
             }
         });
+        const [units, setUnits] = React.useState(() => {
+            try {
+                const stored = JSON.parse(localStorage.getItem(LOCAL_UNITS_KEY) || "[]");
+                return Array.isArray(stored) && stored.length ? stored : defaultUnitOptions;
+            } catch(e) {
+                return defaultUnitOptions;
+            }
+        });
+        const [selectedUnitId, setSelectedUnitId] = React.useState(() => localStorage.getItem(LOCAL_SELECTED_UNIT_KEY) || DEFAULT_UNIT_ID);
+        const [unitForm, setUnitForm] = React.useState({ nome: "", cidade: "São Paulo", status: "Ativa" });
         const [currentUser, setCurrentUser] = React.useState(null);
 
         const [searchTerm, setSearchTerm] = React.useState("");
@@ -4219,7 +4403,8 @@
         const [selectedChatId, setSelectedChatId] = React.useState(null);
         const [conversationSearch, setConversationSearch] = React.useState("");
         const [form, setForm] = React.useState(createEmptyStudentForm);
-        const [userForm, setUserForm] = React.useState({ nome: "", login: "", senha: "", perfil: "Professor", status: "Ativo" });
+        const [userForm, setUserForm] = React.useState({ nome: "", login: "", senha: "", perfil: "Professor", unidadeId: DEFAULT_UNIT_ID, status: "Ativo" });
+        const [auditSearch, setAuditSearch] = React.useState("");
         const [chatInputs, setChatInputs] = React.useState({});
         const [openChats, setOpenChats] = React.useState({});
         const [degreeDirections, setDegreeDirections] = React.useState({});
@@ -4230,6 +4415,7 @@
             window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone === true
         );
         const [editingStudent, setEditingStudent] = React.useState(null);
+        const [avatarPickerStudent, setAvatarPickerStudent] = React.useState(null);
         const [storageWarning, setStorageWarning] = React.useState("");
         const [isHydrated, setIsHydrated] = React.useState(false);
         const [dbStatus, setDbStatus] = React.useState(appwriteServices ? "Conectando ao Appwrite..." : (supabaseClient ? "Conectando ao Supabase..." : "Banco não configurado"));
@@ -4248,6 +4434,12 @@
         const currentProfile = currentUser?.perfil || "Administrador";
         const canAccessDashboard = currentProfile !== "Recepção";
         const canManageUsers = currentProfile === "Administrador";
+        const isCentralAdmin = currentProfile === "Administrador";
+        const unitOptions = units.filter(unit => (unit.status || "Ativa") === "Ativa" || unit.id === selectedUnitId);
+        const effectiveUnitId = isCentralAdmin ? selectedUnitId : (currentUser?.unidadeId || DEFAULT_UNIT_ID);
+        const selectedUnit = units.find(unit => unit.id === effectiveUnitId) || units[0] || defaultUnitOptions[0];
+        const scopedStudents = students.filter(student => getStudentUnitId(student) === effectiveUnitId);
+        const scopedRepo = repo.filter(item => (item.unidadeId || DEFAULT_UNIT_ID) === effectiveUnitId);
         const auditValue = (value) => {
             if (value === undefined || value === null || value === "") return "não informado";
             if (typeof value === "object") return JSON.stringify(value);
@@ -4331,6 +4523,15 @@
                 setProfessorView("alunos");
             }
         }, [mode, canAccessDashboard, professorView]);
+
+        React.useEffect(() => {
+            try {
+                localStorage.setItem(LOCAL_UNITS_KEY, JSON.stringify(units));
+                localStorage.setItem(LOCAL_SELECTED_UNIT_KEY, selectedUnitId);
+            } catch (e) {
+                console.warn("Não foi possível salvar a configuração das unidades.", e);
+            }
+        }, [units, selectedUnitId]);
 
         React.useEffect(() => {
             document.body.classList.toggle("auth-mode", !mode);
@@ -4703,12 +4904,19 @@
                     String(user.senha || "") === typedPass
                 );
                 if (legacyAdmin || systemUser) {
-                    setCurrentUser(systemUser || { id: 1, nome: "Administrador", login: "admin", perfil: "Administrador", status: "Ativo" });
+                    const loggedUser = systemUser || { id: 1, nome: "Administrador", login: "admin", perfil: "Administrador", unidadeId: "all", status: "Ativo" };
+                    setCurrentUser(loggedUser);
+                    if (loggedUser.perfil === "Administrador") {
+                        setProfessorView("central");
+                    } else {
+                        setSelectedUnitId(loggedUser.unidadeId || DEFAULT_UNIT_ID);
+                        setProfessorView("alunos");
+                    }
                     setMode('Professor');
                 }
                 else alert('Usuário ou senha incorretos.');
             } else {
-                const aluno = students.find(s => {
+                const alunosEncontrados = students.filter(s => {
                     const nomeMatch = s.nome.toLowerCase().trim() === auth.user.toLowerCase().trim();
                     const senhaLimpa = auth.pass.replace(/\D/g,'');
                     let dn = s.nascimento.replace(/\D/g,'');
@@ -4718,7 +4926,9 @@
                     }
                     return nomeMatch && (dn === senhaLimpa);
                 });
+                const aluno = alunosEncontrados[0];
                 if (aluno) {
+                    setSelectedUnitId(getStudentUnitId(aluno));
                     setMode('Pais');
                     setSearchTerm(aluno.nome);
                     setFilterGroup("Todos");
@@ -4817,7 +5027,7 @@
                         };
                         setStudents(prev => prev.map(s => s.id === id ? { ...s, chat: [...(s.chat || []), msgAnexo] } : s));
                     } else if (type === 'repo') {
-                        const newItem = { id: Date.now(), name: file.name, data: uploadedFile ? "" : finalData, fileUrl: uploadedFile?.fileUrl || "", fileId: uploadedFile?.fileId || "", date: new Date().toLocaleDateString('pt-BR') };
+                        const newItem = { id: Date.now(), unidadeId: effectiveUnitId, name: file.name, data: uploadedFile ? "" : finalData, fileUrl: uploadedFile?.fileUrl || "", fileId: uploadedFile?.fileId || "", date: new Date().toLocaleDateString('pt-BR') };
                         setRepo(prev => [...prev, newItem]);
                     }
                 } catch (err) {
@@ -4831,6 +5041,14 @@
                 alert("Não foi possível ler o arquivo.");
             };
             reader.readAsDataURL(file);
+        };
+
+        const selectStudentAvatar = (studentId, avatarId) => {
+            setStudents(prev => prev.map(student => student.id === studentId
+                ? { ...student, avatar: avatarId, avatarFileId: "" }
+                : student
+            ));
+            setAvatarPickerStudent(null);
         };
 
         const togglePresenca = (sid, boxIndex, clickCount = 1) => {
@@ -5095,7 +5313,7 @@
             }, 100);
         };
 
-        const filtered = students.filter(s => {
+        const filtered = scopedStudents.filter(s => {
             const matchesName = s.nome.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesGroup = filterGroup === "Todos" || getAutoCategory(s.nascimento, s.categoriaOverride) === filterGroup;
             return matchesName && matchesGroup;
@@ -5104,7 +5322,7 @@
         const displayedStudents = mode === "Professor" ? (professorHasQuery ? filtered : []) : filtered;
         const useCompactStudentResults = mode === "Professor" && professorHasQuery;
         const renderedStudents = expandedSearchStudentId ? displayedStudents.filter(s => s.id === expandedSearchStudentId) : displayedStudents;
-        const allConversationStudents = students
+        const allConversationStudents = scopedStudents
             .map(s => {
                 const chat = s.chat || [];
                 const lastMessage = chat[chat.length - 1];
@@ -5127,7 +5345,7 @@
             openDashboardStudents(filters);
         };
         const openStudentFromDashboard = (studentName) => {
-            const targetStudent = students.find(s => s.nome === studentName);
+            const targetStudent = scopedStudents.find(s => s.nome === studentName);
             setProfessorView("alunos");
             setSearchTerm(studentName);
             setFilterGroup("Todos");
@@ -5231,6 +5449,14 @@
             a.click();
             URL.revokeObjectURL(url);
         };
+        const getAuditTrail = () => {
+            try {
+                const stored = JSON.parse(localStorage.getItem(LOCAL_AUDIT_KEY) || "[]");
+                return Array.isArray(stored) ? stored : [];
+            } catch(e) {
+                return [];
+            }
+        };
 
         const generateStudentReport = (student) => {
             const reportWindow = window.open("", "_blank", "width=900,height=900");
@@ -5277,7 +5503,7 @@
             a.click();
             URL.revokeObjectURL(url);
         };
-        const dashboardStudents = students.filter(s => {
+        const dashboardStudents = scopedStudents.filter(s => {
             const group = getAutoCategory(s.nascimento, s.categoriaOverride);
             const status = s.status || "Ativo";
             const matchesGroup = dashboardFilters.group === "Todos" || group === dashboardFilters.group;
@@ -5957,7 +6183,7 @@
             arquivos: {
                 title: "Arquivos",
                 subtitle: "Anexos disponiveis no repositorio interno",
-                rows: repo.map((file, index) => ({
+                rows: scopedRepo.map((file, index) => ({
                     id: file.id || index,
                     name: file.name || file.fileName || file.titulo || `Arquivo ${index + 1}`,
                     meta: file.category || file.categoria || file.type || "Arquivo salvo",
@@ -6013,7 +6239,7 @@
             if (!report) return alert("Permita pop-ups para gerar o relatório em PDF.");
             report.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Relatório do Painel</title><style>
                 body{font-family:Arial,sans-serif;margin:32px;color:#151515} h1{margin:0 0 6px;font-size:28px} h2{font-size:16px;margin:24px 0 10px;text-transform:uppercase;border-bottom:2px solid #c9a554;padding-bottom:6px}.sub{color:#555;font-weight:700}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}.kpi{border:1px solid #ddd;border-radius:10px;padding:12px}.kpi strong{display:block;font-size:24px}.kpi span{font-size:11px;text-transform:uppercase;color:#666;font-weight:700}ul{list-style:none;padding:0;margin:0}li{display:grid;grid-template-columns:1fr 2fr;gap:10px;border-bottom:1px solid #eee;padding:9px 0}li span{color:#555}.summary{background:#f4f8fb;border:1px solid #d7e8f5;border-radius:12px;padding:14px;line-height:1.45}@media print{button{display:none}body{margin:18mm}}
-            </style></head><body><button onclick="window.print()">Salvar em PDF / Imprimir</button><h1>Alliance Jiu Jitsu Mooca</h1><div class="sub">Relatório do painel - ${esc(new Date().toLocaleDateString("pt-BR"))} - ${esc(dashboardPeriodLabel)}</div><div class="grid"><div class="kpi"><strong>${dashboardStudents.length}</strong><span>alunos filtrados</span></div><div class="kpi"><strong>${readyStudents}</strong><span>prontos para exame</span></div><div class="kpi"><strong>${followUpCount}</strong><span>meta de acompanhamento</span></div><div class="kpi"><strong>${averageProgress}%</strong><span>evolução média</span></div></div><div class="summary"><strong>Resumo executivo:</strong> ${esc(dashboardInsightText)} Maior dia de movimento: ${esc(busiestPresenceLabel)}. Presenças no período: ${recentPresenceStudents.length}. Mensagens no período: ${recentMessages}. Aniversariantes no período: ${birthdayStudents.length}.</div><h2>Alunos prontos para exame</h2><ul>${rows(readyRows, "Nenhum aluno pronto para exame")}</ul><h2>Alunos que precisam de acompanhamento</h2><ul>${rows(followRows, "Nenhum aluno precisa de ação hoje")}</ul><h2>Aniversariantes do período</h2><ul>${rows(birthdayRows, "Nenhum aniversariante no período selecionado")}</ul><h2>Desafios vencidos</h2><ul>${rows(challengeRows, "Nenhum desafio vencido")}</ul><h2>Maior dia de movimento</h2><ul><li><strong>${esc(busiestPresenceLabel)}</strong><span>Baseado nas presenças registradas no período selecionado.</span></li></ul><script>setTimeout(() => window.print(), 400)<\/script></body></html>`);
+            </style></head><body><button onclick="window.print()">Salvar em PDF / Imprimir</button><h1>Alliance Jiu Jitsu Kids</h1><div class="sub">${esc(professorView === "central" ? "Painel Central da Rede" : (selectedUnit?.nome || DEFAULT_UNIT_NAME))} • Relatório do painel - ${esc(new Date().toLocaleDateString("pt-BR"))} - ${esc(dashboardPeriodLabel)}</div><div class="grid"><div class="kpi"><strong>${dashboardStudents.length}</strong><span>alunos filtrados</span></div><div class="kpi"><strong>${readyStudents}</strong><span>prontos para exame</span></div><div class="kpi"><strong>${followUpCount}</strong><span>meta de acompanhamento</span></div><div class="kpi"><strong>${averageProgress}%</strong><span>evolução média</span></div></div><div class="summary"><strong>Resumo executivo:</strong> ${esc(dashboardInsightText)} Maior dia de movimento: ${esc(busiestPresenceLabel)}. Presenças no período: ${recentPresenceStudents.length}. Mensagens no período: ${recentMessages}. Aniversariantes no período: ${birthdayStudents.length}.</div><h2>Alunos prontos para exame</h2><ul>${rows(readyRows, "Nenhum aluno pronto para exame")}</ul><h2>Alunos que precisam de acompanhamento</h2><ul>${rows(followRows, "Nenhum aluno precisa de ação hoje")}</ul><h2>Aniversariantes do período</h2><ul>${rows(birthdayRows, "Nenhum aniversariante no período selecionado")}</ul><h2>Desafios vencidos</h2><ul>${rows(challengeRows, "Nenhum desafio vencido")}</ul><h2>Maior dia de movimento</h2><ul><li><strong>${esc(busiestPresenceLabel)}</strong><span>Baseado nas presenças registradas no período selecionado.</span></li></ul><script>setTimeout(() => window.print(), 400)<\/script></body></html>`);
             report.document.close();
         };
 
@@ -6116,10 +6342,10 @@
                     <div className="auth-shell">
                         <div className="brand-card">
                             <div className="auth-hero-frame">
-                                <img src="alliance-jiu-jitsu-mooca-complete.png" className="auth-hero-image" />
+                                <div className="brand-lockup" aria-label="Alliance Jiu Jitsu Kids"><img src="alliance-eagle-mark-closed.png" className="brand-lockup-mark" alt="" /><div className="brand-lockup-copy"><div className="brand-lockup-name">Alliance</div><div className="brand-lockup-line"><span>Jiu Jitsu</span><span className="brand-kids" aria-label="Kids"><span className="kids-k">K</span><span className="kids-i">i</span><span className="kids-d">d</span><span className="kids-s">s</span></span></div></div></div>
                             </div>
                             <div className="auth-hero-copy">
-                                <h1 className="auth-title">Alliance Jiu Jitsu Mooca</h1>
+                                <h1 className="auth-title">Alliance Jiu Jitsu Kids</h1>
                                 <p className="auth-subtitle">Sistema de Evolução e Graduação</p>
                             </div>
                         </div>
@@ -6147,7 +6373,7 @@
                     <div className="auth-shell">
                         <div className="login-box">
                             <div className="auth-hero-frame">
-                                <img src="alliance-jiu-jitsu-mooca-complete.png" className="auth-hero-image" />
+                                <div className="brand-lockup" aria-label="Alliance Jiu Jitsu Kids"><img src="alliance-eagle-mark-closed.png" className="brand-lockup-mark" alt="" /><div className="brand-lockup-copy"><div className="brand-lockup-name">Alliance</div><div className="brand-lockup-line"><span>Jiu Jitsu</span><span className="brand-kids" aria-label="Kids"><span className="kids-k">K</span><span className="kids-i">i</span><span className="kids-d">d</span><span className="kids-s">s</span></span></div></div></div>
                             </div>
                             <h3 className="login-heading">Acesso {subMode === "Pais" ? "dos Pais" : "do Professor"}</h3>
                             <input placeholder={subMode === 'Professor' ? "Usuário" : "Nome do Aluno"} value={auth.user} onChange={e => setAuth({...auth, user: e.target.value})} />
@@ -6161,14 +6387,17 @@
         }
 
         return (
-            <div className={`container ${mode === "Professor" && ["conversas", "painel"].includes(professorView) ? "wide-container" : ""}`}>
+            <div className={`container ${mode === "Professor" && ["central", "conversas", "painel"].includes(professorView) ? "wide-container" : ""}`}>
                 <header className="header-main">
-                    <div className="app-brand-header" aria-label="Alliance Jiu Jitsu Mooca">
-                        <img src="alliance-jiu-jitsu-mooca-complete.png" alt="" />
-                        <span>
-                            <strong>Alliance Jiu Jitsu Mooca</strong>
-                            <small>Sistema de evolução e graduação</small>
-                        </span>
+                    <div className="app-brand-header" aria-label="Alliance Jiu Jitsu Kids">
+                        <div className="brand-lockup compact">
+                            <img src="alliance-eagle-mark-closed.png" className="brand-lockup-mark" alt="" />
+                            <div className="brand-lockup-copy">
+                                <div className="brand-lockup-name">Alliance</div>
+                                <div className="brand-lockup-line"><span>Jiu Jitsu</span><span className="brand-kids" aria-label="Kids"><span className="kids-k">K</span><span className="kids-i">i</span><span className="kids-d">d</span><span className="kids-s">s</span></span></div>
+                                <div className="brand-unit-label"><i className="fas fa-location-dot"></i>{professorView === "central" ? "Painel Central da Rede" : (selectedUnit?.nome || DEFAULT_UNIT_NAME)}</div>
+                            </div>
+                        </div>
                     </div>
                     {/* Botão de backup */}
                     {mode === "Professor" && (
@@ -6179,7 +6408,24 @@
                 </header>
 
                 {storageWarning && <div className="warning-banner">{storageWarning}</div>}
-                {mode === "Professor" && totalUnreadProfessor > 0 && professorView !== "conversas" && (
+
+                {mode === "Professor" && professorView !== "central" && (
+                    <div className="unit-context-bar">
+                        <div className="unit-context-info">
+                            <span className="unit-context-icon"><i className="fas fa-building"></i></span>
+                            <span><small>Unidade em operação</small><strong>{selectedUnit?.nome || DEFAULT_UNIT_NAME}</strong></span>
+                        </div>
+                        {isCentralAdmin && (
+                            <div className="unit-context-actions">
+                                <select value={effectiveUnitId} onChange={e => { setSelectedUnitId(e.target.value); setSearchTerm(""); setFilterGroup("Todos"); setExpandedSearchStudentId(null); }}>
+                                    {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
+                                </select>
+                                <button className="filter-btn" onClick={() => setProfessorView("central")}><i className="fas fa-th-large"></i> Central</button>
+                            </div>
+                        )}
+                    </div>
+                )}
+                {mode === "Professor" && totalUnreadProfessor > 0 && !["conversas", "central"].includes(professorView) && (
                     <div className="pending-message-alert">
                         <div>
                             <strong><i className="fas fa-bell"></i> Mensagens pendentes de leitura</strong>
@@ -6191,11 +6437,85 @@
 
                 {mode === "Professor" && (
                     <>
+                        {professorView === "central" && isCentralAdmin && (() => {
+                            const centralActive = students.filter(student => (student.status || "Ativo") === "Ativo").length;
+                            const centralActiveUnits = units.filter(unit => (unit.status || "Ativa") !== "Inativa").length;
+                            const centralActiveRate = students.length ? Math.round((centralActive / students.length) * 100) : 0;
+                            const centralActiveStudents = students.filter(student => (student.status || "Ativo") === "Ativo");
+                            const getCentralStudentProgress = student => getGraduationProgress(student.aulas, student.nascimento, student.faixa, student.comp, student.categoriaOverride).percentual || 0;
+                            const centralAverageProgress = centralActiveStudents.length ? Math.round(centralActiveStudents.reduce((total, student) => total + getCentralStudentProgress(student), 0) / centralActiveStudents.length) : 0;
+                            const unitOperationalRows = units.map(unit => {
+                                const unitStudents = students.filter(student => getStudentUnitId(student) === unit.id);
+                                const activeStudents = unitStudents.filter(student => (student.status || "Ativo") === "Ativo");
+                                const retention = unitStudents.length ? Math.round((activeStudents.length / unitStudents.length) * 100) : 0;
+                                const evolution = activeStudents.length ? Math.round(activeStudents.reduce((total, student) => total + getCentralStudentProgress(student), 0) / activeStudents.length) : 0;
+                                return { unit, unitStudents, activeStudents, retention, evolution };
+                            });
+                            const unitsBelowNetworkAverage = unitOperationalRows.filter(row => row.activeStudents.length && row.evolution < centralAverageProgress).length;
+                            return (
+                                <section className="central-page">
+                                    <div className="central-hero">
+                                        <div className="central-hero-copy">
+                                            <span className="central-hero-icon"><i className="fas fa-network-wired"></i></span>
+                                            <div><h2>Painel Central</h2><p>Visão consolidada das unidades Alliance e acesso à operação de cada academia.</p></div>
+                                        </div>
+                                        <button className="dashboard-pdf-btn" onClick={() => setModalOpen('units')}><i className="fas fa-plus"></i> Nova unidade</button>
+                                    </div>
+                                    <div className="central-kpis">
+                                        <div className="central-kpi"><i className="fas fa-building"></i><strong>{units.length}</strong><span>Unidades cadastradas</span><small>{centralActiveUnits} em operação</small></div>
+                                        <div className="central-kpi"><i className="fas fa-user-graduate"></i><strong>{students.length}</strong><span>Alunos na rede</span><small>Base consolidada</small></div>
+                                        <div className="central-kpi"><i className="fas fa-user-check"></i><strong>{centralActive}</strong><span>Alunos ativos</span><small>{centralActiveRate}% da base</small></div>
+                                        <div className="central-kpi"><i className="fas fa-chart-line"></i><strong>{centralAverageProgress}%</strong><span>Evolução média da rede</span><small>Alunos ativos de todas as unidades</small></div>
+                                    </div>
+                                    <div className="central-network-health">
+                                        <div className="central-health-card">
+                                            <div className="central-health-ring" style={{"--value": centralActiveRate}}><strong>{centralActiveRate}%</strong></div>
+                                            <div className="central-health-copy"><small>Saúde da rede</small><h3>Base ativa consolidada</h3><p>Percentual de alunos ativos considerando todas as unidades cadastradas.</p></div>
+                                            <div className="central-health-stats">
+                                                <span><b>{centralActiveUnits}/{units.length || 0}</b><small>unidades ativas</small></span>
+                                                <span><b>{centralActiveRate}%</b><small>taxa de retenção</small></span>
+                                            </div>
+                                        </div>
+                                        <div className={`central-attention-card ${unitsBelowNetworkAverage ? "has-alert" : ""}`}>
+                                            <i className={unitsBelowNetworkAverage ? "fas fa-chart-area" : "fas fa-check-circle"}></i>
+                                            <div><small>Desempenho das unidades</small><strong>{unitsBelowNetworkAverage ? `${unitsBelowNetworkAverage} unidade${unitsBelowNetworkAverage === 1 ? "" : "s"} abaixo da média da rede` : "Unidades alinhadas à média da rede"}</strong><span>{unitsBelowNetworkAverage ? "Compare retenção e evolução para direcionar o acompanhamento." : "Nenhuma unidade ativa está abaixo da evolução média atual."}</span></div>
+                                        </div>
+                                    </div>
+                                    <div className="central-units-head">
+                                        <div><h3>Unidades</h3><p>Selecione uma unidade para acessar alunos, BI, arquivos e conversas isolados.</p></div>
+                                        <button className="filter-btn" onClick={() => setModalOpen('users')}><i className="fas fa-users-cog"></i> Usuários</button>
+                                    </div>
+                                    <div className="central-unit-grid">
+                                        {unitOperationalRows.map(({unit, unitStudents, activeStudents, retention, evolution}) => {
+                                            const unitActive = activeStudents.length;
+                                            return (
+                                                <article key={unit.id} className={`central-unit-card ${unit.status === "Inativa" ? "inactive" : ""}`}>
+                                                    <div className="central-unit-top">
+                                                        <div className="central-unit-title"><i className="fas fa-map-marker-alt"></i><span><strong>{unit.nome}</strong><small>{unit.cidade || "Unidade Alliance"}</small></span></div>
+                                                        <span className={`central-unit-status ${unit.status === "Inativa" ? "off" : ""}`}>{unit.status || "Ativa"}</span>
+                                                    </div>
+                                                    <div className="central-unit-metrics">
+                                                        <div className="central-unit-metric"><b>{unitStudents.length}</b><span>Alunos</span></div>
+                                                        <div className="central-unit-metric"><b>{retention}%</b><span>Retenção</span></div>
+                                                        <div className="central-unit-metric"><b>{evolution}%</b><span>Evolução média</span></div>
+                                                    </div>
+                                                    <div className="central-unit-progress">
+                                                        <div className="central-unit-progress-head"><span>{unitActive} de {unitStudents.length} alunos ativos</span><b>{retention}% de retenção</b></div>
+                                                        <div className="central-unit-progress-track"><span style={{width:`${retention}%`}}></span></div>
+                                                    </div>
+                                                    <button className="central-unit-open" disabled={unit.status === "Inativa"} onClick={() => { setSelectedUnitId(unit.id); setProfessorView("alunos"); setSearchTerm(""); setFilterGroup("Todos"); }}><i className="fas fa-arrow-right"></i> Entrar na unidade</button>
+                                                </article>
+                                            );
+                                        })}
+                                    </div>
+                                </section>
+                            );
+                        })()}
                         {professorView === "alunos" && (
                             <div className="summary-grid">
-                                <div className="summary-item"><strong>{students.length}</strong><span>alunos</span></div>
+                                <div className="summary-item"><strong>{scopedStudents.length}</strong><span>alunos</span></div>
                                 <div className={`summary-item clickable ${summaryDetail === "prontos" ? "active" : ""}`} onClick={() => setSummaryDetail(summaryDetail === "prontos" ? null : "prontos")}><strong>{readyStudents}</strong><span>prontos para exame</span></div>
-                                <div className="summary-item"><strong>{repo.length}</strong><span>arquivos</span></div>
+                                <div className="summary-item"><strong>{scopedRepo.length}</strong><span>arquivos</span></div>
                             </div>
                         )}
                         {professorView === "alunos" && summaryDetail === "prontos" && (
@@ -6377,7 +6697,7 @@
                                 <div className="dashboard-command-list">
                                     {attentionRows.length > 0 ? attentionRows.slice(0, 5).map((s, index) => (
                                         <button className="dashboard-command-row" key={`command-${s.id}-${index}`} onClick={() => s.priorityTypes.includes("Mensagem") ? (setProfessorView("conversas"), openProfessorConversation(s.id)) : openStudentFromDashboard(s.nome)}>
-                                            <img className="mini-avatar" src={s.avatar || (s.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY)} alt={s.nome} />
+                                            <StudentAvatar className="mini-avatar" src={s.avatar} sexo={s.sexo} alt={s.nome} />
                                             <span className="dashboard-action-copy">
                                                 <b>{s.nome}</b>
                                                 <small>{s.priorityReasons?.[0] || (s.ultimaPresenca ? `Última presença: ${formatDateBR(s.ultimaPresenca)}` : "Sem presença registrada")}</small>
@@ -6467,7 +6787,7 @@
                             <div className={`dashboard-card ${dashboardDetail === "frequencia" ? "active" : ""}`} onClick={() => revealDashboardDetail("frequencia")}><strong>{highestPresenceCount}</strong><span>Top frequência</span><small>{studentPresenceRanking[0] ? `${studentPresenceRanking[0].nome} lidera no ${dashboardPeriodLabel}` : "Sem presenças no período"}</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "alunos" ? "active" : ""}`} onClick={() => revealDashboardDetail("alunos")}><strong>{dashboardStudents.length}</strong><span>Alunos cadastrados</span><small>{activeStudents.length} ativos ou em acompanhamento</small></div>
                             <div className={`dashboard-card ${dashboardDetail === "imagem" ? "active" : ""}`} onClick={() => revealDashboardDetail("imagem")}><strong>{imageAuthPending}</strong><span>Autorização pendente</span><small>Alunos sem autorização de imagem marcada</small></div>
-                            <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => revealDashboardDetail("arquivos")}><strong>{repo.length}</strong><span>Arquivos</span><small>Anexos disponíveis no repositório interno</small></div>
+                            <div className={`dashboard-card ${dashboardDetail === "arquivos" ? "active" : ""}`} onClick={() => revealDashboardDetail("arquivos")}><strong>{scopedRepo.length}</strong><span>Arquivos</span><small>Anexos disponíveis no repositório interno</small></div>
                         </div>
 
                         <div className="dashboard-priority-grid">
@@ -6554,11 +6874,7 @@
                                 {activeDashboardDetail.rows.length > 0 ? activeDashboardDetail.rows.map(row => (
                                     row.studentCard ? (
                                         <div className={`dashboard-detail-student-card ${row.compactPresenceCard ? "presence-compact" : ""} ${row.compactMiniCard ? "mini-compact" : ""}`} key={`${dashboardDetail}-${row.id}`} onClick={row.action}>
-                                            <img
-                                                className="student-compact-avatar"
-                                                src={row.avatar || (row.sexo === "F" ? AVATAR_GIRL : AVATAR_BOY)}
-                                                alt={row.name}
-                                            />
+                                            <StudentAvatar className="student-compact-avatar" src={row.avatar} sexo={row.sexo} alt={row.name} />
                                             <div className="dashboard-detail-student-main">
                                                 <b>{row.ranking ? `${row.ranking}º lugar • ${row.name}` : row.name}</b>
                                                 <small>{row.meta}</small>
@@ -6688,7 +7004,7 @@
                                                 {index === 0 ? (
                                                     <span className="dashboard-frequency-card">
                                                         <span className="dashboard-frequency-card-top">
-                                                            <img src={student.avatar || defaultAvatar} className="dashboard-frequency-avatar" alt={student.nome} />
+                                                            <StudentAvatar src={student.avatar} sexo={student.sexo} className="dashboard-frequency-avatar" alt={student.nome} />
                                                             <span className="dashboard-frequency-content">
                                                                 <em className="dashboard-rank-chip">1º lugar</em>
                                                                 <strong className="dashboard-frequency-name">{student.nome}</strong>
@@ -6796,7 +7112,7 @@
                                 const lastText = s.lastMessage?.isImage ? "Imagem recebida" : (s.lastMessage?.text || (s.lastMessage?.fileName ? `Arquivo: ${s.lastMessage.fileName}` : "Sem mensagens"));
                                 return (
                                     <div key={s.id} className={`conversation-item ${selectedConversation?.id === s.id ? "active" : ""} ${s.unread > 0 ? "unread" : ""}`} onClick={() => openProfessorConversation(s.id)}>
-                                        <img src={s.avatar || defaultAvatar} className="conversation-avatar" />
+                                        <StudentAvatar src={s.avatar} sexo={s.sexo} className="conversation-avatar" alt={s.nome} />
                                         <div className="conversation-main">
                                             <div className="conversation-name">{s.nome}</div>
                                             <div className="conversation-last">{lastText}</div>
@@ -6844,7 +7160,7 @@
                     </section>
                 )}
 
-                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && renderedStudents.length === 0 && (
+                {!(mode === "Professor" && ["central", "conversas", "painel"].includes(professorView)) && renderedStudents.length === 0 && (
                     <div className="empty-state">
                         <img className="empty-eagle-mark" src="alliance-eagle-mark-closed.png" alt="" />
                             <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : (mode === "Professor" && !professorHasQuery ? "Faça uma consulta" : "Nenhum aluno encontrado")}</strong>
@@ -6852,7 +7168,7 @@
                     </div>
                 )}
 
-                {!(mode === "Professor" && ["conversas", "painel"].includes(professorView)) && renderedStudents.length > 0 && (
+                {!(mode === "Professor" && ["central", "conversas", "painel"].includes(professorView)) && renderedStudents.length > 0 && (
                     <div className={useCompactStudentResults ? "student-results-grid" : ""}>
                     {renderedStudents.map(s => {
                     const ruleInfo = getRuleInfo(s.nascimento, s.faixa, s.categoriaOverride);
@@ -6869,7 +7185,7 @@
                     if (showCompactStudentCard) {
                         return (
                             <div key={s.id} className="student-compact-card" onClick={() => setExpandedSearchStudentId(s.id)}>
-                                <img src={s.avatar || defaultAvatar} className="student-compact-avatar" />
+                                <StudentAvatar src={s.avatar} sexo={s.sexo} className="student-compact-avatar" alt={s.nome} />
                                 <div className="student-compact-main">
                                     <strong>{s.nome}</strong>
                                     <span>{calculateAge(s.nascimento)} anos - {getAutoCategory(s.nascimento, s.categoriaOverride)} - {s.faixa}</span>
@@ -6887,8 +7203,8 @@
                         <div key={s.id} className={`card ${mode === "Pais" ? "parent-card" : ""} ${useCompactStudentResults ? "expanded-result-card" : ""}`}>
                             <div className="student-top">
                                 <div className="avatar-container">
-                                    <img src={s.avatar || defaultAvatar} className="avatar" />
-                                    {(mode === "Professor" || mode === "Pais") && <label className="edit-badge"><i className="fas fa-camera"></i><input type="file" style={{display:'none'}} accept="image/*" onChange={e => handleFile(e.target.files[0], 'avatar', s.id)} /></label>}
+                                    <StudentAvatar src={s.avatar} sexo={s.sexo} className="avatar" alt={s.nome} />
+                                    {(mode === "Professor" || mode === "Pais") && <button type="button" className="edit-badge" title="Alterar foto ou escolher avatar" onClick={() => setAvatarPickerStudent({ id: s.id, nome: s.nome, sexo: s.sexo || "M", avatar: s.avatar || "" })}><i className="fas fa-camera"></i></button>}
                                 </div>
                                 <div style={{flex:1}}>
                                     <h3 style={{margin:0, fontSize:'19px', color: 'white'}}>
@@ -6902,7 +7218,7 @@
                                         <details className="student-info-toggle">
                                             <summary><i className="fas fa-user-edit"></i> Informações do aluno</summary>
                                             <div className="parent-header-info">
-                                            <div className="student-info-chip"><strong>{getStudentUnitName(s)}</strong>Unidade</div>
+                                            <div className="student-info-chip"><strong>{getStudentUnitName(s, units)}</strong>Unidade</div>
                                             <div className={`student-info-chip status-badge ${(s.status || "Ativo").toLowerCase()}`}><strong>{s.status || "Ativo"}</strong>Status</div>
                                             {s.responsavel && <div className="student-info-chip"><strong>{s.responsavel}</strong>Respons&aacute;vel</div>}
                                             {s.telefone && <div className="student-info-chip"><strong>{s.telefone}</strong>WhatsApp</div>}
@@ -7244,7 +7560,8 @@
                 {mode !== "Pais" && mode === "Professor" && professorView === "alunos" && !expandedSearchStudentId && <div className="action-bar">
                     {mode === "Professor" ? (
                         <>
-                            <div className="action-item" onClick={() => { setProfessorView("alunos"); setModalOpen('add'); }}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
+                            {isCentralAdmin && <div className="action-item" onClick={() => setProfessorView("central")}><i className="fas fa-building"></i><span>CENTRAL</span></div>}
+                            <div className="action-item" onClick={() => { setProfessorView("alunos"); setForm({...createEmptyStudentForm(), unidadeId: effectiveUnitId}); setModalOpen('add'); }}><i className="fas fa-user-plus"></i><span>ALUNO</span></div>
                             <div className="action-item" onClick={() => setModalOpen('repo')}><i className="fas fa-folder-open"></i><span>ARQUIVOS</span></div>
                             {canAccessDashboard && <div className="action-item" onClick={() => setProfessorView("painel")}><i className="fas fa-chart-pie"></i><span>PAINEL</span></div>}
                             <div className="action-item" onClick={() => setProfessorView("conversas")}>
@@ -7304,6 +7621,9 @@
                             <button className="btn-full" style={{background: '#172033', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={downloadAuditTrail}>
                                 <i className="fas fa-file-shield"></i> BAIXAR AUDITORIA
                             </button>
+                            <button className="btn-full" style={{background: '#172033', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={() => { setAuditSearch(""); setModalOpen('audit'); }}>
+                                <i className="fas fa-magnifying-glass-chart"></i> CONSULTAR AUDITORIA
+                            </button>
                             {canManageUsers && (
                                 <button className="btn-full" style={{background: '#0f2438', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={() => setModalOpen('users')}>
                                     <i className="fas fa-users-gear"></i> USUÁRIOS DO SISTEMA
@@ -7313,6 +7633,65 @@
                                 <i className="fas fa-upload"></i> IMPORTAR BACKUP
                                 <input type="file" style={{display:'none'}} accept=".json" onChange={importBackup} />
                             </label>
+                            <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
+                        </div>
+                    </div>
+                )}
+
+                {modalOpen === 'audit' && canManageUsers && (() => {
+                    const query = auditSearch.trim().toLocaleLowerCase("pt-BR");
+                    const entries = getAuditTrail().filter(entry => !query || String(entry).toLocaleLowerCase("pt-BR").includes(query));
+                    return (
+                        <div className="modal-overlay">
+                            <div className="modal-content">
+                                <h3>Auditoria do Sistema</h3>
+                                <p style={{color:'var(--text-muted)', fontSize:'13px'}}>Consulte usuário, data, ação e valores alterados. Os registros mais recentes aparecem primeiro.</p>
+                                <div className="audit-toolbar">
+                                    <input aria-label="Pesquisar auditoria" placeholder="Pesquisar usuário, aluno ou alteração..." value={auditSearch} onChange={e => setAuditSearch(e.target.value)} />
+                                    <button className="filter-btn" onClick={() => setAuditSearch("")}><i className="fas fa-eraser"></i> LIMPAR</button>
+                                </div>
+                                <div className="audit-list">
+                                    {entries.length ? entries.slice(0, 250).map((entry, index) => <div className="audit-entry" key={`${index}-${entry}`}>{entry}</div>) : <div className="audit-empty">Nenhuma alteração encontrada.</div>}
+                                </div>
+                                <button className="btn-full" onClick={downloadAuditTrail}><i className="fas fa-download"></i> BAIXAR AUDITORIA COMPLETA</button>
+                                <button className="btn-full" onClick={() => setModalOpen('backup')}>VOLTAR</button>
+                            </div>
+                        </div>
+                    );
+                })()}
+
+                {modalOpen === 'units' && isCentralAdmin && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Unidades da Rede</h3>
+                            <p style={{color:'var(--text-muted)', marginTop:'-8px', fontSize:'13px'}}>Cadastre a unidade e depois vincule professores e recepção ao acesso correto.</p>
+                            <div className="form-grid">
+                                <div>
+                                    <label className="field-label">Nome da unidade</label>
+                                    <input placeholder="Ex.: Alliance Tatuapé" value={unitForm.nome} onChange={e => setUnitForm({...unitForm, nome:e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="field-label">Cidade</label>
+                                    <input placeholder="Cidade" value={unitForm.cidade} onChange={e => setUnitForm({...unitForm, cidade:e.target.value})} />
+                                </div>
+                            </div>
+                            <button className="btn-full" style={{background:'var(--alliance-green)', color:'#fff'}} onClick={() => {
+                                const nome = unitForm.nome.trim();
+                                if (!nome) return alert("Informe o nome da unidade.");
+                                const baseId = nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `unidade-${Date.now()}`;
+                                const id = units.some(unit => unit.id === baseId) ? `${baseId}-${Date.now()}` : baseId;
+                                setUnits([...units, { id, nome, cidade: unitForm.cidade.trim() || "São Paulo", status:"Ativa", createdAt:new Date().toISOString() }]);
+                                setUnitForm({ nome:"", cidade:"São Paulo", status:"Ativa" });
+                            }}><i className="fas fa-plus"></i> ADICIONAR UNIDADE</button>
+                            <div style={{display:'grid', gap:'10px', margin:'18px 0'}}>
+                                {units.map(unit => {
+                                    const count = students.filter(student => getStudentUnitId(student) === unit.id).length;
+                                    return <div key={unit.id} style={{display:'grid', gridTemplateColumns:'1fr auto', gap:'10px', alignItems:'center', padding:'13px', border:'1px solid var(--border-color)', borderRadius:'14px', background:'rgba(255,255,255,.03)'}}>
+                                        <div><strong style={{display:'block', color:'var(--text-main)'}}>{unit.nome}</strong><small style={{color:'var(--text-muted)'}}>{unit.cidade || "Sem cidade"} • {count} aluno{count === 1 ? "" : "s"} • {unit.status || "Ativa"}</small></div>
+                                        <button className="filter-btn" disabled={unit.id === DEFAULT_UNIT_ID} onClick={() => setUnits(units.map(item => item.id === unit.id ? {...item, status:item.status === "Inativa" ? "Ativa" : "Inativa"} : item))}>{unit.id === DEFAULT_UNIT_ID ? "Principal" : (unit.status === "Inativa" ? "Ativar" : "Inativar")}</button>
+                                    </div>;
+                                })}
+                            </div>
                             <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
                         </div>
                     </div>
@@ -7336,10 +7715,17 @@
                                 </div>
                                 <div>
                                     <label className="field-label">Perfil</label>
-                                    <select value={userForm.perfil} onChange={e => setUserForm({...userForm, perfil: e.target.value})}>
+                                    <select value={userForm.perfil} onChange={e => setUserForm({...userForm, perfil: e.target.value, unidadeId: e.target.value === "Administrador" ? "all" : (userForm.unidadeId === "all" ? effectiveUnitId : userForm.unidadeId)})}>
                                         <option value="Administrador">Administrador</option>
                                         <option value="Professor">Professor</option>
                                         <option value="Recepção">Recepção (sem painel)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="field-label">Unidade de acesso</label>
+                                    <select disabled={userForm.perfil === "Administrador"} value={userForm.perfil === "Administrador" ? "all" : (userForm.unidadeId || effectiveUnitId)} onChange={e => setUserForm({...userForm, unidadeId: e.target.value})}>
+                                        {userForm.perfil === "Administrador" && <option value="all">Todas as unidades</option>}
+                                        {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
                                     </select>
                                 </div>
                                 <div>
@@ -7356,8 +7742,9 @@
                                 const senha = userForm.senha.trim();
                                 if (!nome || !login || !senha) return alert("Preencha nome, login e senha.");
                                 if (users.some(user => String(user.login || "").toLowerCase().trim() === login.toLowerCase())) return alert("Já existe um usuário com este login.");
-                                setUsers([...users, { ...userForm, nome, login, senha, id: Date.now(), createdAt: new Date().toISOString() }]);
-                                setUserForm({ nome: "", login: "", senha: "", perfil: "Professor", status: "Ativo" });
+                                const unidadeId = userForm.perfil === "Administrador" ? "all" : (userForm.unidadeId || effectiveUnitId);
+                                setUsers([...users, { ...userForm, unidadeId, nome, login, senha, id: Date.now(), createdAt: new Date().toISOString() }]);
+                                setUserForm({ nome: "", login: "", senha: "", perfil: "Professor", unidadeId: effectiveUnitId, status: "Ativo" });
                             }}>
                                 <i className="fas fa-user-plus"></i> ADICIONAR USUÁRIO
                             </button>
@@ -7366,7 +7753,7 @@
                                     <div key={user.id} style={{display:'grid', gridTemplateColumns:'1fr auto auto auto', gap:'10px', alignItems:'center', padding:'12px', border:'1px solid var(--border-color)', borderRadius:'14px', background:'rgba(255,255,255,0.03)'}}>
                                         <div>
                                             <strong style={{display:'block', color:'#fff'}}>{user.nome}</strong>
-                                            <small style={{color:'#9aa6b2'}}>{user.login} • {user.perfil} • {user.status || "Ativo"}</small>
+                                            <small style={{color:'#9aa6b2'}}>{user.login} • {user.perfil} • {user.perfil === "Administrador" ? "Todas as unidades" : (units.find(unit => unit.id === (user.unidadeId || DEFAULT_UNIT_ID))?.nome || DEFAULT_UNIT_NAME)} • {user.status || "Ativo"}</small>
                                         </div>
                                         <button className="filter-btn" onClick={() => {
                                             const novaSenha = prompt(`Nova senha para ${user.nome}:`, "");
@@ -7408,7 +7795,7 @@
                                 </div>
                                 <div>
                                     <label className="field-label">Sexo</label>
-                                    <select value={form.sexo} onChange={e => setForm({...form, sexo: e.target.value})}>
+                                    <select value={form.sexo} onChange={e => { const sexo = e.target.value; setForm({...form, sexo, avatar: getAvatarPreset(form.avatar)?.sexo === sexo ? form.avatar : getDefaultPresetForSex(sexo)}); }}>
                                         <option value="M">Masculino</option>
                                         <option value="F">Feminino</option>
                                     </select>
@@ -7419,6 +7806,10 @@
                                         {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
                                     </select>
                                 </div>
+                            </div>
+                            <div className="avatar-picker-inline">
+                                <label className="field-label">Avatar opcional</label>
+                                <AvatarOptions sexo={form.sexo || "M"} value={form.avatar} onSelect={avatar => setForm({...form, avatar})} />
                             </div>
                             <div className="form-grid">
                                 <div>
@@ -7464,9 +7855,9 @@
                                 const exists = students.some(s => s.nome.toLowerCase().trim() === nome.toLowerCase() && s.nascimento === form.nascimento);
                                 if (exists) return alert("Este aluno já está cadastrado.");
                                 const categoriaTexto = form.categoriaOverride === "Auto" ? getAutoCategory(form.nascimento) : `${form.categoriaOverride} (manual)`;
-                                setStudents([...students, normalizeStudent({ ...form, nome, id: Date.now(), aulas: 0, cicloFaixaInicio: form.matricula || getTodayISO(), beltHistory: [], historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`, `Unidade inicial: ${getStudentUnitName(form)}`] })]);
+                                setStudents([...students, normalizeStudent({ ...form, unidadeId: form.unidadeId || effectiveUnitId, nome, id: Date.now(), aulas: 0, cicloFaixaInicio: form.matricula || getTodayISO(), beltHistory: [], historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`, `Unidade inicial: ${getStudentUnitName(form, units)}`] })]);
                                 setModalOpen(null);
-                                setForm(createEmptyStudentForm());
+                                setForm({...createEmptyStudentForm(), unidadeId: effectiveUnitId});
                             }}>SALVAR</button>
                             <button className="btn-full" onClick={() => setModalOpen(null)}>CANCELAR</button>
                         </div>
@@ -7487,8 +7878,8 @@
                                 </div>
                             )}
                             <div style={{marginTop:'15px'}}>
-                                {repo.length === 0 && <p style={{textAlign:'center', color:'#555'}}>Nenhum arquivo disponível.</p>}
-                                {repo.map(r => (
+                                {scopedRepo.length === 0 && <p style={{textAlign:'center', color:'#555'}}>Nenhum arquivo disponível nesta unidade.</p>}
+                                {scopedRepo.map(r => (
                                     <div key={r.id} className="repo-item">
                                         <div style={{flex:1, overflow:'hidden', marginRight:'10px'}}>
                                             <div style={{fontSize:'13px', fontWeight:'bold', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{r.name}</div>
@@ -7520,7 +7911,7 @@
                                 </div>
                                 <div>
                                     <label className="field-label">Sexo</label>
-                                    <select value={editingStudent.sexo || "M"} onChange={e => setEditingStudent({...editingStudent, sexo: e.target.value})}>
+                                    <select value={editingStudent.sexo || "M"} onChange={e => { const sexo = e.target.value; setEditingStudent({...editingStudent, sexo, avatar: getAvatarPreset(editingStudent.avatar)?.sexo === sexo ? editingStudent.avatar : getDefaultPresetForSex(sexo)}); }}>
                                         <option value="M">Masculino</option>
                                         <option value="F">Feminino</option>
                                     </select>
@@ -7531,6 +7922,10 @@
                                         {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
                                     </select>
                                 </div>
+                            </div>
+                            <div className="avatar-picker-inline">
+                                <label className="field-label">Avatar opcional</label>
+                                <AvatarOptions sexo={editingStudent.sexo || "M"} value={editingStudent.avatar || ""} onSelect={avatar => setEditingStudent({...editingStudent, avatar, avatarFileId: ""})} />
                             </div>
                             <div className="form-grid">
                                 <div>
@@ -7595,7 +7990,7 @@
                                 }
 
                                 if (alunoOriginal && getStudentUnitId(alunoOriginal) !== getStudentUnitId(alunoAtualizado)) {
-                                    logs.push(createAuditLog("Unidade alterada", "Unidade", getStudentUnitName(alunoOriginal), getStudentUnitName(alunoAtualizado)));
+                                    logs.push(createAuditLog("Unidade alterada", "Unidade", getStudentUnitName(alunoOriginal, units), getStudentUnitName(alunoAtualizado, units)));
                                 }
 
                                 const statusAnterior = alunoOriginal?.status || "Ativo";
@@ -7621,6 +8016,33 @@
                                 setModalOpen(null);
                             }}>ATUALIZAR</button>
                             <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
+                        </div>
+                    </div>
+                )}
+
+                {avatarPickerStudent && (
+                    <div className="modal-overlay" onClick={() => setAvatarPickerStudent(null)}>
+                        <div className="modal-content avatar-picker-modal" onClick={event => event.stopPropagation()}>
+                            <h3>Escolher avatar</h3>
+                            <p>Selecione uma opção para {avatarPickerStudent.nome} ou envie uma foto própria.</p>
+                            <AvatarOptions
+                                sexo={avatarPickerStudent.sexo}
+                                value={avatarPickerStudent.avatar}
+                                onSelect={avatar => selectStudentAvatar(avatarPickerStudent.id, avatar)}
+                            />
+                            <label className="btn-full avatar-upload-button">
+                                <i className="fas fa-camera"></i> ENVIAR FOTO
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    onChange={event => {
+                                        handleFile(avatarPickerStudent.id, event.target.files[0], 'avatar');
+                                        setAvatarPickerStudent(null);
+                                    }}
+                                />
+                            </label>
+                            <button className="btn-full" onClick={() => setAvatarPickerStudent(null)}>FECHAR</button>
                         </div>
                     </div>
                 )}

@@ -1,4 +1,4 @@
-const CACHE_NAME = "alliance-mooca-kids-pwa-v51";
+const CACHE_NAME = "alliance-jiu-jitsu-kids-pwa-v54";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -8,6 +8,7 @@ const APP_SHELL = [
   "./alliance-jiu-jitsu-mooca-complete.png",
   "./alliance-eagle-mark.png",
   "./alliance-eagle-mark-closed.png",
+  "./kids-avatar-options.png",
   "./eagle-cutout.png",
   "./avatar.png",
   "./logo.jpg",
@@ -50,6 +51,21 @@ self.addEventListener("fetch", (event) => {
 
   if (isAppwriteOrSupabase) {
     event.respondWith(fetch(event.request));
+    return;
+  }
+
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put("./index.html", copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match("./index.html"))
+    );
     return;
   }
 
