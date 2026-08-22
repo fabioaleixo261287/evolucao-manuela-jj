@@ -6441,17 +6441,29 @@
                             const centralActive = students.filter(student => (student.status || "Ativo") === "Ativo").length;
                             const centralActiveUnits = units.filter(unit => (unit.status || "Ativa") !== "Inativa").length;
                             const centralActiveRate = students.length ? Math.round((centralActive / students.length) * 100) : 0;
-                            const centralActiveStudents = students.filter(student => (student.status || "Ativo") === "Ativo");
-                            const getCentralStudentProgress = student => getGraduationProgress(student.aulas, student.nascimento, student.faixa, student.comp, student.categoriaOverride).percentual || 0;
-                            const centralAverageProgress = centralActiveStudents.length ? Math.round(centralActiveStudents.reduce((total, student) => total + getCentralStudentProgress(student), 0) / centralActiveStudents.length) : 0;
+                            const centralReferenceDate = new Date();
+                            const centralMonthStart = new Date(centralReferenceDate.getFullYear(), centralReferenceDate.getMonth(), 1);
+                            const centralNextMonthStart = new Date(centralReferenceDate.getFullYear(), centralReferenceDate.getMonth() + 1, 1);
+                            const isCurrentMonthEnrollment = student => {
+                                const enrollmentDate = parseLocalDate(student.matricula || "");
+                                return enrollmentDate && enrollmentDate >= centralMonthStart && enrollmentDate < centralNextMonthStart;
+                            };
+                            const centralNewThisMonth = students.filter(isCurrentMonthEnrollment).length;
+                            const centralPreviousBase = students.filter(student => {
+                                const enrollmentDate = parseLocalDate(student.matricula || "");
+                                return enrollmentDate && enrollmentDate < centralMonthStart;
+                            }).length;
+                            const centralGrowthRate = centralPreviousBase
+                                ? Math.round((centralNewThisMonth / centralPreviousBase) * 100)
+                                : (centralNewThisMonth ? 100 : 0);
                             const unitOperationalRows = units.map(unit => {
                                 const unitStudents = students.filter(student => getStudentUnitId(student) === unit.id);
                                 const activeStudents = unitStudents.filter(student => (student.status || "Ativo") === "Ativo");
                                 const retention = unitStudents.length ? Math.round((activeStudents.length / unitStudents.length) * 100) : 0;
-                                const evolution = activeStudents.length ? Math.round(activeStudents.reduce((total, student) => total + getCentralStudentProgress(student), 0) / activeStudents.length) : 0;
-                                return { unit, unitStudents, activeStudents, retention, evolution };
+                                const newThisMonth = unitStudents.filter(isCurrentMonthEnrollment).length;
+                                return { unit, unitStudents, activeStudents, retention, newThisMonth };
                             });
-                            const unitsBelowNetworkAverage = unitOperationalRows.filter(row => row.activeStudents.length && row.evolution < centralAverageProgress).length;
+                            const unitsWithoutNewEnrollments = unitOperationalRows.filter(row => (row.unit.status || "Ativa") !== "Inativa" && row.newThisMonth === 0).length;
                             return (
                                 <section className="central-page">
                                     <div className="central-hero">
@@ -6465,7 +6477,7 @@
                                         <div className="central-kpi"><i className="fas fa-building"></i><strong>{units.length}</strong><span>Unidades cadastradas</span><small>{centralActiveUnits} em operação</small></div>
                                         <div className="central-kpi"><i className="fas fa-user-graduate"></i><strong>{students.length}</strong><span>Alunos na rede</span><small>Base consolidada</small></div>
                                         <div className="central-kpi"><i className="fas fa-user-check"></i><strong>{centralActive}</strong><span>Alunos ativos</span><small>{centralActiveRate}% da base</small></div>
-                                        <div className="central-kpi"><i className="fas fa-chart-line"></i><strong>{centralAverageProgress}%</strong><span>Evolução média da rede</span><small>Alunos ativos de todas as unidades</small></div>
+                                        <div className="central-kpi"><i className="fas fa-chart-line"></i><strong>+{centralGrowthRate}%</strong><span>Crescimento da base</span><small>{centralNewThisMonth} nova{centralNewThisMonth === 1 ? " matrícula" : "s matrículas"} no mês</small></div>
                                     </div>
                                     <div className="central-network-health">
                                         <div className="central-health-card">
@@ -6476,9 +6488,9 @@
                                                 <span><b>{centralActiveRate}%</b><small>taxa de retenção</small></span>
                                             </div>
                                         </div>
-                                        <div className={`central-attention-card ${unitsBelowNetworkAverage ? "has-alert" : ""}`}>
-                                            <i className={unitsBelowNetworkAverage ? "fas fa-chart-area" : "fas fa-check-circle"}></i>
-                                            <div><small>Desempenho das unidades</small><strong>{unitsBelowNetworkAverage ? `${unitsBelowNetworkAverage} unidade${unitsBelowNetworkAverage === 1 ? "" : "s"} abaixo da média da rede` : "Unidades alinhadas à média da rede"}</strong><span>{unitsBelowNetworkAverage ? "Compare retenção e evolução para direcionar o acompanhamento." : "Nenhuma unidade ativa está abaixo da evolução média atual."}</span></div>
+                                        <div className={`central-attention-card ${unitsWithoutNewEnrollments ? "has-alert" : ""}`}>
+                                            <i className={unitsWithoutNewEnrollments ? "fas fa-chart-area" : "fas fa-check-circle"}></i>
+                                            <div><small>Captação das unidades</small><strong>{unitsWithoutNewEnrollments ? `${unitsWithoutNewEnrollments} unidade${unitsWithoutNewEnrollments === 1 ? "" : "s"} sem novas matrículas no mês` : "Todas as unidades captaram no mês"}</strong><span>{unitsWithoutNewEnrollments ? "Compare captação e retenção para direcionar o acompanhamento." : "Todas as unidades ativas registraram novas matrículas no período atual."}</span></div>
                                         </div>
                                     </div>
                                     <div className="central-units-head">
@@ -6486,7 +6498,7 @@
                                         <button className="filter-btn" onClick={() => setModalOpen('users')}><i className="fas fa-users-cog"></i> Usuários</button>
                                     </div>
                                     <div className="central-unit-grid">
-                                        {unitOperationalRows.map(({unit, unitStudents, activeStudents, retention, evolution}) => {
+                                        {unitOperationalRows.map(({unit, unitStudents, activeStudents, retention, newThisMonth}) => {
                                             const unitActive = activeStudents.length;
                                             return (
                                                 <article key={unit.id} className={`central-unit-card ${unit.status === "Inativa" ? "inactive" : ""}`}>
@@ -6497,7 +6509,7 @@
                                                     <div className="central-unit-metrics">
                                                         <div className="central-unit-metric"><b>{unitStudents.length}</b><span>Alunos</span></div>
                                                         <div className="central-unit-metric"><b>{retention}%</b><span>Retenção</span></div>
-                                                        <div className="central-unit-metric"><b>{evolution}%</b><span>Evolução média</span></div>
+                                                        <div className="central-unit-metric"><b>{newThisMonth}</b><span>Novos no mês</span></div>
                                                     </div>
                                                     <div className="central-unit-progress">
                                                         <div className="central-unit-progress-head"><span>{unitActive} de {unitStudents.length} alunos ativos</span><b>{retention}% de retenção</b></div>

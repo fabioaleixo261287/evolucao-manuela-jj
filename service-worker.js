@@ -1,4 +1,4 @@
-const CACHE_NAME = "alliance-jiu-jitsu-kids-pwa-v55";
+const CACHE_NAME = "alliance-jiu-jitsu-kids-pwa-v56";
 const APP_SHELL = [
   "./",
   "./index.html",
