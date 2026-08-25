@@ -7,6 +7,19 @@ export function validateBackupPayload(payload) {
   if (payload?.repo != null && !Array.isArray(payload.repo)) errors.push("Repositório inválido");
   if (payload?.users != null && !Array.isArray(payload.users)) errors.push("Usuários inválidos");
   if (payload?.units != null && !Array.isArray(payload.units)) errors.push("Unidades inválidas");
+  const units = Array.isArray(payload?.units) ? payload.units : [];
+  const unitIds = units.map(unit => String(unit?.id || "").trim());
+  if (unitIds.some(id => !id)) errors.push("Existe unidade sem identificador");
+  if (new Set(unitIds).size !== unitIds.length) errors.push("Existem identificadores de unidade duplicados");
+  const students = Array.isArray(payload?.students) ? payload.students : [];
+  const studentIds = students.map(student => String(student?.id ?? "").trim()).filter(Boolean);
+  if (studentIds.length !== students.length) errors.push("Existe aluno sem identificador");
+  if (new Set(studentIds).size !== studentIds.length) errors.push("Existem identificadores de aluno duplicados");
+  if (units.length) {
+    const allowedUnits = new Set(unitIds);
+    const invalidReferences = students.filter(student => student?.unidadeId && !allowedUnits.has(String(student.unidadeId)));
+    if (invalidReferences.length) errors.push(`${invalidReferences.length} aluno(s) apontam para unidade inexistente`);
+  }
   return { valid: errors.length === 0, errors };
 }
 

@@ -32,4 +32,19 @@ describe("migração de backup", () => {
     expect(result.payload.units.map(unit => unit.id)).toEqual(["alliance-mooca", "alliance-teste"]);
     expect(result.payload.students.map(student => student.unidadeId)).toEqual(["alliance-mooca", "alliance-teste"]);
   });
+
+  it("rejeita alunos duplicados", () => {
+    const result = validateBackupPayload({ students: [{ id: 1 }, { id: 1 }] });
+    expect(result.valid).toBe(false);
+    expect(result.errors.join(" ")).toContain("duplicados");
+  });
+
+  it("rejeita referência para unidade inexistente", () => {
+    const result = validateBackupPayload({
+      students: [{ id: 1, unidadeId: "unidade-inexistente" }],
+      units: [{ id: "alliance-mooca" }]
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.join(" ")).toContain("unidade inexistente");
+  });
 });

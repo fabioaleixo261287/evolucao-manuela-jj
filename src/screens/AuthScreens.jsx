@@ -40,7 +40,8 @@ export function LoginScreen({ subMode, auth, onAuthChange, onLogin, onBack }) {
           <div className="auth-hero-frame"><BrandLockup /></div>
           <h3 className="login-heading">Acesso {subMode === "Pais" ? "dos Pais" : "do Professor"}</h3>
           <input placeholder={subMode === "Professor" ? "Usuário" : "Nome do Aluno"} value={auth.user} onChange={event => onAuthChange({ ...auth, user: event.target.value })} />
-          <input type="password" placeholder={subMode === "Professor" ? "Senha" : "Nascimento (DDMMAAAA)"} value={auth.pass} onChange={event => onAuthChange({ ...auth, pass: event.target.value })} />
+          <input type="password" placeholder={subMode === "Professor" ? "Senha" : "Código de acesso do responsável"} value={auth.pass} onChange={event => onAuthChange({ ...auth, pass: event.target.value })} />
+          {subMode === "Pais" && <p className="parent-access-help">Esqueceu o código? Solicite à academia uma redefinição segura.</p>}
           <button className="btn-full" style={{ background: "var(--alliance-red)", color: "white" }} onClick={onLogin}>ENTRAR</button>
           <p className="back-link" onClick={onBack}>Voltar à seleção</p>
         </div>

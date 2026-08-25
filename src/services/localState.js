@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from "../config/runtime.js";
+import { APP_NAME, APP_VERSION, DATA_SCHEMA_VERSION } from "../config/version.js";
 
 export function readStoredArray(key, fallback = []) {
   try {
@@ -16,8 +17,9 @@ export function getStoredArrayCount(key) {
 export function buildBackupPayload(students, repo, source = "manual", users = [], units = []) {
   return {
     source,
-    app: "Alliance Jiu Jitsu Kids",
-    version: "alliance_mooca_kids_v22",
+    app: APP_NAME,
+    version: APP_VERSION,
+    schemaVersion: DATA_SCHEMA_VERSION,
     timestamp: new Date().toISOString(),
     students: students || [],
     repo: repo || [],

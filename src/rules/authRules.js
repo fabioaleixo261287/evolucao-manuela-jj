@@ -1,7 +1,7 @@
-export function authenticateProfessor(users, login, password) {
+export function authenticateProfessor(users, login, password, options = {}) {
   const typedLogin = String(login || "").toLowerCase().trim();
   const typedPassword = String(password || "").trim();
-  if (typedLogin === "admin" && typedPassword === "admin") {
+  if (options.allowLegacyAdmin && typedLogin === "admin" && typedPassword === "admin") {
     return { id: 1, nome: "Administrador", login: "admin", perfil: "Administrador", unidadeId: "all", status: "Ativo" };
   }
   return (users || []).find(user =>
@@ -20,11 +20,47 @@ export function normalizeBirthPassword(birthday) {
   return value.replace(/\D/g, "");
 }
 
-export function findParentStudent(students, name, birthPassword) {
+const PARENT_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+export function generateParentAccessCode(length = 8, randomValues) {
+  const size = Math.max(6, Number(length) || 8);
+  const values = randomValues || (() => {
+    const bytes = new Uint32Array(size);
+    crypto.getRandomValues(bytes);
+    return bytes;
+  })();
+  return Array.from({ length: size }, (_, index) => PARENT_CODE_ALPHABET[values[index] % PARENT_CODE_ALPHABET.length]).join("");
+}
+
+export function getParentLoginGuard(state = {}, now = Date.now()) {
+  const lockedUntil = Number(state.lockedUntil) || 0;
+  return {
+    attempts: Math.max(0, Number(state.attempts) || 0),
+    lockedUntil,
+    locked: lockedUntil > now,
+    remainingMs: Math.max(0, lockedUntil - now)
+  };
+}
+
+export function registerParentLoginFailure(state = {}, now = Date.now(), maxAttempts = 5, lockMs = 15 * 60 * 1000) {
+  const current = getParentLoginGuard(state, now);
+  if (current.locked) return current;
+  const attempts = current.attempts + 1;
+  return attempts >= maxAttempts
+    ? { attempts: 0, lockedUntil: now + lockMs, locked: true, remainingMs: lockMs }
+    : { attempts, lockedUntil: 0, locked: false, remainingMs: 0 };
+}
+
+export function findParentStudent(students, name, birthPassword, options = {}) {
   const normalizedName = String(name || "").toLowerCase().trim();
-  const normalizedPassword = String(birthPassword || "").replace(/\D/g, "");
-  return (students || []).find(student =>
-    String(student.nome || "").toLowerCase().trim() === normalizedName &&
-    normalizeBirthPassword(student.nascimento) === normalizedPassword
-  ) || null;
+  const typedCredential = String(birthPassword || "").trim();
+  if (!normalizedName || !typedCredential) return null;
+  const matches = (students || []).filter(student => {
+    const accessCode = String(student.acessoPaisSenha || "").trim();
+    const validCredential = accessCode.length >= 6
+      ? accessCode === typedCredential
+      : options.allowLegacyBirthDate && normalizeBirthPassword(student.nascimento) === typedCredential.replace(/\D/g, "");
+    return String(student.nome || "").toLowerCase().trim() === normalizedName && validCredential;
+  });
+  return matches.length === 1 ? matches[0] : null;
 }

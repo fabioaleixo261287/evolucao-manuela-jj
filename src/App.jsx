@@ -9,7 +9,7 @@ import { createAppwriteServices, createSupabaseClient, getAppwriteErrorMessage, 
 import BrandLockup from "./components/BrandLockup.jsx";
 import { LoginScreen, RoleSelectionScreen } from "./screens/AuthScreens.jsx";
 import BeltHistory from "./components/BeltHistory.jsx";
-import { authenticateProfessor, findParentStudent } from "./rules/authRules.js";
+import { authenticateProfessor, findParentStudent, generateParentAccessCode, getParentLoginGuard, registerParentLoginFailure } from "./rules/authRules.js";
 import { migrateBackupPayload } from "./rules/backupRules.js";
 import { buildCentralMetrics } from "./rules/centralMetrics.js";
 import CentralDashboard from "./screens/CentralDashboard.jsx";
@@ -31,14 +31,15 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
     const LOCAL_BACKUP_HISTORY_KEY = STORAGE_KEYS.backupHistory;
     const LOCAL_AUDIT_KEY = STORAGE_KEYS.audit;
     const SUPABASE_STATE_ID = REMOTE_CONFIG.stateId;
-    const createDefaultSystemUsers = () => ([
+    const createDefaultSystemUsers = () => LOCAL_DEMO_MODE ? ([
         { id: 1, nome: "Administrador", login: "admin", senha: "admin", perfil: "Administrador", unidadeId: "all", status: "Ativo", createdAt: new Date().toISOString() }
-    ]);
+    ]) : [];
 
     const FILE_LIMITS = {
         avatar: 350 * 1024,
         chatImage: 650 * 1024,
         repoImage: 900 * 1024,
+        backup: 25 * 1024 * 1024,
         genericFile: 1200 * 1024
     };
 
@@ -327,6 +328,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
         responsavel: "",
         telefone: "",
         email: "",
+        acessoPaisSenha: "",
         matricula: getTodayISO(),
         ultimaPresenca: "",
         necessidades: "",
@@ -408,6 +410,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
             window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone === true
         );
         const [editingStudent, setEditingStudent] = React.useState(null);
+        const [parentAccessCodeDraft, setParentAccessCodeDraft] = React.useState("");
         const [avatarPickerStudent, setAvatarPickerStudent] = React.useState(null);
         const [storageWarning, setStorageWarning] = React.useState("");
         const [isHydrated, setIsHydrated] = React.useState(false);
@@ -466,7 +469,10 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
         const canAccessDashboard = currentProfile !== "Recepção";
         const canManageUsers = currentProfile === "Administrador";
         const isCentralAdmin = currentProfile === "Administrador";
-        const unitOptions = units.filter(unit => (unit.status || "Ativa") === "Ativa" || unit.id === selectedUnitId);
+        const unitOptions = units.filter(unit => {
+            const isVisible = (unit.status || "Ativa") === "Ativa" || unit.id === selectedUnitId;
+            return isVisible && (isCentralAdmin || unit.id === (currentUser?.unidadeId || DEFAULT_UNIT_ID));
+        });
         const effectiveUnitId = isCentralAdmin ? selectedUnitId : (currentUser?.unidadeId || DEFAULT_UNIT_ID);
         const selectedUnit = units.find(unit => unit.id === effectiveUnitId) || units[0] || defaultUnitOptions[0];
         const scopedStudents = students.filter(student => getStudentUnitId(student) === effectiveUnitId);
@@ -948,9 +954,21 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
             return () => clearInterval(refreshTimer);
         }, [appwriteServices, supabaseClient, isHydrated]);
 
+        const readParentLoginGuards = () => {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.parentLoginGuard) || "{}"); }
+            catch { return {}; }
+        };
+        const getParentGuardKey = (name) => String(name || "").toLocaleLowerCase("pt-BR").trim();
+        const writeParentLoginGuard = (key, value) => {
+            const guards = readParentLoginGuards();
+            if (value) guards[key] = value;
+            else delete guards[key];
+            localStorage.setItem(STORAGE_KEYS.parentLoginGuard, JSON.stringify(guards));
+        };
+
         const handleLogin = () => {
             if (subMode === 'Professor') {
-                const loggedUser = authenticateProfessor(users, auth.user, auth.pass);
+                const loggedUser = authenticateProfessor(users, auth.user, auth.pass, { allowLegacyAdmin: LOCAL_DEMO_MODE });
                 if (loggedUser) {
                     setCurrentUser(loggedUser);
                     if (loggedUser.perfil === "Administrador") {
@@ -963,8 +981,16 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                 }
                 else alert('Usuário ou senha incorretos.');
             } else {
-                const aluno = findParentStudent(students, auth.user, auth.pass);
+                const guardKey = getParentGuardKey(auth.user);
+                const guard = getParentLoginGuard(readParentLoginGuards()[guardKey]);
+                if (guard.locked) {
+                    const minutes = Math.max(1, Math.ceil(guard.remainingMs / 60000));
+                    return alert(`Acesso temporariamente bloqueado. Tente novamente em ${minutes} minuto${minutes === 1 ? "" : "s"} ou solicite a redefinição do código à academia.`);
+                }
+                const aluno = findParentStudent(students, auth.user, auth.pass, { allowLegacyBirthDate: LOCAL_DEMO_MODE });
                 if (aluno) {
+                    writeParentLoginGuard(guardKey, null);
+                    createAuditLog("Acesso dos pais realizado", "Aluno", aluno.nome, "acesso autorizado");
                     setSelectedUnitId(getStudentUnitId(aluno));
                     setMode('Pais');
                     setSearchTerm(aluno.nome);
@@ -972,7 +998,17 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                     setExpandedSearchStudentId(null);
                     setProfessorView("alunos");
                 }
-                else alert('Dados incorretos.');
+                else {
+                    const nextGuard = registerParentLoginFailure(guard);
+                    writeParentLoginGuard(guardKey, nextGuard);
+                    if (nextGuard.locked) {
+                        createAuditLog("Acesso dos pais bloqueado", "Identificação informada", auth.user || "não informada", "5 tentativas inválidas");
+                        alert("Acesso bloqueado por 15 minutos após 5 tentativas inválidas. Solicite à academia a redefinição do código se necessário.");
+                    } else {
+                        const remaining = 5 - nextGuard.attempts;
+                        alert(`Nome ou código incorreto. Restam ${remaining} tentativa${remaining === 1 ? "" : "s"} antes do bloqueio temporário.`);
+                    }
+                }
             }
         };
 
@@ -1294,6 +1330,11 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
         const importBackup = (e) => {
             const file = e.target.files[0];
             if (!file) return;
+            e.target.value = "";
+            if (file.size > FILE_LIMITS.backup) {
+                alert("O backup excede o limite de 25 MB.");
+                return;
+            }
             const reader = new FileReader();
             reader.onload = (event) => {
                 try {
@@ -1306,6 +1347,14 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                         const restoredUsers = migrated.users.length ? migrated.users : users;
                         const restoredUnits = migrated.units.length ? migrated.units : units;
                         const restoredUnitId = restoredUnits.some(unit => unit.id === selectedUnitId) ? selectedUnitId : restoredUnits[0]?.id || DEFAULT_UNIT_ID;
+                        const confirmation = prompt(`Esta operação substituirá a base atual por ${restoredStudents.length} aluno(s) em ${restoredUnits.length} unidade(s). Digite RESTAURAR para continuar.`, "");
+                        if (confirmation !== "RESTAURAR") {
+                            alert("Restauração cancelada. Nenhum dado foi alterado.");
+                            return;
+                        }
+                        const safetyBackup = buildBackupPayload(students, repo, "pre-restore", users, units);
+                        localStorage.setItem(STORAGE_KEYS.preRestoreBackup, JSON.stringify(safetyBackup));
+                        saveAutomaticLocalBackup(students, repo, "pre-restore", users, units);
                         localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(restoredStudents));
                         localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(restoredRepo));
                         localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(restoredUsers));
@@ -2158,7 +2207,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                     faixa: s.faixa,
                     turma: getAutoCategory(s.nascimento, s.categoriaOverride),
                     status: s.status || "Ativo",
-                    action: () => { setEditingStudent({...s}); setModalOpen("edit"); }
+                    action: () => { setEditingStudent({...s}); setParentAccessCodeDraft(""); setModalOpen("edit"); }
                 }))
             },
             desafios: {
@@ -3064,7 +3113,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                 <div style={{flex:1}}>
                                     <h3 style={{margin:0, fontSize:'19px', color: 'white'}}>
                                         {s.nome} 
-                                        {mode === "Professor" && <i className="fas fa-edit btn-edit-info" onClick={() => { setEditingStudent({...s}); setModalOpen('edit'); }}></i>}
+                                        {mode === "Professor" && <i className="fas fa-edit btn-edit-info" onClick={() => { setEditingStudent({...s}); setParentAccessCodeDraft(""); setModalOpen('edit'); }}></i>}
                                         {(mode === "Professor" || mode === "Pais") && <i className="fas fa-file-pdf btn-edit-info" title="Gerar relatório individual" onClick={() => generateStudentReport(s)}></i>}
                                     </h3>
                                     <div className="cat-badge">{s.faixa}</div><br/>
@@ -3464,30 +3513,36 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                     <i className="fas fa-sun"></i> Tema claro
                                 </button>
                             </div>
-                            <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={downloadBackup}>
-                                <i className="fas fa-download"></i> GERAR BACKUP (.JSON)
-                            </button>
-                            <button className="btn-full" style={{background: '#f6c400', color:'#071827'}} onClick={downloadAutomaticLocalBackup}>
-                                <i className="fas fa-save"></i> BAIXAR BACKUP AUTOMÁTICO LOCAL
-                            </button>
+                            {canManageUsers && <>
+                                <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={downloadBackup}>
+                                    <i className="fas fa-download"></i> GERAR BACKUP (.JSON)
+                                </button>
+                                <button className="btn-full" style={{background: '#f6c400', color:'#071827'}} onClick={downloadAutomaticLocalBackup}>
+                                    <i className="fas fa-save"></i> BAIXAR BACKUP AUTOMÁTICO LOCAL
+                                </button>
+                            </>}
                             <button className="btn-full" style={{background: '#3498db', color:'white'}} onClick={syncLocalChangesNow}>
                                 <i className="fas fa-sync-alt"></i> SINCRONIZAR PENDÊNCIAS AGORA
                             </button>
-                            <button className="btn-full" style={{background: '#172033', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={downloadAuditTrail}>
-                                <i className="fas fa-file-shield"></i> BAIXAR AUDITORIA
-                            </button>
-                            <button className="btn-full" style={{background: '#172033', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={() => { setAuditSearch(""); setModalOpen('audit'); }}>
-                                <i className="fas fa-magnifying-glass-chart"></i> CONSULTAR AUDITORIA
-                            </button>
+                            {canManageUsers && <>
+                                <button className="btn-full" style={{background: '#172033', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={downloadAuditTrail}>
+                                    <i className="fas fa-file-shield"></i> BAIXAR AUDITORIA
+                                </button>
+                                <button className="btn-full" style={{background: '#172033', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={() => { setAuditSearch(""); setModalOpen('audit'); }}>
+                                    <i className="fas fa-magnifying-glass-chart"></i> CONSULTAR AUDITORIA
+                                </button>
+                            </>}
                             {canManageUsers && (
                                 <button className="btn-full" style={{background: '#0f2438', color:'#f6c400', border:'1px solid rgba(246,196,0,0.35)'}} onClick={() => setModalOpen('users')}>
                                     <i className="fas fa-users-gear"></i> USUÁRIOS DO SISTEMA
                                 </button>
                             )}
-                            <label className="btn-full" style={{background: 'var(--alliance-red)', color:'white', display:'block', textAlign:'center', cursor:'pointer', marginTop:'15px'}}>
-                                <i className="fas fa-upload"></i> IMPORTAR BACKUP
-                                <input type="file" style={{display:'none'}} accept=".json" onChange={importBackup} />
-                            </label>
+                            {canManageUsers && (
+                                <label className="btn-full" style={{background: 'var(--alliance-red)', color:'white', display:'block', textAlign:'center', cursor:'pointer', marginTop:'15px'}}>
+                                    <i className="fas fa-upload"></i> IMPORTAR BACKUP
+                                    <input type="file" style={{display:'none'}} accept=".json" onChange={importBackup} />
+                                </label>
+                            )}
                             <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>
                         </div>
                     </div>
@@ -3556,7 +3611,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <h3>Usuários do Sistema</h3>
-                            <p style={{color:'#9aa6b2', marginTop:'-8px', fontSize:'13px'}}>Crie acessos para professores, recepção ou administradores. O acesso dos pais continua pelo nome do aluno e nascimento.</p>
+                            <p style={{color:'#9aa6b2', marginTop:'-8px', fontSize:'13px'}}>Crie acessos para professores, recepção ou administradores. Os pais entram com o nome do aluno e o código individual definido no cadastro.</p>
                             <label className="field-label">Nome</label>
                             <input placeholder="Nome do usuário" value={userForm.nome} onChange={e => setUserForm({...userForm, nome: e.target.value})} />
                             <div className="form-grid">
@@ -3657,7 +3712,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                 </div>
                                 <div>
                                     <label className="field-label">Unidade</label>
-                                    <select value={form.unidadeId || DEFAULT_UNIT_ID} onChange={e => setForm({...form, unidadeId: e.target.value})}>
+                                    <select disabled={!isCentralAdmin} value={isCentralAdmin ? (form.unidadeId || effectiveUnitId) : effectiveUnitId} onChange={e => setForm({...form, unidadeId: e.target.value})}>
                                         {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
                                     </select>
                                 </div>
@@ -3689,6 +3744,14 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                     <label className="field-label">E-mail do responsável</label>
                                     <input placeholder="E-mail do responsável" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
                                 </div>
+                                <div>
+                                    <label className="field-label">Código de acesso dos pais</label>
+                                    <div style={{display:"flex", gap:"8px"}}>
+                                        <input type="text" autoComplete="off" placeholder="Mínimo de 6 caracteres" value={form.acessoPaisSenha} onChange={e => setForm({...form, acessoPaisSenha: e.target.value.toUpperCase()})} />
+                                        <button type="button" className="icon-btn" title="Gerar código seguro" onClick={() => setForm({...form, acessoPaisSenha: generateParentAccessCode()})}><i className="fas fa-key"></i></button>
+                                    </div>
+                                    <small className="field-help">Entregue este código ao responsável. Ele não será exibido novamente após salvar.</small>
+                                </div>
                             </div>
                             <textarea placeholder="Observação interna / necessidade especial" value={form.necessidades} onChange={e => setForm({...form, necessidades: e.target.value})}></textarea>
                             <textarea placeholder="Observações internas do professor" value={form.observacoesInternas} onChange={e => setForm({...form, observacoesInternas: e.target.value})}></textarea>
@@ -3706,11 +3769,14 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                             </select>
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
                                 if(!form.nome || !form.nascimento) return alert("Preencha tudo!");
+                                if (String(form.acessoPaisSenha || "").trim().length < 6) return alert("Defina um código de acesso dos pais com pelo menos 6 caracteres.");
                                 const nome = form.nome.trim();
                                 const exists = students.some(s => s.nome.toLowerCase().trim() === nome.toLowerCase() && s.nascimento === form.nascimento);
                                 if (exists) return alert("Este aluno já está cadastrado.");
                                 const categoriaTexto = form.categoriaOverride === "Auto" ? getAutoCategory(form.nascimento) : `${form.categoriaOverride} (manual)`;
-                                setStudents([...students, normalizeStudent({ ...form, unidadeId: form.unidadeId || effectiveUnitId, nome, id: Date.now(), aulas: 0, cicloFaixaInicio: form.matricula || getTodayISO(), beltHistory: [], historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`, `Unidade inicial: ${getStudentUnitName(form, units)}`] })]);
+                                const unidadeId = isCentralAdmin ? (form.unidadeId || effectiveUnitId) : effectiveUnitId;
+                                const accessAudit = createAuditLog("Acesso dos pais criado", "Aluno", nome, "código protegido configurado");
+                                setStudents([...students, normalizeStudent({ ...form, acessoPaisSenha: form.acessoPaisSenha.trim(), unidadeId, nome, id: Date.now(), aulas: 0, cicloFaixaInicio: form.matricula || getTodayISO(), beltHistory: [], historico: [`Matrícula realizada em ${new Date().toLocaleDateString('pt-BR')}`, `Turma inicial: ${categoriaTexto}`, `Unidade inicial: ${getStudentUnitName({ ...form, unidadeId }, units)}`, accessAudit] })]);
                                 setModalOpen(null);
                                 setForm({...createEmptyStudentForm(), unidadeId: effectiveUnitId});
                             }}>SALVAR</button>
@@ -3773,7 +3839,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                 </div>
                                 <div>
                                     <label className="field-label">Unidade</label>
-                                    <select value={editingStudent.unidadeId || DEFAULT_UNIT_ID} onChange={e => setEditingStudent({...editingStudent, unidadeId: e.target.value})}>
+                                    <select disabled={!isCentralAdmin} value={isCentralAdmin ? (editingStudent.unidadeId || effectiveUnitId) : effectiveUnitId} onChange={e => setEditingStudent({...editingStudent, unidadeId: e.target.value})}>
                                         {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
                                     </select>
                                 </div>
@@ -3809,6 +3875,14 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                     <label className="field-label">E-mail do responsável</label>
                                     <input placeholder="E-mail do responsável" value={editingStudent.email || ""} onChange={e => setEditingStudent({...editingStudent, email: e.target.value})} />
                                 </div>
+                                <div>
+                                    <label className="field-label">Redefinir acesso dos pais</label>
+                                    <div style={{display:"flex", gap:"8px"}}>
+                                        <input type="text" autoComplete="off" placeholder={editingStudent.acessoPaisSenha ? "Código atual protegido" : "Novo código obrigatório"} value={parentAccessCodeDraft} onChange={e => setParentAccessCodeDraft(e.target.value.toUpperCase())} />
+                                        <button type="button" className="icon-btn" title="Gerar novo código seguro" onClick={() => setParentAccessCodeDraft(generateParentAccessCode())}><i className="fas fa-key"></i></button>
+                                    </div>
+                                    <small className="field-help">{editingStudent.acessoPaisSenha ? "O código atual está protegido. Preencha somente para redefinir." : "Este aluno ainda não possui código. Gere um antes de salvar."}</small>
+                                </div>
                             </div>
                             <textarea placeholder="Observação interna / necessidade especial" value={editingStudent.necessidades || ""} onChange={e => setEditingStudent({...editingStudent, necessidades: e.target.value})}></textarea>
                             <textarea placeholder="Observações internas do professor" value={editingStudent.observacoesInternas || ""} onChange={e => setEditingStudent({...editingStudent, observacoesInternas: e.target.value})}></textarea>
@@ -3827,9 +3901,19 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                             <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={() => {
                                 if(!editingStudent.nome.trim() || !editingStudent.nascimento) return alert("Preencha tudo!");
                                 const alunoOriginal = students.find(s => s.id === editingStudent.id);
+                                if (!alunoOriginal || (!isCentralAdmin && getStudentUnitId(alunoOriginal) !== effectiveUnitId)) return alert("Você não tem permissão para alterar alunos de outra unidade.");
+                                const novoCodigoPais = String(parentAccessCodeDraft || "").trim();
+                                if (novoCodigoPais && novoCodigoPais.length < 6) return alert("O novo código de acesso dos pais deve ter pelo menos 6 caracteres.");
+                                if (!novoCodigoPais && String(alunoOriginal.acessoPaisSenha || "").trim().length < 6) return alert("Este aluno ainda não possui acesso dos pais. Gere um código antes de salvar.");
                                 const hoje = new Date().toLocaleDateString('pt-BR');
                                 const logs = [];
-                                let alunoAtualizado = normalizeStudent({ ...editingStudent, nome: editingStudent.nome.trim() });
+                                const unidadePermitida = isCentralAdmin ? getStudentUnitId(editingStudent) : effectiveUnitId;
+                                let alunoAtualizado = normalizeStudent({ ...editingStudent, acessoPaisSenha: novoCodigoPais || alunoOriginal.acessoPaisSenha, unidadeId: unidadePermitida, nome: editingStudent.nome.trim() });
+
+                                if (novoCodigoPais) {
+                                    logs.push(createAuditLog(alunoOriginal.acessoPaisSenha ? "Acesso dos pais redefinido" : "Acesso dos pais criado", "Código de acesso", alunoOriginal.acessoPaisSenha ? "código protegido" : "não configurado", "novo código protegido"));
+                                    writeParentLoginGuard(getParentGuardKey(alunoOriginal.nome), null);
+                                }
 
                                 if (alunoOriginal && alunoOriginal.faixa !== alunoAtualizado.faixa) {
                                     if (!window.confirm(`Alterar a faixa de ${alunoOriginal.nome} de ${alunoOriginal.faixa} para ${alunoAtualizado.faixa}? O ciclo atual será encerrado e os contadores serão reiniciados.`)) return;
@@ -3869,6 +3953,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
 
                                 if (logs.length) alunoAtualizado = { ...alunoAtualizado, historico: [...(alunoOriginal?.historico || []), ...logs] };
                                 setStudents(students.map(s => s.id === editingStudent.id ? alunoAtualizado : s));
+                                setParentAccessCodeDraft("");
                                 setModalOpen(null);
                             }}>ATUALIZAR</button>
                             <button className="btn-full" onClick={() => setModalOpen(null)}>FECHAR</button>

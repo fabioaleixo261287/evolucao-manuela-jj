@@ -16,7 +16,9 @@ export const STORAGE_KEYS = {
   pendingSync: `all_eagle_v22_pending_sync${suffix}`,
   autoBackup: `all_eagle_v22_auto_backup${suffix}`,
   backupHistory: `all_eagle_v22_backup_history${suffix}`,
-  audit: `all_eagle_v22_audit${suffix}`
+  audit: `all_eagle_v22_audit${suffix}`,
+  parentLoginGuard: `all_eagle_v22_parent_login_guard${suffix}`,
+  preRestoreBackup: `all_eagle_v22_pre_restore${suffix}`
 };
 
 export const REMOTE_CONFIG = {
