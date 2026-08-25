@@ -1219,6 +1219,59 @@
         body.theme-light .modal-content h4 {
             color: #0f172a !important;
         }
+        body.theme-light .summary-ready-list {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 10px 24px rgba(31,50,72,0.10) !important;
+        }
+        body.theme-light .summary-item.clickable:hover,
+        body.theme-light .summary-item.clickable.active {
+            background: #fff8df !important;
+            border-color: #c99719 !important;
+            color: #172033 !important;
+            box-shadow: 0 8px 20px rgba(155,104,0,0.12) !important;
+        }
+        body.theme-light .summary-item.clickable.active strong,
+        body.theme-light .summary-item.clickable.active span {
+            color: #172033 !important;
+        }
+        body.theme-light .summary-ready-head {
+            background: #f4f7fa !important;
+            color: #172033 !important;
+            border-bottom-color: #cbd5e1 !important;
+        }
+        body.theme-light .summary-ready-head small {
+            color: #334155 !important;
+        }
+        body.theme-light .summary-ready-row {
+            background: #ffffff !important;
+            color: #172033 !important;
+            border-bottom-color: #dbe2ea !important;
+        }
+        body.theme-light .summary-ready-row:hover {
+            background: #eef5fb !important;
+        }
+        body.theme-light .summary-ready-row span {
+            color: #42526a !important;
+        }
+        body.theme-light .pending-message-alert {
+            background: linear-gradient(135deg, #e8fff1 0%, #f7fffa 100%) !important;
+            color: #14532d !important;
+            border-color: #71d69a !important;
+            box-shadow: 0 8px 22px rgba(26,91,53,0.12) !important;
+        }
+        body.theme-light .pending-message-alert strong {
+            color: #14532d !important;
+        }
+        body.theme-light .pending-message-alert span {
+            color: #276749 !important;
+        }
+        body.theme-light .pending-message-alert button {
+            background: #087f5b !important;
+            color: #ffffff !important;
+            border-color: #066a4c !important;
+            box-shadow: 0 5px 12px rgba(8,127,91,0.18);
+        }
         body.theme-light .student-info-chip {
             background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%) !important;
             border-color: rgba(17,48,76,0.14) !important;
@@ -1678,6 +1731,9 @@
         }
         body.theme-dark .conversation-item.unread {
             background: #102016;
+        }
+        body.theme-dark .conversation-item.unread .conversation-name {
+            color: #ffffff;
         }
         body.theme-dark .conversation-item.unread .conversation-last {
             color: #dfffe9;
@@ -3704,11 +3760,208 @@
         .central-unit-progress-track { height:6px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.07); }
         .central-unit-progress-track span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#58a6ff,#f0c75e); }
         .central-unit-open { width:100%; border:1px solid rgba(212,166,42,.38); color:#f0c75e; background:rgba(212,166,42,.08); border-radius:12px; padding:11px; font-weight:900; cursor:pointer; }
+        .central-operations { overflow:hidden; border:1px solid var(--border-color); border-radius:18px; background:linear-gradient(145deg,rgba(17,26,39,.96),rgba(8,13,21,.98)); box-shadow:0 18px 40px rgba(0,0,0,.18); }
+        .central-operations-head { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:17px 19px; border-bottom:1px solid var(--border-color); }
+        .central-operations-head h3 { margin:0; color:var(--text-main); font-size:15px; }
+        .central-operations-head p { margin:4px 0 0; color:var(--text-muted); font-size:10px; }
+        .central-operations-head span { color:#f0c75e; font-size:10px; font-weight:900; text-transform:uppercase; }
+        .central-operations-scroll { overflow-x:auto; }
+        .central-operations-table { width:100%; min-width:820px; border-collapse:collapse; }
+        .central-operations-table th,.central-operations-table td { padding:12px 14px; text-align:left; border-bottom:1px solid rgba(255,255,255,.06); white-space:nowrap; }
+        .central-operations-table th { color:var(--text-muted); font-size:9px; text-transform:uppercase; }
+        .central-operations-table td { color:var(--text-main); font-size:11px; font-weight:800; }
+        .central-operations-table tbody tr:last-child td { border-bottom:0; }
+        .central-operations-table .positive { color:#2ecc71; }
+        .central-operations-table .negative { color:#ff7777; }
+        .central-operations-table .neutral { color:var(--text-muted); }
+        .central-unit-health-details { min-width:220px; }
+        .central-unit-health-details summary { display:inline-flex; align-items:center; gap:7px; color:var(--text-main); cursor:pointer; list-style:none; font-weight:900; }
+        .central-unit-health-details summary::-webkit-details-marker { display:none; }
+        .central-unit-health-details summary i { color:#f0c75e; font-size:10px; }
+        .central-unit-health-explanation { width:310px; margin-top:9px; padding:11px 12px; border-radius:11px; border:1px solid rgba(212,166,42,.22); background:rgba(255,255,255,.045); white-space:normal; font-weight:600; }
+        .central-unit-health-explanation strong,.central-unit-health-explanation span,.central-unit-health-explanation small { display:block; }
+        .central-unit-health-explanation strong { color:#f0c75e; font-size:10px; text-transform:uppercase; }
+        .central-unit-health-explanation span { margin-top:5px; color:var(--text-main); font-size:10px; line-height:1.45; }
+        .central-unit-health-explanation small { margin-top:7px; color:var(--text-muted); font-size:9px; line-height:1.45; }
+        .central-health-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 8px; border-radius:999px; color:#2ecc71; background:rgba(46,204,113,.1); font-size:9px; text-transform:uppercase; }
+        .central-health-badge.attention { color:#f0c75e; background:rgba(240,199,94,.1); }
+        .central-health-badge.critical { color:#ff7777; background:rgba(255,119,119,.1); }
         body.theme-light .unit-context-bar,body.theme-light .central-hero,body.theme-light .central-kpi,body.theme-light .central-health-card,body.theme-light .central-attention-card,body.theme-light .central-unit-card { background:linear-gradient(145deg,#fff,#f6f8fb); color:#172033; box-shadow:0 14px 34px rgba(18,38,63,.09); }
+        body.theme-light .central-operations { background:linear-gradient(145deg,#fff,#f6f8fb); box-shadow:0 14px 34px rgba(18,38,63,.09); }
+        body.theme-light .central-operations-table th,body.theme-light .central-operations-table td { border-bottom-color:#e3e7ed; }
+        body.theme-light .central-unit-health-explanation { background:#f5f7fa; border-color:#e2c978; }
         body.theme-light .central-hero h2,body.theme-light .central-kpi strong,body.theme-light .central-health-copy h3,body.theme-light .central-health-stats b,body.theme-light .central-attention-card strong,body.theme-light .central-unit-title strong,body.theme-light .central-unit-metric b { color:#172033; }
         body.theme-light .central-health-ring::before { background:#fff; }
         body.theme-light .central-health-stats>span { background:#f5f7fa; border-color:#dce2ea; }
         body.theme-light .central-unit-metric { background:#f5f7fa; border-color:#dce2ea; }
+        body.theme-light .central-page { --central-light-muted:#526174; --central-light-gold:#9b6800; }
+        body.theme-light .central-hero,
+        body.theme-light .central-kpi,
+        body.theme-light .central-health-card,
+        body.theme-light .central-attention-card,
+        body.theme-light .central-operations,
+        body.theme-light .central-unit-card { border-color:#cbd4df; box-shadow:0 8px 22px rgba(31,50,72,.10); }
+        body.theme-light .central-hero p,
+        body.theme-light .central-kpi span,
+        body.theme-light .central-kpi small,
+        body.theme-light .central-health-copy p,
+        body.theme-light .central-health-stats small,
+        body.theme-light .central-attention-card small,
+        body.theme-light .central-attention-card span,
+        body.theme-light .central-units-head p,
+        body.theme-light .central-unit-title small,
+        body.theme-light .central-unit-metric span,
+        body.theme-light .central-unit-progress-head,
+        body.theme-light .central-operations-head p,
+        body.theme-light .central-operations-table th,
+        body.theme-light .central-unit-health-explanation small { color:var(--central-light-muted); }
+        body.theme-light .central-kpi i,
+        body.theme-light .central-hero-icon,
+        body.theme-light .central-unit-title i,
+        body.theme-light .central-unit-health-details summary i,
+        body.theme-light .central-operations-head span,
+        body.theme-light .central-health-copy small,
+        body.theme-light .central-unit-progress-head b { color:var(--central-light-gold); }
+        body.theme-light .central-kpi i,
+        body.theme-light .central-hero-icon,
+        body.theme-light .central-unit-title i { background:#fff8df; border-color:#d9bd68; }
+        body.theme-light .central-unit-open { color:#805700; border-color:#c5a54a; background:#fff9e8; }
+        body.theme-light .central-unit-open:hover { background:#fff1bd; }
+        body.theme-light .central-health-ring { background:conic-gradient(#c58b08 calc(var(--value) * 1%),#dfe5ec 0); }
+        body.theme-light .central-health-ring strong { color:#172033; }
+        body.theme-light .central-unit-progress-track { background:#dce3eb; }
+        body.theme-light .central-operations-table .neutral { color:#5f6d7e; }
+
+        /* Camada final de consistencia entre temas para componentes compartilhados. */
+        body.theme-light .search-input,
+        body.theme-light .conversation-search input,
+        body.theme-light .conversation-composer input,
+        body.theme-light .parent-composer input,
+        body.theme-light textarea,
+        body.theme-light input,
+        body.theme-light select {
+            background:#ffffff !important;
+            color:#172033 !important;
+            border-color:#b8c4d2 !important;
+            box-shadow:none;
+        }
+        body.theme-light input::placeholder,
+        body.theme-light textarea::placeholder { color:#66758a !important; opacity:1; }
+        body.theme-light .search-input:focus,
+        body.theme-light input:focus,
+        body.theme-light textarea:focus,
+        body.theme-light select:focus { border-color:#9b6800 !important; box-shadow:0 0 0 3px rgba(155,104,0,.14) !important; }
+        body.theme-light .search-clear-btn,
+        body.theme-light .filter-btn:not(.active),
+        body.theme-light .view-tab:not(.active),
+        body.theme-light .student-chat-shortcut,
+        body.theme-light .dashboard-clear,
+        body.theme-light .dashboard-detail-action {
+            background:#ffffff !important;
+            color:#334155 !important;
+            border-color:#b8c4d2 !important;
+        }
+        body.theme-light .search-clear-btn:hover,
+        body.theme-light .filter-btn:not(.active):hover,
+        body.theme-light .view-tab:not(.active):hover,
+        body.theme-light .student-chat-shortcut:hover,
+        body.theme-light .dashboard-clear:hover,
+        body.theme-light .dashboard-detail-action:hover { background:#edf3f8 !important; color:#172033 !important; }
+        body.theme-light .avatar-option,
+        body.theme-light .challenge-panel,
+        body.theme-light .challenge-degree-btn,
+        body.theme-light .degree-row,
+        body.theme-light .degree-box,
+        body.theme-light .hist-details,
+        body.theme-light .chat-container,
+        body.theme-light .parent-panel,
+        body.theme-light .parent-detail,
+        body.theme-light .conversation-list,
+        body.theme-light .conversation-panel,
+        body.theme-light .dashboard-filters,
+        body.theme-light .dashboard-action-queue,
+        body.theme-light .dashboard-priority-card,
+        body.theme-light .student-compact-card,
+        body.theme-light .data-status-card,
+        body.theme-light .repo-item,
+        body.theme-light .graduation-panel,
+        body.theme-light .empty-state {
+            background:#ffffff !important;
+            color:#172033 !important;
+            border-color:#c7d1dc !important;
+            box-shadow:0 8px 22px rgba(31,50,72,.09) !important;
+        }
+        body.theme-light .check-row,
+        body.theme-light .parent-composer,
+        body.theme-light .conversation-search,
+        body.theme-light .conversation-composer,
+        body.theme-light .chat-header,
+        body.theme-light .dashboard-panel-title,
+        body.theme-light .parent-panel-title {
+            background:#f3f6f9 !important;
+            color:#172033 !important;
+            border-color:#c7d1dc !important;
+        }
+        body.theme-light .chat-msgs { background:#eef3f7 !important; }
+        body.theme-light .msg-wrapper.other .msg-bubble { background:#ffffff !important; color:#172033 !important; border:1px solid #cbd5e1; }
+        body.theme-light .msg-wrapper.self .msg-bubble { background:#087f5b !important; color:#ffffff !important; }
+        body.theme-light .conversation-item { background:#ffffff !important; border-color:#d8e0e8 !important; }
+        body.theme-light .conversation-item:hover { background:#edf3f8 !important; }
+        body.theme-light .conversation-item.active { background:#e8f1f8 !important; border-left-color:#9b6800 !important; }
+        body.theme-light .conversation-item.unread { background:#e9fff1 !important; }
+        body.theme-light .conversation-name,
+        body.theme-light .conversation-item.unread .conversation-name,
+        body.theme-light .dashboard-detail-row b,
+        body.theme-light .dashboard-detail-student-main strong,
+        body.theme-light .student-compact-main strong,
+        body.theme-light .data-status-card strong,
+        body.theme-light .repo-item strong,
+        body.theme-light .empty-state strong { color:#172033 !important; }
+        body.theme-light .conversation-last,
+        body.theme-light .student-compact-main span,
+        body.theme-light .data-status-card,
+        body.theme-light .dashboard-detail-row span,
+        body.theme-light .dashboard-detail-student-main small,
+        body.theme-light .empty-state span { color:#526174 !important; }
+        body.theme-light .dashboard-action-row,
+        body.theme-light .dashboard-mini-row,
+        body.theme-light .dashboard-detail-row,
+        body.theme-light .dashboard-detail-student-card {
+            background:#ffffff !important;
+            color:#172033 !important;
+            border-color:#cbd5e1 !important;
+        }
+        body.theme-light .dashboard-action-row:hover,
+        body.theme-light .dashboard-mini-row:hover,
+        body.theme-light .dashboard-detail-row:hover,
+        body.theme-light .dashboard-detail-student-card:hover { background:#edf3f8 !important; color:#172033 !important; }
+        body.theme-light .dashboard-detail-student-meta b,
+        body.theme-light .student-compact-meta b,
+        body.theme-light .cat-badge { background:#eef2f6 !important; color:#334155 !important; border-color:#cbd5e1 !important; }
+        body.theme-light .belt-history-head strong,
+        body.theme-light .belt-history-period b,
+        body.theme-light .belt-history-meta b,
+        body.theme-light .timeline-node b { color:#172033 !important; }
+        body.theme-light .belt-history-empty { color:#526174 !important; border-color:#b8c4d2 !important; }
+        body.theme-light .warning-banner,
+        body.theme-light .rule-warning,
+        body.theme-light .sync-banner.offline { background:#fff7df !important; color:#704d00 !important; border-color:#d6ad45 !important; }
+        body.theme-light .sync-banner.error { background:#fff0f0 !important; color:#9f1d2c !important; border-color:#e5a2aa !important; }
+        body.theme-light .empty-state i { background:#eef2f6 !important; color:#526174 !important; border-color:#cbd5e1 !important; }
+
+        body.theme-dark input::placeholder,
+        body.theme-dark textarea::placeholder { color:#aab5c4 !important; opacity:1; }
+        body.theme-dark input:focus,
+        body.theme-dark textarea:focus,
+        body.theme-dark select:focus,
+        body.theme-dark button:focus-visible,
+        body.theme-dark summary:focus-visible,
+        body.theme-light button:focus-visible,
+        body.theme-light summary:focus-visible { outline:2px solid #f0c75e; outline-offset:2px; }
+        body.theme-dark select:disabled,
+        body.theme-dark input:disabled { color:#8794a6 !important; opacity:.78; }
+        body.theme-light select:disabled,
+        body.theme-light input:disabled { background:#edf1f5 !important; color:#657286 !important; opacity:1; }
         @media(max-width:900px){.central-network-health{grid-template-columns:1fr}.central-health-stats{flex:0 0 210px}}
         @media(max-width:760px){.central-kpis{grid-template-columns:repeat(2,1fr)}.central-hero,.unit-context-bar{align-items:stretch;flex-direction:column}.central-hero-copy{align-items:flex-start}.unit-context-actions{width:100%}.unit-context-actions select{flex:1;min-width:0}.central-unit-metrics{grid-template-columns:repeat(3,1fr)}.central-health-card{align-items:flex-start;flex-wrap:wrap}.central-health-stats{width:100%;flex:1 1 100%}}
         @media(max-width:430px){.central-kpis{grid-template-columns:1fr 1fr}.central-kpi{min-height:96px;padding:14px}.central-unit-grid{grid-template-columns:1fr}.unit-context-actions{flex-direction:column}.unit-context-actions>*{width:100%}}
@@ -3764,16 +4017,21 @@
             ))}
         </div>
     );
-    const LOCAL_STUDENTS_KEY = "all_eagle_v22_s";
-    const LOCAL_REPO_KEY = "all_eagle_v22_r";
-    const LOCAL_USERS_KEY = "all_eagle_v22_users";
-    const LOCAL_UNITS_KEY = "all_eagle_v22_units";
-    const LOCAL_SELECTED_UNIT_KEY = "all_eagle_v22_selected_unit";
-    const LOCAL_THEME_KEY = "all_eagle_v22_theme";
-    const LOCAL_PENDING_SYNC_KEY = "all_eagle_v22_pending_sync";
-    const LOCAL_AUTO_BACKUP_KEY = "all_eagle_v22_auto_backup";
-    const LOCAL_BACKUP_HISTORY_KEY = "all_eagle_v22_backup_history";
-    const LOCAL_AUDIT_KEY = "all_eagle_v22_audit";
+    const PAGE_PARAMS = new URLSearchParams(window.location.search);
+    const DEMO_PACKAGE_MODE = PAGE_PARAMS.get("demo") === "1";
+    const LOCAL_DEMO_MODE = PAGE_PARAMS.get("localDemo") === "1" || DEMO_PACKAGE_MODE;
+    const DEMO_PACKAGE_URL = "./dados_demonstracao/cenario_completo_25-08-2026/backup_demo_rede_completa_98_alunos.json";
+    const LOCAL_KEY_SUFFIX = LOCAL_DEMO_MODE ? "_demo" : "";
+    const LOCAL_STUDENTS_KEY = `all_eagle_v22_s${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_REPO_KEY = `all_eagle_v22_r${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_USERS_KEY = `all_eagle_v22_users${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_UNITS_KEY = `all_eagle_v22_units${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_SELECTED_UNIT_KEY = `all_eagle_v22_selected_unit${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_THEME_KEY = `all_eagle_v22_theme${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_PENDING_SYNC_KEY = `all_eagle_v22_pending_sync${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_AUTO_BACKUP_KEY = `all_eagle_v22_auto_backup${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_BACKUP_HISTORY_KEY = `all_eagle_v22_backup_history${LOCAL_KEY_SUFFIX}`;
+    const LOCAL_AUDIT_KEY = `all_eagle_v22_audit${LOCAL_KEY_SUFFIX}`;
     const SUPABASE_STATE_ID = "alliance_mooca_kids_v22";
     const APPWRITE_ROW_ID = SUPABASE_STATE_ID;
     const APPWRITE_ENDPOINT = "https://nyc.cloud.appwrite.io/v1";
@@ -3798,6 +4056,7 @@
     };
 
     const createSupabaseClient = () => {
+        if (LOCAL_DEMO_MODE) return null;
         const { url, anonKey } = getSupabaseConfig();
         if (!url || !anonKey || !window.supabase?.createClient) return null;
         return window.supabase.createClient(url, anonKey);
@@ -3816,6 +4075,7 @@
     };
 
     const createAppwriteServices = () => {
+        if (LOCAL_DEMO_MODE) return null;
         const config = getAppwriteConfig();
         if (!config.endpoint || !config.projectId || !config.databaseId || !config.tableId) return null;
         const hasSdk = !!window.Appwrite?.Client;
@@ -3931,7 +4191,7 @@
         }
     };
 
-    const buildBackupPayload = (students, repo, source = "manual", users = []) => ({
+    const buildBackupPayload = (students, repo, source = "manual", users = [], units = []) => ({
         source,
         app: "Alliance Jiu Jitsu Kids",
         version: "alliance_mooca_kids_v22",
@@ -3939,15 +4199,16 @@
         students: students || [],
         repo: repo || [],
         users: users || [],
+        units: units || [],
         audit: (() => {
             try { return JSON.parse(localStorage.getItem(LOCAL_AUDIT_KEY) || "[]"); }
             catch(e) { return []; }
         })()
     });
 
-    const saveAutomaticLocalBackup = (students, repo, source = "auto-local", users = []) => {
+    const saveAutomaticLocalBackup = (students, repo, source = "auto-local", users = [], units = []) => {
         try {
-            const payload = buildBackupPayload(students, repo, source, users);
+            const payload = buildBackupPayload(students, repo, source, users, units);
             localStorage.setItem(LOCAL_AUTO_BACKUP_KEY, JSON.stringify(payload));
 
             const dayKey = payload.timestamp.slice(0, 10);
@@ -4418,7 +4679,7 @@
         const [avatarPickerStudent, setAvatarPickerStudent] = React.useState(null);
         const [storageWarning, setStorageWarning] = React.useState("");
         const [isHydrated, setIsHydrated] = React.useState(false);
-        const [dbStatus, setDbStatus] = React.useState(appwriteServices ? "Conectando ao Appwrite..." : (supabaseClient ? "Conectando ao Supabase..." : "Banco não configurado"));
+        const [dbStatus, setDbStatus] = React.useState(LOCAL_DEMO_MODE ? "Modo demonstração local - produção desconectada" : (appwriteServices ? "Conectando ao Appwrite..." : (supabaseClient ? "Conectando ao Supabase..." : "Banco não configurado")));
         const [pendingSync, setPendingSync] = React.useState(() => localStorage.getItem(LOCAL_PENDING_SYNC_KEY) === "1");
         const [lastAutoBackupAt, setLastAutoBackupAt] = React.useState(() => {
             try { return JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "{}").timestamp || ""; }
@@ -4431,6 +4692,42 @@
         const lastLocalSignatureRef = React.useRef("");
         const lastRemoteSignatureRef = React.useRef("");
         const [theme, setTheme] = React.useState("dark");
+
+        React.useEffect(() => {
+            if (!DEMO_PACKAGE_MODE) return;
+            let active = true;
+            fetch(DEMO_PACKAGE_URL, { cache: "no-store" })
+                .then(response => {
+                    if (!response.ok) throw new Error(`Pacote demonstrativo indisponível (${response.status})`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (!active || !Array.isArray(data.students) || !data.students.length) {
+                        throw new Error("Pacote demonstrativo sem alunos.");
+                    }
+                    const demoStudents = data.students.map(normalizeStudent);
+                    const demoRepo = Array.isArray(data.repo) ? data.repo : [];
+                    const demoUsers = Array.isArray(data.users) && data.users.length ? data.users : createDefaultSystemUsers();
+                    const demoUnits = Array.isArray(data.units) && data.units.length ? data.units : defaultUnitOptions;
+                    localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(demoStudents));
+                    localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(demoRepo));
+                    localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(demoUsers));
+                    localStorage.setItem(LOCAL_UNITS_KEY, JSON.stringify(demoUnits));
+                    localStorage.setItem(LOCAL_SELECTED_UNIT_KEY, demoUnits[0].id);
+                    setStudents(demoStudents);
+                    setRepo(demoRepo);
+                    setUsers(demoUsers);
+                    setUnits(demoUnits);
+                    setSelectedUnitId(demoUnits[0].id);
+                    setDbStatus(`Demonstração carregada: ${demoStudents.length} alunos em ${demoUnits.length} unidades`);
+                })
+                .catch(err => {
+                    console.error(err);
+                    if (active) setDbStatus(`Erro ao carregar demonstração: ${err.message}`);
+                });
+            return () => { active = false; };
+        }, []);
+
         const currentProfile = currentUser?.perfil || "Administrador";
         const canAccessDashboard = currentProfile !== "Recepção";
         const canManageUsers = currentProfile === "Administrador";
@@ -4732,7 +5029,7 @@
                 if (signatureChanged) {
                     localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(students));
                     localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(repo));
-                    saveAutomaticLocalBackup(students, repo, "auto-local", users);
+                    saveAutomaticLocalBackup(students, repo, "auto-local", users, units);
                     const backupStamp = new Date().toISOString();
                     const storedBackup = JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "{}");
                     setLastAutoBackupAt(storedBackup.timestamp || backupStamp);
@@ -5229,7 +5526,7 @@
         };
 
         const downloadBackup = () => {
-            const data = buildBackupPayload(students, repo, "manual-json", users);
+            const data = buildBackupPayload(students, repo, "manual-json", users, units);
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -5241,7 +5538,7 @@
 
         const downloadAutomaticLocalBackup = () => {
             try {
-                const data = JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "null") || buildBackupPayload(students, repo, "auto-local", users);
+                const data = JSON.parse(localStorage.getItem(LOCAL_AUTO_BACKUP_KEY) || "null") || buildBackupPayload(students, repo, "auto-local", users, units);
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -5262,10 +5559,22 @@
                 try {
                     const data = JSON.parse(event.target.result);
                     if (Array.isArray(data.students)) {
-                        setStudents(data.students.map(normalizeStudent));
-                        setRepo(Array.isArray(data.repo) ? data.repo : []);
-                        if (Array.isArray(data.users) && data.users.length) setUsers(data.users);
-                        alert("Backup restaurado com sucesso!");
+                        const restoredStudents = data.students.map(normalizeStudent);
+                        const restoredRepo = Array.isArray(data.repo) ? data.repo : [];
+                        const restoredUsers = Array.isArray(data.users) && data.users.length ? data.users : users;
+                        const restoredUnits = Array.isArray(data.units) && data.units.length ? data.units : units;
+                        const restoredUnitId = restoredUnits.some(unit => unit.id === selectedUnitId) ? selectedUnitId : restoredUnits[0]?.id || DEFAULT_UNIT_ID;
+                        localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(restoredStudents));
+                        localStorage.setItem(LOCAL_REPO_KEY, JSON.stringify(restoredRepo));
+                        localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(restoredUsers));
+                        localStorage.setItem(LOCAL_UNITS_KEY, JSON.stringify(restoredUnits));
+                        localStorage.setItem(LOCAL_SELECTED_UNIT_KEY, restoredUnitId);
+                        setStudents(restoredStudents);
+                        setRepo(restoredRepo);
+                        setUsers(restoredUsers);
+                        setUnits(restoredUnits);
+                        setSelectedUnitId(restoredUnitId);
+                        alert(`Backup restaurado: ${restoredStudents.length} alunos, ${restoredUnits.length} unidades e ${restoredUsers.length} usuários.`);
                         setModalOpen(null);
                     } else {
                         alert("Arquivo de backup inválido.");
@@ -6429,7 +6738,7 @@
                     <div className="pending-message-alert">
                         <div>
                             <strong><i className="fas fa-bell"></i> Mensagens pendentes de leitura</strong>
-                            <span>{totalUnreadProfessor} mensagem{totalUnreadProfessor === 1 ? "" : "s"} aguardando visualização em {unreadConversationCount} conversa{unreadConversationCount === 1 ? "" : "s"}.</span>
+                            <span>{totalUnreadProfessor} {totalUnreadProfessor === 1 ? "mensagem" : "mensagens"} aguardando visualização em {unreadConversationCount} conversa{unreadConversationCount === 1 ? "" : "s"}.</span>
                         </div>
                         <button onClick={() => setProfessorView("conversas")}><i className="fab fa-whatsapp"></i> Ver mensagens</button>
                     </div>
@@ -6444,24 +6753,55 @@
                             const centralReferenceDate = new Date();
                             const centralMonthStart = new Date(centralReferenceDate.getFullYear(), centralReferenceDate.getMonth(), 1);
                             const centralNextMonthStart = new Date(centralReferenceDate.getFullYear(), centralReferenceDate.getMonth() + 1, 1);
+                            const centralEngagementStart = new Date(centralReferenceDate);
+                            centralEngagementStart.setDate(centralEngagementStart.getDate() - 29);
+                            centralEngagementStart.setHours(0, 0, 0, 0);
                             const isCurrentMonthEnrollment = student => {
                                 const enrollmentDate = parseLocalDate(student.matricula || "");
                                 return enrollmentDate && enrollmentDate >= centralMonthStart && enrollmentDate < centralNextMonthStart;
                             };
                             const centralNewThisMonth = students.filter(isCurrentMonthEnrollment).length;
-                            const centralPreviousBase = students.filter(student => {
-                                const enrollmentDate = parseLocalDate(student.matricula || "");
-                                return enrollmentDate && enrollmentDate < centralMonthStart;
-                            }).length;
-                            const centralGrowthRate = centralPreviousBase
-                                ? Math.round((centralNewThisMonth / centralPreviousBase) * 100)
-                                : (centralNewThisMonth ? 100 : 0);
+                            const isInactiveStatus = status => ["Inativo", "Transferido"].includes(status || "Ativo");
+                            const exitedThisMonth = student => {
+                                const statusDate = parseLocalDate(student.statusAlteradoEm || "");
+                                return isInactiveStatus(student.status) && statusDate && statusDate >= centralMonthStart && statusDate < centralNextMonthStart;
+                            };
+                            const centralExitsThisMonth = students.filter(exitedThisMonth).length;
+                            const centralActiveAtMonthStart = Math.max(0, centralActive - centralNewThisMonth + centralExitsThisMonth);
+                            const centralNetGrowth = centralNewThisMonth - centralExitsThisMonth;
+                            const centralGrowthRate = centralActiveAtMonthStart
+                                ? Math.round((centralNetGrowth / centralActiveAtMonthStart) * 100)
+                                : (centralNetGrowth > 0 ? 100 : 0);
+                            const centralRetentionRate = centralActiveAtMonthStart
+                                ? Math.round(((centralActiveAtMonthStart - centralExitsThisMonth) / centralActiveAtMonthStart) * 100)
+                                : 0;
                             const unitOperationalRows = units.map(unit => {
                                 const unitStudents = students.filter(student => getStudentUnitId(student) === unit.id);
                                 const activeStudents = unitStudents.filter(student => (student.status || "Ativo") === "Ativo");
-                                const retention = unitStudents.length ? Math.round((activeStudents.length / unitStudents.length) * 100) : 0;
+                                const activeBaseRate = unitStudents.length ? Math.round((activeStudents.length / unitStudents.length) * 100) : 0;
                                 const newThisMonth = unitStudents.filter(isCurrentMonthEnrollment).length;
-                                return { unit, unitStudents, activeStudents, retention, newThisMonth };
+                                const exitsThisMonth = unitStudents.filter(exitedThisMonth).length;
+                                const activeAtMonthStart = Math.max(0, activeStudents.length - newThisMonth + exitsThisMonth);
+                                const netGrowth = newThisMonth - exitsThisMonth;
+                                const growthRate = activeAtMonthStart ? Math.round((netGrowth / activeAtMonthStart) * 100) : (netGrowth > 0 ? 100 : 0);
+                                const retention = activeAtMonthStart ? Math.round(((activeAtMonthStart - exitsThisMonth) / activeAtMonthStart) * 100) : 0;
+                                const engagedStudents = activeStudents.filter(student => getStudentPresenceDates(student).some(value => {
+                                    const date = parseDashboardDate(value);
+                                    return date && date >= centralEngagementStart && date <= centralReferenceDate;
+                                })).length;
+                                const engagementRate = activeStudents.length ? Math.round((engagedStudents / activeStudents.length) * 100) : 0;
+                                const healthType = retention < 80 || engagementRate < 50 ? "critical" : (retention < 90 || engagementRate < 70 || netGrowth < 0 ? "attention" : "healthy");
+                                const healthLabel = healthType === "critical" ? "Crítica" : (healthType === "attention" ? "Atenção" : "Saudável");
+                                const healthReasons = [];
+                                if (retention < 80) healthReasons.push(`retenção crítica em ${retention}%`);
+                                else if (retention < 90) healthReasons.push(`retenção requer atenção em ${retention}%`);
+                                else healthReasons.push(`retenção saudável em ${retention}%`);
+                                if (engagementRate < 50) healthReasons.push(`engajamento crítico em ${engagementRate}%`);
+                                else if (engagementRate < 70) healthReasons.push(`engajamento requer atenção em ${engagementRate}%`);
+                                else healthReasons.push(`engajamento saudável em ${engagementRate}%`);
+                                if (netGrowth < 0) healthReasons.push(`saldo negativo de ${netGrowth} aluno${Math.abs(netGrowth) === 1 ? "" : "s"}`);
+                                else healthReasons.push(`${netGrowth > 0 ? "saldo positivo de " : "saldo estável em "}${netGrowth} aluno${Math.abs(netGrowth) === 1 ? "" : "s"}`);
+                                return { unit, unitStudents, activeStudents, activeBaseRate, retention, newThisMonth, exitsThisMonth, netGrowth, growthRate, engagementRate, healthType, healthLabel, healthReasons };
                             });
                             const unitsWithoutNewEnrollments = unitOperationalRows.filter(row => (row.unit.status || "Ativa") !== "Inativa" && row.newThisMonth === 0).length;
                             return (
@@ -6477,7 +6817,7 @@
                                         <div className="central-kpi"><i className="fas fa-building"></i><strong>{units.length}</strong><span>Unidades cadastradas</span><small>{centralActiveUnits} em operação</small></div>
                                         <div className="central-kpi"><i className="fas fa-user-graduate"></i><strong>{students.length}</strong><span>Alunos na rede</span><small>Base consolidada</small></div>
                                         <div className="central-kpi"><i className="fas fa-user-check"></i><strong>{centralActive}</strong><span>Alunos ativos</span><small>{centralActiveRate}% da base</small></div>
-                                        <div className="central-kpi"><i className="fas fa-chart-line"></i><strong>+{centralGrowthRate}%</strong><span>Crescimento da base</span><small>{centralNewThisMonth} nova{centralNewThisMonth === 1 ? " matrícula" : "s matrículas"} no mês</small></div>
+                                        <div className="central-kpi"><i className="fas fa-chart-line"></i><strong>{centralGrowthRate > 0 ? "+" : ""}{centralGrowthRate}%</strong><span>Crescimento líquido</span><small>{centralNewThisMonth} entrada{centralNewThisMonth === 1 ? "" : "s"} · {centralExitsThisMonth} saída{centralExitsThisMonth === 1 ? "" : "s"}</small></div>
                                     </div>
                                     <div className="central-network-health">
                                         <div className="central-health-card">
@@ -6485,7 +6825,7 @@
                                             <div className="central-health-copy"><small>Saúde da rede</small><h3>Base ativa consolidada</h3><p>Percentual de alunos ativos considerando todas as unidades cadastradas.</p></div>
                                             <div className="central-health-stats">
                                                 <span><b>{centralActiveUnits}/{units.length || 0}</b><small>unidades ativas</small></span>
-                                                <span><b>{centralActiveRate}%</b><small>taxa de retenção</small></span>
+                                                <span><b>{centralRetentionRate}%</b><small>retenção no mês</small></span>
                                             </div>
                                         </div>
                                         <div className={`central-attention-card ${unitsWithoutNewEnrollments ? "has-alert" : ""}`}>
@@ -6493,12 +6833,28 @@
                                             <div><small>Captação das unidades</small><strong>{unitsWithoutNewEnrollments ? `${unitsWithoutNewEnrollments} unidade${unitsWithoutNewEnrollments === 1 ? "" : "s"} sem novas matrículas no mês` : "Todas as unidades captaram no mês"}</strong><span>{unitsWithoutNewEnrollments ? "Compare captação e retenção para direcionar o acompanhamento." : "Todas as unidades ativas registraram novas matrículas no período atual."}</span></div>
                                         </div>
                                     </div>
+                                    <div className="central-operations">
+                                        <div className="central-operations-head">
+                                            <div><h3>Saúde operacional das unidades</h3><p>Comparação do mês atual com frequência dos últimos 30 dias.</p></div>
+                                            <span><i className="fas fa-calendar-alt"></i> Mês atual</span>
+                                        </div>
+                                        <div className="central-operations-scroll">
+                                            <table className="central-operations-table">
+                                                <thead><tr><th>Unidade</th><th>Ativos</th><th>Entradas</th><th>Saídas</th><th>Saldo</th><th>Retenção</th><th>Engajamento 30 dias</th><th>Situação</th></tr></thead>
+                                                <tbody>{unitOperationalRows.map(row => <tr key={`operation-${row.unit.id}`}>
+                                                    <td><details className="central-unit-health-details"><summary title="Clique para entender a situação da unidade">{row.unit.nome}<i className="fas fa-circle-info"></i></summary><div className="central-unit-health-explanation"><strong>Por que está {row.healthLabel.toLowerCase()}?</strong><span>{row.healthReasons.join("; ")}.</span><small>Critérios: saudável com retenção a partir de 90%, engajamento a partir de 70% e saldo não negativo. Crítica quando retenção fica abaixo de 80% ou engajamento abaixo de 50%. Os demais casos ficam em atenção.</small></div></details></td><td>{row.activeStudents.length}</td><td className="positive">+{row.newThisMonth}</td><td className={row.exitsThisMonth ? "negative" : "neutral"}>-{row.exitsThisMonth}</td>
+                                                    <td className={row.netGrowth > 0 ? "positive" : (row.netGrowth < 0 ? "negative" : "neutral")}>{row.netGrowth > 0 ? "+" : ""}{row.netGrowth} ({row.growthRate > 0 ? "+" : ""}{row.growthRate}%)</td>
+                                                    <td>{row.retention}%</td><td>{row.engagementRate}%</td><td><span className={`central-health-badge ${row.healthType}`}><i className="fas fa-circle"></i>{row.healthLabel}</span></td>
+                                                </tr>)}</tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                     <div className="central-units-head">
                                         <div><h3>Unidades</h3><p>Selecione uma unidade para acessar alunos, BI, arquivos e conversas isolados.</p></div>
                                         <button className="filter-btn" onClick={() => setModalOpen('users')}><i className="fas fa-users-cog"></i> Usuários</button>
                                     </div>
                                     <div className="central-unit-grid">
-                                        {unitOperationalRows.map(({unit, unitStudents, activeStudents, retention, newThisMonth}) => {
+                                        {unitOperationalRows.map(({unit, unitStudents, activeStudents, activeBaseRate, retention, netGrowth}) => {
                                             const unitActive = activeStudents.length;
                                             return (
                                                 <article key={unit.id} className={`central-unit-card ${unit.status === "Inativa" ? "inactive" : ""}`}>
@@ -6508,12 +6864,12 @@
                                                     </div>
                                                     <div className="central-unit-metrics">
                                                         <div className="central-unit-metric"><b>{unitStudents.length}</b><span>Alunos</span></div>
-                                                        <div className="central-unit-metric"><b>{retention}%</b><span>Retenção</span></div>
-                                                        <div className="central-unit-metric"><b>{newThisMonth}</b><span>Novos no mês</span></div>
+                                                        <div className="central-unit-metric"><b>{retention}%</b><span>Retenção no mês</span></div>
+                                                        <div className="central-unit-metric"><b>{netGrowth > 0 ? "+" : ""}{netGrowth}</b><span>Saldo no mês</span></div>
                                                     </div>
                                                     <div className="central-unit-progress">
-                                                        <div className="central-unit-progress-head"><span>{unitActive} de {unitStudents.length} alunos ativos</span><b>{retention}% de retenção</b></div>
-                                                        <div className="central-unit-progress-track"><span style={{width:`${retention}%`}}></span></div>
+                                                        <div className="central-unit-progress-head"><span>{unitActive} de {unitStudents.length} alunos ativos</span><b>{activeBaseRate}% da base ativa</b></div>
+                                                        <div className="central-unit-progress-track"><span style={{width:`${activeBaseRate}%`}}></span></div>
                                                     </div>
                                                     <button className="central-unit-open" disabled={unit.status === "Inativa"} onClick={() => { setSelectedUnitId(unit.id); setProfessorView("alunos"); setSearchTerm(""); setFilterGroup("Todos"); }}><i className="fas fa-arrow-right"></i> Entrar na unidade</button>
                                                 </article>
@@ -8009,6 +8365,7 @@
                                 const statusNovo = alunoAtualizado.status || "Ativo";
                                 if (alunoOriginal && statusAnterior !== statusNovo) {
                                     logs.push(createAuditLog("Status alterado", "Status", statusAnterior, statusNovo));
+                                    alunoAtualizado = { ...alunoAtualizado, statusAlteradoEm: getTodayISO() };
                                 }
 
                                 const desafioDepois = getBehaviorChallenge(alunoAtualizado);
