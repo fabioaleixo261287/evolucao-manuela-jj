@@ -1,4 +1,4 @@
-const CACHE_NAME = "alliance-jiu-jitsu-kids-pwa-v1.0.0-cloudflare-assets-1";
+const CACHE_NAME = "alliance-jiu-jitsu-kids-pwa-v1.0.0-cloudflare-assets-2";
 const APP_SHELL = [
   "./",
   "./index.html"

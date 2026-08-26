@@ -2,10 +2,10 @@
   "name": "Alliance Jiu Jitsu Kids - Sistema Eagle V1.0.0",
   "short_name": "Alliance JJ Kids",
   "description": "Sistema multiunidade de evolução e graduação infantil Alliance Jiu Jitsu Kids.",
-  "id": "./",
+  "id": "/",
   "lang": "pt-BR",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#050505",
@@ -13,13 +13,13 @@
   "categories": ["education", "sports", "productivity"],
   "icons": [
     {
-      "src": "./pwa-icons/icon-brand-192.png",
+      "src": "/pwa-icons/icon-brand-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./pwa-icons/icon-brand-512.png",
+      "src": "/pwa-icons/icon-brand-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

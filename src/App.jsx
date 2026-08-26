@@ -2402,7 +2402,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                 <select value={effectiveUnitId} onChange={e => { setSelectedUnitId(e.target.value); setSearchTerm(""); setFilterGroup("Todos"); setExpandedSearchStudentId(null); }}>
                                     {unitOptions.map(unit => <option key={unit.id} value={unit.id}>{unit.nome}</option>)}
                                 </select>
-                                <button className="filter-btn" onClick={() => setProfessorView("central")}><i className="fas fa-th-large"></i> Central</button>
+                                <button className="filter-btn unit-context-central-btn" onClick={() => setProfessorView("central")}><i className="fas fa-arrow-left"></i> Voltar à Central</button>
                             </div>
                         )}
                     </div>
