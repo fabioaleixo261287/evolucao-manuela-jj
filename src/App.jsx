@@ -2804,6 +2804,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                         </div>}
 
                         <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
+                            <div className="dashboard-insight-column">
                             <div className="dashboard-command-card compact-panel">
                                 <div className="dashboard-insight-panel">
                                     <div className="dashboard-insight-head">
@@ -2837,6 +2838,49 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div className="dashboard-command-card compact-panel dashboard-status-panel">
+                                <div className="dashboard-command-card-title"><span>Situação da base</span><MetricRuleInfo title="Regra da situação da base">Conta os alunos exibidos conforme o status atual do cadastro: ativos, inativos, desligados ou transferidos e experimentais. Os percentuais usam a base filtrada como total.</MetricRuleInfo><i className="fas fa-circle-check"></i></div>
+                                <div className="dashboard-status-card">
+                                    <div className="dashboard-status-headline">
+                                        <i className="fas fa-database"></i>
+                                        <div>
+                                            <strong>Situação da base</strong>
+                                            <span>Visão geral da base de alunos</span>
+                                        </div>
+                                        <b>{dashboardStudents.length}</b>
+                                    </div>
+                                    <div className="dashboard-status-list">
+                                        {operationalStatusRows.length > 0 ? operationalStatusRows.map(row => (
+                                            <button
+                                                className={`dashboard-status-row ${row.type}`}
+                                                key={`cmd-status-${row.label}`}
+                                                onClick={() => row.detail ? revealDashboardDetail(row.detail) : openDashboardStudents(row.filter)}
+                                            >
+                                                <i className={`dashboard-status-icon fas ${row.label === "Ativos" ? "fa-circle-check" : row.label === "Inativos" ? "fa-clock" : row.label === "Desligados" ? "fa-circle-minus" : "fa-user-astronaut"}`}></i>
+                                                <span className="dashboard-status-copy">
+                                                    <strong>{row.label}</strong>
+                                                    <small>{row.note}</small>
+                                                </span>
+                                                <b className="dashboard-status-metric">{row.value} aluno{row.value === 1 ? "" : "s"}</b>
+                                                <b className="dashboard-status-percent">{row.percent}%</b>
+                                                <span className="dashboard-status-progress"><i style={{width: `${Math.max(4, row.percent)}%`}}></i></span>
+                                            </button>
+                                        )) : <div className="dashboard-note">Nenhum status informado.</div>}
+                                    </div>
+                                    <div className="dashboard-status-footer">
+                                        <div>
+                                            <small>Total na base</small>
+                                            <strong>{dashboardStudents.length}</strong>
+                                        </div>
+                                        <div>
+                                            <small>Taxa de retenção</small>
+                                            <strong>{retentionRate}%</strong>
+                                            <span><i className="fas fa-arrow-trend-up"></i> base ativa atual</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
                             <div className="dashboard-command-card compact-panel">
                                 <div className="dashboard-insight-panel">
@@ -2940,51 +2984,6 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                             <strong>No período</strong>
                                             <b>{recentPresenceStudents.length}</b>
                                             <span><i className="fas fa-arrow-trend-up"></i>{dashboardPeriodLabel}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
-                            <div className="dashboard-command-card compact-panel">
-                                <div className="dashboard-command-card-title"><span>Situação da base</span><MetricRuleInfo title="Regra da situação da base">Conta os alunos exibidos conforme o status atual do cadastro: ativos, inativos, desligados ou transferidos e experimentais. Os percentuais usam a base filtrada como total.</MetricRuleInfo><i className="fas fa-circle-check"></i></div>
-                                <div className="dashboard-status-card">
-                                    <div className="dashboard-status-headline">
-                                        <i className="fas fa-database"></i>
-                                        <div>
-                                            <strong>Situação da base</strong>
-                                            <span>Visão geral da base de alunos</span>
-                                        </div>
-                                        <b>{dashboardStudents.length}</b>
-                                    </div>
-                                    <div className="dashboard-status-list">
-                                        {operationalStatusRows.length > 0 ? operationalStatusRows.map(row => (
-                                            <button
-                                                className={`dashboard-status-row ${row.type}`}
-                                                key={`cmd-status-${row.label}`}
-                                                onClick={() => row.detail ? revealDashboardDetail(row.detail) : openDashboardStudents(row.filter)}
-                                            >
-                                                <i className={`dashboard-status-icon fas ${row.label === "Ativos" ? "fa-circle-check" : row.label === "Inativos" ? "fa-clock" : row.label === "Desligados" ? "fa-circle-minus" : "fa-user-astronaut"}`}></i>
-                                                <span className="dashboard-status-copy">
-                                                    <strong>{row.label}</strong>
-                                                    <small>{row.note}</small>
-                                                </span>
-                                                <b className="dashboard-status-metric">{row.value} aluno{row.value === 1 ? "" : "s"}</b>
-                                                <b className="dashboard-status-percent">{row.percent}%</b>
-                                                <span className="dashboard-status-progress"><i style={{width: `${Math.max(4, row.percent)}%`}}></i></span>
-                                            </button>
-                                        )) : <div className="dashboard-note">Nenhum status informado.</div>}
-                                    </div>
-                                    <div className="dashboard-status-footer">
-                                        <div>
-                                            <small>Total na base</small>
-                                            <strong>{dashboardStudents.length}</strong>
-                                        </div>
-                                        <div>
-                                            <small>Taxa de retenção</small>
-                                            <strong>{retentionRate}%</strong>
-                                            <span><i className="fas fa-arrow-trend-up"></i> base ativa atual</span>
                                         </div>
                                     </div>
                                 </div>

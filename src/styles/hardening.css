@@ -57,10 +57,10 @@ body.theme-light.auth-mode .auth-container {
     height: 30px;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(88, 166, 255, 0.28);
+    border: 1px solid rgba(201, 165, 84, 0.42);
     border-radius: 50%;
-    background: rgba(88, 166, 255, 0.08);
-    color: #8fc5ff;
+    background: rgba(201, 165, 84, 0.10);
+    color: #f0c75e;
     cursor: pointer;
     list-style: none;
 }
@@ -89,7 +89,17 @@ body.theme-light.auth-mode .auth-container {
 .metric-rule-popover span { display: block; }
 .metric-rule-popover strong { margin-bottom: 6px; color: #f0c75e; font-size: 12px; }
 .metric-rule-popover span { font-size: 11px; font-weight: 500; line-height: 1.45; }
-body.theme-light .metric-rule-info summary { background: #eef6ff; border-color: #b9d7f5; color: #1769aa; }
+body.theme-light .metric-rule-info summary {
+    background: #fff8df;
+    border-color: #d7bd6f;
+    color: #9a6800;
+    box-shadow: none;
+}
+body.theme-light .metric-rule-info summary:focus,
+body.theme-light .metric-rule-info summary:focus-visible {
+    outline: 2px solid #d4a62a;
+    outline-offset: 2px;
+}
 body.theme-light .metric-rule-popover { background: #fff; border-color: #d5bd7b; color: #26364a; box-shadow: 0 16px 34px rgba(31, 50, 73, 0.18); }
 
 .dashboard-insight-head,
@@ -555,6 +565,12 @@ body.theme-light { margin:0 !important; padding:0 !important; overflow-x:hidden;
 body.conversation-mode { overflow-y:auto !important; }
 body.theme-dark,
 body.theme-dark #root { background:#050505 !important; color:#f8fafc; }
+body.theme-dark {
+  --page-bg:#050505;
+  --panel-bg:linear-gradient(145deg, #151515, #0b0b0b);
+  --panel-bg-soft:#121212;
+  --input-bg:#0a0a0a;
+}
 body.theme-light,
 body.theme-light #root {
   background:
@@ -586,13 +602,184 @@ body.theme-dark .conversation-page,
 body.theme-dark .conversation-title,
 body.theme-dark .conversation-view { background:#050505; }
 body.theme-dark .conversation-list,
-body.theme-dark .conversation-panel { background:#0b1320 !important; border-color:rgba(201,165,84,.3) !important; }
+body.theme-dark .conversation-panel { background:#101010 !important; border-color:rgba(201,165,84,.3) !important; }
 body.theme-dark .conversation-search,
 body.theme-dark .conversation-composer,
-body.theme-dark .conversation-panel .chat-header { background:#0d1825 !important; }
-body.theme-dark .conversation-item { background:#0b1320; border-color:#263445; }
+body.theme-dark .conversation-panel .chat-header { background:#151515 !important; }
+body.theme-dark .conversation-item { background:#101010; border-color:#2a2a2a; }
 body.theme-dark .conversation-item:hover,
-body.theme-dark .conversation-item.active { background:#142133; }
+body.theme-dark .conversation-item.active { background:#1b1b1b; }
+
+/* Tema escuro neutro: remove o azul-marinho dos painéis sem apagar os indicadores. */
+body.theme-dark .unit-context-bar,
+body.theme-dark .central-hero,
+body.theme-dark .central-kpi,
+body.theme-dark .central-health-card,
+body.theme-dark .central-attention-card,
+body.theme-dark .central-unit-card,
+body.theme-dark .central-operations,
+body.theme-dark .pending-message-alert:not(.success),
+body.theme-dark .summary-item,
+body.theme-dark .search-container,
+body.theme-dark .card,
+body.theme-dark .dashboard-card,
+body.theme-dark .dashboard-overview-strip,
+body.theme-dark .dashboard-metric-card,
+body.theme-dark .dashboard-action-queue,
+body.theme-dark .dashboard-insight,
+body.theme-dark .dashboard-priority-card,
+body.theme-dark .dashboard-panel,
+body.theme-dark .dashboard-detail,
+body.theme-dark .dashboard-filters,
+body.theme-dark .dashboard-command-hero,
+body.theme-dark .dashboard-command-card,
+body.theme-dark .dashboard-command-focus,
+body.theme-dark .dashboard-command-kpi,
+body.theme-dark .dashboard-command-breakdown,
+body.theme-dark .dashboard-frequency-card,
+body.theme-dark .dashboard-frequency-footer,
+body.theme-dark .dashboard-status-headline,
+body.theme-dark .dashboard-status-row,
+body.theme-dark .dashboard-status-footer,
+body.theme-dark .dashboard-insight-icon,
+body.theme-dark .dashboard-insight-menu,
+body.theme-dark .student-compact-card,
+body.theme-dark .parent-panel,
+body.theme-dark .parent-detail,
+body.theme-dark .graduation-panel,
+body.theme-dark .belt-history-card,
+body.theme-dark .belt-history-card.current,
+body.theme-dark .empty-state,
+body.theme-dark .data-status-card,
+body.theme-dark .repo-item {
+  background:linear-gradient(145deg, #161616, #0d0d0d) !important;
+  border-color:rgba(201,165,84,.25) !important;
+}
+body.theme-dark .central-health-ring::before,
+body.theme-dark .score-ring::after { background:#101010 !important; }
+body.theme-dark .central-operations-scroll,
+body.theme-dark .central-operations-table,
+body.theme-dark .central-operations-table thead,
+body.theme-dark .central-operations-table tbody,
+body.theme-dark .central-operations-table tr,
+body.theme-dark .central-operations-table th,
+body.theme-dark .central-operations-table td {
+  background:transparent !important;
+}
+body.theme-dark .central-operations-table th,
+body.theme-dark .central-operations-table td { border-bottom-color:#292929 !important; }
+body.theme-dark .central-unit-health-details,
+body.theme-dark .central-unit-health-details summary {
+  background:transparent !important;
+  box-shadow:none !important;
+}
+body.theme-dark .dashboard-command-filters,
+body.theme-dark .dashboard-command-summary,
+body.theme-dark .dashboard-panel-title,
+body.theme-dark .parent-panel-title,
+body.theme-dark .chat-header,
+body.theme-dark .check-row,
+body.theme-dark .challenge-panel,
+body.theme-dark .degree-row,
+body.theme-dark .hist-details,
+body.theme-dark .dashboard-action-row,
+body.theme-dark .dashboard-mini-row,
+body.theme-dark .dashboard-detail-row,
+body.theme-dark .dashboard-detail-student-card {
+  background:#121212 !important;
+  border-color:#2b2b2b !important;
+}
+body.theme-dark .dashboard-command-summary {
+  border-color:rgba(201,165,84,.28) !important;
+}
+body.theme-dark .dashboard-command-breakdown {
+  border-left-color:#303030 !important;
+  border-right-color:#303030 !important;
+}
+body.theme-dark input,
+body.theme-dark select,
+body.theme-dark textarea,
+body.theme-dark .search-input,
+body.theme-dark .conversation-search input {
+  background:#090909 !important;
+  border-color:rgba(201,165,84,.28) !important;
+}
+body.theme-dark .filter-btn,
+body.theme-dark .dashboard-detail-action,
+body.theme-dark .dashboard-clear,
+body.theme-dark .theme-choice,
+body.theme-dark .view-tab,
+body.theme-dark .dashboard-back-btn {
+  background:#111111 !important;
+  border-color:rgba(201,165,84,.30) !important;
+  color:#f3f4f6 !important;
+}
+body.theme-dark .filter-btn:hover,
+body.theme-dark .dashboard-detail-action:hover,
+body.theme-dark .dashboard-clear:hover,
+body.theme-dark .theme-choice:hover,
+body.theme-dark .view-tab:hover,
+body.theme-dark .dashboard-back-btn:hover {
+  background:#1a1a1a !important;
+}
+body.theme-dark .filter-btn.active,
+body.theme-dark .view-tab.active,
+body.theme-dark .theme-choice.active {
+  background:linear-gradient(145deg, #1b1b1b, #101010) !important;
+}
+body.theme-dark .action-bar {
+  background:rgba(15,15,15,.97) !important;
+  border-color:rgba(201,165,84,.32) !important;
+}
+body.theme-dark .empty-state {
+  min-height:340px !important;
+  padding-bottom:130px !important;
+  box-sizing:border-box;
+}
+
+/* Keep rule help and export controls on one line in the three BI cards. */
+.dashboard-command-distributions .dashboard-insight-head {
+  grid-template-columns:46px minmax(0, 1fr) 34px 34px;
+  gap:10px;
+}
+.dashboard-command-distributions .dashboard-insight-menu-wrap,
+.dashboard-command-distributions .metric-rule-info {
+  width:34px;
+  height:34px;
+  align-self:center;
+}
+.dashboard-command-distributions .dashboard-insight-menu,
+.dashboard-command-distributions .metric-rule-info summary {
+  width:34px;
+  height:34px;
+  box-shadow:none !important;
+  filter:none !important;
+}
+.dashboard-command-distributions .dashboard-command-card.compact-panel:has(.dashboard-insight-dropdown) {
+  overflow:visible;
+  z-index:40;
+}
+.dashboard-command-distributions .dashboard-insight-dropdown {
+  top:calc(100% + 6px);
+  right:0;
+  z-index:60;
+  box-shadow:none !important;
+  backdrop-filter:none;
+}
+body.theme-dark .dashboard-command-distributions .dashboard-insight-dropdown {
+  background:#111111;
+  border-color:rgba(201,165,84,.38);
+}
+body.theme-light .dashboard-command-distributions .dashboard-insight-dropdown {
+  background:#ffffff;
+  box-shadow:0 8px 20px rgba(15,23,42,.10) !important;
+}
+@media(max-width:720px){
+  .dashboard-command-distributions .dashboard-insight-head {
+    grid-template-columns:42px minmax(0, 1fr) 32px 32px;
+    gap:8px;
+  }
+}
 
 body.theme-light .conversation-page,
 body.theme-light .conversation-title,
@@ -613,6 +800,48 @@ body.theme-light .dashboard-command-title h2,
 body.theme-light .dashboard-command-title p,
 body.theme-light .dashboard-command-brand h3,
 body.theme-light .dashboard-command-brand p { color:#142033 !important; }
+body.theme-light .dashboard-belt-footer-badge {
+  background:linear-gradient(180deg, #f1f3f5, #ffffff) !important;
+  border-color:#c7ced7 !important;
+}
+body.theme-light .dashboard-belt-footer-badge .dashboard-belt-glyph {
+  filter:drop-shadow(0 1px 1px rgba(15,23,42,.75));
+}
+.dashboard-command-card-title .metric-rule-info summary {
+  width:34px;
+  height:34px;
+  padding:0;
+}
+.dashboard-command-card-title .metric-rule-info summary i {
+  width:auto !important;
+  height:auto !important;
+  display:inline !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:none !important;
+  box-shadow:none !important;
+  color:inherit !important;
+}
+.dashboard-command-distributions {
+  align-items:start;
+}
+.dashboard-insight-column {
+  min-width:0;
+  display:grid;
+  gap:14px;
+  align-content:start;
+}
+.dashboard-insight-column > .dashboard-command-card.compact-panel {
+  width:100%;
+  min-height:0;
+}
+.dashboard-status-panel .dashboard-command-card-title {
+  border-radius:22px 22px 0 0;
+}
+.dashboard-command-distributions .dashboard-command-card.compact-panel {
+  min-height:0;
+  align-self:start;
+}
 
 /* A entrada usa a identidade escura premium, sem herdar o tema do painel. */
 body.auth-mode,
@@ -640,13 +869,13 @@ body.auth-mode .auth-subtitle,
 body.auth-mode .btn-select strong,
 body.auth-mode .btn-select small { color:#f8fafc !important; }
 body.auth-mode .btn-select {
-  background:linear-gradient(145deg, rgba(18,27,39,.97), rgba(9,15,23,.98)) !important;
+  background:linear-gradient(145deg, #121212, #090909) !important;
   color:#f8fafc !important;
   border:1px solid rgba(201,165,84,.34) !important;
   box-shadow:0 16px 38px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.04) !important;
 }
 body.auth-mode .btn-select:hover {
-  background:linear-gradient(145deg, rgba(24,36,51,.98), rgba(12,20,30,.99)) !important;
+  background:linear-gradient(145deg, #191919, #0d0d0d) !important;
   border-color:rgba(246,196,0,.72) !important;
 }
 body.auth-mode .btn-select i {
@@ -655,7 +884,7 @@ body.auth-mode .btn-select i {
   border:1px solid rgba(201,165,84,.16);
 }
 body.auth-mode .login-box {
-  background:linear-gradient(180deg, rgba(17,25,36,.98), rgba(8,13,20,.99)) !important;
+  background:linear-gradient(180deg, #141414, #090909) !important;
   color:#f8fafc !important;
   border-color:rgba(201,165,84,.34) !important;
   box-shadow:0 24px 60px rgba(0,0,0,.42) !important;
@@ -664,7 +893,7 @@ body.auth-mode .login-box h2,
 body.auth-mode .login-box label { color:#f8fafc !important; }
 body.auth-mode .login-box input,
 body.auth-mode .login-box select {
-  background:#0b1320 !important;
+  background:#0a0a0a !important;
   color:#f8fafc !important;
   border-color:rgba(201,165,84,.34) !important;
 }
