@@ -1,9 +1,10 @@
 import React from "react";
+import brandMarkUrl from "../assets/alliance-eagle-mark-closed.png";
 
 export default function BrandLockup({ compact = false, children = null }) {
   return (
     <div className={`brand-lockup${compact ? " compact" : ""}`} aria-label="Alliance Jiu Jitsu Kids">
-      <img src="alliance-eagle-mark-closed.png" className="brand-lockup-mark" alt="" />
+      <img src={brandMarkUrl} className="brand-lockup-mark" alt="" />
       <div className="brand-lockup-copy">
         <div className="brand-lockup-name">Alliance</div>
         <div className="brand-lockup-line">

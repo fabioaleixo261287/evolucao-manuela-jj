@@ -1,4 +1,5 @@
 const pageParams = new URLSearchParams(window.location.search);
+const isCloudflarePages = window.location.hostname.endsWith(".pages.dev");
 
 export const DEMO_PACKAGE_MODE = pageParams.get("demo") === "1";
 export const LOCAL_DEMO_MODE = pageParams.get("localDemo") === "1" || DEMO_PACKAGE_MODE;
@@ -25,7 +26,7 @@ export const REMOTE_CONFIG = {
   stateId: "alliance_mooca_kids_v22",
   systemConfigId: "alliance_system_config_v1",
   appwrite: {
-    endpoint: "https://nyc.cloud.appwrite.io/v1",
+    endpoint: isCloudflarePages ? `${window.location.origin}/api/appwrite/v1` : "https://nyc.cloud.appwrite.io/v1",
     projectId: "6a5ae8f4000c42f9f83e",
     databaseId: "alliance_db",
     tableId: "app_state",
