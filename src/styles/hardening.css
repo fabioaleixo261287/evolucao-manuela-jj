@@ -545,3 +545,136 @@ body.theme-light .metric-rule-popover { background: #fff; border-color: #d5bd7b;
         @media(max-width:900px){.central-network-health{grid-template-columns:1fr}.central-health-stats{flex:0 0 210px}}
         @media(max-width:760px){.central-kpis{grid-template-columns:repeat(2,1fr)}.central-hero,.unit-context-bar{align-items:stretch;flex-direction:column}.central-hero-copy{align-items:flex-start}.unit-context-actions{width:100%}.unit-context-actions select{flex:1;min-width:0}.central-unit-metrics{grid-template-columns:repeat(3,1fr)}.central-health-card{align-items:flex-start;flex-wrap:wrap}.central-health-stats{width:100%;flex:1 1 100%}}
         @media(max-width:430px){.central-kpis{grid-template-columns:1fr 1fr}.central-kpi{min-height:96px;padding:14px}.central-unit-grid{grid-template-columns:1fr}.unit-context-actions{flex-direction:column}.unit-context-actions>*{width:100%}}
+
+/* Camada final de viewport e temas. Mantém todos os módulos no mesmo canvas. */
+html,
+body,
+#root { width:100%; min-height:100%; }
+body.theme-dark,
+body.theme-light { margin:0 !important; padding:0 !important; overflow-x:hidden; }
+body.conversation-mode { overflow-y:auto !important; }
+body.theme-dark,
+body.theme-dark #root { background:#050505 !important; color:#f8fafc; }
+body.theme-light,
+body.theme-light #root {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(246,196,0,.09), transparent 360px),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%) !important;
+  color:#142033;
+}
+body.theme-dark .container,
+body.theme-light .container { min-height:100vh; padding:14px; background:transparent; }
+
+.header-main { min-height:76px; margin-top:0; padding-top:8px; overflow:visible; }
+.header-main .app-brand-header,
+.header-main .brand-lockup,
+.header-main .brand-lockup-copy { overflow:visible; }
+body.theme-dark .header-main { background:#050505; }
+body.theme-light .header-main { background:transparent; }
+body.theme-light .app-brand-header strong,
+body.theme-light .brand-lockup-name { color:#142033 !important; }
+body.theme-light .app-brand-header small,
+body.theme-light .brand-unit-label { color:#805700 !important; }
+
+.conversation-page { min-height:calc(100vh - 130px); }
+.conversation-view { min-height:560px; }
+.conversation-list,
+.conversation-panel { height:clamp(560px, calc(100vh - 220px), 760px); min-height:560px; }
+.conversation-panel { overflow:hidden; }
+
+body.theme-dark .conversation-page,
+body.theme-dark .conversation-title,
+body.theme-dark .conversation-view { background:#050505; }
+body.theme-dark .conversation-list,
+body.theme-dark .conversation-panel { background:#0b1320 !important; border-color:rgba(201,165,84,.3) !important; }
+body.theme-dark .conversation-search,
+body.theme-dark .conversation-composer,
+body.theme-dark .conversation-panel .chat-header { background:#0d1825 !important; }
+body.theme-dark .conversation-item { background:#0b1320; border-color:#263445; }
+body.theme-dark .conversation-item:hover,
+body.theme-dark .conversation-item.active { background:#142133; }
+
+body.theme-light .conversation-page,
+body.theme-light .conversation-title,
+body.theme-light .conversation-view { background:#f1f5f9; }
+body.theme-light .conversation-list,
+body.theme-light .conversation-panel { background:#ffffff !important; border-color:#cbd5e1 !important; box-shadow:0 14px 34px rgba(15,23,42,.1) !important; }
+body.theme-light .conversation-search,
+body.theme-light .conversation-composer,
+body.theme-light .conversation-panel .chat-header { background:#f8fafc !important; border-color:#d8e0e8 !important; color:#142033 !important; }
+body.theme-light .conversation-title h3 { color:#142033 !important; }
+body.theme-light .conversation-title span,
+body.theme-light .conversation-empty { color:#526174 !important; }
+body.theme-light .conversation-scroll { scrollbar-color:#94a3b8 #e2e8f0; }
+
+body.theme-light .dashboard-command-head h2,
+body.theme-light .dashboard-command-head p,
+body.theme-light .dashboard-command-title h2,
+body.theme-light .dashboard-command-title p,
+body.theme-light .dashboard-command-brand h3,
+body.theme-light .dashboard-command-brand p { color:#142033 !important; }
+
+/* A entrada usa a identidade escura premium, sem herdar o tema do painel. */
+body.auth-mode,
+body.auth-mode.theme-light,
+body.auth-mode.theme-dark,
+body.auth-mode #root {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(201,165,84,.13), transparent 360px),
+    linear-gradient(180deg, #090d14 0%, #05070b 100%) !important;
+  color:#f8fafc !important;
+}
+body.auth-mode .auth-container,
+body.auth-mode .selection-screen { background:transparent !important; }
+body.auth-mode .brand-card,
+body.auth-mode .auth-hero-frame,
+body.auth-mode .auth-hero-copy {
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+body.auth-mode .brand-lockup-name,
+body.auth-mode .brand-lockup-subtitle,
+body.auth-mode .auth-title,
+body.auth-mode .auth-subtitle,
+body.auth-mode .btn-select strong,
+body.auth-mode .btn-select small { color:#f8fafc !important; }
+body.auth-mode .btn-select {
+  background:linear-gradient(145deg, rgba(18,27,39,.97), rgba(9,15,23,.98)) !important;
+  color:#f8fafc !important;
+  border:1px solid rgba(201,165,84,.34) !important;
+  box-shadow:0 16px 38px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+body.auth-mode .btn-select:hover {
+  background:linear-gradient(145deg, rgba(24,36,51,.98), rgba(12,20,30,.99)) !important;
+  border-color:rgba(246,196,0,.72) !important;
+}
+body.auth-mode .btn-select i {
+  background:rgba(201,165,84,.11) !important;
+  color:#f6c400 !important;
+  border:1px solid rgba(201,165,84,.16);
+}
+body.auth-mode .login-box {
+  background:linear-gradient(180deg, rgba(17,25,36,.98), rgba(8,13,20,.99)) !important;
+  color:#f8fafc !important;
+  border-color:rgba(201,165,84,.34) !important;
+  box-shadow:0 24px 60px rgba(0,0,0,.42) !important;
+}
+body.auth-mode .login-box h2,
+body.auth-mode .login-box label { color:#f8fafc !important; }
+body.auth-mode .login-box input,
+body.auth-mode .login-box select {
+  background:#0b1320 !important;
+  color:#f8fafc !important;
+  border-color:rgba(201,165,84,.34) !important;
+}
+body.auth-mode .login-box input::placeholder { color:#91a0b3 !important; }
+
+@media(max-width:760px){
+  body.theme-dark .container,
+  body.theme-light .container { padding:8px; }
+  .conversation-list,
+  .conversation-panel { height:auto; min-height:0; }
+  .conversation-list { height:300px; }
+  .conversation-panel { min-height:520px; }
+}

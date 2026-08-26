@@ -574,6 +574,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
             document.body.classList.toggle("auth-mode", !mode);
             document.body.classList.toggle("parent-mode", mode === "Pais");
             document.body.classList.toggle("conversation-mode", mode === "Professor" && professorView === "conversas");
+            if (mode === "Professor") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
             return () => {
                 document.body.classList.remove("auth-mode");
                 document.body.classList.remove("parent-mode");
@@ -3693,8 +3694,8 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
 
                 {/* MODAL ADICIONAR ALUNO */}
                 {modalOpen === 'add' && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
+                    <div className="modal-overlay student-form-overlay">
+                        <div className="modal-content student-form-content">
                             <h3>Novo Aluno</h3>
                             <label className="field-label">Nome completo</label>
                             <input placeholder="Nome Completo" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} />

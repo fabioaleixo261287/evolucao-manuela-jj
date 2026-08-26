@@ -2,7 +2,7 @@ const pageParams = new URLSearchParams(window.location.search);
 
 export const DEMO_PACKAGE_MODE = pageParams.get("demo") === "1";
 export const LOCAL_DEMO_MODE = pageParams.get("localDemo") === "1" || DEMO_PACKAGE_MODE;
-export const DEMO_PACKAGE_URL = "./dados_demonstracao/cenario_completo_25-08-2026/backup_demo_rede_completa_98_alunos.json";
+export const DEMO_PACKAGE_URL = "./dados_demonstracao/cenario_rede_3_unidades_200/backup_demo_rede_3_unidades_200_alunos.json";
 export const HYDRATION_TIMEOUT_MS = 4500;
 
 const suffix = LOCAL_DEMO_MODE ? "_demo" : "";
