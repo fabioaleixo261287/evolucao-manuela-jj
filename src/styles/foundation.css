@@ -184,7 +184,7 @@
         
         .student-top { display: flex; gap: 18px; align-items: center; margin-bottom: 20px; }
         .avatar-container { position: relative; width: 85px; height: 85px; flex-shrink: 0; }
-        .avatar-preset { display: block; background-image: url('/kids-avatar-options.png') !important; background-repeat: no-repeat !important; background-size: 375% 250% !important; background-color: #f5f7fa !important; }
+        .avatar-preset { display: block; background-image: url('../assets/kids-avatar-options.png') !important; background-repeat: no-repeat !important; background-size: 375% 250% !important; background-color: #f5f7fa !important; }
         .avatar-preset.preset-girl-1 { background-position: 11% 15% !important; }
         .avatar-preset.preset-girl-2 { background-position: 50% 15% !important; }
         .avatar-preset.preset-girl-3 { background-position: 89% 15% !important; }

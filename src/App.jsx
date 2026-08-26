@@ -7,6 +7,7 @@ import { DEMO_PACKAGE_MODE, DEMO_PACKAGE_URL, HYDRATION_TIMEOUT_MS, LOCAL_DEMO_M
 import { buildBackupPayload, getStoredArrayCount, saveAutomaticLocalBackup } from "./services/localState.js";
 import { createAppwriteServices, createSupabaseClient, getAppwriteErrorMessage, getAppwriteState, getAppwriteSystemConfig, parseRemoteJson, parseSystemConfig, saveAppwriteState, saveAppwriteSystemConfig, withTimeout } from "./services/remoteState.js";
 import BrandLockup from "./components/BrandLockup.jsx";
+import brandMarkUrl from "./assets/alliance-eagle-mark-closed.png";
 import { LoginScreen, RoleSelectionScreen } from "./screens/AuthScreens.jsx";
 import BeltHistory from "./components/BeltHistory.jsx";
 import { authenticateProfessor, findParentStudent, generateParentAccessCode, getParentLoginGuard, registerParentLoginFailure } from "./rules/authRules.js";
@@ -3085,7 +3086,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
 
                 {!(mode === "Professor" && ["central", "conversas", "painel"].includes(professorView)) && renderedStudents.length === 0 && (
                     <div className="empty-state">
-                        <img className="empty-eagle-mark" src="alliance-eagle-mark-closed.png" alt="" />
+                        <img className="empty-eagle-mark" src={brandMarkUrl} alt="" />
                             <strong>{students.length === 0 ? "Nenhum aluno cadastrado" : (mode === "Professor" && !professorHasQuery ? "Faça uma consulta" : "Nenhum aluno encontrado")}</strong>
                         <span>{mode === "Professor" ? "Digite um nome ou escolha uma categoria para exibir os alunos." : "Confira o nome e a data de nascimento usados no acesso."}</span>
                     </div>
