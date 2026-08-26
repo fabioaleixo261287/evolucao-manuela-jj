@@ -385,6 +385,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
         const [summaryDetail, setSummaryDetail] = React.useState(null);
         const [dashboardDetail, setDashboardDetail] = React.useState(null);
         const [dashboardInsightMenu, setDashboardInsightMenu] = React.useState(null);
+        const [collapsedDashboardCards, setCollapsedDashboardCards] = React.useState({});
         const [dashboardStudentDetailFilters, setDashboardStudentDetailFilters] = React.useState(null);
         const [dashboardFilters, setDashboardFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" });
         const [dashboardDraftFilters, setDashboardDraftFilters] = React.useState({ group: "Todos", faixa: "Todas", status: "Todos", period: "month" });
@@ -1758,6 +1759,21 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                 )}
             </div>
         );
+        const renderDashboardCollapseButton = (type, label) => {
+            const collapsed = !!collapsedDashboardCards[type];
+            return (
+                <button
+                    type="button"
+                    className="dashboard-card-collapse"
+                    aria-label={`${collapsed ? "Expandir" : "Recolher"} ${label}`}
+                    title={`${collapsed ? "Expandir" : "Recolher"} ${label}`}
+                    aria-expanded={!collapsed}
+                    onClick={() => setCollapsedDashboardCards(current => ({ ...current, [type]: !current[type] }))}
+                >
+                    <i className={`fas ${collapsed ? "fa-chevron-down" : "fa-chevron-up"}`}></i>
+                </button>
+            );
+        };
         const studentsWithProgress = dashboardStudents.map(s => ({
             ...s,
             progresso: getGraduationProgress(s.aulas, s.nascimento, s.faixa, s.comp, s.categoriaOverride),
@@ -2805,7 +2821,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
 
                         <div className="dashboard-command-distributions dashboard-command-distributions-after-detail">
                             <div className="dashboard-insight-column">
-                            <div className="dashboard-command-card compact-panel">
+                            <div className={`dashboard-command-card compact-panel ${collapsedDashboardCards.turmas ? "is-collapsed" : ""}`}>
                                 <div className="dashboard-insight-panel">
                                     <div className="dashboard-insight-head">
                                         <span className="dashboard-insight-icon"><i className="fas fa-layer-group"></i></span>
@@ -2814,6 +2830,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                             <span>Alunos matriculados por turma</span>
                                         </div>
                                         <MetricRuleInfo title="Regra da distribuição por turma">Considera os alunos exibidos pelos filtros do painel. A turma vem da categoria automática por idade ou da categoria manual do cadastro. O percentual é calculado sobre o total filtrado.</MetricRuleInfo>
+                                        {renderDashboardCollapseButton("turmas", "Distribuição por turma")}
                                         {renderDashboardInsightMenu("turmas")}
                                     </div>
                                     <div className="dashboard-compact-list">
@@ -2839,8 +2856,8 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                     </div>
                                 </div>
                             </div>
-                            <div className="dashboard-command-card compact-panel dashboard-status-panel">
-                                <div className="dashboard-command-card-title"><span>Situação da base</span><MetricRuleInfo title="Regra da situação da base">Conta os alunos exibidos conforme o status atual do cadastro: ativos, inativos, desligados ou transferidos e experimentais. Os percentuais usam a base filtrada como total.</MetricRuleInfo><i className="fas fa-circle-check"></i></div>
+                            <div className={`dashboard-command-card compact-panel dashboard-status-panel ${collapsedDashboardCards.status ? "is-collapsed" : ""}`}>
+                                <div className="dashboard-command-card-title"><span>Situação da base</span><MetricRuleInfo title="Regra da situação da base">Conta os alunos exibidos conforme o status atual do cadastro: ativos, inativos, desligados ou transferidos e experimentais. Os percentuais usam a base filtrada como total.</MetricRuleInfo>{renderDashboardCollapseButton("status", "Situação da base")}</div>
                                 <div className="dashboard-status-card">
                                     <div className="dashboard-status-headline">
                                         <i className="fas fa-database"></i>
@@ -2882,7 +2899,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                 </div>
                             </div>
                             </div>
-                            <div className="dashboard-command-card compact-panel">
+                            <div className={`dashboard-command-card compact-panel ${collapsedDashboardCards.faixas ? "is-collapsed" : ""}`}>
                                 <div className="dashboard-insight-panel">
                                     <div className="dashboard-insight-head">
                                         <span className="dashboard-insight-icon dashboard-header-belt-icon">
@@ -2898,6 +2915,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                             <span>Base atual por graduação</span>
                                         </div>
                                         <MetricRuleInfo title="Regra da distribuição por faixa">Agrupa os alunos exibidos pela faixa atual cadastrada. Mostra quantidade, participação sobre a base filtrada e média de idade de cada faixa.</MetricRuleInfo>
+                                        {renderDashboardCollapseButton("faixas", "Distribuição por faixa")}
                                         {renderDashboardInsightMenu("faixas")}
                                     </div>
                                     <div className="dashboard-compact-list">
@@ -2934,7 +2952,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                     </div>
                                 </div>
                             </div>
-                            <div className="dashboard-command-card compact-panel">
+                            <div className={`dashboard-command-card compact-panel ${collapsedDashboardCards.frequencia ? "is-collapsed" : ""}`}>
                                 <div className="dashboard-insight-panel">
                                     <div className="dashboard-insight-head">
                                         <span className="dashboard-insight-icon"><i className="fas fa-trophy"></i></span>
@@ -2943,6 +2961,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                             <span>Aluno com maior frequência no período</span>
                                         </div>
                                         <MetricRuleInfo title="Regra do Top frequência">Conta as presenças registradas dentro do período e dos filtros selecionados. A ordem vai da maior para a menor quantidade. Os 100% representam o líder como referência; não são uma taxa de presença nas aulas.</MetricRuleInfo>
+                                        {renderDashboardCollapseButton("frequencia", "Top frequência")}
                                         {renderDashboardInsightMenu("frequencia")}
                                     </div>
                                     <div className="dashboard-compact-list">

@@ -51,6 +51,11 @@ body.theme-light.auth-mode .auth-container {
     position: relative;
     flex: 0 0 auto;
     z-index: 8;
+    background:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    filter:none !important;
 }
 .metric-rule-info summary {
     width: 30px;
@@ -70,6 +75,19 @@ body.theme-light.auth-mode .auth-container {
     border-color: rgba(240, 199, 94, 0.65);
     background: rgba(240, 199, 94, 0.12);
     color: #f0c75e;
+}
+.metric-rule-info summary,
+.dashboard-card-collapse,
+.dashboard-insight-menu,
+.central-unit-health-details,
+.central-unit-health-details summary {
+    box-shadow:none !important;
+    filter:none !important;
+}
+.central-unit-health-details,
+.central-unit-health-details summary {
+    background:transparent !important;
+    border:0 !important;
 }
 .metric-rule-popover {
     position: absolute;
@@ -731,29 +749,125 @@ body.theme-dark .action-bar {
   background:rgba(15,15,15,.97) !important;
   border-color:rgba(201,165,84,.32) !important;
 }
-body.theme-dark .empty-state {
-  min-height:340px !important;
-  padding-bottom:130px !important;
+body.theme-dark .empty-state,
+body.theme-light .empty-state {
+  min-height:240px !important;
+  padding:34px !important;
+  box-sizing:border-box;
+}
+body:not(.auth-mode) #root {
+  padding-bottom:110px;
   box-sizing:border-box;
 }
 
 /* Keep rule help and export controls on one line in the three BI cards. */
 .dashboard-command-distributions .dashboard-insight-head {
-  grid-template-columns:46px minmax(0, 1fr) 34px 34px;
+  grid-template-columns:46px minmax(0, 1fr) 34px 34px 34px;
   gap:10px;
 }
 .dashboard-command-distributions .dashboard-insight-menu-wrap,
-.dashboard-command-distributions .metric-rule-info {
+.dashboard-command-distributions .metric-rule-info,
+.dashboard-command-distributions .dashboard-card-collapse {
   width:34px;
   height:34px;
   align-self:center;
 }
 .dashboard-command-distributions .dashboard-insight-menu,
-.dashboard-command-distributions .metric-rule-info summary {
+.dashboard-command-distributions .metric-rule-info summary,
+.dashboard-command-distributions .dashboard-card-collapse {
   width:34px;
   height:34px;
   box-shadow:none !important;
   filter:none !important;
+}
+.dashboard-card-collapse {
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:1px solid rgba(201,165,84,.32);
+  border-radius:50%;
+  background:rgba(201,165,84,.08);
+  color:#f0c75e;
+  cursor:pointer;
+}
+.dashboard-card-collapse:hover {
+  background:rgba(201,165,84,.15);
+  border-color:rgba(240,199,94,.58);
+}
+body.theme-light .dashboard-card-collapse {
+  background:#fff8df;
+  border-color:#d7bd6f;
+  color:#9a6800;
+}
+.dashboard-command-card.is-collapsed {
+  min-height:0 !important;
+  box-shadow:none !important;
+}
+.dashboard-command-card.is-collapsed .dashboard-insight-panel > :not(.dashboard-insight-head),
+.dashboard-status-panel.is-collapsed .dashboard-status-card {
+  display:none !important;
+}
+.dashboard-command-card.is-collapsed .dashboard-insight-panel {
+  padding:14px;
+}
+.dashboard-command-distributions > .dashboard-command-card.is-collapsed,
+.dashboard-insight-column > .dashboard-command-card:first-child.is-collapsed {
+  height:92px;
+}
+.dashboard-command-distributions > .dashboard-command-card.is-collapsed .dashboard-insight-panel,
+.dashboard-insight-column > .dashboard-command-card:first-child.is-collapsed .dashboard-insight-panel {
+  height:100%;
+  display:grid;
+  align-items:center;
+  box-sizing:border-box;
+}
+.dashboard-status-panel .dashboard-command-card-title .metric-rule-info {
+  margin-left:auto;
+}
+.dashboard-status-panel .dashboard-command-card-title .dashboard-card-collapse {
+  margin-left:8px;
+}
+.dashboard-command-card-title .dashboard-card-collapse {
+  width:34px !important;
+  min-width:34px !important;
+  height:34px !important;
+  padding:0 !important;
+  border:1px solid rgba(201,165,84,.32) !important;
+  border-radius:50% !important;
+  background:rgba(201,165,84,.08) !important;
+  color:#f0c75e !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+.dashboard-command-card-title .dashboard-card-collapse i {
+  width:auto !important;
+  height:auto !important;
+  display:inline !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:none !important;
+  color:inherit !important;
+  box-shadow:none !important;
+  filter:none !important;
+  line-height:1 !important;
+}
+.dashboard-status-panel.is-collapsed {
+  min-height:52px !important;
+  height:52px;
+}
+.dashboard-status-panel.is-collapsed .dashboard-command-card-title {
+  width:100%;
+  height:50px;
+  padding:0 14px;
+  box-sizing:border-box;
+  border-bottom:0;
+  border-radius:22px;
+}
+body.theme-light .dashboard-command-card-title .dashboard-card-collapse {
+  background:#fff8df !important;
+  border-color:#d7bd6f !important;
+  color:#9a6800 !important;
 }
 .dashboard-command-distributions .dashboard-command-card.compact-panel:has(.dashboard-insight-dropdown) {
   overflow:visible;
@@ -776,7 +890,7 @@ body.theme-light .dashboard-command-distributions .dashboard-insight-dropdown {
 }
 @media(max-width:720px){
   .dashboard-command-distributions .dashboard-insight-head {
-    grid-template-columns:42px minmax(0, 1fr) 32px 32px;
+    grid-template-columns:42px minmax(0, 1fr) 32px 32px 32px;
     gap:8px;
   }
 }
@@ -806,6 +920,18 @@ body.theme-light .dashboard-belt-footer-badge {
 }
 body.theme-light .dashboard-belt-footer-badge .dashboard-belt-glyph {
   filter:drop-shadow(0 1px 1px rgba(15,23,42,.75));
+}
+.dashboard-belt-footer-badge {
+  position:relative;
+  overflow:hidden;
+}
+.dashboard-belt-footer-badge .dashboard-tied-belt-icon {
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin:0;
+  transform:translate(-50%, calc(-50% - 3px));
+  transform-origin:center;
 }
 .dashboard-command-card-title .metric-rule-info summary {
   width:34px;
