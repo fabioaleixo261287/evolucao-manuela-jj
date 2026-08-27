@@ -784,7 +784,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
             const timer = setTimeout(() => {
                 saveAppwriteSystemConfig(appwriteServices.config, users, units)
                     .catch(error => console.warn("Não foi possível sincronizar usuários e unidades.", error));
-            }, 1800);
+            }, 600);
             return () => clearTimeout(timer);
         }, [users, units, isHydrated, appwriteServices]);
 
@@ -830,7 +830,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                         console.error(err);
                         markPendingSync(`${getAppwriteErrorMessage(err)} Alterações mantidas localmente.`);
                     }
-                }, 1800);
+                }, 600);
 
                 return () => clearTimeout(syncTimer);
             }
@@ -857,7 +857,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                     console.error(err);
                     markPendingSync("Erro ao salvar no Supabase. Alterações mantidas localmente.");
                 }
-            }, 1800);
+            }, 600);
 
             return () => clearTimeout(syncTimer);
         }, [students, repo, isHydrated, appwriteServices, supabaseClient, markPendingSync, clearPendingSync]);
@@ -873,7 +873,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
         React.useEffect(() => {
             if (!isHydrated || !pendingSync) return;
             const retry = () => syncLocalChangesNow();
-            const retryTimer = setInterval(retry, 20000);
+            const retryTimer = setInterval(retry, 8000);
             window.addEventListener("online", retry);
             retry();
             return () => {
@@ -884,11 +884,14 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
 
         React.useEffect(() => {
             if (appwriteServices && isHydrated) {
-                const refreshTimer = setInterval(async () => {
+                let refreshInFlight = false;
+                const refreshRemoteState = async () => {
+                    if (refreshInFlight) return;
                     try {
                         if (document.hidden) return;
-                        const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 8000;
+                        const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 2500;
                         if (pendingLocalSaveRef.current || localChangeIsFresh) return;
+                        refreshInFlight = true;
                         const data = await getAppwriteState(appwriteServices.config);
                         const remoteUpdatedAt = data?.updated_at || data?.$updatedAt || "";
                         if (!remoteUpdatedAt) return;
@@ -905,10 +908,23 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                     } catch (err) {
                         console.error(err);
                         setDbStatus(getAppwriteErrorMessage(err));
+                    } finally {
+                        refreshInFlight = false;
                     }
-                }, 60000);
+                };
+                const refreshOnFocus = () => refreshRemoteState();
+                const refreshOnVisibility = () => {
+                    if (!document.hidden) refreshRemoteState();
+                };
+                const refreshTimer = setInterval(refreshRemoteState, 8000);
+                window.addEventListener("focus", refreshOnFocus);
+                document.addEventListener("visibilitychange", refreshOnVisibility);
 
-                return () => clearInterval(refreshTimer);
+                return () => {
+                    clearInterval(refreshTimer);
+                    window.removeEventListener("focus", refreshOnFocus);
+                    document.removeEventListener("visibilitychange", refreshOnVisibility);
+                };
             }
 
             if (!supabaseClient || !isHydrated) return;
@@ -926,7 +942,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                     );
                     if (stampError) throw stampError;
                     if (!stampData?.updated_at) return;
-                    const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 8000;
+                    const localChangeIsFresh = Date.now() - lastLocalChangeRef.current < 2500;
                     if (pendingLocalSaveRef.current || localChangeIsFresh) return;
                     if (lastSavedAtRef.current && new Date(stampData.updated_at) <= new Date(lastSavedAtRef.current)) return;
                     const { data, error } = await withTimeout(
@@ -952,7 +968,7 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                     console.error(err);
                     setDbStatus("Erro ao atualizar Supabase");
                 }
-            }, 30000);
+            }, 8000);
 
             return () => clearInterval(refreshTimer);
         }, [appwriteServices, supabaseClient, isHydrated]);
