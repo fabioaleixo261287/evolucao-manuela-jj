@@ -1438,6 +1438,10 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
             const matchesGroup = filterGroup === "Todos" || getAutoCategory(s.nascimento, s.categoriaOverride) === filterGroup;
             return matchesName && matchesGroup;
         });
+        const groupCounts = Object.fromEntries(groups.map(group => [
+            group,
+            scopedStudents.filter(student => getAutoCategory(student.nascimento, student.categoriaOverride) === group).length
+        ]));
         const professorHasQuery = searchTerm.trim().length > 0 || filterGroup !== "Todos";
         const displayedStudents = mode === "Professor" ? (professorHasQuery ? filtered : []) : filtered;
         const useCompactStudentResults = mode === "Professor" && professorHasQuery;
@@ -2495,7 +2499,9 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                 </div>
                                 <div className="filter-bar">
                                     {groups.map(g => (
-                                        <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => { setSearchTerm(""); setExpandedSearchStudentId(null); setFilterGroup(g); }}>{g}</button>
+                                        <button key={g} className={`filter-btn ${filterGroup === g ? 'active' : ''}`} onClick={() => { setSearchTerm(""); setExpandedSearchStudentId(null); setFilterGroup(g); }}>
+                                            <span>{g}</span><b className="group-count">{groupCounts[g]}</b>
+                                        </button>
                                     ))}
                                 </div>
                             </div>

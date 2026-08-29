@@ -1033,3 +1033,30 @@ body.auth-mode .login-box input::placeholder { color:#91a0b3 !important; }
   .conversation-list { height:300px; }
   .conversation-panel { min-height:520px; }
 }
+/* Quantidade atual de alunos ao lado de cada filtro de turma. */
+.filter-bar .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.filter-bar .group-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 21px;
+    height: 21px;
+    padding: 0 6px;
+    border: 1px solid rgba(201, 165, 84, 0.38);
+    border-radius: 5px;
+    background: rgba(201, 165, 84, 0.1);
+    color: #d8b85d;
+    font-size: 9px;
+    line-height: 1;
+}
+
+.filter-bar .filter-btn.active .group-count {
+    border-color: #f1c93f;
+    background: #f1c93f;
+    color: #17130a;
+}
