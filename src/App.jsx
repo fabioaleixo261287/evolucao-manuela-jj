@@ -305,6 +305,7 @@ import { APP_VERSION } from "./config/version.js";
     }
 
     const statusOptions = ["Ativo", "Experimental", "Pausado", "Transferido", "Inativo"];
+    const dashboardStatusOptions = ["Ativo", "Inativo"];
     const DEFAULT_UNIT_ID = "alliance-mooca";
     const DEFAULT_UNIT_NAME = "Alliance Mooca";
     const defaultUnitOptions = [
@@ -2563,7 +2564,7 @@ import { APP_VERSION } from "./config/version.js";
                                 <label>Status</label>
                                 <select value={dashboardDraftFilters.status} onChange={e => setDashboardDraftFilters({...dashboardDraftFilters, status: e.target.value})}>
                                     <option value="Todos">Todos</option>
-                                    {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
+                                    {dashboardStatusOptions.map(status => <option key={status} value={status}>{status}</option>)}
                                 </select>
                             </div>
                             <button className="dashboard-search-action" onClick={() => { setDashboardFilters(dashboardDraftFilters); openDashboardFilteredStudents(dashboardDraftFilters); }}>
