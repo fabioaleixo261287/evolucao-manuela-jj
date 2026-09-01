@@ -1,4 +1,4 @@
-export const APP_VERSION = "1.0.0";
+export const APP_VERSION = "1.0.1";
 export const APP_NAME = "Alliance Jiu Jitsu Kids";
 export const APP_DISPLAY_NAME = `${APP_NAME} - Sistema Eagle V${APP_VERSION}`;
 

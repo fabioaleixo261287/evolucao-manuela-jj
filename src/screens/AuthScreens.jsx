@@ -1,6 +1,15 @@
 import React from "react";
 import BrandLockup from "../components/BrandLockup.jsx";
 
+function TechnologyCredit() {
+  return (
+    <div className="technology-credit" aria-label="Desenvolvido por FRMI Tecnologia">
+      <span>Desenvolvido por</span>
+      <strong>FRMI Tecnologia</strong>
+    </div>
+  );
+}
+
 export function RoleSelectionScreen({ onProfessor, onParents, canInstall, onInstall }) {
   return (
     <div className="selection-screen">
@@ -27,6 +36,7 @@ export function RoleSelectionScreen({ onProfessor, onParents, canInstall, onInst
             <i className="fas fa-download" /> Instalar app
           </button>
         )}
+        <TechnologyCredit />
       </div>
     </div>
   );
@@ -44,6 +54,7 @@ export function LoginScreen({ subMode, auth, onAuthChange, onLogin, onBack }) {
           {subMode === "Pais" && <p className="parent-access-help">Esqueceu o código? Solicite à academia uma redefinição segura.</p>}
           <button className="btn-full" style={{ background: "var(--alliance-red)", color: "white" }} onClick={onLogin}>ENTRAR</button>
           <p className="back-link" onClick={onBack}>Voltar à seleção</p>
+          <TechnologyCredit />
         </div>
       </div>
     </div>

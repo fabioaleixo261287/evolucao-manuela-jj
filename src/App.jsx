@@ -15,6 +15,7 @@ import { migrateBackupPayload } from "./rules/backupRules.js";
 import { buildCentralMetrics } from "./rules/centralMetrics.js";
 import CentralDashboard from "./screens/CentralDashboard.jsx";
 import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
+import { APP_VERSION } from "./config/version.js";
 
 
     const beltOrder = ["Branca", "Cinza/Branca", "Cinza", "Cinza/Preta", "Amarela/Branca", "Amarela", "Amarela/Preta", "Laranja/Branca", "Laranja", "Laranja/Preta", "Verde/Branca", "Verde", "Verde/Preta"];
@@ -3555,6 +3556,15 @@ import MetricRuleInfo from "./components/MetricRuleInfo.jsx";
                                     <i className="fas fa-sun"></i> Tema claro
                                 </button>
                             </div>
+                            <section className="system-about-card" aria-label="Sobre o sistema">
+                                <div className="system-about-icon"><i className="fas fa-code"></i></div>
+                                <div>
+                                    <small>SOBRE O SISTEMA</small>
+                                    <strong>Alliance Kids</strong>
+                                    <span>Desenvolvido por <b>FRMI Tecnologia</b></span>
+                                    <span>Versão {APP_VERSION}</span>
+                                </div>
+                            </section>
                             {canManageUsers && <>
                                 <button className="btn-full" style={{background: 'var(--alliance-green)', color:'white'}} onClick={downloadBackup}>
                                     <i className="fas fa-download"></i> GERAR BACKUP (.JSON)

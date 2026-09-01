@@ -1025,6 +1025,59 @@ body.auth-mode .login-box select {
 }
 body.auth-mode .login-box input::placeholder { color:#91a0b3 !important; }
 
+/* Crédito institucional e identificação da versão. */
+.technology-credit {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:24px;
+  color:var(--text-muted);
+  font-size:9px;
+  line-height:1;
+}
+.technology-credit span { opacity:.78; }
+.technology-credit strong { color:var(--gold); font-size:10px; }
+.login-box .technology-credit {
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid var(--border-color);
+}
+.system-about-card {
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+  margin:16px 0;
+  padding:15px;
+  border:1px solid rgba(201,165,84,.38);
+  border-radius:12px;
+  background:rgba(201,165,84,.07);
+}
+.system-about-icon {
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border:1px solid rgba(201,165,84,.42);
+  border-radius:9px;
+  color:var(--gold);
+  background:rgba(201,165,84,.08);
+}
+.system-about-card > div:last-child { display:grid; gap:4px; min-width:0; }
+.system-about-card small { color:var(--gold) !important; font-size:8px; font-weight:900; }
+.system-about-card strong { color:var(--text-main) !important; font-size:15px; text-align:left; }
+.system-about-card span { color:var(--text-muted); font-size:10px; line-height:1.4; text-transform:none; }
+.system-about-card b { color:var(--text-main); }
+body.theme-light .technology-credit strong,
+body.theme-light .system-about-card small { color:#9a6d00 !important; }
+body.theme-light .system-about-card { border-color:#e4c56d; background:#fff9e8; }
+
+@media(max-width:600px){
+  .system-about-card { grid-template-columns:36px minmax(0,1fr); padding:12px; }
+  .system-about-icon { width:36px; height:36px; }
+}
+
 @media(max-width:760px){
   body.theme-dark .container,
   body.theme-light .container { padding:8px; }
