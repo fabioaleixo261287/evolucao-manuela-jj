@@ -2,9 +2,9 @@
   "name": "Alliance Kids",
   "short_name": "Alliance Kids",
   "description": "Sistema multiunidade de evolução e graduação infantil Alliance Jiu Jitsu Kids.",
-  "id": "/",
+  "id": "/alliance-kids-app-v2",
   "lang": "pt-BR",
-  "start_url": "/",
+  "start_url": "/?pwa=alliance-kids-v2",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -13,13 +13,13 @@
   "categories": ["education", "sports", "productivity"],
   "icons": [
     {
-      "src": "/pwa-icons/icon-alliance-kids-192.png",
+      "src": "/pwa-icons/icon-alliance-kids-v2-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pwa-icons/icon-alliance-kids-512.png",
+      "src": "/pwa-icons/icon-alliance-kids-v2-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
