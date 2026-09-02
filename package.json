@@ -1,7 +1,7 @@
 {
   "name": "alliance-kids-platform",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "scripts": {
     "dev:modular": "vite --host 127.0.0.1 --port 4176",
